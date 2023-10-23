@@ -18,6 +18,17 @@ public class BasicOpMode extends LinearOpMode {
     DcMotor backLeftMotor = hardwareMap.dcMotor.get("backLeftMotor");
     DcMotor frontRightMotor = hardwareMap.dcMotor.get("frontRightMotor");
     DcMotor backRightMotor = hardwareMap.dcMotor.get("backRightMotor");
+    DcMotor slideMotor = hardwareMap.dcMotor.get("slideMotor");
+
+    slideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    backLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    slideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+
+    slideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); // Reset the motor encoder
+    slideMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); // Turn the motor back on when we are done
 
     // TODO: Check
     // Reverse the right side motors. This may be wrong for your setup.
@@ -28,8 +39,8 @@ public class BasicOpMode extends LinearOpMode {
 
     IMU imu = hardwareMap.get(IMU.class, "imu");
     IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
-        RevHubOrientationOnRobot.LogoFacingDirection.UP,
-        RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
+        RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
+        RevHubOrientationOnRobot.UsbFacingDirection.UP));
     imu.initialize(parameters);
 
     waitForStart();
@@ -42,6 +53,11 @@ public class BasicOpMode extends LinearOpMode {
       double y = -gamepad1.left_stick_y; // Remember, Y stick value is reversed
       double x = gamepad1.left_stick_x;
       double rx = gamepad1.right_stick_x;
+
+      double slide = gamepad1.right_trigger;
+      double unSlide = -gamepad1.left_trigger;
+
+      float toGo = 0;
 
       if (gamepad1.options) {
         imu.resetYaw();
@@ -69,6 +85,18 @@ public class BasicOpMode extends LinearOpMode {
       frontRightMotor.setPower(frontRightPower);
       backRightMotor.setPower(backRightPower);
 
+      slideMotor.setPower(slide + unSlide);
+
+      int slidePos = slideMotor.getCurrentPosition();
+
+      if (gamepad1.dpad_down){
+        toGo = -5;
+      }
+      if (gamepad1.dpad_up){
+        toGo = -1200;
+      }
+
+      telemetry.addData("Slide pos", slidePos);
       telemetry.update();
     }
   }
