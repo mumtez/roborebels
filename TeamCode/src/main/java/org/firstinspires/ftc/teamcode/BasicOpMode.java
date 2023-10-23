@@ -4,6 +4,7 @@ import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotor.RunMode;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -18,19 +19,24 @@ public class BasicOpMode extends LinearOpMode {
     DcMotor backLeftMotor = hardwareMap.dcMotor.get("backLeftMotor");
     DcMotor frontRightMotor = hardwareMap.dcMotor.get("frontRightMotor");
     DcMotor backRightMotor = hardwareMap.dcMotor.get("backRightMotor");
-    DcMotor slideMotor = hardwareMap.dcMotor.get("slideMotor");
 
-    slideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    frontLeftMotor.setMode(RunMode.RUN_WITHOUT_ENCODER);
+    backLeftMotor.setMode(RunMode.RUN_WITHOUT_ENCODER);
+    frontRightMotor.setMode(RunMode.RUN_WITHOUT_ENCODER);
+    backRightMotor.setMode(RunMode.RUN_WITHOUT_ENCODER);
+
     frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     backLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-    slideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    backRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+    DcMotor slideMotor = hardwareMap.dcMotor.get("slideMotor");
+
+    slideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
     slideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); // Reset the motor encoder
     slideMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); // Turn the motor back on when we are done
 
-    // TODO: Check
     // Reverse the right side motors. This may be wrong for your setup.
     // If your robot moves backwards when commanded to go forwards,
     // reverse the left side instead.
@@ -45,9 +51,9 @@ public class BasicOpMode extends LinearOpMode {
 
     waitForStart();
 
-      if (isStopRequested()) {
-          return;
-      }
+    if (isStopRequested()) {
+      return;
+    }
 
     while (opModeIsActive()) {
       double y = -gamepad1.left_stick_y; // Remember, Y stick value is reversed
@@ -89,10 +95,10 @@ public class BasicOpMode extends LinearOpMode {
 
       int slidePos = slideMotor.getCurrentPosition();
 
-      if (gamepad1.dpad_down){
+      if (gamepad1.dpad_down) {
         toGo = -5;
       }
-      if (gamepad1.dpad_up){
+      if (gamepad1.dpad_up) {
         toGo = -1200;
       }
 
