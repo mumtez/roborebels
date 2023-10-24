@@ -14,6 +14,7 @@ public class BasicOpMode extends LinearOpMode {
 
   @Override
   public void runOpMode() throws InterruptedException {
+    int toGo = 0;
 
     DcMotor frontLeftMotor = hardwareMap.dcMotor.get("frontLeftMotor");
     DcMotor backLeftMotor = hardwareMap.dcMotor.get("backLeftMotor");
@@ -63,8 +64,6 @@ public class BasicOpMode extends LinearOpMode {
       double slide = gamepad1.right_trigger;
       double unSlide = -gamepad1.left_trigger;
 
-      float toGo = 0;
-
       if (gamepad1.options) {
         imu.resetYaw();
       }
@@ -91,18 +90,29 @@ public class BasicOpMode extends LinearOpMode {
       frontRightMotor.setPower(frontRightPower);
       backRightMotor.setPower(backRightPower);
 
-      slideMotor.setPower(slide + unSlide);
+      //slideMotor.setPower(slide + unSlide);
 
-      int slidePos = slideMotor.getCurrentPosition();
 
-      if (gamepad1.dpad_down) {
+      if (gamepad1.a) {
         toGo = -5;
       }
-      if (gamepad1.dpad_up) {
-        toGo = -1200;
+      if (gamepad1.b) {
+        toGo = -800;
+      }
+      if (gamepad1.x){
+        toGo = -400;
+      }
+      if (gamepad1.y){
+        toGo = -1000;
       }
 
+      int slidePos = slideMotor.getCurrentPosition();
+      slideMotor.setPower(.5);
+      slideMotor.setTargetPosition(toGo);
+      slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
       telemetry.addData("Slide pos", slidePos);
+      telemetry.addData("To go", toGo);
       telemetry.update();
     }
   }
