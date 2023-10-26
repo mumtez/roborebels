@@ -16,10 +16,15 @@ public class BasicOpMode extends LinearOpMode {
   public void runOpMode() throws InterruptedException {
     int toGo = 0;
 
+    DcMotor intake = hardwareMap.dcMotor.get("intake");
+
     DcMotor frontLeftMotor = hardwareMap.dcMotor.get("frontLeftMotor");
     DcMotor backLeftMotor = hardwareMap.dcMotor.get("backLeftMotor");
     DcMotor frontRightMotor = hardwareMap.dcMotor.get("frontRightMotor");
     DcMotor backRightMotor = hardwareMap.dcMotor.get("backRightMotor");
+
+
+    intake.setMode(RunMode.RUN_WITHOUT_ENCODER);
 
     frontLeftMotor.setMode(RunMode.RUN_WITHOUT_ENCODER);
     backLeftMotor.setMode(RunMode.RUN_WITHOUT_ENCODER);
