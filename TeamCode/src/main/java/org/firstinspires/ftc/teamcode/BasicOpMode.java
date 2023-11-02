@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
+
 @TeleOp(name = "Basic Teleop", group = "Teleop")
 public class BasicOpMode extends LinearOpMode {
 
@@ -68,6 +69,9 @@ public class BasicOpMode extends LinearOpMode {
 
     slideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+
+
+
     slideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); // Reset the motor encoder
     slideMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); // Turn the motor back on when we are done
 
@@ -92,10 +96,9 @@ public class BasicOpMode extends LinearOpMode {
     while (opModeIsActive()) {
       double y = -gamepad1.left_stick_y; // Remember, Y stick value is reversed
       double x = gamepad1.left_stick_x;
-      double rx = gamepad1.right_stick_x;
+      double rx = -gamepad1.right_stick_x;
 
-//      double slide = gamepad1.right_trigger;
-//      double unSlide = -gamepad1.left_trigger;
+    double slide = gamepad2.right_stick_y;
 
       if (gamepad1.options) {
         imu.resetYaw();
@@ -123,8 +126,11 @@ public class BasicOpMode extends LinearOpMode {
       frontRightMotor.setPower(frontRightPower);
       backRightMotor.setPower(backRightPower);
 
-      //slideMotor.setPower(slide + unSlide);
+      intake.setPower(gamepad1.right_trigger);
 
+      slideMotor.setPower(slide * 1.2);
+
+      /*
       if (gamepad1.a) {
         toGo = -5;
       }
@@ -137,11 +143,13 @@ public class BasicOpMode extends LinearOpMode {
       if (gamepad1.y){
         toGo = -1000;
       }
+      */
+
 
       int slidePos = slideMotor.getCurrentPosition();
-      slideMotor.setPower(.5);
-      slideMotor.setTargetPosition(toGo);
-      slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+      //slideMotor.setPower(1);
+      //slideMotor.setTargetPosition(toGo);
+      //slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
       telemetry.addData("Slide pos", slidePos);
       telemetry.addData("To go", toGo);
