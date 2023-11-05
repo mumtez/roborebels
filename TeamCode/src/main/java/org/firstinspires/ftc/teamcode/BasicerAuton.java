@@ -35,11 +35,13 @@ public class BasicerAuton extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
+        DcMotor intake = hardwareMap.dcMotor.get("intake");
         DcMotor frontLeftMotor = hardwareMap.dcMotor.get("frontLeftMotor");
         DcMotor backLeftMotor = hardwareMap.dcMotor.get("backLeftMotor");
         DcMotor frontRightMotor = hardwareMap.dcMotor.get("frontRightMotor");
         DcMotor backRightMotor = hardwareMap.dcMotor.get("backRightMotor");
 
+        intake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frontLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frontRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -54,34 +56,53 @@ public class BasicerAuton extends LinearOpMode {
         backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         //DcMotor craneDrop = hardwareMap.dcMotor.get("craneDrop");
+        //Mayo
 
         waitForStart();
 
         while (opModeIsActive()) {
 
-            if (count < 6000)
-            {
-                frontLeftMotor.setPower(0.7);
-                frontRightMotor.setPower(0.7);
-                backLeftMotor.setPower(0.7);
-                backRightMotor.setPower(0.7);
-            }
-            else if (count < 14000){
-                frontLeftMotor.setPower(0.7);
+            if (count < 21000) {
+                frontLeftMotor.setPower(-0.7);
                 frontRightMotor.setPower(-0.7);
                 backLeftMotor.setPower(-0.7);
-                backRightMotor.setPower(0.7);
+                backRightMotor.setPower(-0.7);
             }
-            else{
+            else if(count < 60000){
                 frontLeftMotor.setPower(0);
                 frontRightMotor.setPower(0);
                 backLeftMotor.setPower(0);
                 backRightMotor.setPower(0);
+                intake.setPower(-0.6);
             }
-            count ++;
+            else {
+                frontLeftMotor.setPower(0);
+                frontRightMotor.setPower(0);
+                backLeftMotor.setPower(0);
+                backRightMotor.setPower(0);
+                intake.setPower(0);
+            }
+            count++;
 
         }
+        /*
+        Foward
+        frontLeftMotor.setPower(0.7);
+        frontRightMotor.setPower(0.7);
+        backLeftMotor.setPower(0.7);
+        backRightMotor.setPower(0.7);
+
+        Strafe right
+        frontLeftMotor.setPower(0.7);
+        frontRightMotor.setPower(-0.7);
+        backLeftMotor.setPower(-0.7);
+        backRightMotor.setPower(0.7);
+
+        Strafe left
+        frontLeftMotor.setPower(-0.7);
+        frontRightMotor.setPower(0.7);
+        backLeftMotor.setPower(0.7);
+        backRightMotor.setPower(-0.7);
+         */
     }
-
-
 }

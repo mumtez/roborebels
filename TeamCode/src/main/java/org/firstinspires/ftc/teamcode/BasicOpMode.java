@@ -7,6 +7,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotor.RunMode;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.hardware.Servo;
+
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 
@@ -20,8 +22,13 @@ public class BasicOpMode extends LinearOpMode {
   private DcMotor backRightMotor;
 
 
+  private Servo airplane;
+
+
   private void initialize(){
     // Initialize components
+    this.airplane = hardwareMap.servo.get("airplane");
+
     this.intake = hardwareMap.dcMotor.get("intake");
     this.frontLeftMotor = hardwareMap.dcMotor.get("frontLeftMotor");
     this.backLeftMotor = hardwareMap.dcMotor.get("backLeftMotor");
@@ -64,13 +71,12 @@ public class BasicOpMode extends LinearOpMode {
     frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     backRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+    Servo airplane = hardwareMap.servo.get("airplane");
+
     // Starting here you would also add this as a private field and change the references to .this
     DcMotor slideMotor = hardwareMap.dcMotor.get("slideMotor");
 
     slideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-
-
 
     slideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); // Reset the motor encoder
     slideMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); // Turn the motor back on when we are done
@@ -98,11 +104,20 @@ public class BasicOpMode extends LinearOpMode {
       double x = gamepad1.left_stick_x;
       double rx = -gamepad1.right_stick_x;
 
-    double slide = gamepad2.right_stick_y;
+      double slide = gamepad2.right_stick_y;
 
       if (gamepad1.options) {
         imu.resetYaw();
       }
+
+      if (gamepad2.a){
+        airplane.setPosition(-2.5);
+      }
+
+      if (gamepad2.b){
+        airplane.setPosition(3);
+      }
+
 
       double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
 
@@ -126,33 +141,19 @@ public class BasicOpMode extends LinearOpMode {
       frontRightMotor.setPower(frontRightPower);
       backRightMotor.setPower(backRightPower);
 
-      intake.setPower(gamepad1.right_trigger);
+      intake.setPower(gamepad1.right_trigger - (gamepad1.left_trigger*0.5));
 
-      slideMotor.setPower(slide * 1.2);
 
-      /*
-      if (gamepad1.a) {
-        toGo = -5;
-      }
-      if (gamepad1.b) {
-        toGo = -800;
-      }
-      if (gamepad1.x){
-        toGo = -400;
-      }
-      if (gamepad1.y){
-        toGo = -1000;
-      }
-      */
+
+      slideMotor.setPower(slide * 0.7);
+
 
 
       int slidePos = slideMotor.getCurrentPosition();
-      //slideMotor.setPower(1);
-      //slideMotor.setTargetPosition(toGo);
-      //slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
       telemetry.addData("Slide pos", slidePos);
       telemetry.addData("To go", toGo);
+
       telemetry.update();
     }
   }
