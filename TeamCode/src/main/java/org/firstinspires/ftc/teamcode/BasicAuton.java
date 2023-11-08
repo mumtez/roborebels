@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import android.graphics.Bitmap;
+import android.util.Size;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -11,9 +12,11 @@ import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.function.Consumer;
 import org.firstinspires.ftc.robotcore.external.function.Continuation;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainControl;
+import org.firstinspires.ftc.teamcode.vision.ColorPipeline;
 import org.firstinspires.ftc.teamcode.vision.Detector;
 import org.opencv.core.Mat;
 import org.openftc.easyopencv.OpenCvCamera;
@@ -59,6 +62,8 @@ public class BasicAuton extends LinearOpMode {
 
     private static final int DESIRED_TAG_ID = 0;     // Choose the tag you want to approach or set to -1 for ANY tag.
     private VisionPortal visionPortal;               // Used to manage the video source.
+
+    private ColorPipeline colorPipeline;
     private AprilTagProcessor aprilTag;              // Used for managing the AprilTag detection process.
     private AprilTagDetection desiredTag = null;     // Used to hold the data for a detected AprilTag
 
@@ -77,10 +82,28 @@ public class BasicAuton extends LinearOpMode {
         DcMotor frontRightMotor = hardwareMap.dcMotor.get("frontRightMotor");
         DcMotor backRightMotor = hardwareMap.dcMotor.get("backRightMotor");
 
-        Detector detector = new Detector(this);
+        //Detector detector = new Detector(this);
 
-        detector.stopStream();
+        //detector.stopStream();
 
+        visionPortal = new VisionPortal.Builder()
+                .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
+                .setCameraResolution(new Size(1280, 720))
+                .enableLiveView(true)
+                .setStreamFormat(VisionPortal.StreamFormat.MJPEG)
+                .addProcessor(aprilTag)
+                .build();
+
+        waitForStart();
+
+        telemetry.addData("Prop Position", ColorPipeline.getPropPosition());
+        telemetry.update();
+
+
+        while (opModeIsActive()){
+
+        }
+/*
 
         while (opModeIsActive()) {
             targetFound = false;
@@ -122,13 +145,13 @@ public class BasicAuton extends LinearOpMode {
                 telemetry.addData("Manual","Drive %5.2f, Strafe %5.2f, Turn %5.2f ", drive, strafe, turn);
             }
 
-
+            //telemetry.addLine(detector.getPipelineOutput());
             telemetry.update();
 
             moveRobot(drive, strafe, turn);
             sleep(10);
         }
-
+*/
     }
 
     public void moveRobot(double x, double y, double yaw) {

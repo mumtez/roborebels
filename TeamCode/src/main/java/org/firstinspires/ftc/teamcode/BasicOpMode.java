@@ -61,10 +61,17 @@ public class BasicOpMode extends LinearOpMode {
 
     intake.setMode(RunMode.RUN_WITHOUT_ENCODER);
 
+    frontLeftMotor.setMode(RunMode.STOP_AND_RESET_ENCODER);
+    backLeftMotor.setMode(RunMode.STOP_AND_RESET_ENCODER);
+    frontRightMotor.setMode(RunMode.STOP_AND_RESET_ENCODER);
+    backRightMotor.setMode(RunMode.STOP_AND_RESET_ENCODER);
+
     frontLeftMotor.setMode(RunMode.RUN_WITHOUT_ENCODER);
     backLeftMotor.setMode(RunMode.RUN_WITHOUT_ENCODER);
     frontRightMotor.setMode(RunMode.RUN_WITHOUT_ENCODER);
     backRightMotor.setMode(RunMode.RUN_WITHOUT_ENCODER);
+
+
 
     frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     backLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -118,7 +125,6 @@ public class BasicOpMode extends LinearOpMode {
         airplane.setPosition(3);
       }
 
-
       double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
 
       // Rotate the movement direction counter to the bot's rotation
@@ -150,8 +156,16 @@ public class BasicOpMode extends LinearOpMode {
 
 
       int slidePos = slideMotor.getCurrentPosition();
+      int flPos = frontLeftMotor.getCurrentPosition();
+      int frPos = frontRightMotor.getCurrentPosition();
+      int blPos = backLeftMotor.getCurrentPosition();
+      int brPos = backRightMotor.getCurrentPosition();
 
       telemetry.addData("Slide pos", slidePos);
+      telemetry.addData("fl pos", flPos);
+      telemetry.addData("fr pos", frPos);
+      telemetry.addData("bl pos", blPos);
+      telemetry.addData("br pos", brPos);
       telemetry.addData("To go", toGo);
 
       telemetry.update();

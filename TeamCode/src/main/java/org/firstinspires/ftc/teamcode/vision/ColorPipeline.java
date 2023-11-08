@@ -1,9 +1,16 @@
 package org.firstinspires.ftc.teamcode.vision;
 
+import android.graphics.Canvas;
+
 import com.acmerobotics.dashboard.config.Config;
 
+import org.firstinspires.ftc.robotcore.internal.camera.calibration.CameraCalibration;
+import org.firstinspires.ftc.vision.VisionProcessor;
+import org.opencv.core.Core;
 import org.opencv.core.Mat;
+import org.opencv.core.Point;
 import org.opencv.core.Rect;
+import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
 
@@ -11,37 +18,100 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 @Config
-public class ColorPipeline extends OpenCvPipeline {
+public class ColorPipeline implements VisionProcessor {
+
+    //public static Rect crop = new Rect(170,120,50, 70);
+    static String outStr = "left";
+
+    Mat testMat = new Mat();
+    Mat highMat = new Mat();
+    Mat lowMat = new Mat();
+    Mat finalMat = new Mat();
+    double redThreshold = 0.5;
+
+    static final Rect LEFT_RECTANGLE = new Rect(
+            new Point(0, 150),
+            new Point(120, 240)
+    );
+
+    static final Rect RIGHT_RECTANGLE = new Rect(
+            new Point(240, 150),
+            new Point(320, 240)
+    );
 
 
-    public static Rect crop = new Rect(170,120,50, 70);
+    public Scalar lower = new Scalar(0, 0, 0); // HSV threshold bounds
+    public Scalar upper = new Scalar(255, 255, 255);
+
+    private Mat hsvMat = new Mat(); // converted image
+    private Mat binaryMat = new Mat(); // imamge analyzed after thresholding
+    private Mat maskedInputMat = new Mat();
+
+
+    public ColorPipeline() {
+
+    }
+
+    public String getOutput() {
+        return null;
+    }
 
     @Override
-    public Mat processFrame(Mat input) {
-        Mat cropped = input.submat(crop);
-        Mat output = new Mat();
-        Imgproc.cvtColor(cropped, output, Imgproc.COLOR_RGBA2RGB);
-        updateDet(output);
-        return output;
+    public void init(int width, int height, CameraCalibration calibration) {
+
     }
 
-    public void updateDet(Mat image){
-        ArrayList<Double> sum = new ArrayList<>();
-        sum.add(0.0);
-        sum.add(0.0);
-        sum.add(0.0);
+    @Override
+    public Object processFrame(Mat frame, long captureTimeNanos) {
+        Imgproc.cvtColor(frame, testMat, Imgproc.COLOR_RGB2HSV);
 
 
-        for (int row = 0; row <= image.rows() - 1; row++){ // todo check if this fix works
-            for (int col = 0; col <= image.cols() - 1; col++){
-                sum.set(0, sum.get(0) + image.get(row, col)[0]);
-                sum.set(1, sum.get(1) + image.get(row, col)[1]);
-                sum.set(2, sum.get(2) + image.get(row, col)[2]);
-            }
+        Scalar lowHSVRedLower = new Scalar(0, 100, 20);  //Beginning of Color Wheel
+        Scalar lowHSVRedUpper = new Scalar(10, 255, 255);
+
+        Scalar redHSVRedLower = new Scalar(160, 100, 20); //Wraps around Color Wheel
+        Scalar highHSVRedUpper = new Scalar(180, 255, 255);
+
+        Core.inRange(testMat, lowHSVRedLower, lowHSVRedUpper, lowMat);
+        Core.inRange(testMat, redHSVRedLower, highHSVRedUpper, highMat);
+
+        testMat.release();
+
+        Core.bitwise_or(lowMat, highMat, finalMat);
+
+        lowMat.release();
+        highMat.release();
+
+        double leftBox = Core.sumElems(finalMat.submat(LEFT_RECTANGLE)).val[0];
+        double rightBox = Core.sumElems(finalMat.submat(RIGHT_RECTANGLE)).val[0];
+
+        double averagedLeftBox = leftBox / LEFT_RECTANGLE.area() / 255;
+        double averagedRightBox = rightBox / RIGHT_RECTANGLE.area() / 255; //Makes value [0,1]
+
+
+        if(averagedLeftBox > redThreshold){        //Must Tune Red Threshold
+            outStr = "left";
+        }else if(averagedRightBox> redThreshold){
+            outStr = "center";
+        }else{
+            outStr = "right";
         }
 
-
-        double max = Collections.max(sum); // todo check this
+        finalMat.copyTo(frame); /*This line should only be added in when you want to see your custom pipeline
+                                  on the driver station stream, do not use this permanently in your code as
+                                  you use the "frame" mat for all of your pipelines, such as April Tags*/
+        return null;            //You do not return the original mat anymore, instead return null
 
     }
+
+    @Override
+    public void onDrawFrame(Canvas canvas, int onscreenWidth, int onscreenHeight, float scaleBmpPxToCanvasPx, float scaleCanvasDensity, Object userContext) {
+
+    }
+
+    public static String getPropPosition(){  //Returns postion of the prop in a String
+        return outStr;
+    }
+
+
 }
