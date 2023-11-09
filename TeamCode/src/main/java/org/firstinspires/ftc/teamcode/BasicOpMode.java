@@ -61,16 +61,6 @@ public class BasicOpMode extends LinearOpMode {
 
     intake.setMode(RunMode.RUN_WITHOUT_ENCODER);
 
-    frontLeftMotor.setMode(RunMode.STOP_AND_RESET_ENCODER);
-    backLeftMotor.setMode(RunMode.STOP_AND_RESET_ENCODER);
-    frontRightMotor.setMode(RunMode.STOP_AND_RESET_ENCODER);
-    backRightMotor.setMode(RunMode.STOP_AND_RESET_ENCODER);
-
-    frontLeftMotor.setMode(RunMode.RUN_WITHOUT_ENCODER);
-    backLeftMotor.setMode(RunMode.RUN_WITHOUT_ENCODER);
-    frontRightMotor.setMode(RunMode.RUN_WITHOUT_ENCODER);
-    backRightMotor.setMode(RunMode.RUN_WITHOUT_ENCODER);
-
 
 
     frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

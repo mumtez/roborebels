@@ -2,8 +2,6 @@ package org.firstinspires.ftc.teamcode.vision;
 
 import android.graphics.Canvas;
 
-import com.acmerobotics.dashboard.config.Config;
-
 import org.firstinspires.ftc.robotcore.internal.camera.calibration.CameraCalibration;
 import org.firstinspires.ftc.vision.VisionProcessor;
 import org.opencv.core.Core;
@@ -12,49 +10,25 @@ import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
-import org.openftc.easyopencv.OpenCvPipeline;
 
-import java.util.ArrayList;
-import java.util.Collections;
-
-@Config
-public class ColorPipeline implements VisionProcessor {
-
-    //public static Rect crop = new Rect(170,120,50, 70);
-    static String outStr = "left";
-
+public class RedPropThreshold implements VisionProcessor {
     Mat testMat = new Mat();
     Mat highMat = new Mat();
     Mat lowMat = new Mat();
     Mat finalMat = new Mat();
     double redThreshold = 0.5;
 
+    String outStr = "left"; //Set a default value in case vision does not work
+
     static final Rect LEFT_RECTANGLE = new Rect(
-            new Point(0, 150),
-            new Point(120, 240)
+            new Point(0, 0),
+            new Point(220, 480)
     );
 
     static final Rect RIGHT_RECTANGLE = new Rect(
-            new Point(240, 150),
-            new Point(320, 240)
+            new Point(320, 0),
+            new Point(639, 480)
     );
-
-
-    public Scalar lower = new Scalar(0, 0, 0); // HSV threshold bounds
-    public Scalar upper = new Scalar(255, 255, 255);
-
-    private Mat hsvMat = new Mat(); // converted image
-    private Mat binaryMat = new Mat(); // imamge analyzed after thresholding
-    private Mat maskedInputMat = new Mat();
-
-
-    public ColorPipeline() {
-
-    }
-
-    public String getOutput() {
-        return null;
-    }
 
     @Override
     public void init(int width, int height, CameraCalibration calibration) {
@@ -89,6 +63,8 @@ public class ColorPipeline implements VisionProcessor {
         double averagedRightBox = rightBox / RIGHT_RECTANGLE.area() / 255; //Makes value [0,1]
 
 
+
+
         if(averagedLeftBox > redThreshold){        //Must Tune Red Threshold
             outStr = "left";
         }else if(averagedRightBox> redThreshold){
@@ -102,16 +78,19 @@ public class ColorPipeline implements VisionProcessor {
                                   you use the "frame" mat for all of your pipelines, such as April Tags*/
         return null;            //You do not return the original mat anymore, instead return null
 
+
+
+
     }
+
 
     @Override
     public void onDrawFrame(Canvas canvas, int onscreenWidth, int onscreenHeight, float scaleBmpPxToCanvasPx, float scaleCanvasDensity, Object userContext) {
 
     }
 
-    public static String getPropPosition(){  //Returns postion of the prop in a String
+    public String getPropPosition(Mat x){  //Returns postion of the prop in a String
+        processFrame(x, 3);
         return outStr;
     }
-
-
 }

@@ -7,11 +7,10 @@ import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvWebcam;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
-import org.openftc.easyopencv.OpenCvInternalCamera2;
 
 public class Detector {
     public final OpenCvWebcam PHONE_CAM;
-    public final ColorPipeline PIPELINE;
+    public final RedPropThreshold PIPELINE;
 
     public Detector(OpMode opMode){
         int cameraMonitorViewId = opMode.hardwareMap
@@ -23,7 +22,7 @@ public class Detector {
                 .createWebcam(opMode.hardwareMap.get(WebcamName.class, "camera"), cameraMonitorViewId);
 
 
-        PIPELINE = new ColorPipeline();
+        PIPELINE = new RedPropThreshold();
         //PHONE_CAM.setPipeline(PIPELINE);
 
         PHONE_CAM.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
@@ -41,7 +40,7 @@ public class Detector {
     }
 
     public String getPipelineOutput(){
-        return PIPELINE.getOutput();
+        return PIPELINE.getPropPosition();
     }
     public void stopStream(){
         PHONE_CAM.pauseViewport();
