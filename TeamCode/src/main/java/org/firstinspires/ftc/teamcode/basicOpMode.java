@@ -53,7 +53,12 @@ public class BasicOpMode extends LinearOpMode {
 
     slideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+    frontRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    frontLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    backLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    backRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     slideMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    intake.setMode(RunMode.RUN_WITHOUT_ENCODER);
 
     frontRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
     backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -89,7 +94,7 @@ public class BasicOpMode extends LinearOpMode {
       double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
       double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
 
-      rotX = rotX * 1.1;
+      rotX = rotX * 1.1; // Very important
 
       double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
       double frontLeftPower = (rotY + rotX + rx) / denominator;
