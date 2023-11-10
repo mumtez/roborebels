@@ -14,15 +14,15 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 @TeleOp(name = "Basic Teleop", group = "Teleop")
 public class BasicOpMode extends LinearOpMode {
 
-  private DcMotor intake;
-  private DcMotor frontLeftMotor;
-  private DcMotor backLeftMotor;
-  private DcMotor frontRightMotor;
-  private DcMotor backRightMotor;
-  private DcMotor slideMotor;
+  DcMotor intake;
+  DcMotor frontLeftMotor;
+  DcMotor backLeftMotor;
+  DcMotor frontRightMotor;
+  DcMotor backRightMotor;
+  DcMotor slideMotor;
 
-  private Servo airplane;
-  private IMU imu;
+  Servo airplane;
+  IMU imu;
 
   @Override
   public void runOpMode() throws InterruptedException {
