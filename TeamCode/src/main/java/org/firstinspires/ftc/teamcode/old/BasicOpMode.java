@@ -1,16 +1,17 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.old;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot.LogoFacingDirection;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotor.RunMode;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DcMotorSimple.Direction;
 import com.qualcomm.robotcore.hardware.IMU;
-import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
-
+@Disabled
 @TeleOp(name = "Basic Teleop", group = "Teleop")
 public class BasicOpMode extends LinearOpMode {
 
@@ -19,9 +20,9 @@ public class BasicOpMode extends LinearOpMode {
   DcMotor backLeftMotor;
   DcMotor frontRightMotor;
   DcMotor backRightMotor;
-  DcMotor slideMotor;
+  DcMotor sl;
+  DcMotor sr;
 
-  Servo airplane;
   IMU imu;
 
   @Override
@@ -29,16 +30,17 @@ public class BasicOpMode extends LinearOpMode {
     imu = hardwareMap.get(IMU.class, "imu");
 
     IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
-        RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
+        LogoFacingDirection.RIGHT,
         RevHubOrientationOnRobot.UsbFacingDirection.UP));
     imu.initialize(parameters);
 
     intake = hardwareMap.dcMotor.get("intake");
-    frontLeftMotor = hardwareMap.dcMotor.get("frontLeftMotor");
-    backLeftMotor = hardwareMap.dcMotor.get("backLeftMotor");
-    frontRightMotor = hardwareMap.dcMotor.get("frontRightMotor");
-    backRightMotor = hardwareMap.dcMotor.get("backRightMotor");
-    slideMotor = hardwareMap.dcMotor.get("slideMotor");
+    frontLeftMotor = hardwareMap.dcMotor.get("fl");
+    backLeftMotor = hardwareMap.dcMotor.get("bl");
+    frontRightMotor = hardwareMap.dcMotor.get("fr");
+    backRightMotor = hardwareMap.dcMotor.get("br");
+    sl = hardwareMap.dcMotor.get("sl");
+    sr = hardwareMap.dcMotor.get("sr");
 
     intake.setMode(RunMode.RUN_WITHOUT_ENCODER);
 
@@ -47,21 +49,23 @@ public class BasicOpMode extends LinearOpMode {
     frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     backRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-    airplane = hardwareMap.servo.get("airplane");
-
     // Starting here you would also add this as a private field and change the references to .this
 
-    slideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    sl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    sr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
     frontRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     frontLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     backLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     backRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-    slideMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    sl.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    sr.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     intake.setMode(RunMode.RUN_WITHOUT_ENCODER);
 
-    frontRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-    backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+    frontLeftMotor.setDirection(Direction.REVERSE);
+    backRightMotor.setDirection(Direction.FORWARD);
+
+    sr.setDirection(Direction.REVERSE);
 
     waitForStart();
 
@@ -78,14 +82,6 @@ public class BasicOpMode extends LinearOpMode {
 
       if (gamepad1.options) {
         imu.resetYaw();
-      }
-
-      if (gamepad2.a) {
-        airplane.setPosition(-1.0);
-      }
-
-      if (gamepad2.b) {
-        airplane.setPosition(1.0);
       }
 
       double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
@@ -109,7 +105,8 @@ public class BasicOpMode extends LinearOpMode {
 
       intake.setPower(gamepad1.right_trigger - (gamepad1.left_trigger * 0.5));
 
-      slideMotor.setPower(slide * 0.7);
+      sl.setPower(slide);
+      sr.setPower(slide);
 
       telemetry.update();
     }

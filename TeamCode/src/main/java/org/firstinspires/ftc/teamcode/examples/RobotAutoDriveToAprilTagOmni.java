@@ -27,7 +27,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.examples;
 
 import android.util.Size;
 import com.acmerobotics.dashboard.FtcDashboard;
@@ -89,7 +89,8 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
  *
  */
 
-@TeleOp(name = "Omni Drive To AprilTag", group = "Concept")
+
+@TeleOp(name = "Test Camera", group = "Concept")
 public class RobotAutoDriveToAprilTagOmni extends LinearOpMode {
 
   FtcDashboard dashboard = FtcDashboard.getInstance();
@@ -132,18 +133,10 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode {
     // Initialize the hardware variables. Note that the strings used here as parameters
     // to 'get' must match the names assigned during the robot configuration.
     // step (using the FTC Robot Controller app on the phone).
-    leftFrontDrive = hardwareMap.get(DcMotor.class, "frontLeftMotor");
-    rightFrontDrive = hardwareMap.get(DcMotor.class, "frontRightMotor");
-    leftBackDrive = hardwareMap.get(DcMotor.class, "backLeftMotor");
-    rightBackDrive = hardwareMap.get(DcMotor.class, "backRightMotor");
 
     // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
     // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.
     // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
-    leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
-    leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
-    rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
-    rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
 
     setManualExposure(6, 250);  // Use low exposure time to reduce motion blur
 
@@ -211,7 +204,6 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode {
       multipleTelemetry.update();
 
       // Apply desired axes motions to the drivetrain.
-      moveRobot(drive, strafe, turn);
       sleep(10);
     }
   }

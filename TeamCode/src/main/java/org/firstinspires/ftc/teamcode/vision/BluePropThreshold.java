@@ -12,11 +12,11 @@ import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 
 @Config
-public class RedPropThreshold implements VisionProcessor {
+public class BluePropThreshold implements VisionProcessor {
 
   public double averagedLeftBox;
   public double averagedRightBox;
-  public static double redThreshold = 0.15;
+  public static double blueThreshold = 0.15;
   private final Rect RIGHT_RECTANGLE = new Rect(
       new Point(0, 0),
       new Point(319, 479)
@@ -25,11 +25,8 @@ public class RedPropThreshold implements VisionProcessor {
       new Point(320, 0),
       new Point(639, 479)
   );
-  Mat testMat = new Mat();
-  Mat highMat = new Mat();
-  Mat lowMat = new Mat();
 
-  ;
+  Mat testMat = new Mat();
   Mat finalMat = new Mat();
   private Position elePos = Position.NONE;
 
@@ -42,30 +39,21 @@ public class RedPropThreshold implements VisionProcessor {
   public Object processFrame(Mat frame, long captureTimeNanos) {
     Imgproc.cvtColor(frame, testMat, Imgproc.COLOR_RGB2HSV);
 
-    Scalar lowHSVRedLower = new Scalar(0, 100, 20);  //Beginning of Color Wheel
-    Scalar lowHSVRedUpper = new Scalar(10, 255, 255);
+    Scalar HSVBlueLower = new Scalar(110, 100, 20);
+    Scalar HSVBlueUpper = new Scalar(130, 255, 255);
 
-    Scalar redHSVRedLower = new Scalar(160, 100, 20); //Wraps around Color Wheel
-    Scalar highHSVRedUpper = new Scalar(180, 255, 255);
-
-    Core.inRange(testMat, lowHSVRedLower, lowHSVRedUpper, lowMat);
-    Core.inRange(testMat, redHSVRedLower, highHSVRedUpper, highMat);
+    Core.inRange(testMat, HSVBlueLower, HSVBlueUpper, finalMat);
 
     testMat.release();
-
-    Core.bitwise_or(lowMat, highMat, finalMat);
-
-    lowMat.release();
-    highMat.release();
 
     double leftBox = Core.sumElems(finalMat.submat(LEFT_RECTANGLE)).val[0];
     double rightBox = Core.sumElems(finalMat.submat(RIGHT_RECTANGLE)).val[0];
 
     averagedLeftBox = leftBox / LEFT_RECTANGLE.area() / 255;
     averagedRightBox = rightBox / RIGHT_RECTANGLE.area() / 255; //Makes value [0,1]
-    if (averagedLeftBox > redThreshold) {        //Must Tune Red Threshold
+    if (averagedLeftBox > blueThreshold) {        //Must Tune Red Threshold
       elePos = Position.LEFT;
-    } else if (averagedRightBox > redThreshold) {
+    } else if (averagedRightBox > blueThreshold) {
       elePos = Position.CENTER;
     } else {
       elePos = Position.RIGHT;
@@ -88,5 +76,6 @@ public class RedPropThreshold implements VisionProcessor {
   public Position getElePos() {
     return this.elePos;
   }
+
 
 }
