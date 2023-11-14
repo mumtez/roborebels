@@ -14,7 +14,7 @@ import org.firstinspires.ftc.vision.VisionPortal;
 public class RedCloseAuton extends LinearOpMode {
 
   public static int dfDist = 700;
-  public static int dsDist = 800;
+  public static int dsDist = 700;
   public static int lAng = 90;
   public static int rAng = -90;
 
@@ -60,15 +60,32 @@ public class RedCloseAuton extends LinearOpMode {
     switch (x) {
       case LEFT:
         robot.encodeDriveStrafe(-dfDist, .3);
+        robot.encodeDriveForward(dfDist, .3);
+
+
+        //robot.encodeDriveForward(dfDist, .3);
         break;
       case RIGHT:
         robot.encodeDriveStrafe(dfDist, .3);
+        robot.encodeDriveForward(-dfDist, .3);
+
+        /*
+        robot.turnByGyro(180, .8);
+        robot.encodeDriveForward(dfDist, .3);
+        */
+
         break;
+
       case CENTER:
         robot.encodeDriveForward(-dfDist, .3);
+        robot.encodeDriveStrafe(-dsDist, .3);
+
+        /*
+        robot.turnByGyro(lAng, .8);
+        robot.encodeDriveForward(dfDist, .3);
+         */
         break;
     }
-    //robot.encodeDriveStrafe(-dsDist);
-    //robot.spitPixel();
+    robot.spitPixel();
   }
 }

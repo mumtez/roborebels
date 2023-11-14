@@ -79,8 +79,18 @@ public class Robot {
   }
 
   public void setSlidePower(double pow) {
-    slideL.setPower(pow);
-    slideR.setPower(pow);
+
+    if (slideL.getCurrentPosition() > -2500){
+      slideL.setPower(pow);
+      slideR.setPower(pow);
+    }
+    else{
+      slideL.setPower(0);
+      slideR.setPower(0);
+    }
+
+
+    //Check position so it cant go to far
   }
 
   public double getHeading() {

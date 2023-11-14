@@ -28,7 +28,7 @@ public class Teleop extends LinearOpMode {
         robot.imu.resetYaw();
       }
 
-      double botHeading = robot.getHeading();
+      double botHeading = AngleUnit.DEGREES.toRadians(robot.getHeading());
 
       // Rotate the movement direction counter to the bot's rotation
       double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
@@ -45,10 +45,12 @@ public class Teleop extends LinearOpMode {
       double frontRightPower = (rotY - rotX - rx) / denominator;
       double backRightPower = (rotY + rotX - rx) / denominator;
 
+
       robot.fl.setPower(frontLeftPower);
       robot.bl.setPower(backLeftPower);
       robot.fr.setPower(frontRightPower);
       robot.br.setPower(backRightPower);
+
 
       robot.intake.setPower(gamepad1.right_trigger - (gamepad1.left_trigger * 0.5));
 
