@@ -61,8 +61,7 @@ public class Robot {
     slideL = hardwareMap.dcMotor.get("sl");
     slideR = hardwareMap.dcMotor.get("sr");
 
-    slideL.setMode(RunMode.RUN_WITHOUT_ENCODER);
-    slideR.setMode(RunMode.RUN_WITHOUT_ENCODER);
+
 
     slideL.setDirection(Direction.REVERSE);
     slideR.setDirection(Direction.FORWARD);
@@ -80,17 +79,26 @@ public class Robot {
 
   public void setSlidePower(double pow) {
 
-    if (slideL.getCurrentPosition() > -2500){
       slideL.setPower(pow);
       slideR.setPower(pow);
-    }
-    else{
-      slideL.setPower(0);
-      slideR.setPower(0);
-    }
+
+  }
+
+  public void setSlidePos(int pos){
+
+    slideL.setMode(RunMode.RUN_USING_ENCODER);
+    slideR.setMode(RunMode.RUN_USING_ENCODER);
+
+    slideL.setTargetPosition(pos);
+    slideR.setTargetPosition(pos);
+
+    slideL.setMode(RunMode.RUN_TO_POSITION);
+    slideR.setMode(RunMode.RUN_TO_POSITION);
 
 
-    //Check position so it cant go to far
+
+    slideL.setPower(0.3);
+    slideR.setPower(0.3);
   }
 
   public double getHeading() {

@@ -57,6 +57,8 @@ public class Teleop extends LinearOpMode {
       robot.setSlidePower(-gamepad2.right_stick_y);
 
       telemetry.addData("IMU HEADING", AngleUnit.RADIANS.toDegrees(botHeading));
+      telemetry.addData("SlideL Pos", robot.slideL.getCurrentPosition());
+      telemetry.addData("SlideR Pos", robot.slideR.getCurrentPosition());
       telemetry.update();
     }
   }

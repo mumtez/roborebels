@@ -14,9 +14,11 @@ import org.firstinspires.ftc.vision.VisionPortal;
 public class RedCloseAuton extends LinearOpMode {
 
   public static int dfDist = 700;
-  public static int dsDist = 700;
+  public static int dsDist = 800;
   public static int lAng = 90;
   public static int rAng = -90;
+
+  public static int place = -600;
 
   Robot robot;
   private VisionPortal portal;
@@ -49,6 +51,8 @@ public class RedCloseAuton extends LinearOpMode {
         break;
     }
 
+    //Start Movement
+
     robot.encodeDriveForward(dfDist, .3);
     if (x != Position.CENTER) {
       robot.turnByGyro(ang, .8);
@@ -60,32 +64,29 @@ public class RedCloseAuton extends LinearOpMode {
     switch (x) {
       case LEFT:
         robot.encodeDriveStrafe(-dfDist, .3);
-        robot.encodeDriveForward(dfDist, .3);
+        robot.encodeDriveForward(dfDist-100, .3);
 
+        robot.encodeDriveStrafe(dfDist/(2/3), .3);
+        robot.turnByGyro(180, 0.8);
 
-        //robot.encodeDriveForward(dfDist, .3);
         break;
       case RIGHT:
         robot.encodeDriveStrafe(dfDist, .3);
-        robot.encodeDriveForward(-dfDist, .3);
+        robot.encodeDriveForward(-dfDist+100, .3);
 
-        /*
-        robot.turnByGyro(180, .8);
-        robot.encodeDriveForward(dfDist, .3);
-        */
+
+        robot.encodeDriveStrafe(-dfDist, .3);
 
         break;
 
       case CENTER:
         robot.encodeDriveForward(-dfDist, .3);
-        robot.encodeDriveStrafe(-dsDist, .3);
+        robot.encodeDriveStrafe(-dsDist+100, .3);
 
-        /*
-        robot.turnByGyro(lAng, .8);
-        robot.encodeDriveForward(dfDist, .3);
-         */
+        robot.encodeDriveForward(dfDist*(3/2), .3);
+        robot.turnByGyro(90, 0.8);
         break;
     }
-    robot.spitPixel();
+    robot.setSlidePos(place);
   }
 }
