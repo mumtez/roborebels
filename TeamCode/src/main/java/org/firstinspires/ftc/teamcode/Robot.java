@@ -24,7 +24,7 @@ public class Robot {
   public final DcMotor intake;
 
   public static double GYRO_TURN_P_GAIN = .02;
-  public static double HEADING_THRESHOLD = 1.0;
+  public static double HEADING_THRESHOLD = 1.5;
 
   public Robot(LinearOpMode opMode) {
     this.opMode = opMode;
@@ -61,7 +61,8 @@ public class Robot {
     slideL = hardwareMap.dcMotor.get("sl");
     slideR = hardwareMap.dcMotor.get("sr");
 
-
+    slideL.setMode(RunMode.STOP_AND_RESET_ENCODER);
+    slideR.setMode(RunMode.STOP_AND_RESET_ENCODER);
 
     slideL.setDirection(Direction.REVERSE);
     slideR.setDirection(Direction.FORWARD);
@@ -78,16 +79,11 @@ public class Robot {
   }
 
   public void setSlidePower(double pow) {
-
       slideL.setPower(pow);
       slideR.setPower(pow);
-
   }
 
   public void setSlidePos(int pos){
-
-    slideL.setMode(RunMode.RUN_USING_ENCODER);
-    slideR.setMode(RunMode.RUN_USING_ENCODER);
 
     slideL.setTargetPosition(pos);
     slideR.setTargetPosition(pos);
@@ -95,10 +91,11 @@ public class Robot {
     slideL.setMode(RunMode.RUN_TO_POSITION);
     slideR.setMode(RunMode.RUN_TO_POSITION);
 
+    setSlidePower(.3);
 
-
-    slideL.setPower(0.3);
-    slideR.setPower(0.3);
+    while (opMode.opModeIsActive() && slideL.isBusy() && slideR.isBusy()) {
+      // Wait for slide to end
+    }
   }
 
   public double getHeading() {

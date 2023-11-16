@@ -5,13 +5,13 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.vision.BluePropThreshold;
 import org.firstinspires.ftc.teamcode.vision.Position;
-import org.firstinspires.ftc.teamcode.vision.RedPropThreshold;
 import org.firstinspires.ftc.vision.VisionPortal;
 
 @Config
-@Autonomous(name = "Red Close")
-public class RedCloseAuton extends LinearOpMode {
+@Autonomous(name = "Blue Close")
+public class BlueCloseAuto extends LinearOpMode {
 
   public static int dfDist = 700;
   public static int dsDist = 800;
@@ -22,11 +22,11 @@ public class RedCloseAuton extends LinearOpMode {
 
   Robot robot;
   private VisionPortal portal;
-  RedPropThreshold processor;
+  BluePropThreshold processor;
 
   @Override
   public void runOpMode() throws InterruptedException {
-    processor = new RedPropThreshold();
+    processor = new BluePropThreshold();
     robot = new Robot(this);
     int ang = 0;
 
@@ -61,32 +61,23 @@ public class RedCloseAuton extends LinearOpMode {
     robot.spitPixel();
     sleep(2000);
     robot.encodeDriveForward(-20, .3);
+
     switch (x) {
       case LEFT:
         robot.encodeDriveStrafe(-dfDist, .3);
-        robot.encodeDriveForward(dfDist-100, .3);
-
-        robot.encodeDriveStrafe(dfDist/(2/3), .3);
-        robot.turnByGyro(180, 0.8);
+        robot.encodeDriveForward(dfDist, .3);
 
         break;
       case RIGHT:
         robot.encodeDriveStrafe(dfDist, .3);
-        robot.encodeDriveForward(-dfDist+100, .3);
-
-
-        robot.encodeDriveStrafe(-dfDist, .3);
+        robot.encodeDriveForward(-dfDist, .3);
 
         break;
 
       case CENTER:
         robot.encodeDriveForward(-dfDist, .3);
-        robot.encodeDriveStrafe(-dsDist+100, .3);
-
-        robot.encodeDriveForward(dfDist*(3/2), .3);
-        robot.turnByGyro(90, 0.8);
+        robot.encodeDriveStrafe(-dfDist, .3);
         break;
     }
-    robot.setSlidePos(place);
   }
 }

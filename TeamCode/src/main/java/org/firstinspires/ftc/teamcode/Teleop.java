@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor.RunMode;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 @TeleOp(name = "Teleop")
@@ -12,6 +13,8 @@ public class Teleop extends LinearOpMode {
   @Override
   public void runOpMode() throws InterruptedException {
     robot = new Robot(this);
+    robot.slideR.setMode(RunMode.RUN_WITHOUT_ENCODER);
+    robot.slideL.setMode(RunMode.RUN_WITHOUT_ENCODER);
     waitForStart();
     // START
 

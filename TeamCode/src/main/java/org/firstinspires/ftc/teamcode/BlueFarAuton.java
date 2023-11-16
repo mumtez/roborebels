@@ -11,7 +11,7 @@ import org.firstinspires.ftc.vision.VisionPortal;
 
 @Config
 @Autonomous(name = "Blue Close")
-public class BlueCloseAuton extends LinearOpMode {
+public class BlueFarAuton extends LinearOpMode {
 
   public static int dfDist = 700;
   public static int dsDist = 800;
