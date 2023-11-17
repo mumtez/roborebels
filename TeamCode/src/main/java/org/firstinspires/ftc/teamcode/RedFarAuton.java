@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.vision.RedPropThreshold;
 import org.firstinspires.ftc.vision.VisionPortal;
 
 @Config
-@Autonomous(name = "Red Close")
+@Autonomous(name = "Red Far")
 public class RedFarAuton extends LinearOpMode {
 
   public static int dfDist = 700;

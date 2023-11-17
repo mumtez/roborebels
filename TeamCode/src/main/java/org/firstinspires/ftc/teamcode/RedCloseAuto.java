@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.vision.RedPropThreshold;
 import org.firstinspires.ftc.vision.VisionPortal;
 
 @Config
-@Autonomous(name = "Blue Close")
+@Autonomous(name = "Red Close")
 public class RedCloseAuto extends LinearOpMode {
 
   public static int dfDist = 700;
@@ -68,17 +68,24 @@ public class RedCloseAuto extends LinearOpMode {
         robot.encodeDriveStrafe(-dfDist, .3);
         robot.encodeDriveForward(dfDist, .3);
 
+        robot.encodeDriveStrafe(dfDist*(2/3), .3);
+        robot.turnByGyro(180, .8);
+
         break;
       case RIGHT:
-        robot.encodeDriveStrafe(dfDist, .3);
-        robot.encodeDriveForward(-dfDist, .3);
+        robot.encodeDriveForward(-dfDist-300, .3);
 
         break;
 
       case CENTER:
-        robot.encodeDriveForward(-dfDist, .3);
         robot.encodeDriveStrafe(-dfDist, .3);
+
+        robot.turnByGyro(90, .8);
         break;
     }
+    robot.setSlidePos(2800, 0.8);
+    sleep(500);
+    robot.setSlidePos(0, 0.8);
+
   }
 }

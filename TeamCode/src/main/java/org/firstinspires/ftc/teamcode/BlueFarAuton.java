@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.vision.Position;
 import org.firstinspires.ftc.vision.VisionPortal;
 
 @Config
-@Autonomous(name = "Blue Close")
+@Autonomous(name = "Blue Far")
 public class BlueFarAuton extends LinearOpMode {
 
   public static int dfDist = 700;
