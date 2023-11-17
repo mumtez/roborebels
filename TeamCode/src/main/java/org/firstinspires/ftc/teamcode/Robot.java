@@ -80,15 +80,8 @@ public class Robot {
 
   public void setSlidePower(double pow) {
 
-      if (slideL.getCurrentPosition() < 3100 || pow > 0){
         slideL.setPower(pow);
         slideR.setPower(pow);
-      }
-
-      else{
-        slideL.setPower(0);
-        slideR.setPower(0);
-      }
   }
 
   public void setSlidePos(int pos, double pow){
