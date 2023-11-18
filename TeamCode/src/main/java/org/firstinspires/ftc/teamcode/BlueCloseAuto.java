@@ -60,19 +60,19 @@ public class BlueCloseAuto extends LinearOpMode {
       if (x != Position.CENTER) {
         robot.turnByGyro(ang);
       }
-      robot.encodeDriveForward(20, .3);
-      robot.spitPixel();
-      sleep(2000);
-      robot.encodeDriveForward(-20, .3);
+      robot.encodeDriveForward(200, .3);
+      sleep(300);
+      robot.encodeDriveForward(-200, .3);
     } else {
       robot.encodeDriveForward(dfDist - 10, .3);
-      if (x != Position.CENTER) {
-        robot.turnByGyro(ang);
-      }
-      robot.encodeDriveForward(60, .3);
-      robot.spitPixel();
-      sleep(2000);
+      robot.turnByGyro(ang);
+      sleep(300);
+      robot.encodeDriveForward(200, .3);
+      sleep(300);
+      robot.encodeDriveForward(-140, .3);
     }
+    robot.spitPixel();
+    sleep(2000);
 
     switch (x) {
       case LEFT:

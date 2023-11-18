@@ -14,12 +14,10 @@ import org.firstinspires.ftc.vision.VisionPortal;
 public class BlueFarAuton extends LinearOpMode {
 
   public static int dfDist = 700;
-  public static int dsDist = 800;
   public static int lAng = 90;
   public static int rAng = -90;
 
   Robot robot;
-  private VisionPortal portal;
   BluePropThreshold processor;
 
   @Override
@@ -28,7 +26,7 @@ public class BlueFarAuton extends LinearOpMode {
     robot = new Robot(this);
     int ang = 0;
 
-    portal = new VisionPortal.Builder()
+    VisionPortal portal = new VisionPortal.Builder()
         .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
         .setCameraResolution(new Size(640, 480))
         .addProcessor(processor)
@@ -54,18 +52,19 @@ public class BlueFarAuton extends LinearOpMode {
       if (x != Position.CENTER) {
         robot.turnByGyro(ang);
       }
-      robot.encodeDriveForward(20, .3);
-      robot.spitPixel();
-      sleep(2000);
-      robot.encodeDriveForward(-20, .3);
+      robot.encodeDriveForward(200, .3);
+      sleep(300);
+      robot.encodeDriveForward(-200, .3);
     } else {
       robot.encodeDriveForward(dfDist - 10, .3);
-      if (x != Position.CENTER) {
-        robot.turnByGyro(ang);
-      }
-      robot.encodeDriveForward(60, .3);
-      robot.spitPixel();
-      sleep(2000);
+      robot.turnByGyro(ang);
+      sleep(300);
+      robot.encodeDriveForward(200, .3);
+      sleep(300);
+      robot.encodeDriveForward(-140, .3);
     }
+    robot.spitPixel();
+    sleep(2000);
+    robot.encodeDriveForward(-100, .3);
   }
 }
