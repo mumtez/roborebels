@@ -23,7 +23,7 @@ public class Robot {
   public final DcMotor slideL, slideR;
   public final DcMotor intake;
 
-  public static double GYRO_TURN_P_GAIN = .02;
+  public static double GYRO_TURN_P_GAIN = .04;
   public static double HEADING_THRESHOLD = 1;
 
   public Robot(LinearOpMode opMode) {
@@ -153,7 +153,7 @@ public class Robot {
     setDriveTrainPower(0, 0, 0, 0);
   }
 
-  public void turnByGyro(double targetDegrees, double maxTurnSpeed) {
+  public void turnByGyro(double targetDegrees) {
     this.fr.setMode(RunMode.RUN_WITHOUT_ENCODER);
     this.fl.setMode(RunMode.RUN_WITHOUT_ENCODER);
     this.br.setMode(RunMode.RUN_WITHOUT_ENCODER);
@@ -168,8 +168,10 @@ public class Robot {
       headingError += 360;
     }
 
+    int x = 0;
+
     // keep looping while we are still active, and not on heading.
-    while (this.opMode.opModeIsActive() && (Math.abs(headingError) > HEADING_THRESHOLD)) {
+    while (this.opMode.opModeIsActive() && x < 10) {
 
       headingError = targetDegrees - getHeading();
 
@@ -184,8 +186,17 @@ public class Robot {
       double turnSpeed = Range.clip(headingError * GYRO_TURN_P_GAIN, -1, 1);
 
       // Clip the speed to the maximum permitted value.
-      turnSpeed = Range.clip(turnSpeed, -maxTurnSpeed, maxTurnSpeed);
+      turnSpeed = Range.clip(turnSpeed, -.6, .6);
       this.setDriveTrainPower(turnSpeed, -turnSpeed, turnSpeed, -turnSpeed);
+
+      if (Math.abs(headingError) < HEADING_THRESHOLD)  {
+        x++;
+      }
+      else {
+        x = 0;
+      }
+
+
 
       opMode.telemetry.addData("target", targetDegrees);
       opMode.telemetry.addData("cur", getHeading());

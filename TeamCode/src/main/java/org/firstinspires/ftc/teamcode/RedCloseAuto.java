@@ -17,18 +17,11 @@ public class RedCloseAuto extends LinearOpMode {
   public static int dfDist = 700;
 
   public static int leftDist = 500;
-  public static int centerDist = 600;
-  public static int rightDist = 620;
 
-  public static int leftAng = -90;
-  public static int centerAng = -80;
-
-
-  public static int dsDist = 800;
+  public static int leftAng = 90;
+  public static int centerAng = -90;
   public static int lAng = 90;
   public static int rAng = -90;
-
-  public static int place = -600;
 
   Robot robot;
   private VisionPortal portal;
@@ -63,44 +56,59 @@ public class RedCloseAuto extends LinearOpMode {
 
     //Start Movement
 
-    robot.encodeDriveForward(dfDist, .3);
-    if (x != Position.CENTER) {
-      robot.turnByGyro(ang, .6);
+    if(x != Position.LEFT){
+      robot.encodeDriveForward(dfDist, .3);
+      if (x != Position.CENTER) {
+        robot.turnByGyro(ang);
+      }
+      robot.encodeDriveForward(20, .3);
+      robot.spitPixel();
+      sleep(2000);
+      robot.encodeDriveForward(-20, .3);
+    } else {
+      robot.encodeDriveForward(dfDist - 10, .3);
+      if (x != Position.CENTER) {
+        robot.turnByGyro(ang);
+      }
+      robot.encodeDriveForward(60, .3);
+      robot.spitPixel();
+      sleep(2000);
     }
-    robot.encodeDriveForward(20, .3);
-    robot.spitPixel();
-    sleep(2000);
-    robot.encodeDriveForward(-20, .3);
 
     switch (x) {
       case LEFT:
-        robot.encodeDriveStrafe(-dfDist, .3);
-        robot.encodeDriveForward(dfDist-100, .3);
-        robot.encodeDriveStrafe(200, .3);
+        robot.encodeDriveForward(-dfDist-175 -40, .3);
+        robot.encodeDriveStrafe(140, .3);
+        robot.encodeDriveForward(-85, 3);
 
-        robot.turnByGyro(leftAng, .6);
-
-        robot.encodeDriveStrafe(-leftDist+200, .3);
-        robot.encodeDriveForward(-200, .3);
-
-
-        robot.setSlidePos(2650, 1);
-        robot.setSlidePos(0, 1);
+        robot.setSlidePos(2800, 2);
+        sleep(500);
+        robot.setSlidePos(0, 2);
         break;
-      case RIGHT:
-        robot.encodeDriveForward(-dfDist-175, .3);
 
-        robot.setSlidePos(2650, 1);
+      case RIGHT:
+        robot.encodeDriveStrafe(dfDist, .3);
+        robot.encodeDriveForward(dfDist-100, .3);
+        robot.encodeDriveStrafe(-200, .3);
+
+        robot.turnByGyro(leftAng);
+
+        robot.encodeDriveStrafe(leftDist - 250, .3);
+        robot.encodeDriveForward(-415, .3);
+
+        robot.setSlidePos(2800, 1);
+        sleep(500);
         robot.setSlidePos(0, 1);
         break;
 
       case CENTER:
+        robot.encodeDriveStrafe(dfDist, .3);
+        robot.turnByGyro(-centerAng);
 
-        robot.encodeDriveStrafe(-dfDist, .3);
-        robot.turnByGyro(centerAng, .6);
-        robot.encodeDriveForward(-200, 0.3);
+        robot.encodeDriveForward(-350, .3);
 
-        robot.setSlidePos(2350, 1);
+        robot.setSlidePos(2800, 1);
+        sleep(500);
         robot.setSlidePos(0, 1);
         break;
     }

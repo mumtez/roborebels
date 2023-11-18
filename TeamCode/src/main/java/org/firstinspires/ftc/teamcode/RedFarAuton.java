@@ -53,31 +53,23 @@ public class RedFarAuton extends LinearOpMode {
 
     //Start Movement
 
-    robot.encodeDriveForward(dfDist, .3);
-    if (x != Position.CENTER) {
-      robot.turnByGyro(ang, .8);
-    }
-    robot.encodeDriveForward(20, .3);
-    robot.spitPixel();
-    sleep(2000);
-    robot.encodeDriveForward(-20, .3);
-
-    switch (x) {
-      case LEFT:
-        robot.encodeDriveStrafe(-dfDist, .3);
-        robot.encodeDriveForward(dfDist, .3);
-
-        break;
-      case RIGHT:
-        robot.encodeDriveStrafe(dfDist, .3);
-        robot.encodeDriveForward(-dfDist, .3);
-
-        break;
-
-      case CENTER:
-        robot.encodeDriveForward(-dfDist, .3);
-        robot.encodeDriveStrafe(-dfDist, .3);
-        break;
+    if(x != Position.LEFT){
+      robot.encodeDriveForward(dfDist, .3);
+      if (x != Position.CENTER) {
+        robot.turnByGyro(ang);
+      }
+      robot.encodeDriveForward(20, .3);
+      robot.spitPixel();
+      sleep(2000);
+      robot.encodeDriveForward(-20, .3);
+    } else {
+      robot.encodeDriveForward(dfDist - 10, .3);
+      if (x != Position.CENTER) {
+        robot.turnByGyro(ang);
+      }
+      robot.encodeDriveForward(60, .3);
+      robot.spitPixel();
+      sleep(2000);
     }
   }
 }
