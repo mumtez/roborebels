@@ -77,12 +77,15 @@ public class BlueCloseAuto extends LinearOpMode {
     switch (x) {
       case LEFT:
         robot.encodeDriveStrafe(-dfDist, .3);
+        sleep(300);
         robot.encodeDriveForward(dfDist-100, .3);
+        sleep(300);
         robot.encodeDriveStrafe(200, .3);
 
         robot.turnByGyro(-leftAng);
 
         robot.encodeDriveStrafe(-leftDist + 250, .3);
+        sleep(300);
         robot.encodeDriveForward(-415, .3);
 
         robot.setSlidePos(2800, 1);
@@ -91,7 +94,9 @@ public class BlueCloseAuto extends LinearOpMode {
         break;
       case RIGHT:
         robot.encodeDriveForward(-dfDist-175 -40, .3);
+        sleep(300);
         robot.encodeDriveStrafe(-140, .3);
+        sleep(300);
         robot.encodeDriveForward(-85, 3);
 
         robot.setSlidePos(2800, 2);
@@ -101,6 +106,7 @@ public class BlueCloseAuto extends LinearOpMode {
 
       case CENTER:
         robot.encodeDriveStrafe(-dfDist, .3);
+        sleep(300);
         robot.turnByGyro(centerAng);
 
         robot.encodeDriveForward(-320, .3);
