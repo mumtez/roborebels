@@ -5,7 +5,6 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.vision.BluePropThreshold;
 import org.firstinspires.ftc.teamcode.vision.Position;
 import org.firstinspires.ftc.teamcode.vision.RedPropThreshold;
 import org.firstinspires.ftc.vision.VisionPortal;
@@ -15,7 +14,6 @@ import org.firstinspires.ftc.vision.VisionPortal;
 public class RedCloseAuto extends LinearOpMode {
 
   public static int dfDist = 700;
-
   public static int leftDist = 500;
 
   public static int leftAng = 90;
@@ -31,7 +29,6 @@ public class RedCloseAuto extends LinearOpMode {
   public void runOpMode() throws InterruptedException {
     processor = new RedPropThreshold();
     robot = new Robot(this);
-    int ang = 0;
 
     portal = new VisionPortal.Builder()
         .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
@@ -41,21 +38,14 @@ public class RedCloseAuto extends LinearOpMode {
 
     while (opModeInInit()) {
       telemetry.addData("Location", processor.getElePos());
+      telemetry.addData("Left", processor.averagedLeftBox);
+      telemetry.addData("Right", processor.averagedRightBox);
+      telemetry.addData("Thresh", RedPropThreshold.redThreshold);
       telemetry.update();
-
     }
+
     Position x = processor.getElePos();
     switch (x) {
-      case LEFT:
-        ang = lAng;
-        break;
-      case RIGHT:
-        ang = rAng;
-        break;
-    }
-
-    //Start Movement
-    switch(x) {
       case LEFT:
         robot.encodeDriveForward(dfDist - 10, .3);
         robot.turnByGyro(lAng);
@@ -84,7 +74,7 @@ public class RedCloseAuto extends LinearOpMode {
 
     switch (x) {
       case LEFT:
-        robot.encodeDriveForward(-dfDist-175 -40, .3);
+        robot.encodeDriveForward(-dfDist - 175 - 40, .3);
         sleep(300);
         robot.encodeDriveStrafe(140, .3);
         sleep(300);
@@ -98,7 +88,7 @@ public class RedCloseAuto extends LinearOpMode {
       case RIGHT:
         robot.encodeDriveStrafe(dfDist, .3);
         sleep(300);
-        robot.encodeDriveForward(dfDist-100, .3);
+        robot.encodeDriveForward(dfDist - 100, .3);
         sleep(300);
         robot.encodeDriveStrafe(-200, .3);
 

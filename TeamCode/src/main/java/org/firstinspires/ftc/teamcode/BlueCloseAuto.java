@@ -14,7 +14,6 @@ import org.firstinspires.ftc.vision.VisionPortal;
 public class BlueCloseAuto extends LinearOpMode {
 
   public static int dfDist = 700;
-
   public static int leftDist = 500;
 
   public static int leftAng = 90;
@@ -30,32 +29,23 @@ public class BlueCloseAuto extends LinearOpMode {
   public void runOpMode() throws InterruptedException {
     processor = new BluePropThreshold();
     robot = new Robot(this);
-    int ang = 0;
 
     portal = new VisionPortal.Builder()
-            .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
-            .setCameraResolution(new Size(640, 480))
-            .addProcessor(processor)
-            .build();
+        .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
+        .setCameraResolution(new Size(640, 480))
+        .addProcessor(processor)
+        .build();
 
     while (opModeInInit()) {
       telemetry.addData("Location", processor.getElePos());
+      telemetry.addData("Left", processor.averagedLeftBox);
+      telemetry.addData("Right", processor.averagedRightBox);
+      telemetry.addData("Thresh", BluePropThreshold.blueThreshold);
       telemetry.update();
-
     }
+
     Position x = processor.getElePos();
     switch (x) {
-      case LEFT:
-        ang = lAng;
-        break;
-      case RIGHT:
-        ang = rAng;
-        break;
-    }
-
-    //Start Movement
-
-    switch(x) {
       case LEFT:
         robot.encodeDriveForward(dfDist - 10, .3);
         robot.turnByGyro(lAng);
@@ -86,7 +76,7 @@ public class BlueCloseAuto extends LinearOpMode {
       case LEFT:
         robot.encodeDriveStrafe(-dfDist, .3);
         sleep(300);
-        robot.encodeDriveForward(dfDist-100, .3);
+        robot.encodeDriveForward(dfDist - 100, .3);
         sleep(300);
         robot.encodeDriveStrafe(200, .3);
 
@@ -101,7 +91,7 @@ public class BlueCloseAuto extends LinearOpMode {
         robot.setSlidePos(0, 1);
         break;
       case RIGHT:
-        robot.encodeDriveForward(-dfDist-175 -40, .3);
+        robot.encodeDriveForward(-dfDist - 175 - 40, .3);
         sleep(300);
         robot.encodeDriveStrafe(-140, .3);
         sleep(300);

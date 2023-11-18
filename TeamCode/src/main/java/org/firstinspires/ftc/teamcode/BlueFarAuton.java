@@ -33,12 +33,14 @@ public class BlueFarAuton extends LinearOpMode {
 
     while (opModeInInit()) {
       telemetry.addData("Location", processor.getElePos());
+      telemetry.addData("Left", processor.averagedLeftBox);
+      telemetry.addData("Right", processor.averagedRightBox);
+      telemetry.addData("Thresh", BluePropThreshold.blueThreshold);
       telemetry.update();
     }
 
     Position x = processor.getElePos();
-
-    switch(x) {
+    switch (x) {
       case LEFT:
         robot.encodeDriveForward(dfDist - 10, .3);
         robot.turnByGyro(lAng);

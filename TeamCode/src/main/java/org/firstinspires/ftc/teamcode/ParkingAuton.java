@@ -61,24 +61,5 @@ public class ParkingAuton extends LinearOpMode {
       count++;
 
     }
-        /*
-        Foward
-        frontLeftMotor.setPower(0.7);
-        frontRightMotor.setPower(0.7);
-        backLeftMotor.setPower(0.7);
-        backRightMotor.setPower(0.7);
-
-        Strafe right
-        frontLeftMotor.setPower(0.7);
-        frontRightMotor.setPower(-0.7);
-        backLeftMotor.setPower(-0.7);
-        backRightMotor.setPower(0.7);
-
-        Strafe left
-        frontLeftMotor.setPower(-0.7);
-        frontRightMotor.setPower(0.7);
-        backLeftMotor.setPower(0.7);
-        backRightMotor.setPower(-0.7);
-         */
   }
 }

@@ -17,7 +17,6 @@ public class RedFarAuton extends LinearOpMode {
   public static int lAng = 90;
   public static int rAng = -90;
 
-
   Robot robot;
   RedPropThreshold processor;
 
@@ -34,12 +33,15 @@ public class RedFarAuton extends LinearOpMode {
 
     while (opModeInInit()) {
       telemetry.addData("Location", processor.getElePos());
+      telemetry.addData("Left", processor.averagedLeftBox);
+      telemetry.addData("Right", processor.averagedRightBox);
+      telemetry.addData("Thresh", RedPropThreshold.redThreshold);
       telemetry.update();
     }
 
     Position x = processor.getElePos();
 
-    switch(x) {
+    switch (x) {
       case LEFT:
         robot.encodeDriveForward(dfDist - 10, .3);
         robot.turnByGyro(lAng);
