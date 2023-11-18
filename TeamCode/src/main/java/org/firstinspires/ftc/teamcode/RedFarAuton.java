@@ -25,7 +25,6 @@ public class RedFarAuton extends LinearOpMode {
   public void runOpMode() throws InterruptedException {
     processor = new RedPropThreshold();
     robot = new Robot(this);
-    int ang = 0;
 
     VisionPortal portal = new VisionPortal.Builder()
         .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
@@ -36,35 +35,33 @@ public class RedFarAuton extends LinearOpMode {
     while (opModeInInit()) {
       telemetry.addData("Location", processor.getElePos());
       telemetry.update();
-
     }
+
     Position x = processor.getElePos();
-    switch (x) {
+
+    switch(x) {
       case LEFT:
-        ang = lAng;
+        robot.encodeDriveForward(dfDist - 10, .3);
+        robot.turnByGyro(lAng);
+        sleep(300);
+        robot.encodeDriveForward(200, .3);
+        sleep(300);
+        robot.encodeDriveForward(-140, .3);
         break;
+
+      case CENTER:
+        robot.encodeDriveForward(dfDist + 200, .3);
+        sleep(300);
+        robot.encodeDriveForward(-200, .3);
+        break;
+
       case RIGHT:
-        ang = rAng;
+        robot.encodeDriveForward(dfDist, .3);
+        robot.turnByGyro(rAng);
+        robot.encodeDriveForward(200, .3);
+        sleep(300);
+        robot.encodeDriveForward(-200, .3);
         break;
-    }
-
-    //Start Movement
-
-    if(x != Position.LEFT){
-      robot.encodeDriveForward(dfDist, .3);
-      if (x != Position.CENTER) {
-        robot.turnByGyro(ang);
-      }
-      robot.encodeDriveForward(200, .3);
-      sleep(300);
-      robot.encodeDriveForward(-200, .3);
-    } else {
-      robot.encodeDriveForward(dfDist - 10, .3);
-      robot.turnByGyro(ang);
-      sleep(300);
-      robot.encodeDriveForward(200, .3);
-      sleep(300);
-      robot.encodeDriveForward(-140, .3);
     }
     robot.spitPixel();
     sleep(2000);

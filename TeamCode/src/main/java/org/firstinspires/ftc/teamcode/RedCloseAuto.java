@@ -55,22 +55,29 @@ public class RedCloseAuto extends LinearOpMode {
     }
 
     //Start Movement
+    switch(x) {
+      case LEFT:
+        robot.encodeDriveForward(dfDist - 10, .3);
+        robot.turnByGyro(lAng);
+        sleep(300);
+        robot.encodeDriveForward(200, .3);
+        sleep(300);
+        robot.encodeDriveForward(-140, .3);
+        break;
 
-    if(x != Position.LEFT){
-      robot.encodeDriveForward(dfDist, .3);
-      if (x != Position.CENTER) {
-        robot.turnByGyro(ang);
-      }
-      robot.encodeDriveForward(200, .3);
-      sleep(300);
-      robot.encodeDriveForward(-200, .3);
-    } else {
-      robot.encodeDriveForward(dfDist - 10, .3);
-      robot.turnByGyro(ang);
-      sleep(300);
-      robot.encodeDriveForward(200, .3);
-      sleep(300);
-      robot.encodeDriveForward(-140, .3);
+      case CENTER:
+        robot.encodeDriveForward(dfDist + 200, .3);
+        sleep(300);
+        robot.encodeDriveForward(-200, .3);
+        break;
+
+      case RIGHT:
+        robot.encodeDriveForward(dfDist, .3);
+        robot.turnByGyro(rAng);
+        robot.encodeDriveForward(200, .3);
+        sleep(300);
+        robot.encodeDriveForward(-200, .3);
+        break;
     }
     robot.spitPixel();
     sleep(2000);
