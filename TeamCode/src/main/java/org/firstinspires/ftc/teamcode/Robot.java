@@ -10,7 +10,9 @@ import com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior;
 import com.qualcomm.robotcore.hardware.DcMotorSimple.Direction;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
+import java.util.Timer;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 @Config
@@ -169,9 +171,9 @@ public class Robot {
     }
 
     int x = 0;
-
+    ElapsedTime timer = new ElapsedTime();
     // keep looping while we are still active, and not on heading.
-    while (this.opMode.opModeIsActive() && x < 10) {
+    while (this.opMode.opModeIsActive() && x < 10 && timer.milliseconds() < 3000) {
 
       headingError = targetDegrees - getHeading();
 

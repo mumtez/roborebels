@@ -47,7 +47,7 @@ public class RedCloseAuto extends LinearOpMode {
     Position x = processor.getElePos();
     switch (x) {
       case LEFT:
-        robot.encodeDriveForward(dfDist - 10, .3);
+        robot.encodeDriveForward(dfDist - 40, .3);
         robot.turnByGyro(lAng);
         sleep(300);
         robot.encodeDriveForward(200, .3);
