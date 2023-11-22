@@ -76,7 +76,7 @@ public class RedCloseAuto extends LinearOpMode {
       case LEFT:
         robot.encodeDriveForward(-dfDist - 175 - 40, .3);
         sleep(300);
-        robot.encodeDriveStrafe(140, .3);
+        robot.encodeDriveStrafe(170, .3);
         sleep(300);
         robot.encodeDriveForward(-85, 3);
 
