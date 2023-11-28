@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor.RunMode;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @TeleOp(name = "Teleop")
 public class Teleop extends LinearOpMode {
@@ -20,6 +21,15 @@ public class Teleop extends LinearOpMode {
 
     // LOOP
     while (opModeIsActive()) {
+      robot.checkCloseEnough();
+      if (Robot.closeEnough){
+        robot.flash();
+      }
+      else {
+        robot.unFlash();
+      }
+
+
       double y = -gamepad1.left_stick_y; // Remember, Y stick value is reversed
       double x = gamepad1.left_stick_x;
       double rx = gamepad1.right_stick_x;
@@ -62,6 +72,7 @@ public class Teleop extends LinearOpMode {
       telemetry.addData("IMU HEADING", AngleUnit.RADIANS.toDegrees(botHeading));
       telemetry.addData("SlideL Pos", robot.slideL.getCurrentPosition());
       telemetry.addData("SlideR Pos", robot.slideR.getCurrentPosition());
+      telemetry.addData("Close enough", robot.closeEnough);
       telemetry.update();
     }
   }

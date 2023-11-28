@@ -8,12 +8,15 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotor.RunMode;
 import com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior;
 import com.qualcomm.robotcore.hardware.DcMotorSimple.Direction;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.hardware.LED;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 import java.util.Timer;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @Config
 public class Robot {
@@ -24,6 +27,11 @@ public class Robot {
   public final DcMotor fl, fr, bl, br;
   public final DcMotor slideL, slideR;
   public final DcMotor intake;
+
+
+  public final DistanceSensor dis;
+  public static boolean closeEnough = false;
+  public final LED light;
 
   public static double GYRO_TURN_P_GAIN = .04;
   public static double HEADING_THRESHOLD = 1;
@@ -37,6 +45,11 @@ public class Robot {
         LogoFacingDirection.RIGHT,
         RevHubOrientationOnRobot.UsbFacingDirection.UP));
     imu.initialize(parameters);
+
+    dis = hardwareMap.get(DistanceSensor.class, "distanceSensor");
+
+    light = hardwareMap.get(LED.class, "led");
+
 
     // Drivetrain
     fl = hardwareMap.dcMotor.get("fl");
@@ -222,4 +235,20 @@ public class Robot {
     intake.setMode(RunMode.RUN_TO_POSITION);
     intake.setPower(.6);
   }
+
+  public void checkCloseEnough(){
+    if (dis.getDistance(DistanceUnit.INCH) < 10){
+      closeEnough = true;
+    }
+    else{
+      closeEnough = false;
+    }
+  }
+  public void flash(){
+    light.enableLight(true);
+  }
+  public void unFlash(){
+    light.enableLight(false);
+  }
+
 }
