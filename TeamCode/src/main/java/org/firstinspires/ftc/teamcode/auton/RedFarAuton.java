@@ -1,28 +1,29 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.auton;
 
 import android.util.Size;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.vision.BluePropThreshold;
+import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.vision.Position;
+import org.firstinspires.ftc.teamcode.vision.RedPropThreshold;
 import org.firstinspires.ftc.vision.VisionPortal;
 
 @Config
-@Autonomous(name = "Blue Far")
-public class BlueFarAuton extends LinearOpMode {
+@Autonomous(name = "Red Far")
+public class RedFarAuton extends LinearOpMode {
 
   public static int dfDist = 700;
   public static int lAng = 90;
   public static int rAng = -90;
 
   Robot robot;
-  BluePropThreshold processor;
+  RedPropThreshold processor;
 
   @Override
   public void runOpMode() throws InterruptedException {
-    processor = new BluePropThreshold();
+    processor = new RedPropThreshold();
     robot = new Robot(this);
 
     VisionPortal portal = new VisionPortal.Builder()
@@ -35,11 +36,12 @@ public class BlueFarAuton extends LinearOpMode {
       telemetry.addData("Location", processor.getElePos());
       telemetry.addData("Left", processor.averagedLeftBox);
       telemetry.addData("Right", processor.averagedRightBox);
-      telemetry.addData("Thresh", BluePropThreshold.blueThreshold);
+      telemetry.addData("Thresh", RedPropThreshold.redThreshold);
       telemetry.update();
     }
 
     Position x = processor.getElePos();
+
     switch (x) {
       case LEFT:
         robot.encodeDriveForward(dfDist - 10, .3);

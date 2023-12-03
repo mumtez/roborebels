@@ -23,8 +23,8 @@ public class VisionTest extends LinearOpMode {
     waitForStart();
     while (opModeIsActive()) {
       telemetry.addData("Prop Position", redPropThreshold.getElePos());
-      telemetry.addData("", redPropThreshold.averagedLeftBox);
-      telemetry.addData("", redPropThreshold.averagedRightBox);
+      telemetry.addData("left box avg", redPropThreshold.averagedLeftBox);
+      telemetry.addData("right box avg", redPropThreshold.averagedRightBox);
       telemetry.update();
     }
     //Will output prop position on Driver Station Console
