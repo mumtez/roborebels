@@ -8,30 +8,31 @@ import org.firstinspires.ftc.teamcode.odom.MecanumDrive;
 import org.firstinspires.ftc.teamcode.odom.TankDrive;
 
 public final class SplineTest extends LinearOpMode {
-    @Override
-    public void runOpMode() throws InterruptedException {
-        if (TuningOpModes.DRIVE_CLASS.equals(MecanumDrive.class)) {
-            MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
 
-            waitForStart();
+  @Override
+  public void runOpMode() throws InterruptedException {
+    if (TuningOpModes.DRIVE_CLASS.equals(MecanumDrive.class)) {
+      MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(12, -60, 0));
 
-            Actions.runBlocking(
-                drive.actionBuilder(drive.pose)
-                        .splineTo(new Vector2d(30, 30), Math.PI / 2)
-                        .splineTo(new Vector2d(60, 0), Math.PI)
-                        .build());
-        } else if (TuningOpModes.DRIVE_CLASS.equals(TankDrive.class)) {
-            TankDrive drive = new TankDrive(hardwareMap, new Pose2d(0, 0, 0));
+      waitForStart();
 
-            waitForStart();
+      Actions.runBlocking(
+          drive.actionBuilder(drive.pose)
+              .splineTo(new Vector2d(24, 0), Math.PI / 2)
+              .splineTo(new Vector2d(12, -60), Math.PI)
+              .build());
+    } else if (TuningOpModes.DRIVE_CLASS.equals(TankDrive.class)) {
+      TankDrive drive = new TankDrive(hardwareMap, new Pose2d(0, 0, 0));
 
-            Actions.runBlocking(
-                    drive.actionBuilder(drive.pose)
-                            .splineTo(new Vector2d(30, 30), Math.PI / 2)
-                            .splineTo(new Vector2d(60, 0), Math.PI)
-                            .build());
-        } else {
-            throw new AssertionError();
-        }
+      waitForStart();
+
+      Actions.runBlocking(
+          drive.actionBuilder(drive.pose)
+              .splineTo(new Vector2d(30, 30), Math.PI / 2)
+              .splineTo(new Vector2d(60, 0), Math.PI)
+              .build());
+    } else {
+      throw new AssertionError();
     }
+  }
 }
