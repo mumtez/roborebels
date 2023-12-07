@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot.LogoFacingDirection;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -8,13 +9,11 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotor.RunMode;
 import com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior;
 import com.qualcomm.robotcore.hardware.DcMotorSimple.Direction;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.LED;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
-import java.util.Timer;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
@@ -29,8 +28,7 @@ public class Robot {
   public final DcMotor intake;
 
 
-  public final DistanceSensor dis;
-  public static boolean closeEnough = false;
+  public final Rev2mDistanceSensor dis;
   public final LED light;
 
   public static double GYRO_TURN_P_GAIN = .04;
@@ -46,10 +44,9 @@ public class Robot {
         RevHubOrientationOnRobot.UsbFacingDirection.UP));
     imu.initialize(parameters);
 
-    dis = hardwareMap.get(DistanceSensor.class, "distanceSensor");
+    dis = hardwareMap.get(Rev2mDistanceSensor.class, "distanceSensor");
 
     light = hardwareMap.get(LED.class, "led");
-
 
     // Drivetrain
     fl = hardwareMap.dcMotor.get("fl");
@@ -95,11 +92,11 @@ public class Robot {
 
   public void setSlidePower(double pow) {
 
-        slideL.setPower(pow);
-        slideR.setPower(pow);
+    slideL.setPower(pow);
+    slideR.setPower(pow);
   }
 
-  public void setSlidePos(int pos, double pow){
+  public void setSlidePos(int pos, double pow) {
 
     slideL.setTargetPosition(pos);
     slideR.setTargetPosition(pos);
@@ -204,14 +201,11 @@ public class Robot {
       turnSpeed = Range.clip(turnSpeed, -.6, .6);
       this.setDriveTrainPower(turnSpeed, -turnSpeed, turnSpeed, -turnSpeed);
 
-      if (Math.abs(headingError) < HEADING_THRESHOLD)  {
+      if (Math.abs(headingError) < HEADING_THRESHOLD) {
         x++;
-      }
-      else {
+      } else {
         x = 0;
       }
-
-
 
       opMode.telemetry.addData("target", targetDegrees);
       opMode.telemetry.addData("cur", getHeading());
@@ -236,19 +230,7 @@ public class Robot {
     intake.setPower(.6);
   }
 
-  public void checkCloseEnough(){
-    if (dis.getDistance(DistanceUnit.INCH) < 10){
-      closeEnough = true;
-    }
-    else{
-      closeEnough = false;
-    }
+  public void indicateCloseEnough() {
+    this.light.enableLight(dis.getDistance(DistanceUnit.INCH) < 10);
   }
-  public void flash(){
-    light.enableLight(true);
-  }
-  public void unFlash(){
-    light.enableLight(false);
-  }
-
 }
