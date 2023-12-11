@@ -31,6 +31,8 @@ public final class SplineTest extends LinearOpMode {
               .splineTo(new Vector2d(30, 30), Math.PI / 2)
               .splineTo(new Vector2d(60, 0), Math.PI)
               .build());
+
+
     } else {
       throw new AssertionError();
     }
