@@ -20,7 +20,6 @@ public class Teleop extends LinearOpMode {
 
     // LOOP
     while (opModeIsActive()) {
-      robot.indicateCloseEnough();
 
       double y = -gamepad1.left_stick_y; // Remember, Y stick value is reversed
       double x = gamepad1.left_stick_x;
@@ -55,7 +54,7 @@ public class Teleop extends LinearOpMode {
       robot.fr.setPower(frontRightPower);
       robot.br.setPower(backRightPower);
 
-      robot.intake.setPower(gamepad1.right_trigger - (gamepad1.left_trigger * 0.5));
+      robot.intake.setPower((gamepad1.right_trigger * .6) - (gamepad1.left_trigger * 0.5));
 
       robot.setSlidePower(-gamepad2.right_stick_y);
 

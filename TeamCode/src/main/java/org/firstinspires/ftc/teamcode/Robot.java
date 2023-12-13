@@ -15,7 +15,6 @@ import com.qualcomm.robotcore.hardware.LED;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @Config
 public class Robot {
@@ -230,7 +229,7 @@ public class Robot {
     intake.setPower(.6);
   }
 
-  public void indicateCloseEnough() {
+  /*public void indicateCloseEnough() {
     this.light.enableLight(dis.getDistance(DistanceUnit.INCH) < 10);
-  }
+  }*/
 }
