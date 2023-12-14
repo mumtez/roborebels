@@ -105,7 +105,7 @@ public class Robot {
 
     setSlidePower(pow);
 
-    while (opMode.opModeIsActive() && slideL.isBusy() && slideR.isBusy()) {
+    while (slideL.isBusy() && slideR.isBusy()) {
       // Wait for slide to end
     }
   }
@@ -226,7 +226,20 @@ public class Robot {
   public void spitPixel() {
     intake.setTargetPosition((int) (537.7 / 3) + intake.getCurrentPosition());
     intake.setMode(RunMode.RUN_TO_POSITION);
-    intake.setPower(.6);
+    intake.setPower(.7);
+  }
+
+  public void setIntakePos(int pos, double pow) {
+    intake.setMode(RunMode.STOP_AND_RESET_ENCODER);
+    intake.setTargetPosition(pos);
+
+    intake.setMode(RunMode.RUN_TO_POSITION);
+
+    intake.setPower(pow);
+
+    while (intake.isBusy()) {
+      // Wait for slide to end
+    }
   }
 
   /*public void indicateCloseEnough() {

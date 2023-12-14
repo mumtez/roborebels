@@ -4,10 +4,10 @@ import android.util.Size;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Pose2d;
-import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor.RunMode;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.Robot;
@@ -17,12 +17,16 @@ import org.firstinspires.ftc.teamcode.vision.Position;
 import org.firstinspires.ftc.vision.VisionPortal;
 
 @Config
-@Autonomous(name = "Spline Auton Close")
-public class SplineAuton extends LinearOpMode {
+@Autonomous(name = "Spline Auton Far")
+public class FarSplineAuton extends LinearOpMode {
 
   public FtcDashboard dash = FtcDashboard.getInstance();
   public Telemetry dashTel = dash.getTelemetry();
 
+  public static double startxpos = 31;
+  public static double startypos = -55;
+  public static double startdir = 180;
+  public static int spin = 125;
   public static double lxpos = 36;
 
   public static double mxpos = 30;
@@ -43,7 +47,7 @@ public class SplineAuton extends LinearOpMode {
 
   @Override
   public void runOpMode() throws InterruptedException {
-    MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(12, 60, Math.toRadians(-90)));
+    MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(-36, 60, Math.toRadians(-90)));
     processor = new BluePropThreshold();
     robot = new Robot(this);
 
@@ -63,6 +67,42 @@ public class SplineAuton extends LinearOpMode {
 
     Position x = processor.getElePos();
 
+    Actions.runBlocking(
+        drive.actionBuilder(drive.pose)
+            .splineToLinearHeading(new Pose2d(-36, 12, Math.toRadians(startdir)),
+                -Math.PI / 2)
+            .build());
+
+    Actions.runBlocking(
+        drive.actionBuilder(drive.pose)
+            .splineToLinearHeading(new Pose2d(startypos + 1, startxpos, Math.toRadians(startdir)),
+                -Math.PI / 2)
+            .build());
+
+    robot.setIntakePos(spin, 0.3);
+    sleep(1500);
+
+    Actions.runBlocking(
+        drive.actionBuilder(drive.pose)
+            .lineToX(startypos + 8)
+            .build());
+
+    sleep(200);
+
+    Actions.runBlocking(
+        drive.actionBuilder(drive.pose)
+            .lineToX(startypos + 3)
+            .build());
+
+    robot.intake.setMode(RunMode.RUN_USING_ENCODER);
+    robot.intake.setPower(0.7);
+    sleep(2000);
+    robot.intake.setPower(0);
+
+
+
+
+    /*
     switch (x) {
       case LEFT:
         Actions.runBlocking(
@@ -125,18 +165,17 @@ public class SplineAuton extends LinearOpMode {
     robot.spitPixel();
     sleep(1500);
 
-    /*
-    Actions.runBlocking(
-        drive.actionBuilder(drive.pose)
-            .splineToLinearHeading(new Pose2d(12, 60, Math.toRadians(-90)),
-                -Math.PI / 2)
-            .build());
-     */
 
     telemetry.addData("Dir", x);
     telemetry.update();
 
     dashTel.addData("Dir", x);
     dashTel.update();
+
+
+
+     */
   }
+
 }
+
