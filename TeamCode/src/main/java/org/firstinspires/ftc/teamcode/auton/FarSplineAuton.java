@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.auton;
 
 import android.util.Size;
+import android.widget.Switch;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Pose2d;
@@ -24,20 +26,26 @@ public class FarSplineAuton extends LinearOpMode {
   public Telemetry dashTel = dash.getTelemetry();
 
   public static double startxpos = 31;
-  public static double startypos = -55;
+  public static double startypos = -58;
   public static double startdir = 180;
-  public static int spin = 125;
-  public static double lxpos = 36;
 
-  public static double mxpos = 30;
+  public static int spin = 62;
 
-  public static double rxpos = 23;
+  public static double lypos = 36;
+  public static double mypos = 30;
+  public static double rypos = 23;
 
-  public static int ypos = 41;
+  public static int plxpos = -28;
+  public static int pmxpos = -32;
+  public static int prxpos = -44;
 
-  public static int lypos = 28;
-  public static int mypos = 22;
-  public static int rypos = 8;
+  public static int plypos = 34;
+  public static int pmypos = 30;
+  public static int prypos = 34;
+
+  public static int pldir = -95;
+  public static int pmdir = -90;
+  public static int prdir = -85;
 
   public static int finalDir = 180;
 
@@ -56,28 +64,70 @@ public class FarSplineAuton extends LinearOpMode {
         .setCameraResolution(new Size(640, 480))
         .addProcessor(processor)
         .build();
-
     while (opModeInInit()) {
+
       telemetry.addData("Location", processor.getElePos());
       telemetry.addData("Left", processor.averagedLeftBox);
       telemetry.addData("Right", processor.averagedRightBox);
       telemetry.addData("Thresh", BluePropThreshold.blueThreshold);
       telemetry.update();
-    }
 
+    }
     Position x = processor.getElePos();
 
+    telemetry.addData("Dir", x);
+    telemetry.update();
+
+    dashTel.addData("Dir", x);
+    dashTel.update();
+
+
+    switch(x){
+      case LEFT:
+        Actions.runBlocking(
+                drive.actionBuilder(drive.pose)
+                        .splineToLinearHeading(new Pose2d(plxpos, plypos, Math.toRadians(pldir)),
+                                -Math.PI / 2)
+                        .build());
+        break;
+
+      case CENTER:
+        Actions.runBlocking(
+                drive.actionBuilder(drive.pose)
+                        .splineToLinearHeading(new Pose2d(pmxpos, pmypos, Math.toRadians(pmdir)),
+                                -Math.PI / 2)
+                        .build());
+        break;
+
+      case RIGHT:
+        Actions.runBlocking(
+                drive.actionBuilder(drive.pose)
+                        .splineToLinearHeading(new Pose2d(prxpos, prypos, Math.toRadians(prdir)),
+                                -Math.PI / 2)
+                        .build());
+        break;
+    }
+
+    robot.intake.setMode(RunMode.RUN_WITHOUT_ENCODER);
+    robot.intake.setPower(-0.2);
+    sleep(1000);
+    robot.intake.setPower(0);
+
     Actions.runBlocking(
-        drive.actionBuilder(drive.pose)
-            .splineToLinearHeading(new Pose2d(-36, 12, Math.toRadians(startdir)),
-                -Math.PI / 2)
-            .build());
+            drive.actionBuilder(drive.pose)
+                    .splineToLinearHeading(new Pose2d(-36, 58, Math.toRadians(-90)),
+                            -Math.PI / 2)
+                    .build());
+
+robot.setIntakePos(spin-15, 0.3);
 
     Actions.runBlocking(
         drive.actionBuilder(drive.pose)
             .splineToLinearHeading(new Pose2d(startypos + 1, startxpos, Math.toRadians(startdir)),
                 -Math.PI / 2)
             .build());
+
+
 
     robot.setIntakePos(spin, 0.3);
     sleep(1500);
@@ -95,7 +145,7 @@ public class FarSplineAuton extends LinearOpMode {
             .build());
 
     robot.intake.setMode(RunMode.RUN_USING_ENCODER);
-    robot.intake.setPower(0.7);
+    robot.intake.setPower(0.8);
     sleep(2000);
     robot.intake.setPower(0);
 
@@ -165,16 +215,9 @@ public class FarSplineAuton extends LinearOpMode {
     robot.spitPixel();
     sleep(1500);
 
-
-    telemetry.addData("Dir", x);
-    telemetry.update();
-
-    dashTel.addData("Dir", x);
-    dashTel.update();
+  */
 
 
-
-     */
   }
 
 }
