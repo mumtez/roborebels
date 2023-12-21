@@ -6,6 +6,7 @@ import android.widget.Switch;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -25,25 +26,33 @@ public class FarSplineAuton extends LinearOpMode {
   public FtcDashboard dash = FtcDashboard.getInstance();
   public Telemetry dashTel = dash.getTelemetry();
 
-  public static double startxpos = 31;
-  public static double startypos = -58;
+
+  //Stack of pixels
+  public static double startxpos = 29;
+  public static double startypos = -56;
   public static double startdir = 180;
 
-  public static int spin = 62;
+  public static int spin = 50;
 
-  public static double lypos = 36;
-  public static double mypos = 30;
-  public static double rypos = 23;
+  //Board
+  public static double lypos = 32;
+  public static double mypos = 28;
+  public static double rypos = 24;
 
-  public static int plxpos = -28;
-  public static int pmxpos = -32;
+  public static double boardDir = 180;
+
+  public static double xpos = 50;
+
+  //Spike marker
+  public static int plxpos = -33;
+  public static int pmxpos = -30;
   public static int prxpos = -44;
 
   public static int plypos = 34;
   public static int pmypos = 30;
   public static int prypos = 34;
 
-  public static int pldir = -95;
+  public static int pldir = 0;
   public static int pmdir = -90;
   public static int prdir = -85;
 
@@ -81,6 +90,85 @@ public class FarSplineAuton extends LinearOpMode {
     dashTel.addData("Dir", x);
     dashTel.update();
 
+    //Start
+
+    Actions.runBlocking(
+            drive.actionBuilder(drive.pose)
+                    .lineToY(12)
+                    .build());
+
+    Actions.runBlocking(
+            drive.actionBuilder(drive.pose)
+                    .splineToLinearHeading(new Pose2d(-36, 4, Math.toRadians(boardDir)),
+                            -Math.PI / 2)
+                    .build());
+
+    sleep(200);
+
+    Actions.runBlocking(
+            drive.actionBuilder(drive.pose)
+                    .lineToX(24)
+                    .build());
+
+    // Past the truss
+
+    switch (x){
+      case LEFT:
+        Actions.runBlocking(
+                drive.actionBuilder(drive.pose)
+                        .splineToLinearHeading(new Pose2d(xpos, lypos, Math.toRadians(boardDir)),
+                                -Math.PI / 2)
+                        .build());
+        break;
+
+      case CENTER:
+        Actions.runBlocking(
+                drive.actionBuilder(drive.pose)
+                        .splineToLinearHeading(new Pose2d(xpos, mypos, Math.toRadians(boardDir)),
+                                -Math.PI / 2)
+                        .build());
+      break;
+
+      case RIGHT:
+        Actions.runBlocking(
+                drive.actionBuilder(drive.pose)
+                        .splineToLinearHeading(new Pose2d(xpos, rypos, Math.toRadians(boardDir)),
+                                -Math.PI / 2)
+                        .build());
+        break;
+    }
+
+    robot.setSlidePos(2000, 1);
+    sleep(2000);
+    robot.setSlidePos(0, 1);
+
+    sleep(300);
+
+
+    Actions.runBlocking(
+            drive.actionBuilder(drive.pose)
+                    .splineToLinearHeading(new Pose2d(26, 30, Math.toRadians(boardDir)),
+                            -Math.PI / 2)
+                    .build());
+
+    sleep(400);
+
+
+    Actions.runBlocking(
+            drive.actionBuilder(drive.pose)
+                    .lineToX(-44)
+                    .build());
+
+    //Past trust again
+
+    /*
+    Actions.runBlocking(
+            drive.actionBuilder(drive.pose)
+                    .splineToLinearHeading(new Pose2d(-36, 58, Math.toRadians(-90)),
+                            -Math.PI / 2)
+                    .build());
+
+     */
 
     switch(x){
       case LEFT:
@@ -113,11 +201,6 @@ public class FarSplineAuton extends LinearOpMode {
     sleep(1000);
     robot.intake.setPower(0);
 
-    Actions.runBlocking(
-            drive.actionBuilder(drive.pose)
-                    .splineToLinearHeading(new Pose2d(-36, 58, Math.toRadians(-90)),
-                            -Math.PI / 2)
-                    .build());
 
 robot.setIntakePos(spin-15, 0.3);
 
@@ -128,9 +211,8 @@ robot.setIntakePos(spin-15, 0.3);
             .build());
 
 
-
     robot.setIntakePos(spin, 0.3);
-    sleep(1500);
+    sleep(1000);
 
     Actions.runBlocking(
         drive.actionBuilder(drive.pose)
@@ -146,76 +228,45 @@ robot.setIntakePos(spin-15, 0.3);
 
     robot.intake.setMode(RunMode.RUN_USING_ENCODER);
     robot.intake.setPower(0.8);
-    sleep(2000);
+    sleep(1500);
     robot.intake.setPower(0);
 
 
-
-
-    /*
-    switch (x) {
-      case LEFT:
-        Actions.runBlocking(
+    Actions.runBlocking(
             drive.actionBuilder(drive.pose)
-                .splineToLinearHeading(new Pose2d(ypos, lxpos, Math.toRadians(finalDir)),
-                    -Math.PI / 2)
-                .build());
+                    .splineToLinearHeading(new Pose2d(startypos + 3, startxpos, Math.toRadians(-90)),
+                            -Math.PI / 2)
+                    .build());
 
-        break;
-
-      case CENTER:
-        Actions.runBlocking(
+    Actions.runBlocking(
             drive.actionBuilder(drive.pose)
-                .splineToLinearHeading(new Pose2d(ypos, mxpos, Math.toRadians(finalDir)),
-                    -Math.PI / 2)
-                .build());
+                    .lineToY(6)
+                    .build());
 
-        break;
-
-      case RIGHT:
-        Actions.runBlocking(
+    Actions.runBlocking(
             drive.actionBuilder(drive.pose)
-                .splineToLinearHeading(new Pose2d(ypos, rxpos, Math.toRadians(finalDir)),
-                    -Math.PI / 2)
-                .build());
-        break;
-    }
+                    .splineToLinearHeading(new Pose2d(startypos + 3, 6, Math.toRadians(0)),
+                            -Math.PI / 2)
+                    .build());
+
+    Actions.runBlocking(
+            drive.actionBuilder(drive.pose)
+                    .lineToX(24)
+                    .build());
+
+    Actions.runBlocking(
+            drive.actionBuilder(drive.pose)
+                    .splineToLinearHeading(new Pose2d(xpos, mypos+15, Math.toRadians(boardDir)),
+                            -Math.PI / 2)
+                    .build());
+
 
     robot.setSlidePos(2000, 1);
-    sleep(2000);
+    sleep(1500);
     robot.setSlidePos(0, 1);
 
-    sleep(1000);
+    sleep(300);
 
-    switch (x) {
-      case LEFT:
-        Actions.runBlocking(
-            drive.actionBuilder(drive.pose)
-                .splineToConstantHeading(new Vector2d(lypos, mxpos),
-                    -Math.PI / 2)
-                .build());
-        break;
-      case CENTER:
-        Actions.runBlocking(
-            drive.actionBuilder(drive.pose)
-                .splineToConstantHeading(new Vector2d(mypos, rxpos - 3),
-                    -Math.PI / 2)
-                .build());
-        break;
-
-      case RIGHT:
-        Actions.runBlocking(
-            drive.actionBuilder(drive.pose)
-                .splineToConstantHeading(new Vector2d(rypos, mxpos),
-                    -Math.PI / 2)
-                .build());
-        break;
-    }
-
-    robot.spitPixel();
-    sleep(1500);
-
-  */
 
 
   }
