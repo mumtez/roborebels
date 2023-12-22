@@ -1,12 +1,9 @@
 package org.firstinspires.ftc.teamcode.auton;
 
 import android.util.Size;
-import android.widget.Switch;
-
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Pose2d;
-import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -41,7 +38,7 @@ public class FarSplineAuton extends LinearOpMode {
 
   public static double boardDir = 180;
 
-  public static double xpos = 50;
+  public static double xpos = 55;
 
   //Spike marker
   public static int plxpos = -33;
@@ -93,48 +90,48 @@ public class FarSplineAuton extends LinearOpMode {
     //Start
 
     Actions.runBlocking(
-            drive.actionBuilder(drive.pose)
-                    .lineToY(12)
-                    .build());
+        drive.actionBuilder(drive.pose)
+            .lineToY(12)
+            .build());
 
     Actions.runBlocking(
-            drive.actionBuilder(drive.pose)
-                    .splineToLinearHeading(new Pose2d(-36, 4, Math.toRadians(boardDir)),
-                            -Math.PI / 2)
-                    .build());
+        drive.actionBuilder(drive.pose)
+            .splineToLinearHeading(new Pose2d(-36, 4, Math.toRadians(boardDir)),
+                -Math.PI / 2)
+            .build());
 
     sleep(200);
 
     Actions.runBlocking(
-            drive.actionBuilder(drive.pose)
-                    .lineToX(24)
-                    .build());
+        drive.actionBuilder(drive.pose)
+            .lineToX(24)
+            .build());
 
     // Past the truss
 
-    switch (x){
+    switch (x) {
       case LEFT:
         Actions.runBlocking(
-                drive.actionBuilder(drive.pose)
-                        .splineToLinearHeading(new Pose2d(xpos, lypos, Math.toRadians(boardDir)),
-                                -Math.PI / 2)
-                        .build());
+            drive.actionBuilder(drive.pose)
+                .splineToLinearHeading(new Pose2d(xpos, lypos, Math.toRadians(boardDir)),
+                    -Math.PI / 2)
+                .build());
         break;
 
       case CENTER:
         Actions.runBlocking(
-                drive.actionBuilder(drive.pose)
-                        .splineToLinearHeading(new Pose2d(xpos, mypos, Math.toRadians(boardDir)),
-                                -Math.PI / 2)
-                        .build());
-      break;
-
+            drive.actionBuilder(drive.pose)
+                .splineToLinearHeading(new Pose2d(xpos, mypos, Math.toRadians(boardDir)),
+                    -Math.PI / 2)
+                .build());
+        break;
+      default:
       case RIGHT:
         Actions.runBlocking(
-                drive.actionBuilder(drive.pose)
-                        .splineToLinearHeading(new Pose2d(xpos, rypos, Math.toRadians(boardDir)),
-                                -Math.PI / 2)
-                        .build());
+            drive.actionBuilder(drive.pose)
+                .splineToLinearHeading(new Pose2d(xpos, rypos, Math.toRadians(boardDir)),
+                    -Math.PI / 2)
+                .build());
         break;
     }
 
@@ -144,20 +141,18 @@ public class FarSplineAuton extends LinearOpMode {
 
     sleep(300);
 
-
     Actions.runBlocking(
-            drive.actionBuilder(drive.pose)
-                    .splineToLinearHeading(new Pose2d(26, 30, Math.toRadians(boardDir)),
-                            -Math.PI / 2)
-                    .build());
+        drive.actionBuilder(drive.pose)
+            .splineToLinearHeading(new Pose2d(26, 30, Math.toRadians(boardDir)),
+                -Math.PI / 2)
+            .build());
 
     sleep(400);
 
-
     Actions.runBlocking(
-            drive.actionBuilder(drive.pose)
-                    .lineToX(-44)
-                    .build());
+        drive.actionBuilder(drive.pose)
+            .lineToX(-44)
+            .build());
 
     //Past trust again
 
@@ -170,29 +165,29 @@ public class FarSplineAuton extends LinearOpMode {
 
      */
 
-    switch(x){
+    switch (x) {
       case LEFT:
         Actions.runBlocking(
-                drive.actionBuilder(drive.pose)
-                        .splineToLinearHeading(new Pose2d(plxpos, plypos, Math.toRadians(pldir)),
-                                -Math.PI / 2)
-                        .build());
+            drive.actionBuilder(drive.pose)
+                .splineToLinearHeading(new Pose2d(plxpos, plypos, Math.toRadians(pldir)),
+                    -Math.PI / 2)
+                .build());
         break;
 
       case CENTER:
         Actions.runBlocking(
-                drive.actionBuilder(drive.pose)
-                        .splineToLinearHeading(new Pose2d(pmxpos, pmypos, Math.toRadians(pmdir)),
-                                -Math.PI / 2)
-                        .build());
+            drive.actionBuilder(drive.pose)
+                .splineToLinearHeading(new Pose2d(pmxpos, pmypos, Math.toRadians(pmdir)),
+                    -Math.PI / 2)
+                .build());
         break;
 
       case RIGHT:
         Actions.runBlocking(
-                drive.actionBuilder(drive.pose)
-                        .splineToLinearHeading(new Pose2d(prxpos, prypos, Math.toRadians(prdir)),
-                                -Math.PI / 2)
-                        .build());
+            drive.actionBuilder(drive.pose)
+                .splineToLinearHeading(new Pose2d(prxpos, prypos, Math.toRadians(prdir)),
+                    -Math.PI / 2)
+                .build());
         break;
     }
 
@@ -201,15 +196,13 @@ public class FarSplineAuton extends LinearOpMode {
     sleep(1000);
     robot.intake.setPower(0);
 
-
-robot.setIntakePos(spin-15, 0.3);
+    robot.setIntakePos(spin - 15, 0.3);
 
     Actions.runBlocking(
         drive.actionBuilder(drive.pose)
             .splineToLinearHeading(new Pose2d(startypos + 1, startxpos, Math.toRadians(startdir)),
                 -Math.PI / 2)
             .build());
-
 
     robot.setIntakePos(spin, 0.3);
     sleep(1000);
@@ -231,42 +224,39 @@ robot.setIntakePos(spin-15, 0.3);
     sleep(1500);
     robot.intake.setPower(0);
 
+    Actions.runBlocking(
+        drive.actionBuilder(drive.pose)
+            .splineToLinearHeading(new Pose2d(startypos + 3, startxpos, Math.toRadians(-90)),
+                -Math.PI / 2)
+            .build());
 
     Actions.runBlocking(
-            drive.actionBuilder(drive.pose)
-                    .splineToLinearHeading(new Pose2d(startypos + 3, startxpos, Math.toRadians(-90)),
-                            -Math.PI / 2)
-                    .build());
+        drive.actionBuilder(drive.pose)
+            .lineToY(6)
+            .build());
 
     Actions.runBlocking(
-            drive.actionBuilder(drive.pose)
-                    .lineToY(6)
-                    .build());
+        drive.actionBuilder(drive.pose)
+            .splineToLinearHeading(new Pose2d(startypos + 3, 6, Math.toRadians(0)),
+                -Math.PI / 2)
+            .build());
 
     Actions.runBlocking(
-            drive.actionBuilder(drive.pose)
-                    .splineToLinearHeading(new Pose2d(startypos + 3, 6, Math.toRadians(0)),
-                            -Math.PI / 2)
-                    .build());
+        drive.actionBuilder(drive.pose)
+            .lineToX(24)
+            .build());
 
     Actions.runBlocking(
-            drive.actionBuilder(drive.pose)
-                    .lineToX(24)
-                    .build());
-
-    Actions.runBlocking(
-            drive.actionBuilder(drive.pose)
-                    .splineToLinearHeading(new Pose2d(xpos, mypos+15, Math.toRadians(boardDir)),
-                            -Math.PI / 2)
-                    .build());
-
+        drive.actionBuilder(drive.pose)
+            .splineToLinearHeading(new Pose2d(xpos, mypos + 15, Math.toRadians(boardDir)),
+                -Math.PI / 2)
+            .build());
 
     robot.setSlidePos(2000, 1);
     sleep(1500);
     robot.setSlidePos(0, 1);
 
     sleep(300);
-
 
 
   }

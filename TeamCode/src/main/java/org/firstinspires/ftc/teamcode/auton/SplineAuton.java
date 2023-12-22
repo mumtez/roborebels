@@ -27,9 +27,9 @@ public class SplineAuton extends LinearOpMode {
 
   public static double mxpos = 30;
 
-  public static double rxpos = 23;
+  public static double rxpos = 26;
 
-  public static int ypos = 41;
+  public static int ypos = 48;
 
   public static int lypos = 28;
   public static int mypos = 22;
@@ -108,11 +108,12 @@ public class SplineAuton extends LinearOpMode {
       case CENTER:
         Actions.runBlocking(
             drive.actionBuilder(drive.pose)
-                .splineToConstantHeading(new Vector2d(mypos, rxpos - 3),
+                .splineToConstantHeading(new Vector2d(mypos, rxpos),
                     -Math.PI / 2)
                 .build());
         break;
 
+      default:
       case RIGHT:
         Actions.runBlocking(
             drive.actionBuilder(drive.pose)
@@ -123,7 +124,11 @@ public class SplineAuton extends LinearOpMode {
     }
 
     robot.spitPixel();
-    sleep(1500);
+    Actions.runBlocking(
+        drive.actionBuilder(drive.pose)
+            .splineToLinearHeading(new Pose2d(60, 12, Math.toRadians(finalDir)),
+                Math.PI / 2)
+            .build());
 
     /*
     Actions.runBlocking(
