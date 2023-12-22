@@ -69,6 +69,7 @@ public class SplineAuton extends LinearOpMode {
             drive.actionBuilder(drive.pose)
                 .splineToLinearHeading(new Pose2d(ypos, lxpos, Math.toRadians(finalDir)),
                     -Math.PI / 2)
+                .strafeToLinearHeading(new Vector2d(0, 0), 0)
                 .build());
 
         break;
