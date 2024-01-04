@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple.Direction;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.LED;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -25,13 +26,14 @@ public class Robot {
   public final DcMotor fl, fr, bl, br;
   public final DcMotor slideL, slideR;
   public final DcMotor intake;
-
-
+  public final Servo plane, gateFlip, pixelPull, pixelPullFront;
   public final Rev2mDistanceSensor dis;
   public final LED light;
 
   public static double GYRO_TURN_P_GAIN = .04;
   public static double HEADING_THRESHOLD = 1;
+
+  public boolean fliperOut = false;
 
   public Robot(LinearOpMode opMode) {
     this.opMode = opMode;
@@ -87,6 +89,16 @@ public class Robot {
     intake.setMode(RunMode.RUN_WITHOUT_ENCODER);
     intake.setDirection(Direction.FORWARD);
     intake.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
+
+    // Servos
+    plane = hardwareMap.servo.get("plane");
+    gateFlip = hardwareMap.servo.get("gate");
+    pixelPull = hardwareMap.servo.get("pixel");
+    pixelPullFront = hardwareMap.servo.get("front");
+
+    gateFlip.setPosition(0);
+    pixelPullFront.setPosition(0.78);
+    pixelPull.setPosition(0.22);
   }
 
   public void setSlidePower(double pow) {
@@ -240,6 +252,29 @@ public class Robot {
     while (intake.isBusy()) {
       // Wait for slide to end
     }
+  }
+
+  public void toggleDoor(boolean x) {
+    if (x) {
+      gateFlip.setPosition(.7);
+    } else {
+      gateFlip.setPosition(0);
+    }
+  }
+
+
+  public void flipperControl(boolean x) {
+    if (!x) {
+      pixelPullFront.setPosition(0.78);
+      pixelPull.setPosition(0.22);
+    } else {
+      pixelPull.setPosition(0.7);
+      pixelPullFront.setPosition(0.3);
+    }
+  }
+
+  public void fly() {
+    plane.setPosition(1);
   }
 
   /*public void indicateCloseEnough() {

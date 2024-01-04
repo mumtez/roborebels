@@ -71,7 +71,6 @@ public class SplineAuton extends LinearOpMode {
                     -Math.PI / 2)
                 .strafeToLinearHeading(new Vector2d(0, 0), 0)
                 .build());
-
         break;
 
       case CENTER:
@@ -80,7 +79,6 @@ public class SplineAuton extends LinearOpMode {
                 .splineToLinearHeading(new Pose2d(ypos, mxpos, Math.toRadians(finalDir)),
                     -Math.PI / 2)
                 .build());
-
         break;
 
       case RIGHT:

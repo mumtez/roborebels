@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor.RunMode;
+import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 @TeleOp(name = "Teleop")
@@ -15,6 +16,8 @@ public class Teleop extends LinearOpMode {
     robot = new Robot(this);
     robot.slideR.setMode(RunMode.RUN_WITHOUT_ENCODER);
     robot.slideL.setMode(RunMode.RUN_WITHOUT_ENCODER);
+    ElapsedTime timer = new ElapsedTime();
+    ElapsedTime timer2 = new ElapsedTime();
     waitForStart();
     // START
 
@@ -54,13 +57,26 @@ public class Teleop extends LinearOpMode {
       robot.fr.setPower(frontRightPower);
       robot.br.setPower(backRightPower);
 
-      robot.intake.setPower((gamepad1.right_trigger * .6) - (gamepad1.left_trigger * 0.5));
-
+      robot.intake.setPower((gamepad1.right_trigger * 0.6) - (gamepad1.left_trigger * 0.5));
+      if (robot.intake.getPower() != 0 || gamepad1.x) {
+        robot.flipperControl(true);
+      } else {
+        robot.flipperControl(false);
+      }
       robot.setSlidePower(-gamepad2.right_stick_y);
 
+      robot.toggleDoor(gamepad1.y);
+      /* if (gamepad1.x && timer2.milliseconds() > 500) {
+        robot.flipper();
+        timer.reset();
+      } */
+      if (gamepad2.a && gamepad2.x) {
+        robot.fly();
+      }
+
       telemetry.addData("IMU HEADING", AngleUnit.RADIANS.toDegrees(botHeading));
-      telemetry.addData("SlideL Pos", robot.slideL.getCurrentPosition());
-      telemetry.addData("SlideR Pos", robot.slideR.getCurrentPosition());
+      //telemetry.addData("SlideL Pos", robot.slideL.getCurrentPosition());
+      //telemetry.addData("SlideR Pos", robot.slideR.getCurrentPosition());
       telemetry.update();
     }
   }
