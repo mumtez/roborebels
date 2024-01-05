@@ -57,7 +57,7 @@ public class Teleop extends LinearOpMode {
       robot.fr.setPower(frontRightPower);
       robot.br.setPower(backRightPower);
 
-      robot.intake.setPower((gamepad1.right_trigger * 0.6) - (gamepad1.left_trigger * 0.5));
+      robot.intake.setPower((gamepad1.right_trigger) - (gamepad1.left_trigger * 0.5));
       if (robot.intake.getPower() != 0 || gamepad1.x) {
         robot.flipperControl(true);
       } else {
@@ -75,8 +75,8 @@ public class Teleop extends LinearOpMode {
       }
 
       telemetry.addData("IMU HEADING", AngleUnit.RADIANS.toDegrees(botHeading));
-      //telemetry.addData("SlideL Pos", robot.slideL.getCurrentPosition());
-      //telemetry.addData("SlideR Pos", robot.slideR.getCurrentPosition());
+      telemetry.addData("SlideL Pos", robot.slideL.getCurrentPosition());
+      telemetry.addData("SlideR Pos", robot.slideR.getCurrentPosition());
       telemetry.update();
     }
   }

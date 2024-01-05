@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.auton.old;
 import android.util.Size;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.Robot;
@@ -10,6 +11,7 @@ import org.firstinspires.ftc.teamcode.vision.Position;
 import org.firstinspires.ftc.teamcode.vision.RedPropThreshold;
 import org.firstinspires.ftc.vision.VisionPortal;
 
+@Disabled
 @Config
 @Autonomous(name = "Red Close")
 public class RedCloseAuto extends LinearOpMode {

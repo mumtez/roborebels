@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot.LogoFacingDirection;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -27,7 +26,6 @@ public class Robot {
   public final DcMotor slideL, slideR;
   public final DcMotor intake;
   public final Servo plane, gateFlip, pixelPull, pixelPullFront;
-  public final Rev2mDistanceSensor dis;
   public final LED light;
 
   public static double GYRO_TURN_P_GAIN = .04;
@@ -44,8 +42,6 @@ public class Robot {
         LogoFacingDirection.RIGHT,
         RevHubOrientationOnRobot.UsbFacingDirection.UP));
     imu.initialize(parameters);
-
-    dis = hardwareMap.get(Rev2mDistanceSensor.class, "distanceSensor");
 
     light = hardwareMap.get(LED.class, "led");
 
@@ -117,7 +113,7 @@ public class Robot {
 
     setSlidePower(pow);
 
-    while (slideL.isBusy() && slideR.isBusy()) {
+    while (this.opMode.opModeIsActive() && slideL.isBusy() && slideR.isBusy()) {
       // Wait for slide to end
     }
   }
@@ -228,6 +224,14 @@ public class Robot {
     this.setDriveTrainPower(0, 0, 0, 0);
   }
 
+  public void waitTime(double ms) {
+    double startTime = System.currentTimeMillis();
+    while (opMode.opModeIsActive() && System.currentTimeMillis() - startTime < ms) {
+      this.opMode.telemetry.addLine("Waiting");
+      this.opMode.telemetry.update();
+    }
+  }
+
   public int distanceToEncoderTicks(double distanceMM) {
     double circumference = Math.PI * 96;
     double cpr = 537.7;
@@ -249,14 +253,14 @@ public class Robot {
 
     intake.setPower(pow);
 
-    while (intake.isBusy()) {
+    while (this.opMode.opModeIsActive() && intake.isBusy()) {
       // Wait for slide to end
     }
   }
 
   public void toggleDoor(boolean x) {
     if (x) {
-      gateFlip.setPosition(.7);
+      gateFlip.setPosition(.6);
     } else {
       gateFlip.setPosition(0);
     }

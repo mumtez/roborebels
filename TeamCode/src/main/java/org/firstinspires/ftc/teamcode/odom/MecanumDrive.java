@@ -279,6 +279,16 @@ public final class MecanumDrive {
         t = Actions.now() - beginTs;
       }
 
+//      Pose2dDual<Time> txWorldTarget = timeTrajectory.get(t);
+//      targetPoseWriter.write(new PoseMessage(txWorldTarget.value()));
+//
+//      PoseVelocity2d robotVelRobot = updatePoseEstimate();
+//
+//      Pose2d error = txWorldTarget.value().minusExp(pose);
+
+//      if ((t >= timeTrajectory.duration && error.position.norm() < 2
+//          && robotVelRobot.linearVel.norm() < 0.5)
+//          || t + 2 >= timeTrajectory.duration) {
       if (t >= timeTrajectory.duration) {
         leftFront.setPower(0);
         leftBack.setPower(0);
