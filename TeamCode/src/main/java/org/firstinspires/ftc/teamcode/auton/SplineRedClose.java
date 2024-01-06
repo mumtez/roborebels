@@ -1,13 +1,13 @@
 package org.firstinspires.ftc.teamcode.auton;
 
 import android.util.Size;
-import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor.RunMode;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.odom.MecanumDrive;
@@ -19,14 +19,19 @@ import org.firstinspires.ftc.vision.VisionPortal;
 @Autonomous(name = "Red Close Spline Autonimous")
 public class SplineRedClose extends LinearOpMode {
 
-  public FtcDashboard dash = FtcDashboard.getInstance();
   Robot robot;
   private VisionPortal portal;
   RedPropThreshold processor;
+  public static Vector2d placeSpikeRight = new Vector2d(28, -30);
+  public static Vector2d placeSpikeCenter = new Vector2d(18, -24);
+  public static Vector2d placeSpikeLeft = new Vector2d(6, -30);
+  public static Vector2d placeBoardRight = new Vector2d(49, -38);
+  public static Vector2d placeBoardCenter = new Vector2d(49, -31.5);
+  public static Vector2d placeBoardLeft = new Vector2d(48.5, -26);
 
   @Override
   public void runOpMode() throws InterruptedException {
-    MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(12, 60, Math.toRadians(-90)));
+    MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(11, -60, Math.toRadians(90)));
     processor = new RedPropThreshold();
     robot = new Robot(this);
 
@@ -36,28 +41,149 @@ public class SplineRedClose extends LinearOpMode {
         .addProcessor(processor)
         .build();
 
-    Position x = processor.getElePos();
+    // READ POSITION
+    Position x = Position.NONE;
+    while (opModeInInit() && !isStopRequested()) {
+      x = processor.getElePos();
+      telemetry.addLine("Case" + ":" + x.name());
+      telemetry.update();
+    }
 
-    waitForStart();
+    // START
+    Vector2d placeSpike;
+    Vector2d placeBoard;
+    switch (x) {
+      case LEFT:
+        placeBoard = placeBoardLeft;
+        placeSpike = placeSpikeLeft;
+        break;
+      case CENTER:
+        placeBoard = placeBoardCenter;
+        placeSpike = placeSpikeCenter;
+        break;
+      default:
+      case RIGHT:
+        placeBoard = placeBoardRight;
+        placeSpike = placeSpikeRight;
+        break;
+    }
 
+    // PLACE BOARD
     Actions.runBlocking(
         drive.actionBuilder(drive.pose)
             .setTangent(0)
-            .splineToLinearHeading(new Pose2d(48, -36, Math.toRadians(-180)), Math.toRadians(90))
-//                .lineToLinearHeading(
-//                    new Pose2d(48, 36, Math.toRadians(180))) // REPLACE w/ STRAFETOLINHEADING
-            .waitSeconds(3)
-            .strafeTo(new Vector2d(18, -24))
-            .waitSeconds(1)
-            .setTangent(0)
-            .splineToConstantHeading(new Vector2d(6, -60), Math.toRadians(-180))
-            .strafeTo(new Vector2d(-36, -60))
-            .setTangent(Math.toRadians(-180))
-            .splineToConstantHeading(new Vector2d(-60, -36), Math.toRadians(90))
-            .splineToConstantHeading(new Vector2d(-54, -12), Math.toRadians(90))
-            .waitSeconds(2)
-            .setTangent(Math.toRadians(0.1))
-            .splineToConstantHeading(new Vector2d(48, -36), Math.toRadians(-90))
+            .strafeToLinearHeading(placeBoard, Math.toRadians(180))
             .build());
+
+    robot.setSlidePos(2200, 1);
+    robot.setSlidePos(0, 1);
+
+    // PLACE SPIKE
+    Actions.runBlocking(
+        drive.actionBuilder(drive.pose)
+            .strafeToConstantHeading(placeSpike)
+            .build());
+
+    robot.flipperControl(true);
+    robot.setIntakePos(-100, .1);
+    robot.waitTime(100);
+
+    // DRIVE TO GATE
+    Actions.runBlocking(
+        drive.actionBuilder(drive.pose)
+            .setTangent(0)
+            .splineToConstantHeading(new Vector2d(24, -0), Math.toRadians(180))
+            .splineToConstantHeading(new Vector2d(3, -8), Math.toRadians(180))
+            .build());
+    robot.toggleDoor(true);
+    robot.waitTime(400);
+
+    // GO THROUGH GATE
+    Actions.runBlocking(
+        drive.actionBuilder(drive.pose)
+            .strafeTo(new Vector2d(-36, -12))
+            .build());
+    robot.toggleDoor(false);
+    Actions.runBlocking(
+        drive.actionBuilder(drive.pose)
+            .setTangent(Math.toRadians(-180))
+            .splineToConstantHeading(new Vector2d(-60, -12), Math.toRadians(90))
+            .build());
+
+    Actions.runBlocking(
+        drive.actionBuilder(drive.pose)
+            .strafeToConstantHeading(new Vector2d(-65, -12))
+            .build());
+
+    // GRAB ONE
+    robot.flipperControl(false);
+    Actions.runBlocking(
+        drive.actionBuilder(drive.pose)
+            .strafeToConstantHeading(new Vector2d(-60, -12))
+            .build());
+    robot.flipperControl(true);
+    robot.intake.setMode(RunMode.RUN_WITHOUT_ENCODER);
+    robot.intake.setPower(0.6);
+    robot.waitTime(600);
+    robot.intake.setPower(0);
+
+    // SHIMMY
+    robot.slideL.setMode(RunMode.RUN_WITHOUT_ENCODER);
+    robot.slideR.setMode(RunMode.RUN_WITHOUT_ENCODER);
+    robot.setSlidePower(1);
+    robot.waitTime(200);
+    robot.setSlidePower(-1);
+    robot.waitTime(200);
+    robot.setSlidePos(0, 1);
+
+    // GRAB TWO
+    Actions.runBlocking(
+        drive.actionBuilder(drive.pose)
+            .setTangent(Math.toRadians(-180))
+            .splineToConstantHeading(new Vector2d(-60, -12), Math.toRadians(-90))
+            .build());
+
+    Actions.runBlocking(
+        drive.actionBuilder(drive.pose)
+            .strafeToConstantHeading(new Vector2d(-66, -12))
+            .build());
+    robot.flipperControl(false);
+    Actions.runBlocking(
+        drive.actionBuilder(drive.pose)
+            .strafeToConstantHeading(new Vector2d(-60, -12))
+            .build());
+    robot.flipperControl(true);
+    robot.intake.setPower(.6);
+    robot.waitTime(600);
+    robot.intake.setPower(0);
+    robot.flipperControl(false);
+
+    // going back to board
+    Actions.runBlocking(
+        drive.actionBuilder(drive.pose)
+            .setTangent(Math.toRadians(0))
+            .splineToConstantHeading(new Vector2d(45, -25), Math.toRadians(270))
+            .turnTo(Math.toRadians(180))
+            .build());
+
+    // FIRST PLACE
+    robot.setSlidePos(3000, 1);
+    robot.setSlidePos(0, 1);
+
+    // JIGGLE
+    robot.setSlidePower(0);
+    robot.slideL.setMode(RunMode.RUN_WITHOUT_ENCODER);
+    robot.slideR.setMode(RunMode.RUN_WITHOUT_ENCODER);
+    robot.setSlidePower(1);
+    robot.waitTime(200);
+    robot.setSlidePower(-1);
+    robot.waitTime(200);
+    robot.setSlidePos(0, 1);
+
+    // SECOND PLACE
+    robot.setSlidePos(3000, 1);
+    robot.setSlidePos(0, 1);
   }
+
+
 }

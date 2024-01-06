@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.auton;
 
 import android.util.Size;
-import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Vector2d;
@@ -20,7 +19,6 @@ import org.firstinspires.ftc.vision.VisionPortal;
 @Autonomous(name = "Blue Close Spline Autonimous")
 public class SplineBlueClose extends LinearOpMode {
 
-  public FtcDashboard dash = FtcDashboard.getInstance();
   Robot robot;
   private VisionPortal portal;
   BluePropThreshold processor;
@@ -29,7 +27,7 @@ public class SplineBlueClose extends LinearOpMode {
   public static Vector2d placeSpikeRight = new Vector2d(6, 30);
   public static Vector2d placeBoardLeft = new Vector2d(49, 38);
   public static Vector2d placeBoardCenter = new Vector2d(49, 31.5);
-  public static Vector2d placeBoardRight = new Vector2d(49, 25);
+  public static Vector2d placeBoardRight = new Vector2d(48.5, 27);
 
   @Override
   public void runOpMode() throws InterruptedException {
@@ -43,6 +41,7 @@ public class SplineBlueClose extends LinearOpMode {
         .addProcessor(processor)
         .build();
 
+    // READ POSITION
     Position x = Position.NONE;
     while (opModeInInit() && !isStopRequested()) {
       x = processor.getElePos();
@@ -50,6 +49,7 @@ public class SplineBlueClose extends LinearOpMode {
       telemetry.update();
     }
 
+    // START
     Vector2d placeSpike;
     Vector2d placeBoard;
     switch (x) {
@@ -67,16 +67,18 @@ public class SplineBlueClose extends LinearOpMode {
         placeSpike = placeSpikeRight;
         break;
     }
+
+    // PLACE BOARD
     Actions.runBlocking(
         drive.actionBuilder(drive.pose)
             .setTangent(0)
             .strafeToLinearHeading(placeBoard, Math.toRadians(180))
             .build());
 
-    robot.setSlidePos(2200, .8);
-    robot.waitTime(1500);
+    robot.setSlidePos(2200, 1);
     robot.setSlidePos(0, 1);
 
+    // PLACE SPIKE
     Actions.runBlocking(
         drive.actionBuilder(drive.pose)
             .strafeToConstantHeading(placeSpike)
@@ -84,16 +86,19 @@ public class SplineBlueClose extends LinearOpMode {
 
     robot.flipperControl(true);
     robot.setIntakePos(-100, .1);
-    robot.waitTime(750);
+    robot.waitTime(100);
 
+    // DRIVE TO GATE
     Actions.runBlocking(
         drive.actionBuilder(drive.pose)
             .setTangent(0)
-            .splineToConstantHeading(new Vector2d(36, 12), Math.toRadians(180))
+            .splineToConstantHeading(new Vector2d(24, 0), Math.toRadians(180))
             .splineToConstantHeading(new Vector2d(3, 8), Math.toRadians(180))
             .build());
     robot.toggleDoor(true);
-    robot.waitTime(500);
+    robot.waitTime(400);
+
+    // GO THROUGH GATE
     Actions.runBlocking(
         drive.actionBuilder(drive.pose)
             .strafeTo(new Vector2d(-36, 12))
@@ -107,19 +112,31 @@ public class SplineBlueClose extends LinearOpMode {
 
     Actions.runBlocking(
         drive.actionBuilder(drive.pose)
-            .strafeToConstantHeading(new Vector2d(-65, 12))
+            .strafeToConstantHeading(new Vector2d(-66.5, 12))
             .build());
+
+    // GRAB ONE
     robot.flipperControl(false);
     Actions.runBlocking(
         drive.actionBuilder(drive.pose)
             .strafeToConstantHeading(new Vector2d(-60, 12))
             .build());
     robot.flipperControl(true);
-    robot.setIntakePos(1000, 1);
-    robot.waitTime(1000);
+    robot.intake.setMode(RunMode.RUN_WITHOUT_ENCODER);
+    robot.intake.setPower(0.6);
+    robot.waitTime(600);
+    robot.intake.setPower(0);
 
-    // second pixel grab
-    robot.toggleDoor(false);
+    // SHIMMY
+    robot.slideL.setMode(RunMode.RUN_WITHOUT_ENCODER);
+    robot.slideR.setMode(RunMode.RUN_WITHOUT_ENCODER);
+    robot.setSlidePower(1);
+    robot.waitTime(200);
+    robot.setSlidePower(-1);
+    robot.waitTime(200);
+    robot.setSlidePos(0, 1);
+
+    // GRAB TWO
     Actions.runBlocking(
         drive.actionBuilder(drive.pose)
             .setTangent(Math.toRadians(-180))
@@ -128,7 +145,7 @@ public class SplineBlueClose extends LinearOpMode {
 
     Actions.runBlocking(
         drive.actionBuilder(drive.pose)
-            .strafeToConstantHeading(new Vector2d(-66, 12))
+            .strafeToConstantHeading(new Vector2d(-66.5, 12))
             .build());
     robot.flipperControl(false);
     Actions.runBlocking(
@@ -136,37 +153,34 @@ public class SplineBlueClose extends LinearOpMode {
             .strafeToConstantHeading(new Vector2d(-60, 12))
             .build());
     robot.flipperControl(true);
-    robot.setIntakePos(1000, 1);
-    robot.waitTime(1000);
-    // slide shimmy
-    robot.slideL.setMode(RunMode.RUN_WITHOUT_ENCODER);
-    robot.slideR.setMode(RunMode.RUN_WITHOUT_ENCODER);
-    robot.setSlidePower(1);
-    robot.waitTime(200);
-    robot.setSlidePower(-1);
-    robot.waitTime(200);
-    robot.setSlidePower(0);
-    robot.setSlidePos(0, 1);
+    robot.intake.setPower(.6);
+    robot.waitTime(600);
+    robot.intake.setPower(0);
+    robot.flipperControl(false);
 
     // going back to board
     Actions.runBlocking(
         drive.actionBuilder(drive.pose)
             .setTangent(Math.toRadians(0))
-            .splineToConstantHeading(new Vector2d(44, 36), Math.toRadians(90))
+            .splineToConstantHeading(new Vector2d(45, 25), Math.toRadians(90))
+            .turnTo(Math.toRadians(180))
             .build());
 
+    // FIRST PLACE
     robot.setSlidePos(3000, 1);
-    robot.waitTime(500);
     robot.setSlidePos(0, 1);
-    robot.waitTime(2000);
+
+    // JIGGLE
+    robot.setSlidePower(0);
     robot.slideL.setMode(RunMode.RUN_WITHOUT_ENCODER);
     robot.slideR.setMode(RunMode.RUN_WITHOUT_ENCODER);
     robot.setSlidePower(1);
     robot.waitTime(200);
     robot.setSlidePower(-1);
     robot.waitTime(200);
-    robot.setSlidePower(0);
     robot.setSlidePos(0, 1);
+
+    // SECOND PLACE
     robot.setSlidePos(3000, 1);
     robot.setSlidePos(0, 1);
   }

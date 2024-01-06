@@ -105,6 +105,8 @@ public class Robot {
 
   public void setSlidePos(int pos, double pow) {
 
+    setSlidePower(0);
+
     slideL.setTargetPosition(pos);
     slideR.setTargetPosition(pos);
 
@@ -113,7 +115,9 @@ public class Robot {
 
     setSlidePower(pow);
 
-    while (this.opMode.opModeIsActive() && slideL.isBusy() && slideR.isBusy()) {
+    //while (this.opMode.opModeIsActive() && (slideL.isBusy() || slideR.isBusy())) {
+    while (this.opMode.opModeIsActive() &&
+        Math.abs(((slideL.getCurrentPosition() + slideR.getCurrentPosition()) / 2.0) - pos) > 30) {
       // Wait for slide to end
     }
   }
@@ -227,8 +231,6 @@ public class Robot {
   public void waitTime(double ms) {
     double startTime = System.currentTimeMillis();
     while (opMode.opModeIsActive() && System.currentTimeMillis() - startTime < ms) {
-      this.opMode.telemetry.addLine("Waiting");
-      this.opMode.telemetry.update();
     }
   }
 
