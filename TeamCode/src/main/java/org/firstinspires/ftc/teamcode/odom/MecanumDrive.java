@@ -303,7 +303,7 @@ public final class MecanumDrive {
               && error.heading.real < 1
               && robotVelRobot.angVel < 0.5
       )
-          || t - 2 >= timeTrajectory.duration) {
+          || t - 1 >= timeTrajectory.duration) {
         leftFront.setPower(0);
         leftBack.setPower(0);
         rightBack.setPower(0);
