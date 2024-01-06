@@ -27,7 +27,7 @@ public class SplineBlueFar extends LinearOpMode {
 
   public static Vector2d placeSpikeLeft = new Vector2d(-34, 34);
   public static Vector2d placeSpikeCenter = new Vector2d(-36, 30);
-  public static Vector2d placeSpikeRight = new Vector2d(-50, 23);
+  public static Vector2d placeSpikeRight = new Vector2d(-48, 23);
   public static Vector2d placeBoardLeft = new Vector2d(50, 30);
   public static Vector2d placeBoardCenter = new Vector2d(50, 27);
   public static Vector2d placeBoardRight = new Vector2d(50, 24);
@@ -54,7 +54,6 @@ public class SplineBlueFar extends LinearOpMode {
       telemetry.addLine("Case" + ":" + x.name());
       telemetry.update();
     }
-    waitForStart();
 
     Vector2d placeSpike;
     Vector2d placeBoard;
@@ -78,25 +77,8 @@ public class SplineBlueFar extends LinearOpMode {
         break;
     }
 
-    if (x == Position.RIGHT) {
-      Actions.runBlocking(
-          drive.actionBuilder(drive.pose)
-              .strafeToConstantHeading(new Vector2d(-40, 60))
-              .strafeToConstantHeading(new Vector2d(-40, 12))
-              .strafeToLinearHeading(placeSpike, Math.toRadians(spikeTurn))
-              .build());
-
-      robot.flipperControl(true);
-      robot.setIntakePos(-100, .1);
-      robot.waitTime(100);
-
-      Actions.runBlocking(
-          drive.actionBuilder(drive.pose)
-              .strafeToConstantHeading(new Vector2d(-48, 12))
-              .turnTo(Math.toRadians(180))
-              .strafeToConstantHeading(new Vector2d(-63, 12))
-              .build());
-    } else {
+    // LEFT, CENTER
+    if (x == Position.LEFT || x == Position.CENTER) {
       Actions.runBlocking(
           drive.actionBuilder(drive.pose)
               .strafeToConstantHeading(new Vector2d(-38, 60))
@@ -117,6 +99,26 @@ public class SplineBlueFar extends LinearOpMode {
               .strafeToConstantHeading(new Vector2d(-63, 12))
               .build());
     }
+    // RIGHT
+    else {
+      Actions.runBlocking(
+          drive.actionBuilder(drive.pose)
+              .lineToXConstantHeading(-40)
+              .strafeToLinearHeading(placeSpike, Math.toRadians(spikeTurn))
+              .build());
+
+      robot.flipperControl(true);
+      robot.setIntakePos(-100, .1);
+      robot.waitTime(100);
+
+      Actions.runBlocking(
+          drive.actionBuilder(drive.pose)
+              .lineToYConstantHeading(12)
+              .turn(Math.toRadians(90))
+              .lineToXConstantHeading(-63)
+              .build());
+    }
+
     // GRAB ONE
     robot.flipperControl(false);
     Actions.runBlocking(
@@ -140,7 +142,7 @@ public class SplineBlueFar extends LinearOpMode {
             .build());
 
     // FIRST PLACE
-    robot.setSlidePos(3000, 1);
+    robot.setSlidePos(2500, 0.7);
     robot.setSlidePos(0, 1);
 
     // JIGGLE
@@ -148,16 +150,15 @@ public class SplineBlueFar extends LinearOpMode {
     robot.slideL.setMode(RunMode.RUN_WITHOUT_ENCODER);
     robot.slideR.setMode(RunMode.RUN_WITHOUT_ENCODER);
     robot.setSlidePower(1);
-    robot.waitTime(200);
+    robot.waitTime(300);
     robot.setSlidePower(-1);
-    robot.waitTime(200);
+    robot.waitTime(300);
     robot.setSlidePos(0, 1);
 
     // SECOND PLACE
-    robot.setSlidePos(3000, 1);
+    robot.setSlidePos(3000, 0.7);
     robot.setSlidePos(0, 1);
   }
 
 
 }
-
