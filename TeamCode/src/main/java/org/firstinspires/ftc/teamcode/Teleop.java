@@ -16,6 +16,7 @@ public class Teleop extends LinearOpMode {
     robot = new Robot(this);
     robot.slideR.setMode(RunMode.RUN_WITHOUT_ENCODER);
     robot.slideL.setMode(RunMode.RUN_WITHOUT_ENCODER);
+    robot.intake.setMode(RunMode.RUN_WITHOUT_ENCODER);
     ElapsedTime timer = new ElapsedTime();
     ElapsedTime timer2 = new ElapsedTime();
     waitForStart();

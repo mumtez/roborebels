@@ -1,14 +1,12 @@
 package org.firstinspires.ftc.teamcode.Testing;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotor.RunMode;
 import com.qualcomm.robotcore.hardware.DcMotorSimple.Direction;
 
-@Disabled
-@TeleOp(name = "Slide Test", group = "Teleop")
+@TeleOp(name = "Slide Test", group = "TESTING")
 public class SlideTest extends LinearOpMode {
 
   DcMotor sl;

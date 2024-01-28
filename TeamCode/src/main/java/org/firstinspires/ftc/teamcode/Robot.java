@@ -31,11 +31,10 @@ public class Robot {
   public static double GYRO_TURN_P_GAIN = .04;
   public static double HEADING_THRESHOLD = 1;
 
-  public boolean fliperOut = false;
-
   public Robot(LinearOpMode opMode) {
     this.opMode = opMode;
     HardwareMap hardwareMap = opMode.hardwareMap;
+
     // IMU
     imu = hardwareMap.get(IMU.class, "imu");
     IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
@@ -43,6 +42,7 @@ public class Robot {
         RevHubOrientationOnRobot.UsbFacingDirection.UP));
     imu.initialize(parameters);
 
+    // Sensors
     light = hardwareMap.get(LED.class, "led");
 
     // Drivetrain
@@ -82,12 +82,13 @@ public class Robot {
     // Intake
     intake = hardwareMap.dcMotor.get("intake");
 
-    intake.setMode(RunMode.RUN_WITHOUT_ENCODER);
+    intake.setMode(RunMode.STOP_AND_RESET_ENCODER);
     intake.setDirection(Direction.FORWARD);
     intake.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
 
     // Servos
     plane = hardwareMap.servo.get("plane");
+
     gateFlip = hardwareMap.servo.get("gate");
     pixelPull = hardwareMap.servo.get("pixel");
     pixelPullFront = hardwareMap.servo.get("front");
@@ -115,7 +116,6 @@ public class Robot {
 
     setSlidePower(pow);
 
-    //while (this.opMode.opModeIsActive() && (slideL.isBusy() || slideR.isBusy())) {
     while (this.opMode.opModeIsActive() &&
         Math.abs(((slideL.getCurrentPosition() + slideR.getCurrentPosition()) / 2.0) - pos) > 30) {
       // Wait for slide to end

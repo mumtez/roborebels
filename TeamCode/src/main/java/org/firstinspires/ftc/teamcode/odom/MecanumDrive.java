@@ -30,6 +30,7 @@ import com.acmerobotics.roadrunner.VelConstraint;
 import com.acmerobotics.roadrunner.ftc.DownsampledWriter;
 import com.acmerobotics.roadrunner.ftc.Encoder;
 import com.acmerobotics.roadrunner.ftc.FlightRecorder;
+import com.acmerobotics.roadrunner.ftc.LazyImu;
 import com.acmerobotics.roadrunner.ftc.LynxFirmware;
 import com.acmerobotics.roadrunner.ftc.OverflowEncoder;
 import com.acmerobotics.roadrunner.ftc.PositionVelocityPair;
@@ -112,7 +113,7 @@ public final class MecanumDrive {
 
   public final VoltageSensor voltageSensor;
 
-  public final IMU imu;
+  public final LazyImu imu;
 
   public final Localizer localizer;
   public Pose2d pose;
@@ -146,7 +147,7 @@ public final class MecanumDrive {
       lastRightBackPos = rightBack.getPositionAndVelocity().position;
       lastRightFrontPos = rightFront.getPositionAndVelocity().position;
 
-      lastHeading = Rotation2d.exp(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS));
+      lastHeading = Rotation2d.exp(imu.get().getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS));
     }
 
     @Override
@@ -160,7 +161,7 @@ public final class MecanumDrive {
           leftFrontPosVel, leftBackPosVel, rightBackPosVel, rightFrontPosVel));
 
       Rotation2d heading = Rotation2d.exp(
-          imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS));
+          imu.get().getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS));
       double headingDelta = heading.minus(lastHeading);
 
       Twist2dDual<Time> twist = kinematics.forward(new MecanumKinematics.WheelIncrements<>(
@@ -220,10 +221,8 @@ public final class MecanumDrive {
     rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-    imu = hardwareMap.get(IMU.class, "imu");
-    IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
+    imu = new LazyImu(hardwareMap, "imu", new RevHubOrientationOnRobot(
         PARAMS.logoFacingDirection, PARAMS.usbFacingDirection));
-    imu.initialize(parameters);
 
     voltageSensor = hardwareMap.voltageSensor.iterator().next();
 
@@ -279,31 +278,19 @@ public final class MecanumDrive {
         t = Actions.now() - beginTs;
       }
 
-//      Pose2dDual<Time> txWorldTarget = timeTrajectory.get(t);
-//      targetPoseWriter.write(new PoseMessage(txWorldTarget.value()));
-//
-//      PoseVelocity2d robotVelRobot = updatePoseEstimate();
-//
-//      Pose2d error = txWorldTarget.value().minusExp(pose);
-
-//      if ((t >= timeTrajectory.duration && error.position.norm() < 2
-//          && robotVelRobot.linearVel.norm() < 0.5)
-//          || t + 2 >= timeTrajectory.duration) {
-
       Pose2dDual<Time> txWorldTarget = timeTrajectory.get(t);
       targetPoseWriter.write(new PoseMessage(txWorldTarget.value()));
 
       PoseVelocity2d robotVelRobot = updatePoseEstimate();
       Pose2d error = txWorldTarget.value().minusExp(pose);
 
-      if ((
-          t >= timeTrajectory.duration
+      if (
+          (t >= timeTrajectory.duration
               && error.position.norm() < 2
               && robotVelRobot.linearVel.norm() < 0.5
               && error.heading.real < 1
               && robotVelRobot.angVel < 0.5
-      )
-          || t - 1 >= timeTrajectory.duration) {
+          ) || t >= timeTrajectory.duration + 1) { // 1 second max extra correction
         leftFront.setPower(0);
         leftBack.setPower(0);
         rightBack.setPower(0);
