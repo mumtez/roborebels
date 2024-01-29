@@ -1,21 +1,21 @@
-package org.firstinspires.ftc.teamcode.vision;
+package org.firstinspires.ftc.teamcode.Testing;
 
 import android.util.Size;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.vision.BluePropThreshold;
+import org.firstinspires.ftc.teamcode.vision.RedPropThreshold;
 import org.firstinspires.ftc.vision.VisionPortal;
 
 @Autonomous(name = "Vision Test", group = "TESTING")
 public class VisionTest extends LinearOpMode {
 
-  private VisionPortal portal;
-
   @Override
   public void runOpMode() throws InterruptedException {
     RedPropThreshold redPropThreshold = new RedPropThreshold();
     BluePropThreshold bluePropThreshold = new BluePropThreshold();
-    portal = new VisionPortal.Builder()
+    VisionPortal portal = new VisionPortal.Builder()
         .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
         .setCameraResolution(new Size(640, 480))
         .addProcessor(redPropThreshold)
