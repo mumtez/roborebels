@@ -1,13 +1,18 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
+import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot.LogoFacingDirection;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.ColorRangeSensor;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotor.RunMode;
 import com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior;
 import com.qualcomm.robotcore.hardware.DcMotorSimple.Direction;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.LED;
@@ -26,7 +31,8 @@ public class Robot {
   public final DcMotor slideL, slideR;
   public final DcMotor intake;
   public final Servo plane, gateFlip, pixelPull, pixelPullFront;
-  public final LED light;
+  public final DistanceSensor distanceSensor;
+  public final ColorRangeSensor intakeColorSensor;
 
   public static double GYRO_TURN_P_GAIN = .04;
   public static double HEADING_THRESHOLD = 1;
@@ -43,7 +49,11 @@ public class Robot {
     imu.initialize(parameters);
 
     // Sensors
-    light = hardwareMap.get(LED.class, "led");
+    distanceSensor = hardwareMap.get(DistanceSensor.class, "dist");
+    intakeColorSensor = hardwareMap.get(ColorRangeSensor.class, "color");
+    intakeColorSensor.enableLed(true);
+    RevLED led = new RevLED(hardwareMap, "redled", "greenled");
+    led.off();
 
     // Drivetrain
     fl = hardwareMap.dcMotor.get("fl");
@@ -99,13 +109,11 @@ public class Robot {
   }
 
   public void setSlidePower(double pow) {
-
     slideL.setPower(pow);
     slideR.setPower(pow);
   }
 
   public void setSlidePos(int pos, double pow) {
-
     setSlidePower(0);
 
     slideL.setTargetPosition(pos);
@@ -116,8 +124,9 @@ public class Robot {
 
     setSlidePower(pow);
 
-    while (this.opMode.opModeIsActive() &&
-        Math.abs(((slideL.getCurrentPosition() + slideR.getCurrentPosition()) / 2.0) - pos) > 30) {
+    while (this.opMode.opModeIsActive()
+        && Math.abs(slideL.getCurrentPosition() - pos) > 30
+        && Math.abs(slideR.getCurrentPosition() - pos) > 30) {
       // Wait for slide to end
     }
   }
@@ -145,7 +154,6 @@ public class Robot {
     }
 
     setDriveTrainPower(0, 0, 0, 0);
-
   }
 
   public void setDriveTrainPower(double frPow, double flPow, double brPow, double blPow) {
@@ -268,7 +276,6 @@ public class Robot {
     }
   }
 
-
   public void flipperControl(boolean x) {
     if (!x) {
       pixelPullFront.setPosition(0.78);
@@ -282,8 +289,4 @@ public class Robot {
   public void fly() {
     plane.setPosition(1);
   }
-
-  /*public void indicateCloseEnough() {
-    this.light.enableLight(dis.getDistance(DistanceUnit.INCH) < 10);
-  }*/
 }
