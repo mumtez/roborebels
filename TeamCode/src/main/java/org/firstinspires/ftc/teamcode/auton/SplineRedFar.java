@@ -12,7 +12,6 @@ import com.qualcomm.robotcore.hardware.DcMotor.RunMode;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.odom.MecanumDrive;
-import org.firstinspires.ftc.teamcode.vision.BluePropThreshold;
 import org.firstinspires.ftc.teamcode.vision.Position;
 import org.firstinspires.ftc.teamcode.vision.RedPropThreshold;
 import org.firstinspires.ftc.vision.VisionPortal;
@@ -44,15 +43,18 @@ public class SplineRedFar extends LinearOpMode {
     robot = new Robot(this);
 
     portal = new VisionPortal.Builder()
-            .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
-            .setCameraResolution(new Size(640, 480))
-            .addProcessor(processor)
-            .build();
+        .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
+        .setCameraResolution(new Size(640, 480))
+        .addProcessor(processor)
+        .build();
 
     Position x = Position.NONE;
     while (opModeInInit() && !isStopRequested()) {
       x = processor.getElePos();
       telemetry.addLine("Case" + ":" + x.name());
+      telemetry.addData("RED Prop Position", processor.getElePos());
+      telemetry.addData("RED left box avg", processor.averagedLeftBox);
+      telemetry.addData("RED right box avg", processor.averagedRightBox);
       telemetry.update();
     }
     waitForStart();
@@ -81,49 +83,49 @@ public class SplineRedFar extends LinearOpMode {
 
     if (x == Position.RIGHT) {
       Actions.runBlocking(
-              drive.actionBuilder(drive.pose)
-                      .strafeToConstantHeading(new Vector2d(-40, -60))
-                      .strafeToConstantHeading(new Vector2d(-40, -12))
-                      .strafeToLinearHeading(placeSpike, Math.toRadians(spikeTurn))
-                      .build());
+          drive.actionBuilder(drive.pose)
+              .strafeToConstantHeading(new Vector2d(-40, -60))
+              .strafeToConstantHeading(new Vector2d(-40, -12))
+              .strafeToLinearHeading(placeSpike, Math.toRadians(spikeTurn))
+              .build());
 
       robot.flipperControl(true);
       robot.setIntakePos(-100, .1);
       robot.waitTime(100);
 
       Actions.runBlocking(
-              drive.actionBuilder(drive.pose)
-                      .strafeToConstantHeading(new Vector2d(-48, -12))
-                      .turnTo(Math.toRadians(180))
-                      .strafeToConstantHeading(new Vector2d(-63, -12))
-                      .build());
+          drive.actionBuilder(drive.pose)
+              .strafeToConstantHeading(new Vector2d(-48, -12))
+              .turnTo(Math.toRadians(180))
+              .strafeToConstantHeading(new Vector2d(-63, -12))
+              .build());
     } else {
       Actions.runBlocking(
-              drive.actionBuilder(drive.pose)
-                      .strafeToConstantHeading(new Vector2d(-38, -60))
-                      .strafeToConstantHeading(new Vector2d(-36, -36))
-                      .turnTo(Math.toRadians(spikeTurn))
-                      .strafeToConstantHeading(placeSpike)
-                      .build());
+          drive.actionBuilder(drive.pose)
+              .strafeToConstantHeading(new Vector2d(-38, -60))
+              .strafeToConstantHeading(new Vector2d(-36, -36))
+              .turnTo(Math.toRadians(spikeTurn))
+              .strafeToConstantHeading(placeSpike)
+              .build());
 
       robot.flipperControl(true);
       robot.setIntakePos(-100, .1);
       robot.waitTime(100);
 
       Actions.runBlocking(
-              drive.actionBuilder(drive.pose)
-                      .strafeToConstantHeading(new Vector2d(-48, -48))
-                      .strafeToConstantHeading(new Vector2d(-48, -12))
-                      .turnTo(Math.toRadians(180))
-                      .strafeToConstantHeading(new Vector2d(-63, -12))
-                      .build());
+          drive.actionBuilder(drive.pose)
+              .strafeToConstantHeading(new Vector2d(-48, -48))
+              .strafeToConstantHeading(new Vector2d(-48, -12))
+              .turnTo(Math.toRadians(180))
+              .strafeToConstantHeading(new Vector2d(-63, -12))
+              .build());
     }
     // GRAB ONE
     robot.flipperControl(false);
     Actions.runBlocking(
-            drive.actionBuilder(drive.pose)
-                    .strafeToConstantHeading(new Vector2d(-55, -12))
-                    .build());
+        drive.actionBuilder(drive.pose)
+            .strafeToConstantHeading(new Vector2d(-55, -12))
+            .build());
     robot.flipperControl(true);
     robot.intake.setMode(RunMode.RUN_WITHOUT_ENCODER);
     robot.intake.setPower(0.6);
@@ -133,12 +135,12 @@ public class SplineRedFar extends LinearOpMode {
 
     // going back to board
     Actions.runBlocking(
-            drive.actionBuilder(drive.pose)
-                    .strafeToConstantHeading(new Vector2d(0, -0))
-                    .setTangent(Math.toRadians(0))
-                    .splineToConstantHeading(placeBoard, Math.toRadians(-270))
-                    .turnTo(Math.toRadians(180))
-                    .build());
+        drive.actionBuilder(drive.pose)
+            .strafeToConstantHeading(new Vector2d(0, -0))
+            .setTangent(Math.toRadians(0))
+            .splineToConstantHeading(placeBoard, Math.toRadians(-270))
+            .turnTo(Math.toRadians(180))
+            .build());
 
     // FIRST PLACE
     robot.setSlidePos(3000, 1);

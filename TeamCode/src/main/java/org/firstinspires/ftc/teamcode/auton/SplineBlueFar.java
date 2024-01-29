@@ -52,6 +52,9 @@ public class SplineBlueFar extends LinearOpMode {
     while (opModeInInit() && !isStopRequested()) {
       x = processor.getElePos();
       telemetry.addLine("Case" + ":" + x.name());
+      telemetry.addData("BLUE Prop Position", processor.getElePos());
+      telemetry.addData("BLUE left box avg", processor.averagedLeftBox);
+      telemetry.addData("BLUE right box avg", processor.averagedRightBox);
       telemetry.update();
     }
 
