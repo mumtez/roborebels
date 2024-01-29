@@ -7,7 +7,6 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor.RunMode;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.odom.MecanumDrive;
@@ -16,8 +15,8 @@ import org.firstinspires.ftc.teamcode.vision.Position;
 import org.firstinspires.ftc.vision.VisionPortal;
 
 @Config
-@Autonomous(name = "Blue Close Spline Autonimous")
-public class SplineBlueClose extends LinearOpMode {
+@Autonomous(name = "Blue Close Spline Autonimous NO CYCLE")
+public class SplineBlueCloseNOCYCLE extends LinearOpMode {
 
   Robot robot;
   private VisionPortal portal;
@@ -91,7 +90,13 @@ public class SplineBlueClose extends LinearOpMode {
     robot.setIntakePos(-100, .1);
     robot.waitTime(100);
 
-    // DRIVE TO GATE
+    Actions.runBlocking(
+        drive.actionBuilder(drive.pose)
+            .setTangent(0)
+            .splineToConstantHeading(new Vector2d(60, 60), Math.toRadians(0))
+            .build());
+
+    /* DRIVE TO GATE
     Actions.runBlocking(
         drive.actionBuilder(drive.pose)
             .setTangent(0)
@@ -185,7 +190,7 @@ public class SplineBlueClose extends LinearOpMode {
 
     // SECOND PLACE
     robot.setSlidePos(3000, 1);
-    robot.setSlidePos(0, 1);
+    robot.setSlidePos(0, 1); */
   }
 
 

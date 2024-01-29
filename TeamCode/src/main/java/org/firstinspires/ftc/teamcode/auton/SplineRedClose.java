@@ -46,6 +46,9 @@ public class SplineRedClose extends LinearOpMode {
     while (opModeInInit() && !isStopRequested()) {
       x = processor.getElePos();
       telemetry.addLine("Case" + ":" + x.name());
+      telemetry.addData("RED Prop Position", processor.getElePos());
+      telemetry.addData("RED left box avg", processor.averagedLeftBox);
+      telemetry.addData("RED right box avg", processor.averagedRightBox);
       telemetry.update();
     }
 

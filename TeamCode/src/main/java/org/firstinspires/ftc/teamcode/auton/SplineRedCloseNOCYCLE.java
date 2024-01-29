@@ -7,32 +7,31 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor.RunMode;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.odom.MecanumDrive;
-import org.firstinspires.ftc.teamcode.vision.BluePropThreshold;
 import org.firstinspires.ftc.teamcode.vision.Position;
+import org.firstinspires.ftc.teamcode.vision.RedPropThreshold;
 import org.firstinspires.ftc.vision.VisionPortal;
 
 @Config
-@Autonomous(name = "Blue Close Spline Autonimous")
-public class SplineBlueClose extends LinearOpMode {
+@Autonomous(name = "Red Close Spline Autonimous NO CYCLE")
+public class SplineRedCloseNOCYCLE extends LinearOpMode {
 
   Robot robot;
   private VisionPortal portal;
-  BluePropThreshold processor;
-  public static Vector2d placeSpikeLeft = new Vector2d(27, 30);
-  public static Vector2d placeSpikeCenter = new Vector2d(18, 24);
-  public static Vector2d placeSpikeRight = new Vector2d(6, 30);
-  public static Vector2d placeBoardLeft = new Vector2d(49, 38);
-  public static Vector2d placeBoardCenter = new Vector2d(49, 31.5);
-  public static Vector2d placeBoardRight = new Vector2d(48.5, 27);
+  RedPropThreshold processor;
+  public static Vector2d placeSpikeRight = new Vector2d(27, -30);
+  public static Vector2d placeSpikeCenter = new Vector2d(18, -24);
+  public static Vector2d placeSpikeLeft = new Vector2d(6, -30);
+  public static Vector2d placeBoardRight = new Vector2d(49, -38);
+  public static Vector2d placeBoardCenter = new Vector2d(47, -31.5);
+  public static Vector2d placeBoardLeft = new Vector2d(47, -26);
 
   @Override
   public void runOpMode() throws InterruptedException {
-    MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(12, 60, Math.toRadians(-90)));
-    processor = new BluePropThreshold();
+    MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(11, -60, Math.toRadians(90)));
+    processor = new RedPropThreshold();
     robot = new Robot(this);
 
     portal = new VisionPortal.Builder()
@@ -46,9 +45,9 @@ public class SplineBlueClose extends LinearOpMode {
     while (opModeInInit() && !isStopRequested()) {
       x = processor.getElePos();
       telemetry.addLine("Case" + ":" + x.name());
-      telemetry.addData("BLUE Prop Position", processor.getElePos());
-      telemetry.addData("BLUE left box avg", processor.averagedLeftBox);
-      telemetry.addData("BLUE right box avg", processor.averagedRightBox);
+      telemetry.addData("RED Prop Position", processor.getElePos());
+      telemetry.addData("RED left box avg", processor.averagedLeftBox);
+      telemetry.addData("RED right box avg", processor.averagedRightBox);
       telemetry.update();
     }
 
@@ -91,12 +90,18 @@ public class SplineBlueClose extends LinearOpMode {
     robot.setIntakePos(-100, .1);
     robot.waitTime(100);
 
-    // DRIVE TO GATE
     Actions.runBlocking(
         drive.actionBuilder(drive.pose)
             .setTangent(0)
-            .splineToConstantHeading(new Vector2d(24, 0), Math.toRadians(180))
-            .splineToConstantHeading(new Vector2d(3, 8), Math.toRadians(180))
+            .splineToConstantHeading(new Vector2d(60, -60), Math.toRadians(0))
+            .build()
+    );
+    /* DRIVE TO GATE
+    Actions.runBlocking(
+        drive.actionBuilder(drive.pose)
+            .setTangent(0)
+            .splineToConstantHeading(new Vector2d(24, -0), Math.toRadians(180))
+            .splineToConstantHeading(new Vector2d(3, -8), Math.toRadians(180))
             .build());
     robot.toggleDoor(true);
     robot.waitTime(400);
@@ -104,25 +109,25 @@ public class SplineBlueClose extends LinearOpMode {
     // GO THROUGH GATE
     Actions.runBlocking(
         drive.actionBuilder(drive.pose)
-            .strafeTo(new Vector2d(-36, 12))
+            .strafeTo(new Vector2d(-36, -12))
             .build());
     robot.toggleDoor(false);
     Actions.runBlocking(
         drive.actionBuilder(drive.pose)
             .setTangent(Math.toRadians(-180))
-            .splineToConstantHeading(new Vector2d(-60, 12), Math.toRadians(-90))
+            .splineToConstantHeading(new Vector2d(-60, -12), Math.toRadians(90))
             .build());
 
     Actions.runBlocking(
         drive.actionBuilder(drive.pose)
-            .strafeToConstantHeading(new Vector2d(-66.5, 12))
+            .strafeToConstantHeading(new Vector2d(-65, -12))
             .build());
 
     // GRAB ONE
     robot.flipperControl(false);
     Actions.runBlocking(
         drive.actionBuilder(drive.pose)
-            .strafeToConstantHeading(new Vector2d(-60, 12))
+            .strafeToConstantHeading(new Vector2d(-60, -12))
             .build());
     robot.flipperControl(true);
     robot.intake.setMode(RunMode.RUN_WITHOUT_ENCODER);
@@ -143,17 +148,17 @@ public class SplineBlueClose extends LinearOpMode {
     Actions.runBlocking(
         drive.actionBuilder(drive.pose)
             .setTangent(Math.toRadians(-180))
-            .splineToConstantHeading(new Vector2d(-60, 12), Math.toRadians(-90))
+            .splineToConstantHeading(new Vector2d(-60, -12), Math.toRadians(-90))
             .build());
 
     Actions.runBlocking(
         drive.actionBuilder(drive.pose)
-            .strafeToConstantHeading(new Vector2d(-66.5, 12))
+            .strafeToConstantHeading(new Vector2d(-66, -12))
             .build());
     robot.flipperControl(false);
     Actions.runBlocking(
         drive.actionBuilder(drive.pose)
-            .strafeToConstantHeading(new Vector2d(-60, 12))
+            .strafeToConstantHeading(new Vector2d(-60, -12))
             .build());
     robot.flipperControl(true);
     robot.intake.setPower(.6);
@@ -165,7 +170,7 @@ public class SplineBlueClose extends LinearOpMode {
     Actions.runBlocking(
         drive.actionBuilder(drive.pose)
             .setTangent(Math.toRadians(0))
-            .splineToConstantHeading(new Vector2d(45, 25), Math.toRadians(90))
+            .splineToConstantHeading(new Vector2d(45, -25), Math.toRadians(270))
             .turnTo(Math.toRadians(180))
             .build());
 
@@ -186,6 +191,8 @@ public class SplineBlueClose extends LinearOpMode {
     // SECOND PLACE
     robot.setSlidePos(3000, 1);
     robot.setSlidePos(0, 1);
+
+     */
   }
 
 
