@@ -66,6 +66,9 @@ public class Teleop extends LinearOpMode {
       robot.setSlidePower(-gamepad2.right_stick_y);
 
       robot.toggleDoor(gamepad1.y);
+
+      telemetry.addData("stats", robot.getPixel());
+
       /* if (gamepad1.x && timer2.milliseconds() > 500) {
         robot.flipper();
         timer.reset();

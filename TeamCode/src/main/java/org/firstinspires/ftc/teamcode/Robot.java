@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot.LogoFacingDirection;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -15,12 +16,14 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @Config
 public class Robot {
 
   private final LinearOpMode opMode;
-
+  private int counter;
+  public final RevColorSensorV3 pixelSensor;
   public final IMU imu;
   public final DcMotor fl, fr, bl, br;
   public final DcMotor slideL, slideR;
@@ -44,6 +47,8 @@ public class Robot {
     imu.initialize(parameters);
 
     light = hardwareMap.get(LED.class, "led");
+
+    counter = 0;
 
     // Drivetrain
     fl = hardwareMap.dcMotor.get("fl");
@@ -95,6 +100,8 @@ public class Robot {
     gateFlip.setPosition(0);
     pixelPullFront.setPosition(0.78);
     pixelPull.setPosition(0.22);
+
+    pixelSensor = hardwareMap.get(RevColorSensorV3.class, "intakeColour");
   }
 
   public void setSlidePower(double pow) {
@@ -266,6 +273,15 @@ public class Robot {
     } else {
       gateFlip.setPosition(0);
     }
+  }
+
+  public int getPixel() {
+
+    if (pixelSensor.getDistance(DistanceUnit.CM) < 5) {
+      counter++;
+    }
+    return counter;
+
   }
 
 
