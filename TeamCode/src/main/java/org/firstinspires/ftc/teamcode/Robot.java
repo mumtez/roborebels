@@ -1,18 +1,14 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot.LogoFacingDirection;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.ColorRangeSensor;
-import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotor.RunMode;
 import com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior;
 import com.qualcomm.robotcore.hardware.DcMotorSimple.Direction;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.LED;
@@ -20,19 +16,20 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @Config
 public class Robot {
 
   private final LinearOpMode opMode;
-
+  private int counter;
+  public final RevColorSensorV3 pixelSensor;
   public final IMU imu;
   public final DcMotor fl, fr, bl, br;
   public final DcMotor slideL, slideR;
   public final DcMotor intake;
   public final Servo plane, gateFlip, pixelPull, pixelPullFront;
-  public final DistanceSensor distanceSensor;
-  public final ColorRangeSensor intakeColorSensor;
+  public final LED light;
 
   public static double GYRO_TURN_P_GAIN = .04;
   public static double HEADING_THRESHOLD = 1;
@@ -54,6 +51,8 @@ public class Robot {
     intakeColorSensor.enableLed(true);
     RevLED led = new RevLED(hardwareMap, "redled", "greenled");
     led.off();
+
+    counter = 0;
 
     // Drivetrain
     fl = hardwareMap.dcMotor.get("fl");
@@ -98,7 +97,6 @@ public class Robot {
 
     // Servos
     plane = hardwareMap.servo.get("plane");
-
     gateFlip = hardwareMap.servo.get("gate");
     pixelPull = hardwareMap.servo.get("pixel");
     pixelPullFront = hardwareMap.servo.get("front");
@@ -106,6 +104,8 @@ public class Robot {
     gateFlip.setPosition(0);
     pixelPullFront.setPosition(0.78);
     pixelPull.setPosition(0.22);
+
+    pixelSensor = hardwareMap.get(RevColorSensorV3.class, "intakeColour");
   }
 
   public void setSlidePower(double pow) {
@@ -275,6 +275,16 @@ public class Robot {
       gateFlip.setPosition(0);
     }
   }
+
+  public int getPixel() {
+
+    if (pixelSensor.getDistance(DistanceUnit.CM) < 5) {
+      counter++;
+    }
+    return counter;
+
+  }
+
 
   public void flipperControl(boolean x) {
     if (!x) {
