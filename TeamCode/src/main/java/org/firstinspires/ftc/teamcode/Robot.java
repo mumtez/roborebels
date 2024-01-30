@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot.LogoFacingDirection;
@@ -9,12 +10,13 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotor.RunMode;
 import com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior;
 import com.qualcomm.robotcore.hardware.DcMotorSimple.Direction;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
-import com.qualcomm.robotcore.hardware.LED;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
+import java.util.List;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
@@ -24,12 +26,16 @@ public class Robot {
   private final LinearOpMode opMode;
   private int counter;
   public final RevColorSensorV3 pixelSensor;
+  public final DistanceSensor distanceSensor;
   public final IMU imu;
   public final DcMotor fl, fr, bl, br;
   public final DcMotor slideL, slideR;
   public final DcMotor intake;
   public final Servo plane, gateFlip, pixelPull, pixelPullFront;
-  public final LED light;
+
+  public static double DIST_P = .1;
+  public static double DIST_THRESH = 1.5; // cm
+  public static double DIST_TARG = 20; // cm
 
   public static double GYRO_TURN_P_GAIN = .04;
   public static double HEADING_THRESHOLD = 1;
@@ -37,6 +43,12 @@ public class Robot {
   public Robot(LinearOpMode opMode) {
     this.opMode = opMode;
     HardwareMap hardwareMap = opMode.hardwareMap;
+
+    // BULK CACHING
+    List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
+    for (LynxModule hub : allHubs) {
+      hub.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
+    }
 
     // IMU
     imu = hardwareMap.get(IMU.class, "imu");
@@ -47,8 +59,6 @@ public class Robot {
 
     // Sensors
     distanceSensor = hardwareMap.get(DistanceSensor.class, "dist");
-    intakeColorSensor = hardwareMap.get(ColorRangeSensor.class, "color");
-    intakeColorSensor.enableLed(true);
     RevLED led = new RevLED(hardwareMap, "redled", "greenled");
     led.off();
 
@@ -106,6 +116,7 @@ public class Robot {
     pixelPull.setPosition(0.22);
 
     pixelSensor = hardwareMap.get(RevColorSensorV3.class, "intakeColour");
+    pixelSensor.enableLed(true);
   }
 
   public void setSlidePower(double pow) {
@@ -268,8 +279,8 @@ public class Robot {
     }
   }
 
-  public void toggleDoor(boolean x) {
-    if (x) {
+  public void toggleDoor(boolean open) {
+    if (open) {
       gateFlip.setPosition(.6);
     } else {
       gateFlip.setPosition(0);
@@ -277,14 +288,20 @@ public class Robot {
   }
 
   public int getPixel() {
-
     if (pixelSensor.getDistance(DistanceUnit.CM) < 5) {
       counter++;
     }
     return counter;
-
   }
 
+  public void driveToBoard() {
+    double error = Math.abs(distanceSensor.getDistance(DistanceUnit.CM) - DIST_TARG);
+    if ((Math.abs(distanceSensor.getDistance(DistanceUnit.CM) - DIST_TARG)) > DIST_THRESH) {
+      this.setDriveTrainPower(DIST_P * error, DIST_P * error, DIST_P * error, DIST_P * error);
+    } else {
+      this.setDriveTrainPower(0, 0, 0, 0);
+    }
+  }
 
   public void flipperControl(boolean x) {
     if (!x) {

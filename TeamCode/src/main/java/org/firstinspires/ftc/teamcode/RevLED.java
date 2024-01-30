@@ -27,7 +27,7 @@ public class RevLED {
     this.greenLED.setState(false);
   }
 
-  public void orange() {
+  public void amber() {
     this.redLED.setState(true);
     this.greenLED.setState(true);
   }
