@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor.RunMode;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @TeleOp(name = "Teleop")
 public class Teleop extends LinearOpMode {
@@ -62,6 +63,7 @@ public class Teleop extends LinearOpMode {
       }
 
       telemetry.addData("stats", robot.getPixel()); // TODO: comment out
+      telemetry.addData("dist", robot.distanceSensor.getDistance(DistanceUnit.CM));
       telemetry.update();
     }
   }

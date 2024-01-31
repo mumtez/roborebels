@@ -301,6 +301,8 @@ public class Robot {
     } else {
       this.setDriveTrainPower(0, 0, 0, 0);
     }
+
+
   }
 
   public void flipperControl(boolean x) {
