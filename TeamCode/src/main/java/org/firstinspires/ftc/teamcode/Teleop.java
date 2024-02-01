@@ -4,7 +4,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor.RunMode;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @TeleOp(name = "Teleop")
 public class Teleop extends LinearOpMode {
@@ -27,8 +26,8 @@ public class Teleop extends LinearOpMode {
         robot.imu.resetYaw();
       }
 
-      if (gamepad1.dpad_left) {
-        robot.driveToBoard();
+      if (false) {
+
       } else {
         double y = -gamepad1.left_stick_y;
         double x = gamepad1.left_stick_x;
@@ -62,8 +61,6 @@ public class Teleop extends LinearOpMode {
         robot.fly();
       }
 
-      telemetry.addData("stats", robot.getPixel()); // TODO: comment out
-      telemetry.addData("dist", robot.distanceSensor.getDistance(DistanceUnit.CM));
       telemetry.update();
     }
   }

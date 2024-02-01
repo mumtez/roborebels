@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.lynx.LynxModule;
-import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot.LogoFacingDirection;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -10,7 +9,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotor.RunMode;
 import com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior;
 import com.qualcomm.robotcore.hardware.DcMotorSimple.Direction;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -18,15 +16,14 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 import java.util.List;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @Config
 public class Robot {
 
   private final LinearOpMode opMode;
   private int counter;
-  public final RevColorSensorV3 pixelSensor;
-  public final DistanceSensor distanceSensor;
+  //public final RevColorSensorV3 pixelSensor;
+  //public final DistanceSensor distanceSensor;
   public final IMU imu;
   public final DcMotor fl, fr, bl, br;
   public final DcMotor slideL, slideR;
@@ -58,9 +55,9 @@ public class Robot {
     imu.initialize(parameters);
 
     // Sensors
-    distanceSensor = hardwareMap.get(DistanceSensor.class, "dist");
-    RevLED led = new RevLED(hardwareMap, "redled", "greenled");
-    led.off();
+    //distanceSensor = hardwareMap.get(DistanceSensor.class, "dist");
+    //RevLED led = new RevLED(hardwareMap, "redled", "greenled");
+    //led.off();
 
     counter = 0;
 
@@ -115,8 +112,8 @@ public class Robot {
     pixelPullFront.setPosition(0.78);
     pixelPull.setPosition(0.22);
 
-    pixelSensor = hardwareMap.get(RevColorSensorV3.class, "intakeColour");
-    pixelSensor.enableLed(true);
+    // pixelSensor = hardwareMap.get(RevColorSensorV3.class, "intakeColour");
+    // pixelSensor.enableLed(true);
   }
 
   public void setSlidePower(double pow) {
@@ -287,14 +284,14 @@ public class Robot {
     }
   }
 
-  public int getPixel() {
+  /*public int getPixel() {
     if (pixelSensor.getDistance(DistanceUnit.CM) < 5) {
       counter++;
     }
     return counter;
-  }
+  }*/
 
-  public void driveToBoard() {
+  /*public void driveToBoard() {
     double error = Math.abs(distanceSensor.getDistance(DistanceUnit.CM) - DIST_TARG);
     if ((Math.abs(distanceSensor.getDistance(DistanceUnit.CM) - DIST_TARG)) > DIST_THRESH) {
       this.setDriveTrainPower(DIST_P * error, DIST_P * error, DIST_P * error, DIST_P * error);
@@ -303,7 +300,7 @@ public class Robot {
     }
 
 
-  }
+  }*/
 
   public void flipperControl(boolean x) {
     if (!x) {
