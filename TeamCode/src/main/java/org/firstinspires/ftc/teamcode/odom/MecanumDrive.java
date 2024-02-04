@@ -41,7 +41,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple.Direction;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -87,7 +86,7 @@ public final class MecanumDrive {
     // path controller gains
     public double axialGain = 7;
     public double lateralGain = 8;
-    public double headingGain = 6; // shared with turn
+    public double headingGain = 8; // shared with turn
 
     public double axialVelGain = 2.7;
     public double lateralVelGain = 1.2;
@@ -147,7 +146,8 @@ public final class MecanumDrive {
       lastRightBackPos = rightBack.getPositionAndVelocity().position;
       lastRightFrontPos = rightFront.getPositionAndVelocity().position;
 
-      lastHeading = Rotation2d.exp(imu.get().getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS));
+      lastHeading = Rotation2d.exp(
+          imu.get().getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS));
     }
 
     @Override
@@ -284,13 +284,17 @@ public final class MecanumDrive {
       PoseVelocity2d robotVelRobot = updatePoseEstimate();
       Pose2d error = txWorldTarget.value().minusExp(pose);
 
-      if (
+      /*if (
           (t >= timeTrajectory.duration
               && error.position.norm() < 2
               && robotVelRobot.linearVel.norm() < 0.5
               && error.heading.real < 1
               && robotVelRobot.angVel < 0.5
-          ) || t >= timeTrajectory.duration + 1) { // 1 second max extra correction
+          ) || t >= timeTrajectory.duration + 1) { // 1 second max extra correction */
+      if ((t >= timeTrajectory.duration
+          && error.heading.real < 1
+          && robotVelRobot.angVel < 0.5
+      ) || t >= timeTrajectory.duration + 1) {
         leftFront.setPower(0);
         leftBack.setPower(0);
         rightBack.setPower(0);

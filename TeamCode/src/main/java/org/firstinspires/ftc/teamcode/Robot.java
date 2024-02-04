@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot.LogoFacingDirection;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -14,7 +13,6 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
-import java.util.List;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 @Config
@@ -42,10 +40,10 @@ public class Robot {
     HardwareMap hardwareMap = opMode.hardwareMap;
 
     // BULK CACHING
-    List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
-    for (LynxModule hub : allHubs) {
-      hub.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
-    }
+//    List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
+//    for (LynxModule hub : allHubs) {
+//      hub.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
+//    }
 
     // IMU
     imu = hardwareMap.get(IMU.class, "imu");
@@ -53,6 +51,7 @@ public class Robot {
         LogoFacingDirection.RIGHT,
         RevHubOrientationOnRobot.UsbFacingDirection.UP));
     imu.initialize(parameters);
+    imu.resetYaw();
 
     // Sensors
     //distanceSensor = hardwareMap.get(DistanceSensor.class, "dist");
@@ -143,6 +142,18 @@ public class Robot {
     return this.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
   }
 
+  public void holdPosition(double pow) {
+    fr.setTargetPosition(fr.getCurrentPosition());
+    fl.setTargetPosition(fl.getCurrentPosition());
+    br.setTargetPosition(br.getCurrentPosition());
+    bl.setTargetPosition(bl.getCurrentPosition());
+    fr.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    fl.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    br.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    bl.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    this.setDriveTrainPower(pow, pow, pow, pow);
+  }
+
   public void encodeDriveForward(double disto, double y) {
     int targetTicks = distanceToEncoderTicks(disto);
     fr.setTargetPosition(targetTicks + fr.getCurrentPosition());
@@ -156,12 +167,8 @@ public class Robot {
     bl.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
     setDriveTrainPower(y, y, y, y);
-
-    while (opMode.opModeIsActive() && fr.isBusy() && fl.isBusy() && br.isBusy() && bl.isBusy()) {
-      // Do Nothing
-    }
-
-    setDriveTrainPower(0, 0, 0, 0);
+    opMode.telemetry.addData("fr pos", fr.getCurrentPosition());
+    opMode.telemetry.update();
   }
 
   public void setDriveTrainPower(double frPow, double flPow, double brPow, double blPow) {
@@ -258,9 +265,9 @@ public class Robot {
   }
 
   public void spitPixel() {
-    intake.setTargetPosition((int) (537.7 / 3) + intake.getCurrentPosition());
-    intake.setMode(RunMode.RUN_TO_POSITION);
-    intake.setPower(.7);
+    this.flipperControl(true);
+    this.setIntakePos(-100, .1);
+    this.waitTime(100);
   }
 
   public void setIntakePos(int pos, double pow) {

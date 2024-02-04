@@ -16,7 +16,7 @@ public class BluePropThreshold implements VisionProcessor {
 
   public double averagedLeftBox;
   public double averagedRightBox;
-  public static double blueThreshold = 0.07;
+  public static double blueThreshold = 0.05;
   private final Rect RIGHT_RECTANGLE = new Rect(
       new Point(0, 0),
       new Point(319, 479)

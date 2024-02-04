@@ -25,7 +25,7 @@ public class SplineBlueCloseNOCYCLE extends LinearOpMode {
   public static Vector2d placeSpikeCenter = new Vector2d(18, 24);
   public static Vector2d placeSpikeRight = new Vector2d(6, 30);
   public static Vector2d placeBoardLeft = new Vector2d(49, 38);
-  public static Vector2d placeBoardCenter = new Vector2d(49, 31.5);
+  public static Vector2d placeBoardCenter = new Vector2d(48.5, 31.5);
   public static Vector2d placeBoardRight = new Vector2d(48.5, 27);
 
   @Override

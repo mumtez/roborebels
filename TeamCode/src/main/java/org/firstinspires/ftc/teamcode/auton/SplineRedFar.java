@@ -25,20 +25,14 @@ public class SplineRedFar extends LinearOpMode {
   private VisionPortal portal;
   RedPropThreshold processor;
 
-  public static Vector2d placeSpikeLeft = new Vector2d(-34, -34);
-  public static Vector2d placeSpikeCenter = new Vector2d(-36, -30);
-  public static Vector2d placeSpikeRight = new Vector2d(-50, -23);
-  public static Vector2d placeBoardLeft = new Vector2d(50, -30);
-  public static Vector2d placeBoardCenter = new Vector2d(50, -27);
-  public static Vector2d placeBoardRight = new Vector2d(50, -24);
+  public static Vector2d RIGHT_BOARD = new Vector2d(55.5, -51 + 17);
+  public static Vector2d CENTER_BOARD = new Vector2d(55.5, -44);
 
-  public static int rightTurn = 270;
-  public static int leftTurn = 40;
-  public static int centerTurn = 90;
+  public static Vector2d LEFT_BOARD = new Vector2d(55.5, -37.5);
 
   @Override
   public void runOpMode() throws InterruptedException {
-    MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(-36, 60, Math.toRadians(-270)));
+    MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(-36, -61, Math.toRadians(90)));
     processor = new RedPropThreshold();
     robot = new Robot(this);
 
@@ -57,110 +51,146 @@ public class SplineRedFar extends LinearOpMode {
       telemetry.addData("RED right box avg", processor.averagedRightBox);
       telemetry.update();
     }
-    waitForStart();
 
-    Vector2d placeSpike;
-    Vector2d placeBoard;
-    int spikeTurn;
     switch (x) {
-      case LEFT:
-        placeBoard = placeBoardLeft;
-        placeSpike = placeSpikeLeft;
-        spikeTurn = leftTurn;
-        break;
-      case CENTER:
-        placeBoard = placeBoardCenter;
-        placeSpike = placeSpikeCenter;
-        spikeTurn = centerTurn;
-        break;
-      default:
       case RIGHT:
-        placeBoard = placeBoardRight;
-        placeSpike = placeSpikeRight;
-        spikeTurn = rightTurn;
+        Actions.runBlocking(
+            drive.actionBuilder(drive.pose)
+                .splineToLinearHeading(new Pose2d(-29, -34, Math.toRadians(0)), Math.toRadians(0))
+                .build());
+
+        robot.spitPixel();
+        robot.flipperControl(true);
+
+        Actions.runBlocking(
+            drive.actionBuilder(drive.pose)
+                .setTangent(Math.toRadians(180))
+                .splineToLinearHeading(new Pose2d(-46, -36, Math.toRadians(0)), Math.toRadians(0))
+                .setTangent(Math.toRadians(180))
+                .splineToLinearHeading(new Pose2d(-55, -8, Math.toRadians(180)),
+                    Math.toRadians(180))
+                .build());
+
+        robot.turnByGyro(90);
+        robot.flipperControl(false);
+        robot.waitTime(1000);
+
+        Actions.runBlocking(
+            drive.actionBuilder(drive.pose)
+                .setTangent(Math.toRadians(180))
+                .splineToLinearHeading(new Pose2d(-50, -7, Math.toRadians(180)), Math.toRadians(0))
+                .build());
+
+        robot.flipperControl(true);
+        robot.intake.setPower(0);
+        robot.intake.setMode(RunMode.RUN_WITHOUT_ENCODER);
+        robot.intake.setPower(1);
+        Actions.runBlocking(
+            drive.actionBuilder(drive.pose)
+                .strafeTo(new Vector2d(12, -10))
+                .setTangent(0)
+                //.waitSeconds(0) // TODO: update per match for partner
+                .splineToLinearHeading(new Pose2d(50, -56 + 15, Math.toRadians(180)),
+                    Math.toRadians(270))
+                .strafeTo(RIGHT_BOARD)
+                .build());
+
+        robot.turnByGyro(90);
+        robot.intake.setPower(0);
+        robot.setSlidePos(2400, 1);
+        robot.waitTime(200);
+        robot.setSlidePos(0, 0.6);
+        break;
+
+      case CENTER:
+        Actions.runBlocking(
+            drive.actionBuilder(drive.pose)
+                .splineToLinearHeading(new Pose2d(-36, -16, Math.toRadians(-90)),
+                    Math.toRadians(90))
+                .build());
+        robot.spitPixel();
+        robot.flipperControl(true);
+
+        Actions.runBlocking(
+            drive.actionBuilder(drive.pose)
+                .strafeTo(new Vector2d(-36, -0))
+                .setTangent(Math.toRadians(180))
+                .splineToLinearHeading(new Pose2d(-55, -8, Math.toRadians(180)),
+                    Math.toRadians(180))
+                .build());
+        robot.turnByGyro(90);
+        robot.flipperControl(false);
+        robot.waitTime(1000);
+        Actions.runBlocking(
+            drive.actionBuilder(drive.pose)
+                .setTangent(Math.toRadians(180))
+                .splineToLinearHeading(new Pose2d(-50, -7, Math.toRadians(180)), Math.toRadians(0))
+                .build());
+        robot.flipperControl(true);
+        robot.intake.setPower(0);
+        robot.intake.setMode(RunMode.RUN_WITHOUT_ENCODER);
+        robot.intake.setPower(1);
+        Actions.runBlocking(
+            drive.actionBuilder(drive.pose)
+                .strafeTo(new Vector2d(12, -10))
+                .setTangent(0)
+                //.waitSeconds(0) // TODO: update per match for partner
+                .splineToLinearHeading(new Pose2d(50, -50, Math.toRadians(180)),
+                    Math.toRadians(270))
+                .strafeTo(CENTER_BOARD)
+                .build());
+        robot.turnByGyro(90);
+        robot.intake.setPower(0);
+        robot.setSlidePos(2400, 1);
+        robot.waitTime(200);
+        robot.setSlidePos(0, .6);
+        break;
+
+      default:
+      case LEFT:
+        Actions.runBlocking(
+            drive.actionBuilder(drive.pose)
+                .splineToLinearHeading(new Pose2d(-46, -24, Math.toRadians(-90)),
+                    Math.toRadians(90))
+                .build());
+        robot.spitPixel();
+        robot.flipperControl(true);
+
+        Actions.runBlocking(
+            drive.actionBuilder(drive.pose)
+                .strafeTo(new Vector2d(-46, -0))
+                .setTangent(Math.toRadians(180))
+                .splineToLinearHeading(new Pose2d(-55, -8, Math.toRadians(180)),
+                    Math.toRadians(180))
+                .build());
+        robot.turnByGyro(90);
+        robot.flipperControl(false);
+        robot.waitTime(1000);
+        Actions.runBlocking(
+            drive.actionBuilder(drive.pose)
+                .setTangent(Math.toRadians(180))
+                .splineToLinearHeading(new Pose2d(-50, -7, Math.toRadians(180)), Math.toRadians(0))
+                .build());
+        robot.flipperControl(true);
+        robot.intake.setPower(0);
+        robot.intake.setMode(RunMode.RUN_WITHOUT_ENCODER);
+        robot.intake.setPower(1);
+        Actions.runBlocking(
+            drive.actionBuilder(drive.pose)
+                .strafeTo(new Vector2d(12, -10))
+                .setTangent(0)
+                //.waitSeconds(0) // TODO: update per match for partner
+                .splineToLinearHeading(new Pose2d(50, -50, Math.toRadians(180)),
+                    Math.toRadians(270))
+                .strafeTo(LEFT_BOARD)
+                .build());
+        robot.turnByGyro(90);
+        robot.intake.setPower(0);
+        robot.setSlidePos(2400, 1);
+        robot.waitTime(200);
+        robot.setSlidePos(0, 0.6);
         break;
     }
 
-    if (x == Position.RIGHT) {
-      Actions.runBlocking(
-          drive.actionBuilder(drive.pose)
-              .strafeToConstantHeading(new Vector2d(-40, -60))
-              .strafeToConstantHeading(new Vector2d(-40, -12))
-              .strafeToLinearHeading(placeSpike, Math.toRadians(spikeTurn))
-              .build());
-
-      robot.flipperControl(true);
-      robot.setIntakePos(-100, .1);
-      robot.waitTime(100);
-
-      Actions.runBlocking(
-          drive.actionBuilder(drive.pose)
-              .strafeToConstantHeading(new Vector2d(-48, -12))
-              .turnTo(Math.toRadians(180))
-              .strafeToConstantHeading(new Vector2d(-63, -12))
-              .build());
-    } else {
-      Actions.runBlocking(
-          drive.actionBuilder(drive.pose)
-              .strafeToConstantHeading(new Vector2d(-38, -60))
-              .strafeToConstantHeading(new Vector2d(-36, -36))
-              .turnTo(Math.toRadians(spikeTurn))
-              .strafeToConstantHeading(placeSpike)
-              .build());
-
-      robot.flipperControl(true);
-      robot.setIntakePos(-100, .1);
-      robot.waitTime(100);
-
-      Actions.runBlocking(
-          drive.actionBuilder(drive.pose)
-              .strafeToConstantHeading(new Vector2d(-48, -48))
-              .strafeToConstantHeading(new Vector2d(-48, -12))
-              .turnTo(Math.toRadians(180))
-              .strafeToConstantHeading(new Vector2d(-63, -12))
-              .build());
-    }
-    // GRAB ONE
-    robot.flipperControl(false);
-    Actions.runBlocking(
-        drive.actionBuilder(drive.pose)
-            .strafeToConstantHeading(new Vector2d(-55, -12))
-            .build());
-    robot.flipperControl(true);
-    robot.intake.setMode(RunMode.RUN_WITHOUT_ENCODER);
-    robot.intake.setPower(0.6);
-    robot.waitTime(600);
-    robot.intake.setPower(0);
-    robot.flipperControl(false);
-
-    // going back to board
-    Actions.runBlocking(
-        drive.actionBuilder(drive.pose)
-            .strafeToConstantHeading(new Vector2d(0, -0))
-            .setTangent(Math.toRadians(0))
-            .splineToConstantHeading(placeBoard, Math.toRadians(-270))
-            .turnTo(Math.toRadians(180))
-            .build());
-
-    // FIRST PLACE
-    robot.setSlidePos(3000, 1);
-    robot.setSlidePos(0, 1);
-
-    // JIGGLE
-    robot.setSlidePower(0);
-    robot.slideL.setMode(RunMode.RUN_WITHOUT_ENCODER);
-    robot.slideR.setMode(RunMode.RUN_WITHOUT_ENCODER);
-    robot.setSlidePower(1);
-    robot.waitTime(200);
-    robot.setSlidePower(-1);
-    robot.waitTime(200);
-    robot.setSlidePos(0, 1);
-
-    // SECOND PLACE
-    robot.setSlidePos(3000, 1);
-    robot.setSlidePos(0, 1);
   }
-
-
 }
-
