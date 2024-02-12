@@ -12,29 +12,30 @@ import com.qualcomm.robotcore.hardware.DcMotor.RunMode;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.odom.MecanumDrive;
-import org.firstinspires.ftc.teamcode.vision.BluePropThreshold;
 import org.firstinspires.ftc.teamcode.vision.Position;
+import org.firstinspires.ftc.teamcode.vision.RedPropThresholdFEILD2;
 import org.firstinspires.ftc.vision.VisionPortal;
 
 @Config
-@Autonomous(name = "Blue Far Spline Autonimous")
-public class SplineBlueFar extends LinearOpMode {
+@Autonomous(name = "Red Far Spline Autonimous FEILD 2")
+public class SplineRedFar2 extends LinearOpMode {
 
   public FtcDashboard dash = FtcDashboard.getInstance();
   Robot robot;
   private VisionPortal portal;
-  BluePropThreshold processor;
+  RedPropThresholdFEILD2 processor;
 
-  public static Vector2d LEFT_BOARD = new Vector2d(52, 51);
-  public static Vector2d CENTER_BOARD = new Vector2d(52, 44);
+  public static Vector2d RIGHT_BOARD = new Vector2d(55.5, -51 + 17);
+  public static Vector2d CENTER_BOARD = new Vector2d(55.5, -44);
 
-  public static Vector2d RIGHT_BOARD = new Vector2d(52, 37.5);
+  public static Vector2d LEFT_BOARD = new Vector2d(55.5, -37.5);
 
   @Override
   public void runOpMode() throws InterruptedException {
-    MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(-36, 60, Math.toRadians(-90)));
-    processor = new BluePropThreshold();
+    MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(-36, -61, Math.toRadians(90)));
+    processor = new RedPropThresholdFEILD2();
     robot = new Robot(this);
+
     portal = new VisionPortal.Builder()
         .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
         .setCameraResolution(new Size(640, 480))
@@ -45,17 +46,17 @@ public class SplineBlueFar extends LinearOpMode {
     while (opModeInInit() && !isStopRequested()) {
       x = processor.getElePos();
       telemetry.addLine("Case" + ":" + x.name());
-      telemetry.addData("BLUE Prop Position", processor.getElePos());
-      telemetry.addData("BLUE left box avg", processor.averagedLeftBox);
-      telemetry.addData("BLUE right box avg", processor.averagedRightBox);
+      telemetry.addData("RED Prop Position", processor.getElePos());
+      telemetry.addData("RED left box avg", processor.averagedLeftBox);
+      telemetry.addData("RED right box avg", processor.averagedRightBox);
       telemetry.update();
     }
 
     switch (x) {
-      case LEFT:
+      case RIGHT:
         Actions.runBlocking(
             drive.actionBuilder(drive.pose)
-                .splineToLinearHeading(new Pose2d(-29, 34, Math.toRadians(0)), Math.toRadians(0))
+                .splineToLinearHeading(new Pose2d(-29, -34, Math.toRadians(0)), Math.toRadians(0))
                 .build());
 
         robot.spitPixel();
@@ -64,20 +65,20 @@ public class SplineBlueFar extends LinearOpMode {
         Actions.runBlocking(
             drive.actionBuilder(drive.pose)
                 .setTangent(Math.toRadians(180))
-                .splineToLinearHeading(new Pose2d(-46, 36, Math.toRadians(0)), Math.toRadians(0))
+                .splineToLinearHeading(new Pose2d(-46, -36, Math.toRadians(0)), Math.toRadians(0))
                 .setTangent(Math.toRadians(180))
-                .splineToLinearHeading(new Pose2d(-54, 8, Math.toRadians(180)),
+                .splineToLinearHeading(new Pose2d(-55, -8, Math.toRadians(180)),
                     Math.toRadians(180))
                 .build());
 
-        robot.turnByGyro(-90);
+        robot.turnByGyro(90);
         robot.flipperControl(false);
         robot.waitTime(1000);
 
         Actions.runBlocking(
             drive.actionBuilder(drive.pose)
                 .setTangent(Math.toRadians(180))
-                .splineToLinearHeading(new Pose2d(-50, 7, Math.toRadians(180)), Math.toRadians(0))
+                .splineToLinearHeading(new Pose2d(-50, -7, Math.toRadians(180)), Math.toRadians(0))
                 .build());
 
         robot.flipperControl(true);
@@ -86,13 +87,15 @@ public class SplineBlueFar extends LinearOpMode {
         robot.intake.setPower(1);
         Actions.runBlocking(
             drive.actionBuilder(drive.pose)
-                .strafeTo(new Vector2d(12, 11))
-                .setTangent(0) // TODO: update per match for partner
-                .splineToLinearHeading(new Pose2d(50, 56, Math.toRadians(180)), Math.toRadians(90))
-                .strafeTo(LEFT_BOARD)
+                .strafeTo(new Vector2d(12, -10))
+                .setTangent(0)
+                //.waitSeconds(0) // TODO: update per match for partner
+                .splineToLinearHeading(new Pose2d(50, -56 + 15, Math.toRadians(180)),
+                    Math.toRadians(270))
+                .strafeTo(RIGHT_BOARD)
                 .build());
 
-        robot.turnByGyro(-90);
+        robot.turnByGyro(90);
         robot.intake.setPower(0);
         robot.setSlidePos(2400, 1);
         robot.waitTime(200);
@@ -106,25 +109,26 @@ public class SplineBlueFar extends LinearOpMode {
       case CENTER:
         Actions.runBlocking(
             drive.actionBuilder(drive.pose)
-                .splineToLinearHeading(new Pose2d(-36, 16, Math.toRadians(90)), Math.toRadians(270))
+                .splineToLinearHeading(new Pose2d(-36, -16, Math.toRadians(-90)),
+                    Math.toRadians(90))
                 .build());
         robot.spitPixel();
         robot.flipperControl(true);
 
         Actions.runBlocking(
             drive.actionBuilder(drive.pose)
-                .strafeTo(new Vector2d(-36, 0))
+                .strafeTo(new Vector2d(-36, -0))
                 .setTangent(Math.toRadians(180))
-                .splineToLinearHeading(new Pose2d(-54, 8, Math.toRadians(180)),
+                .splineToLinearHeading(new Pose2d(-55, -8, Math.toRadians(180)),
                     Math.toRadians(180))
                 .build());
-        robot.turnByGyro(-90);
+        robot.turnByGyro(90);
         robot.flipperControl(false);
         robot.waitTime(1000);
         Actions.runBlocking(
             drive.actionBuilder(drive.pose)
                 .setTangent(Math.toRadians(180))
-                .splineToLinearHeading(new Pose2d(-50, 7, Math.toRadians(180)), Math.toRadians(0))
+                .splineToLinearHeading(new Pose2d(-50, -7, Math.toRadians(180)), Math.toRadians(0))
                 .build());
         robot.flipperControl(true);
         robot.intake.setPower(0);
@@ -132,12 +136,14 @@ public class SplineBlueFar extends LinearOpMode {
         robot.intake.setPower(1);
         Actions.runBlocking(
             drive.actionBuilder(drive.pose)
-                .strafeTo(new Vector2d(12, 12))
-                .setTangent(0) // TODO: update per match for partner
-                .splineToLinearHeading(new Pose2d(50, 56, Math.toRadians(180)), Math.toRadians(90))
+                .strafeTo(new Vector2d(12, -10))
+                .setTangent(0)
+                //.waitSeconds(0) // TODO: update per match for partner
+                .splineToLinearHeading(new Pose2d(50, -50, Math.toRadians(180)),
+                    Math.toRadians(270))
                 .strafeTo(CENTER_BOARD)
                 .build());
-        robot.turnByGyro(-90);
+        robot.turnByGyro(90);
         robot.intake.setPower(0);
         robot.setSlidePos(2400, 1);
         robot.waitTime(200);
@@ -147,29 +153,31 @@ public class SplineBlueFar extends LinearOpMode {
         robot.waitTime(200);
         robot.setSlidePos(0, 0.6);
         break;
+
       default:
-      case RIGHT:
+      case LEFT:
         Actions.runBlocking(
             drive.actionBuilder(drive.pose)
-                .splineToLinearHeading(new Pose2d(-46, 24, Math.toRadians(90)), Math.toRadians(270))
+                .splineToLinearHeading(new Pose2d(-46, -24, Math.toRadians(-90)),
+                    Math.toRadians(90))
                 .build());
         robot.spitPixel();
         robot.flipperControl(true);
 
         Actions.runBlocking(
             drive.actionBuilder(drive.pose)
-                .strafeTo(new Vector2d(-46, 0))
+                .strafeTo(new Vector2d(-46, -0))
                 .setTangent(Math.toRadians(180))
-                .splineToLinearHeading(new Pose2d(-54, 8, Math.toRadians(180)),
+                .splineToLinearHeading(new Pose2d(-55, -8, Math.toRadians(180)),
                     Math.toRadians(180))
                 .build());
-        robot.turnByGyro(-90);
+        robot.turnByGyro(90);
         robot.flipperControl(false);
         robot.waitTime(1000);
         Actions.runBlocking(
             drive.actionBuilder(drive.pose)
                 .setTangent(Math.toRadians(180))
-                .splineToLinearHeading(new Pose2d(-50, 7, Math.toRadians(180)), Math.toRadians(0))
+                .splineToLinearHeading(new Pose2d(-50, -7, Math.toRadians(180)), Math.toRadians(0))
                 .build());
         robot.flipperControl(true);
         robot.intake.setPower(0);
@@ -177,12 +185,14 @@ public class SplineBlueFar extends LinearOpMode {
         robot.intake.setPower(1);
         Actions.runBlocking(
             drive.actionBuilder(drive.pose)
-                .strafeTo(new Vector2d(12, 12))
-                .setTangent(0) // TODO: update per match for partner
-                .splineToLinearHeading(new Pose2d(50, 56, Math.toRadians(180)), Math.toRadians(90))
-                .strafeTo(RIGHT_BOARD)
+                .strafeTo(new Vector2d(12, -10))
+                .setTangent(0)
+                //.waitSeconds(0) // TODO: update per match for partner
+                .splineToLinearHeading(new Pose2d(50, -50, Math.toRadians(180)),
+                    Math.toRadians(270))
+                .strafeTo(LEFT_BOARD)
                 .build());
-        robot.turnByGyro(-90);
+        robot.turnByGyro(90);
         robot.intake.setPower(0);
         robot.setSlidePos(2400, 1);
         robot.waitTime(200);

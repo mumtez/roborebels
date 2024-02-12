@@ -12,11 +12,11 @@ import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 
 @Config
-public class RedPropThreshold implements VisionProcessor {
+public class RedPropThresholdFEILD2 implements VisionProcessor {
 
   public double averagedLeftBox;
   public double averagedRightBox;
-  public static double redThreshold = 0.045;
+  public static double redThreshold = 0.055;
   private final Rect RIGHT_RECTANGLE = new Rect(
       new Point(0, 0),
       new Point(319, 479)

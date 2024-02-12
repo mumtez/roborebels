@@ -8,7 +8,6 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor.RunMode;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.odom.MecanumDrive;
@@ -17,8 +16,8 @@ import org.firstinspires.ftc.teamcode.vision.Position;
 import org.firstinspires.ftc.vision.VisionPortal;
 
 @Config
-@Autonomous(name = "Blue Far Spline Autonimous")
-public class SplineBlueFar extends LinearOpMode {
+@Autonomous(name = "Blue Far Spike Spline Autonimous")
+public class SplineBlueSpike extends LinearOpMode {
 
   public FtcDashboard dash = FtcDashboard.getInstance();
   Robot robot;
@@ -70,37 +69,6 @@ public class SplineBlueFar extends LinearOpMode {
                     Math.toRadians(180))
                 .build());
 
-        robot.turnByGyro(-90);
-        robot.flipperControl(false);
-        robot.waitTime(1000);
-
-        Actions.runBlocking(
-            drive.actionBuilder(drive.pose)
-                .setTangent(Math.toRadians(180))
-                .splineToLinearHeading(new Pose2d(-50, 7, Math.toRadians(180)), Math.toRadians(0))
-                .build());
-
-        robot.flipperControl(true);
-        robot.intake.setPower(0);
-        robot.intake.setMode(RunMode.RUN_WITHOUT_ENCODER);
-        robot.intake.setPower(1);
-        Actions.runBlocking(
-            drive.actionBuilder(drive.pose)
-                .strafeTo(new Vector2d(12, 11))
-                .setTangent(0) // TODO: update per match for partner
-                .splineToLinearHeading(new Pose2d(50, 56, Math.toRadians(180)), Math.toRadians(90))
-                .strafeTo(LEFT_BOARD)
-                .build());
-
-        robot.turnByGyro(-90);
-        robot.intake.setPower(0);
-        robot.setSlidePos(2400, 1);
-        robot.waitTime(200);
-        robot.setSlidePos(1000, 0.6);
-        robot.waitTime(500);
-        robot.setSlidePos(2400, 1);
-        robot.waitTime(200);
-        robot.setSlidePos(0, 0.6);
         break;
 
       case CENTER:
@@ -118,34 +86,7 @@ public class SplineBlueFar extends LinearOpMode {
                 .splineToLinearHeading(new Pose2d(-54, 8, Math.toRadians(180)),
                     Math.toRadians(180))
                 .build());
-        robot.turnByGyro(-90);
-        robot.flipperControl(false);
-        robot.waitTime(1000);
-        Actions.runBlocking(
-            drive.actionBuilder(drive.pose)
-                .setTangent(Math.toRadians(180))
-                .splineToLinearHeading(new Pose2d(-50, 7, Math.toRadians(180)), Math.toRadians(0))
-                .build());
-        robot.flipperControl(true);
-        robot.intake.setPower(0);
-        robot.intake.setMode(RunMode.RUN_WITHOUT_ENCODER);
-        robot.intake.setPower(1);
-        Actions.runBlocking(
-            drive.actionBuilder(drive.pose)
-                .strafeTo(new Vector2d(12, 12))
-                .setTangent(0) // TODO: update per match for partner
-                .splineToLinearHeading(new Pose2d(50, 56, Math.toRadians(180)), Math.toRadians(90))
-                .strafeTo(CENTER_BOARD)
-                .build());
-        robot.turnByGyro(-90);
-        robot.intake.setPower(0);
-        robot.setSlidePos(2400, 1);
-        robot.waitTime(200);
-        robot.setSlidePos(1000, 0.6);
-        robot.waitTime(500);
-        robot.setSlidePos(2400, 1);
-        robot.waitTime(200);
-        robot.setSlidePos(0, 0.6);
+
         break;
       default:
       case RIGHT:
@@ -163,34 +104,7 @@ public class SplineBlueFar extends LinearOpMode {
                 .splineToLinearHeading(new Pose2d(-54, 8, Math.toRadians(180)),
                     Math.toRadians(180))
                 .build());
-        robot.turnByGyro(-90);
-        robot.flipperControl(false);
-        robot.waitTime(1000);
-        Actions.runBlocking(
-            drive.actionBuilder(drive.pose)
-                .setTangent(Math.toRadians(180))
-                .splineToLinearHeading(new Pose2d(-50, 7, Math.toRadians(180)), Math.toRadians(0))
-                .build());
-        robot.flipperControl(true);
-        robot.intake.setPower(0);
-        robot.intake.setMode(RunMode.RUN_WITHOUT_ENCODER);
-        robot.intake.setPower(1);
-        Actions.runBlocking(
-            drive.actionBuilder(drive.pose)
-                .strafeTo(new Vector2d(12, 12))
-                .setTangent(0) // TODO: update per match for partner
-                .splineToLinearHeading(new Pose2d(50, 56, Math.toRadians(180)), Math.toRadians(90))
-                .strafeTo(RIGHT_BOARD)
-                .build());
-        robot.turnByGyro(-90);
-        robot.intake.setPower(0);
-        robot.setSlidePos(2400, 1);
-        robot.waitTime(200);
-        robot.setSlidePos(1000, 0.6);
-        robot.waitTime(500);
-        robot.setSlidePos(2400, 1);
-        robot.waitTime(200);
-        robot.setSlidePos(0, 0.6);
+
         break;
     }
 
