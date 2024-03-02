@@ -9,6 +9,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 public class Teleop extends LinearOpMode {
 
   Robot robot;
+  private boolean gateClosed = true;
+  private boolean yHeld = false;
 
   @Override
   public void runOpMode() throws InterruptedException {
@@ -26,36 +28,39 @@ public class Teleop extends LinearOpMode {
         robot.imu.resetYaw();
       }
 
-      if (false) {
+      double y = -gamepad1.left_stick_y;
+      double x = gamepad1.left_stick_x;
+      double rx = gamepad1.right_stick_x;
 
+      double botHeading = AngleUnit.DEGREES.toRadians(robot.getHeading());
+
+      double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
+      double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
+      rotX = rotX * 1.1;  // Counteract imperfect strafing
+
+      double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
+      double frontLeftPower = (rotY + rotX + rx) / denominator;
+      double backLeftPower = (rotY - rotX + rx) / denominator;
+      double frontRightPower = (rotY - rotX - rx) / denominator;
+      double backRightPower = (rotY + rotX - rx) / denominator;
+
+      robot.fl.setPower(frontLeftPower);
+      robot.bl.setPower(backLeftPower);
+      robot.fr.setPower(frontRightPower);
+      robot.br.setPower(backRightPower);
+
+      robot.intake.setPower((gamepad1.right_trigger) - (gamepad1.left_trigger));
+      if (gamepad2.y) {
+        if (!yHeld) {
+          gateClosed = !gateClosed;
+        }
+        yHeld = true;
       } else {
-        double y = -gamepad1.left_stick_y;
-        double x = gamepad1.left_stick_x;
-        double rx = gamepad1.right_stick_x;
-
-        double botHeading = AngleUnit.DEGREES.toRadians(robot.getHeading());
-
-        double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
-        double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
-        rotX = rotX * 1.1;  // Counteract imperfect strafing
-
-        double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
-        double frontLeftPower = (rotY + rotX + rx) / denominator;
-        double backLeftPower = (rotY - rotX + rx) / denominator;
-        double frontRightPower = (rotY - rotX - rx) / denominator;
-        double backRightPower = (rotY + rotX - rx) / denominator;
-
-        robot.fl.setPower(frontLeftPower);
-        robot.bl.setPower(backLeftPower);
-        robot.fr.setPower(frontRightPower);
-        robot.br.setPower(backRightPower);
+        yHeld = false;
       }
-
-      robot.intake.setPower((gamepad1.right_trigger * 0.7) - (gamepad1.left_trigger * 0.8));
+      robot.toggleDoor(!gateClosed || (robot.slideL.getCurrentPosition() >= 100));
       robot.flipperControl(robot.intake.getPower() != 0 || gamepad1.x);
       robot.setSlidePower(-gamepad2.right_stick_y);
-
-      robot.toggleDoor(gamepad1.y);
 
       if (gamepad2.a && gamepad2.x) {
         robot.fly();
