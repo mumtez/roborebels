@@ -107,7 +107,7 @@ public class Robot {
     pixelPull = hardwareMap.servo.get("pixel");
     pixelPullFront = hardwareMap.servo.get("front");
 
-    gateFlip.setPosition(0);
+    gateFlip.setPosition(1);
     pixelPullFront.setPosition(0.78);
     pixelPull.setPosition(0.22);
 
