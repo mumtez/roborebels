@@ -50,7 +50,7 @@ public final class ThreeDeadWheelLocalizer implements Localizer {
   }
 
   public Twist2dDual<Time> update() {
-    PositionVelocityPair par0PosVel = par0.getPositionAndVelocity();
+    PositionVelocityPair par0PosVel = par0.getPositionAndVelocity(); //
     PositionVelocityPair par1PosVel = par1.getPositionAndVelocity();
     PositionVelocityPair perpPosVel = perp.getPositionAndVelocity();
 
