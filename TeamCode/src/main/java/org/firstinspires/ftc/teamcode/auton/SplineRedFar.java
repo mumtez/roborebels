@@ -27,7 +27,6 @@ public class SplineRedFar extends LinearOpMode {
 
   public static Vector2d RIGHT_BOARD = new Vector2d(55.5, -51 + 17);
   public static Vector2d CENTER_BOARD = new Vector2d(55.5, -44);
-
   public static Vector2d LEFT_BOARD = new Vector2d(55.5, -37.5);
 
   @Override
@@ -59,7 +58,7 @@ public class SplineRedFar extends LinearOpMode {
                 .splineToLinearHeading(new Pose2d(-29, -34, Math.toRadians(0)), Math.toRadians(0))
                 .build());
 
-        robot.spitPixel();
+        //robot.spitPixel();
         robot.flipperControl(true);
 
         Actions.runBlocking(
@@ -112,7 +111,7 @@ public class SplineRedFar extends LinearOpMode {
                 .splineToLinearHeading(new Pose2d(-36, -16, Math.toRadians(-90)),
                     Math.toRadians(90))
                 .build());
-        robot.spitPixel();
+        //robot.spitPixel();
         robot.flipperControl(true);
 
         Actions.runBlocking(
@@ -161,7 +160,7 @@ public class SplineRedFar extends LinearOpMode {
                 .splineToLinearHeading(new Pose2d(-46, -24, Math.toRadians(-90)),
                     Math.toRadians(90))
                 .build());
-        robot.spitPixel();
+        //robot.spitPixel();
         robot.flipperControl(true);
 
         Actions.runBlocking(
