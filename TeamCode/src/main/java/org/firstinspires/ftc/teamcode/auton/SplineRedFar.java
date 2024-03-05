@@ -25,9 +25,9 @@ public class SplineRedFar extends LinearOpMode {
   private VisionPortal portal;
   RedPropThreshold processor;
 
-  public static Vector2d RIGHT_BOARD = new Vector2d(55.5, -51 + 17);
-  public static Vector2d CENTER_BOARD = new Vector2d(55.5, -44);
-  public static Vector2d LEFT_BOARD = new Vector2d(55.5, -37.5);
+  public static Vector2d RIGHT_BOARD = new Vector2d(47, -32);
+  public static Vector2d CENTER_BOARD = new Vector2d(47, -49);
+  public static Vector2d LEFT_BOARD = new Vector2d(47, -34);
 
   @Override
   public void runOpMode() throws InterruptedException {
@@ -55,7 +55,7 @@ public class SplineRedFar extends LinearOpMode {
       case RIGHT:
         Actions.runBlocking(
             drive.actionBuilder(drive.pose)
-                .splineToLinearHeading(new Pose2d(-29, -34, Math.toRadians(0)), Math.toRadians(0))
+                .splineToLinearHeading(new Pose2d(-24, -34, Math.toRadians(0)), Math.toRadians(0))
                 .build());
 
         //robot.spitPixel();
@@ -108,7 +108,7 @@ public class SplineRedFar extends LinearOpMode {
       case CENTER:
         Actions.runBlocking(
             drive.actionBuilder(drive.pose)
-                .splineToLinearHeading(new Pose2d(-36, -16, Math.toRadians(-90)),
+                .splineToLinearHeading(new Pose2d(-36, -20, Math.toRadians(-90)),
                     Math.toRadians(90))
                 .build());
         //robot.spitPixel();

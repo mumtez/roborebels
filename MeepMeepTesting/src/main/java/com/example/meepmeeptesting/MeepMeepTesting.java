@@ -21,15 +21,11 @@ public class MeepMeepTesting {
         .setColorScheme(new ColorSchemeRedDark())
         .build();
 
-    right.runAction(right.getDrive().actionBuilder(new Pose2d(-38, 62, Math.toRadians(270)))
-        .splineToSplineHeading(new Pose2d(-46, 24, Math.toRadians(90)), Math.toRadians(270))
+    right.runAction(right.getDrive().actionBuilder(new Pose2d(10.5, 62, Math.toRadians(270)))
+        .strafeToSplineHeading(new Vector2d(48, 29), Math.toRadians(-90))
         .waitSeconds(2)
-        .setTangent(Math.toRadians(180))
-        .splineToSplineHeading(new Pose2d(-56, 12, Math.toRadians(180)), Math.toRadians(180))
-        .waitSeconds(2)
-        .strafeTo(new Vector2d(12, 12))
-        .setTangent(0)
-        .splineToSplineHeading(new Pose2d(48, 29, Math.toRadians(180)), Math.toRadians(90))
+        .strafeTo(new Vector2d(0.9, 29))
+
         .build());
 
     RoadRunnerBotEntity center = new DefaultBotBuilder(meepMeep)
@@ -68,8 +64,8 @@ public class MeepMeepTesting {
         .setDarkMode(true)
         .setBackgroundAlpha(0.95f)
         .addEntity(right)
-        .addEntity(left)
-        .addEntity(center)
+        //.addEntity(left)
+        //.addEntity(center)
 
         .start();
   }

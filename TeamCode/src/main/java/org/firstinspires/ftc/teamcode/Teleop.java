@@ -50,7 +50,7 @@ public class Teleop extends LinearOpMode {
       robot.br.setPower(backRightPower);
 
       robot.intake.setPower((gamepad1.right_trigger) - (gamepad1.left_trigger));
-      if (gamepad2.y) {
+      if (gamepad2.dpad_up) {
         if (!yHeld) {
           gateClosed = !gateClosed;
         }
@@ -61,13 +61,11 @@ public class Teleop extends LinearOpMode {
       robot.toggleDoor(!gateClosed || (robot.slideL.getCurrentPosition() >= 100));
       robot.flipperControl(robot.intake.getPower() != 0 || gamepad1.x);
 
-      if (!gateClosed){
+      if (!gateClosed) {
         robot.setSlidePower(-gamepad2.right_stick_y);
-      }
-      else{
+      } else {
         robot.setSlidePower(0);
       }
-
 
       if (gamepad2.a && gamepad2.x) {
         robot.fly();
