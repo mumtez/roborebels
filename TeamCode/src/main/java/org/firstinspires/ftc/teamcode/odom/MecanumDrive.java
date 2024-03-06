@@ -293,7 +293,7 @@ public final class MecanumDrive {
           ) || t >= timeTrajectory.duration + 1) { // 1 second max extra correction */
       if ((t >= timeTrajectory.duration
           && error.heading.real < 1
-          && robotVelRobot.angVel < 0.5
+          && robotVelRobot.angVel < Math.toRadians(15)
       ) || t >= timeTrajectory.duration + 1) {
         leftFront.setPower(0);
         leftBack.setPower(0);
