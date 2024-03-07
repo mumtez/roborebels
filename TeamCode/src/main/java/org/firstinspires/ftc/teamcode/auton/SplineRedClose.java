@@ -10,7 +10,6 @@ import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.odom.MecanumDrive;
@@ -29,7 +28,7 @@ public class SplineRedClose extends LinearOpMode {
 
   public static Pose2d BACKDROP_START = new Pose2d(10.5, -61, Math.toRadians(90));
 
-  public static double BOARD_X = 48;
+  public static double BOARD_X = 39;
   public static Vector2d BOARD_LEFT = new Vector2d(BOARD_X, -29);
   public static Vector2d BOARD_CENTER = new Vector2d(BOARD_X, -36);
   public static Vector2d BOARD_RIGHT = new Vector2d(BOARD_X, -43);
@@ -45,7 +44,7 @@ public class SplineRedClose extends LinearOpMode {
   public static Vector2d BACKDROP_TRUSS = new Vector2d(10.5, -60);
   public static Vector2d STACK = new Vector2d(-60, -35);
 
-//pose2dDual.position.x.value() > 45 ||
+  //pose2dDual.position.x.value() > 45 ||
   public static VelConstraint BASE_VEL_CONSTRAINTS = (pose2dDual, posePath, v) -> {
     if (pose2dDual.position.y.value() < -48) {
       return 30.0;
@@ -70,9 +69,10 @@ public class SplineRedClose extends LinearOpMode {
 
   public static double PLACE_TIME = 1.0;
   public static double PICKUP_TIME = 2.0;
+
   @Override
   public void runOpMode() throws InterruptedException {
-    MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(9.5, -61, Math.toRadians(90)));
+    MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(-36, -61, Math.toRadians(90)));
     processor = new RedPropThreshold();
     robot = new Robot(this);
 
@@ -92,8 +92,6 @@ public class SplineRedClose extends LinearOpMode {
       telemetry.update();
     }
 
-
-
     Vector2d parkVec;
     switch (parkPosition) {
       case CENTER:
@@ -108,12 +106,6 @@ public class SplineRedClose extends LinearOpMode {
     Vector2d spikePlacement;
     Vector2d whitePlacement;
     switch (x) {
-      case RIGHT:
-        yellowPlacement = BOARD_RIGHT;
-        spikePlacement = SPIKE_RIGHT;
-        whitePlacement = BOARD_CENTER;
-
-        break;
 
       case CENTER:
         yellowPlacement = BOARD_CENTER;
@@ -129,50 +121,53 @@ public class SplineRedClose extends LinearOpMode {
 
         break;
 
-
       default:
         yellowPlacement = BOARD_RIGHT;
         spikePlacement = SPIKE_RIGHT;
         whitePlacement = BOARD_CENTER;
     }
 
+    //TODO remove this
     Actions.runBlocking(
-            drive.actionBuilder(drive.pose)
-                    // Board
-                    .strafeToLinearHeading(yellowPlacement, Math.toRadians(180))
-                    .waitSeconds(PLACE_TIME)
-                    .build());
+        drive.actionBuilder(drive.pose)
+            .splineToLinearHeading(new Pose2d(-24, -34, Math.toRadians(0)), Math.toRadians(0))
+            .waitSeconds(999)
+            .build());
+    //
 
-    robot.setSlidePos(2400, 1);
-    robot.waitTime(200);
-    robot.setSlidePos(1000, 0.6);
-    robot.waitTime(500);
+    Actions.runBlocking(
+        drive.actionBuilder(drive.pose)
+            // Board
+            .splineToLinearHeading(new Pose2d(yellowPlacement, Math.toRadians(180)),
+                Math.toRadians(180))
+            .build());
+
     robot.setSlidePos(2400, 1);
     robot.waitTime(200);
     robot.setSlidePos(0, 0.6);
 
     Actions.runBlocking(
-            drive.actionBuilder(drive.pose)
-                    // Spike
-                    .strafeToConstantHeading(spikePlacement)
-                    .waitSeconds(0.2)
+        drive.actionBuilder(drive.pose)
+            // Spike
+            .strafeToConstantHeading(spikePlacement)
+            .waitSeconds(0.2)
 
-                    // By truss
-                    .setReversed(true)
-                    .splineToConstantHeading(BACKDROP_TRUSS, Math.toRadians(180))
-                    .setReversed(false)
+            // By truss
+            .setReversed(true)
+            .splineToConstantHeading(BACKDROP_TRUSS, Math.toRadians(180))
+            .setReversed(false)
 
-                    //through truss to corner
-                    .strafeToConstantHeading(AUDIENCE_TRUSS)
-                    .build());
+            //through truss to corner
+            .strafeToConstantHeading(AUDIENCE_TRUSS)
+            .build());
 
     robot.flipperControl(false);
     Actions.runBlocking(
-            drive.actionBuilder(drive.pose)
-                    //stack
-                    .splineToConstantHeading(STACK, Math.toRadians(90))
-                    .waitSeconds(PICKUP_TIME)
-                    .build());
+        drive.actionBuilder(drive.pose)
+            //stack
+            .splineToConstantHeading(STACK, Math.toRadians(90))
+            .waitSeconds(PICKUP_TIME)
+            .build());
 
     robot.flipperControl(true);
     robot.intake.setPower(0);
@@ -180,21 +175,21 @@ public class SplineRedClose extends LinearOpMode {
     robot.intake.setPower(1);
 
     Actions.runBlocking(
-            drive.actionBuilder(drive.pose)
-                    //back
-                    .setReversed(true)
-                    .setTangent(Math.toRadians(270))
-                    .splineToConstantHeading(AUDIENCE_TRUSS, Math.toRadians(0))
+        drive.actionBuilder(drive.pose)
+            //back
+            .setReversed(true)
+            .setTangent(Math.toRadians(270))
+            .splineToConstantHeading(AUDIENCE_TRUSS, Math.toRadians(0))
 
-                    // Cross truss
-                    .strafeToConstantHeading(BACKDROP_TRUSS)
+            // Cross truss
+            .strafeToConstantHeading(BACKDROP_TRUSS)
 
-                    //board
-                    .setReversed(true)
-                    .splineToConstantHeading(whitePlacement, Math.toRadians(0))
-                    .waitSeconds(PLACE_TIME)
-                    .setReversed(false)
-                    .build());
+            //board
+            .setReversed(true)
+            .splineToConstantHeading(whitePlacement, Math.toRadians(0))
+            .waitSeconds(PLACE_TIME)
+            .setReversed(false)
+            .build());
 
     robot.setSlidePos(2400, 1);
     robot.waitTime(200);
@@ -205,11 +200,11 @@ public class SplineRedClose extends LinearOpMode {
     robot.setSlidePos(0, 0.6);
 
     Actions.runBlocking(
-            drive.actionBuilder(drive.pose)
+        drive.actionBuilder(drive.pose)
 
-                    // park
-                    .splineToConstantHeading(parkVec, Math.toRadians(0))
-                    .build());
+            // park
+            .splineToConstantHeading(parkVec, Math.toRadians(0))
+            .build());
 
   }
 }
