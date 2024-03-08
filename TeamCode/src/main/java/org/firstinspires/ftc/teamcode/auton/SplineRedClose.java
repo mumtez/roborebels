@@ -28,7 +28,7 @@ public class SplineRedClose extends LinearOpMode {
 
   public static Pose2d BACKDROP_START = new Pose2d(10.5, -61, Math.toRadians(90));
 
-  public static double BOARD_X = 39;
+  public static double BOARD_X = 44;
   public static Vector2d BOARD_LEFT = new Vector2d(BOARD_X, -29);
   public static Vector2d BOARD_CENTER = new Vector2d(BOARD_X, -36);
   public static Vector2d BOARD_RIGHT = new Vector2d(BOARD_X, -43);
@@ -40,8 +40,8 @@ public class SplineRedClose extends LinearOpMode {
   public static Vector2d PARK_CORNER = new Vector2d(60, -60);
   public static Vector2d PARK_CENTER = new Vector2d(60, -10);
 
-  public static Vector2d AUDIENCE_TRUSS = new Vector2d(-30, -60);
-  public static Vector2d BACKDROP_TRUSS = new Vector2d(10.5, -60);
+  public static Vector2d AUDIENCE_TRUSS = new Vector2d(-30, -58);
+  public static Vector2d BACKDROP_TRUSS = new Vector2d(10.5, -58);
   public static Vector2d STACK = new Vector2d(-60, -35);
 
   //pose2dDual.position.x.value() > 45 ||
@@ -72,7 +72,7 @@ public class SplineRedClose extends LinearOpMode {
 
   @Override
   public void runOpMode() throws InterruptedException {
-    MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(-36, -61, Math.toRadians(90)));
+    MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(13, -61, Math.toRadians(90)));
     processor = new RedPropThreshold();
     robot = new Robot(this);
 
@@ -127,13 +127,13 @@ public class SplineRedClose extends LinearOpMode {
         whitePlacement = BOARD_CENTER;
     }
 
-    //TODO remove this
-    Actions.runBlocking(
-        drive.actionBuilder(drive.pose)
-            .splineToLinearHeading(new Pose2d(-24, -34, Math.toRadians(0)), Math.toRadians(0))
-            .waitSeconds(999)
-            .build());
-    //
+//    //TODO remove this
+//    Actions.runBlocking(
+//        drive.actionBuilder(drive.pose)
+//            .splineToLinearHeading(new Pose2d(-24, -34, Math.toRadians(0)), Math.toRadians(0))
+//            .waitSeconds(999)
+//            .build());
+//    //
 
     Actions.runBlocking(
         drive.actionBuilder(drive.pose)
