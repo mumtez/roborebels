@@ -213,6 +213,7 @@ public class SplineRedClose extends LinearOpMode {
 
     robot.intake.setPower(0);
     robot.flipperControl(false);
+
     if (drive.pose.position.x > 40) {
       robot.setSlidePos(1800, 1);
       robot.waitTime(200);
@@ -223,6 +224,7 @@ public class SplineRedClose extends LinearOpMode {
               .splineToConstantHeading(parkVec, Math.toRadians(0))
               .build());
     }
+    robot.setDriveTrainPower(0, 0, 0, 0);
 
 
   }

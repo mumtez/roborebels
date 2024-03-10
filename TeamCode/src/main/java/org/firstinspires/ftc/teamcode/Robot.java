@@ -136,6 +136,7 @@ public class Robot {
         && Math.abs(slideR.getCurrentPosition() - pos) > 30) {
       // Wait for slide to end
     }
+    setSlidePower(0);
   }
 
   public double getHeading() {
@@ -215,9 +216,8 @@ public class Robot {
     }
 
     int x = 0;
-    ElapsedTime timer = new ElapsedTime();
     // keep looping while we are still active, and not on heading.
-    while (this.opMode.opModeIsActive() && x < 10 && timer.milliseconds() < 3000) {
+    while (this.opMode.opModeIsActive() && x < 10) {
 
       headingError = targetDegrees - getHeading();
 
@@ -281,6 +281,7 @@ public class Robot {
     while (this.opMode.opModeIsActive() && intake.isBusy()) {
       // Wait for slide to end
     }
+    intake.setPower(0);
   }
 
   public void toggleDoor(boolean open) {
