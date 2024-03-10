@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.odom;
 
 import androidx.annotation.NonNull;
-
 import com.acmerobotics.dashboard.canvas.Canvas;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
@@ -18,12 +17,14 @@ import com.acmerobotics.roadrunner.Pose2dDual;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.PoseVelocity2dDual;
 import com.acmerobotics.roadrunner.ProfileAccelConstraint;
+import com.acmerobotics.roadrunner.ProfileParams;
 import com.acmerobotics.roadrunner.RamseteController;
 import com.acmerobotics.roadrunner.TankKinematics;
 import com.acmerobotics.roadrunner.Time;
 import com.acmerobotics.roadrunner.TimeTrajectory;
 import com.acmerobotics.roadrunner.TimeTurn;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
+import com.acmerobotics.roadrunner.TrajectoryBuilderParams;
 import com.acmerobotics.roadrunner.TurnConstraints;
 import com.acmerobotics.roadrunner.Twist2dDual;
 import com.acmerobotics.roadrunner.Vector2d;
@@ -43,7 +44,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -96,7 +96,8 @@ public final class TankDrive {
 
   public static Params PARAMS = new Params();
 
-  public final TankKinematics kinematics = new TankKinematics(PARAMS.inPerTick * PARAMS.trackWidthTicks);
+  public final TankKinematics kinematics = new TankKinematics(
+      PARAMS.inPerTick * PARAMS.trackWidthTicks);
 
   public final TurnConstraints defaultTurnConstraints = new TurnConstraints(
       PARAMS.maxAngVel, -PARAMS.maxAngVel, PARAMS.maxAngAccel);
@@ -119,11 +120,15 @@ public final class TankDrive {
 
   private final LinkedList<Pose2d> poseHistory = new LinkedList<>();
 
-  private final DownsampledWriter estimatedPoseWriter = new DownsampledWriter("ESTIMATED_POSE", 50_000_000);
-  private final DownsampledWriter targetPoseWriter = new DownsampledWriter("TARGET_POSE", 50_000_000);
-  private final DownsampledWriter driveCommandWriter = new DownsampledWriter("DRIVE_COMMAND", 50_000_000);
+  private final DownsampledWriter estimatedPoseWriter = new DownsampledWriter("ESTIMATED_POSE",
+      50_000_000);
+  private final DownsampledWriter targetPoseWriter = new DownsampledWriter("TARGET_POSE",
+      50_000_000);
+  private final DownsampledWriter driveCommandWriter = new DownsampledWriter("DRIVE_COMMAND",
+      50_000_000);
 
-  private final DownsampledWriter tankCommandWriter = new DownsampledWriter("TANK_COMMAND", 50_000_000);
+  private final DownsampledWriter tankCommandWriter = new DownsampledWriter("TANK_COMMAND",
+      50_000_000);
 
   public class DriveLocalizer implements Localizer {
 
@@ -312,7 +317,8 @@ public final class TankDrive {
 
       updatePoseEstimate();
 
-      PoseVelocity2dDual<Time> command = new RamseteController(kinematics.trackWidth, PARAMS.ramseteZeta,
+      PoseVelocity2dDual<Time> command = new RamseteController(kinematics.trackWidth,
+          PARAMS.ramseteZeta,
           PARAMS.ramseteBBar)
           .compute(x, txWorldTarget, pose);
       driveCommandWriter.write(new DriveCommandMessage(command));
@@ -406,7 +412,8 @@ public final class TankDrive {
           Vector2dDual.constant(new Vector2d(0, 0), 3),
           txWorldTarget.heading.velocity().plus(
               PARAMS.turnGain * pose.heading.minus(txWorldTarget.heading.value()) +
-                  PARAMS.turnVelGain * (robotVelRobot.angVel - txWorldTarget.heading.velocity().value())
+                  PARAMS.turnVelGain * (robotVelRobot.angVel - txWorldTarget.heading.velocity()
+                      .value())
           )
       );
       driveCommandWriter.write(new DriveCommandMessage(command));
@@ -495,10 +502,10 @@ public final class TankDrive {
     return new TrajectoryActionBuilder(
         TurnAction::new,
         FollowTrajectoryAction::new,
-        beginPose, 1e-6, 0.0,
+        new TrajectoryBuilderParams(1e-6, new ProfileParams(0.25, .1, 1e-2)),
+        beginPose, 0.0,
         defaultTurnConstraints,
-        defaultVelConstraint, defaultAccelConstraint,
-        0.25, 0.1
+        defaultVelConstraint, defaultAccelConstraint
     );
   }
 }

@@ -18,11 +18,13 @@ import com.acmerobotics.roadrunner.Pose2dDual;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.PoseVelocity2dDual;
 import com.acmerobotics.roadrunner.ProfileAccelConstraint;
+import com.acmerobotics.roadrunner.ProfileParams;
 import com.acmerobotics.roadrunner.Rotation2d;
 import com.acmerobotics.roadrunner.Time;
 import com.acmerobotics.roadrunner.TimeTrajectory;
 import com.acmerobotics.roadrunner.TimeTurn;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
+import com.acmerobotics.roadrunner.TrajectoryBuilderParams;
 import com.acmerobotics.roadrunner.TurnConstraints;
 import com.acmerobotics.roadrunner.Twist2dDual;
 import com.acmerobotics.roadrunner.Vector2d;
@@ -291,10 +293,9 @@ public final class MecanumDrive {
               && error.heading.real < 1
               && robotVelRobot.angVel < 0.5
           ) || t >= timeTrajectory.duration + 1) { // 1 second max extra correction */
-      if ((t >= timeTrajectory.duration
-          && error.heading.real < 1
-          && robotVelRobot.angVel < Math.toRadians(15)
-      ) || t >= timeTrajectory.duration + 1) {
+      if ((t >= timeTrajectory.duration && error.position.norm() < 2
+          && robotVelRobot.linearVel.norm() < 0.5)
+          || (t >= timeTrajectory.duration + 0.5)) {
         leftFront.setPower(0);
         leftBack.setPower(0);
         rightBack.setPower(0);
@@ -488,10 +489,12 @@ public final class MecanumDrive {
     return new TrajectoryActionBuilder(
         TurnAction::new,
         FollowTrajectoryAction::new,
-        beginPose, 1e-6, 0.0,
+        new TrajectoryBuilderParams(
+            1e-6, new ProfileParams(0.25, 0.1, 1e-2)
+        ),
+        beginPose, 0.0,
         defaultTurnConstraints,
-        defaultVelConstraint, defaultAccelConstraint,
-        0.25, 0.1
+        defaultVelConstraint, defaultAccelConstraint
     );
   }
 }

@@ -17,9 +17,9 @@ public class TuneTurning extends LinearOpMode {
   public static int TARGET = 90;
   public static int THRESHOLD = 1;
 
-  public static double P = 0.025;
+  public static double P = 0.04;
 
-  public static double MAX_SPEED = 0.6;
+  public static double MAX_SPEED = 0.4;
 
   @Override
   public void runOpMode() throws InterruptedException {

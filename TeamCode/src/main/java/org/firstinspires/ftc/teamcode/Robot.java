@@ -32,7 +32,7 @@ public class Robot {
   public static double DIST_THRESH = 1.5; // cm
   public static double DIST_TARG = 20; // cm
 
-  public static double GYRO_TURN_P_GAIN = .04;
+  public static double GYRO_TURN_P_GAIN = .05;
   public static double HEADING_THRESHOLD = 1;
 
   public Robot(LinearOpMode opMode) {
@@ -232,7 +232,7 @@ public class Robot {
       double turnSpeed = Range.clip(headingError * GYRO_TURN_P_GAIN, -1, 1);
 
       // Clip the speed to the maximum permitted value.
-      turnSpeed = Range.clip(turnSpeed, -.6, .6);
+      turnSpeed = Range.clip(turnSpeed, -0.4, 0.4);
       this.setDriveTrainPower(turnSpeed, -turnSpeed, turnSpeed, -turnSpeed);
 
       if (Math.abs(headingError) < HEADING_THRESHOLD) {

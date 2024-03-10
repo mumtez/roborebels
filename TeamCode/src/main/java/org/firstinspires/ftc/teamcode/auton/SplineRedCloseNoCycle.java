@@ -12,7 +12,6 @@ import com.acmerobotics.roadrunner.VelConstraint;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.odom.MecanumDrive;
@@ -21,8 +20,8 @@ import org.firstinspires.ftc.teamcode.vision.RedPropThreshold;
 import org.firstinspires.ftc.vision.VisionPortal;
 
 @Config
-@Autonomous(name = "Red Close Spline Autonomous")
-public class SplineRedClose extends LinearOpMode {
+@Autonomous(name = "Red Close No Cycle Spline Autonomous")
+public class SplineRedCloseNoCycle extends LinearOpMode {
 
   public FtcDashboard dash = FtcDashboard.getInstance();
   Robot robot;
@@ -155,6 +154,8 @@ public class SplineRedClose extends LinearOpMode {
     robot.setSlidePos(1500, 1);
     robot.waitTime(200);
     robot.setSlidePos(0, 1);
+
+    /*
     Actions.runBlocking(
         drive.actionBuilder(drive.pose)
             // By truss
@@ -164,7 +165,7 @@ public class SplineRedClose extends LinearOpMode {
     Actions.runBlocking(
         drive.actionBuilder(drive.pose)
             //through truss to corner
-            .strafeToConstantHeading(AUDIENCE_TRUSS/*, slowVel, slowAccel*/)
+            .strafeToConstantHeading(AUDIENCE_TRUSS)//, slowVel, slowAccel)
             //near stack
             .splineToConstantHeading(NEAR_STACK, Math.toRadians(90))
             .build());
@@ -206,7 +207,7 @@ public class SplineRedClose extends LinearOpMode {
         drive.actionBuilder(drive.pose)
             // Cross truss
             .setReversed(true)
-            .strafeToConstantHeading(BACKDROP_TRUSS/*, slowVel, slowAccel*/)
+            .strafeToConstantHeading(BACKDROP_TRUSS)//, slowVel, slowAccel)
             //board
             .splineToConstantHeading(whitePlacement, Math.toRadians(0))
             .build());
@@ -217,13 +218,14 @@ public class SplineRedClose extends LinearOpMode {
       robot.setSlidePos(1800, 1);
       robot.waitTime(200);
       robot.setSlidePos(0, 1);
-      Actions.runBlocking(
-          drive.actionBuilder(drive.pose)
-              // park
-              .splineToConstantHeading(parkVec, Math.toRadians(0))
-              .build());
-    }
 
-
+      */
+    Actions.runBlocking(
+        drive.actionBuilder(drive.pose)
+            // park
+            .splineToConstantHeading(parkVec, Math.toRadians(0))
+            .build());
   }
+
+
 }
