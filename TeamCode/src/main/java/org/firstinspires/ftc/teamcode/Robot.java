@@ -238,13 +238,26 @@ public class Robot {
     this.fl.setMode(RunMode.RUN_WITHOUT_ENCODER);
     this.br.setMode(RunMode.RUN_WITHOUT_ENCODER);
     this.bl.setMode(RunMode.RUN_WITHOUT_ENCODER);
-    
+
     double error;
+    int x = 0;
     do {
-      error = Math.abs(stackSensor.getDistance(DistanceUnit.CM) - STACK_DIST);
+      double distance = stackSensor.getDistance(DistanceUnit.CM);
+      error = distance - STACK_DIST;
       double p = Range.clip(STACK_DIST_P * error, -0.5, 0.5);
       this.setDriveTrainPower(p, p, p, p);
-    } while (error > STACK_DIST_THRESH);
+
+      if (Math.abs(error) < STACK_DIST_THRESH) {
+        x++;
+      } else {
+        x = 0;
+      }
+
+      this.opMode.telemetry.addData("stack distance cm:", distance);
+      this.opMode.telemetry.addData("error:", error);
+      this.opMode.telemetry.addData("power:", p);
+      this.opMode.telemetry.update();
+    } while (Math.abs(error) > STACK_DIST_THRESH && x < 10);
 
     this.setDriveTrainPower(0, 0, 0, 0);
   }

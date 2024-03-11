@@ -161,6 +161,7 @@ public class SplineRedClose extends LinearOpMode {
             .splineToConstantHeading(BACKDROP_TRUSS, Math.toRadians(180))
             .build());
     // intentional break so slowdown
+    robot.turnByGyro(90);
     Actions.runBlocking(
         drive.actionBuilder(drive.pose)
             //through truss to corner
@@ -170,7 +171,7 @@ public class SplineRedClose extends LinearOpMode {
             .build());
 
     robot.flipperControl(true); // open
-    //robot.turnByGyro(90);
+    robot.turnByGyro(90);
     robot.waitTime(200);
 
     Actions.runBlocking(
