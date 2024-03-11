@@ -8,29 +8,28 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotor.RunMode;
 import com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior;
 import com.qualcomm.robotcore.hardware.DcMotorSimple.Direction;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @Config
 public class Robot {
 
   private final LinearOpMode opMode;
-  private int counter;
-  //public final RevColorSensorV3 pixelSensor;
-  //public final DistanceSensor distanceSensor;
   public final IMU imu;
   public final DcMotor fl, fr, bl, br;
   public final DcMotor slideL, slideR;
   public final DcMotor intake;
   public final Servo plane, gateFlip, pixelPull, pixelPullFront;
+  public final DistanceSensor stackSensor;
 
-  public static double DIST_P = .1;
-  public static double DIST_THRESH = 1.5; // cm
-  public static double DIST_TARG = 20; // cm
+  public static double STACK_DIST_P = 0.05;
+  public static double STACK_DIST_THRESH = 2; // cm
+  public static double STACK_DIST = 5; // cm
 
   public static double GYRO_TURN_P_GAIN = .05;
   public static double HEADING_THRESHOLD = 1;
@@ -52,13 +51,6 @@ public class Robot {
         RevHubOrientationOnRobot.UsbFacingDirection.UP));
     imu.initialize(parameters);
     imu.resetYaw();
-
-    // Sensors
-    //distanceSensor = hardwareMap.get(DistanceSensor.class, "dist");
-    //RevLED led = new RevLED(hardwareMap, "redled", "greenled");
-    //led.off();
-
-    counter = 0;
 
     // Drivetrain
     fl = hardwareMap.dcMotor.get("fl");
@@ -113,6 +105,8 @@ public class Robot {
 
     // pixelSensor = hardwareMap.get(RevColorSensorV3.class, "intakeColour");
     // pixelSensor.enableLed(true);
+
+    stackSensor = hardwareMap.get(DistanceSensor.class, "stack2m");
   }
 
   public void setSlidePower(double pow) {
@@ -136,6 +130,7 @@ public class Robot {
         && Math.abs(slideR.getCurrentPosition() - pos) > 30) {
       // Wait for slide to end
     }
+
     setSlidePower(0);
   }
 
@@ -143,61 +138,11 @@ public class Robot {
     return this.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
   }
 
-  public void holdPosition(double pow) {
-    fr.setTargetPosition(fr.getCurrentPosition());
-    fl.setTargetPosition(fl.getCurrentPosition());
-    br.setTargetPosition(br.getCurrentPosition());
-    bl.setTargetPosition(bl.getCurrentPosition());
-    fr.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-    fl.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-    br.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-    bl.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-    this.setDriveTrainPower(pow, pow, pow, pow);
-  }
-
-  public void encodeDriveForward(double disto, double y) {
-    int targetTicks = distanceToEncoderTicks(disto);
-    fr.setTargetPosition(targetTicks + fr.getCurrentPosition());
-    fl.setTargetPosition(targetTicks + fl.getCurrentPosition());
-    br.setTargetPosition(targetTicks + br.getCurrentPosition());
-    bl.setTargetPosition(targetTicks + bl.getCurrentPosition());
-
-    fr.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-    fl.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-    br.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-    bl.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-    setDriveTrainPower(y, y, y, y);
-    opMode.telemetry.addData("fr pos", fr.getCurrentPosition());
-    opMode.telemetry.update();
-  }
-
   public void setDriveTrainPower(double frPow, double flPow, double brPow, double blPow) {
     fr.setPower(frPow);
     fl.setPower(flPow);
     br.setPower(brPow);
     bl.setPower(blPow);
-  }
-
-  public void encodeDriveStrafe(double disto, double x) {
-    int targetTicks = distanceToEncoderTicks(disto);
-    fr.setTargetPosition(-targetTicks + fr.getCurrentPosition());
-    fl.setTargetPosition(targetTicks + fl.getCurrentPosition());
-    br.setTargetPosition(targetTicks + br.getCurrentPosition());
-    bl.setTargetPosition(-targetTicks + bl.getCurrentPosition());
-
-    fr.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-    fl.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-    br.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-    bl.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-    setDriveTrainPower(x, x, x, x);
-
-    while (opMode.opModeIsActive() && fr.isBusy() && fl.isBusy() && br.isBusy() && bl.isBusy()) {
-      // Wait for drive to end h
-    }
-
-    setDriveTrainPower(0, 0, 0, 0);
   }
 
   public void turnByGyro(double targetDegrees) {
@@ -257,19 +202,14 @@ public class Robot {
     }
   }
 
-  public int distanceToEncoderTicks(double distanceMM) {
-    double circumference = Math.PI * 96;
-    double cpr = 537.7;
-    double ticksPerMM = cpr / circumference;
-    return (int) (ticksPerMM * distanceMM);
-  }
-
+  // TODO: remove
   public void spitPixel() {
     this.flipperControl(true);
     this.setIntakePos(-100, .1);
     this.waitTime(100);
   }
 
+  // TODO: remove
   public void setIntakePos(int pos, double pow) {
     intake.setMode(RunMode.STOP_AND_RESET_ENCODER);
     intake.setTargetPosition(pos);
@@ -292,23 +232,22 @@ public class Robot {
     }
   }
 
-  /*public int getPixel() {
-    if (pixelSensor.getDistance(DistanceUnit.CM) < 5) {
-      counter++;
-    }
-    return counter;
-  }*/
+  // TODO: tune
+  public void driveToStack() {
+    this.fr.setMode(RunMode.RUN_WITHOUT_ENCODER);
+    this.fl.setMode(RunMode.RUN_WITHOUT_ENCODER);
+    this.br.setMode(RunMode.RUN_WITHOUT_ENCODER);
+    this.bl.setMode(RunMode.RUN_WITHOUT_ENCODER);
+    
+    double error;
+    do {
+      error = Math.abs(stackSensor.getDistance(DistanceUnit.CM) - STACK_DIST);
+      double p = Range.clip(STACK_DIST_P * error, -0.5, 0.5);
+      this.setDriveTrainPower(p, p, p, p);
+    } while (error > STACK_DIST_THRESH);
 
-  /*public void driveToBoard() {
-    double error = Math.abs(distanceSensor.getDistance(DistanceUnit.CM) - DIST_TARG);
-    if ((Math.abs(distanceSensor.getDistance(DistanceUnit.CM) - DIST_TARG)) > DIST_THRESH) {
-      this.setDriveTrainPower(DIST_P * error, DIST_P * error, DIST_P * error, DIST_P * error);
-    } else {
-      this.setDriveTrainPower(0, 0, 0, 0);
-    }
-
-
-  }*/
+    this.setDriveTrainPower(0, 0, 0, 0);
+  }
 
   public void flipperControl(boolean x) {
     if (!x) {
