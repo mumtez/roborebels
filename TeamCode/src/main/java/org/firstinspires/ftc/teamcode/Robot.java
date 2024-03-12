@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -31,7 +32,7 @@ public class Robot {
   public static double STACK_DIST_THRESH = 2; // cm
   public static double STACK_DIST = 5; // cm
 
-  public static double GYRO_TURN_P_GAIN = .05;
+  public static double GYRO_TURN_P_GAIN = .06;
   public static double HEADING_THRESHOLD = 1;
 
   public Robot(LinearOpMode opMode) {
@@ -161,8 +162,9 @@ public class Robot {
     }
 
     int x = 0;
+    ElapsedTime timer = new ElapsedTime();
     // keep looping while we are still active, and not on heading.
-    while (this.opMode.opModeIsActive() && x < 10) {
+    while (this.opMode.opModeIsActive() && x < 10 && timer.milliseconds() < 1000) {
 
       headingError = targetDegrees - getHeading();
 
@@ -180,7 +182,7 @@ public class Robot {
       turnSpeed = Range.clip(turnSpeed, -0.4, 0.4);
       this.setDriveTrainPower(turnSpeed, -turnSpeed, turnSpeed, -turnSpeed);
 
-      if (Math.abs(headingError) < HEADING_THRESHOLD) {
+      if (Math.abs(headingError) <= HEADING_THRESHOLD) {
         x++;
       } else {
         x = 0;
