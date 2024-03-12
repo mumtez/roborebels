@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot.LogoFacingDirection;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -8,12 +9,14 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotor.RunMode;
 import com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior;
 import com.qualcomm.robotcore.hardware.DcMotorSimple.Direction;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
+import java.util.List;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
@@ -26,11 +29,21 @@ public class Robot {
   public final DcMotor slideL, slideR;
   public final DcMotor intake;
   public final Servo plane, gateFlip, pixelPull, pixelPullFront;
-  public final DistanceSensor stackSensor;
+  public final DistanceSensor stackSensor, backdropSensor;
+  public final LVMaxSonarEZ ultrasonicLeft, ultrasonicRight;
+  public final DigitalChannel redLed, greenLed;
 
-  public static double STACK_DIST_P = 0.05;
-  public static double STACK_DIST_THRESH = 2; // cm
-  public static double STACK_DIST = 5; // cm
+  public static double BACKDROP_DIST_P = 0.03;
+  public static double BACKDROP_DIST_THRESH = 1; // cm
+  public static double BACKDROP_DIST = 10; // cm
+
+  public static double STACK_DIST_P = 0.03;
+  public static double STACK_DIST_THRESH = 1; // cm
+  public static double STACK_DIST = 8; // cm
+
+  public static double ULTRASONIC_DIST_P = 0.04;
+  public static double ULTRASONIC_DIST_THRESH = 4; // cm
+  public static double ULTRASONIC_DIST = 12; // cm
 
   public static double GYRO_TURN_P_GAIN = .06;
   public static double HEADING_THRESHOLD = 1;
@@ -40,10 +53,10 @@ public class Robot {
     HardwareMap hardwareMap = opMode.hardwareMap;
 
     // BULK CACHING
-//    List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
-//    for (LynxModule hub : allHubs) {
-//      hub.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
-//    }
+    List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
+    for (LynxModule hub : allHubs) {
+      hub.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
+    }
 
     // IMU
     imu = hardwareMap.get(IMU.class, "imu");
@@ -108,6 +121,18 @@ public class Robot {
     // pixelSensor.enableLed(true);
 
     stackSensor = hardwareMap.get(DistanceSensor.class, "stack2m");
+    backdropSensor = hardwareMap.get(DistanceSensor.class, "backdrop");
+    ultrasonicLeft = new LVMaxSonarEZ(hardwareMap.analogInput.get("usl"));
+    ultrasonicRight = new LVMaxSonarEZ(hardwareMap.analogInput.get("usr"));
+
+    redLed = hardwareMap.get(DigitalChannel.class, "red");
+    greenLed = hardwareMap.get(DigitalChannel.class, "green");
+
+    redLed.setMode(DigitalChannel.Mode.OUTPUT);
+    greenLed.setMode(DigitalChannel.Mode.OUTPUT);
+
+    redLed.setState(false);
+    greenLed.setState(false);
   }
 
   public void setSlidePower(double pow) {
@@ -204,28 +229,6 @@ public class Robot {
     }
   }
 
-  // TODO: remove
-  public void spitPixel() {
-    this.flipperControl(true);
-    this.setIntakePos(-100, .1);
-    this.waitTime(100);
-  }
-
-  // TODO: remove
-  public void setIntakePos(int pos, double pow) {
-    intake.setMode(RunMode.STOP_AND_RESET_ENCODER);
-    intake.setTargetPosition(pos);
-
-    intake.setMode(RunMode.RUN_TO_POSITION);
-
-    intake.setPower(pow);
-
-    while (this.opMode.opModeIsActive() && intake.isBusy()) {
-      // Wait for slide to end
-    }
-    intake.setPower(0);
-  }
-
   public void toggleDoor(boolean open) {
     if (open) {
       gateFlip.setPosition(1);
@@ -234,8 +237,24 @@ public class Robot {
     }
   }
 
-  // TODO: tune
   public void driveToStack() {
+    this.driveByDistanceSensor(stackSensor, STACK_DIST_P, STACK_DIST, STACK_DIST_THRESH);
+  }
+
+  public void driveToBackdrop() {
+    this.driveByDistanceSensor(backdropSensor, BACKDROP_DIST_P, BACKDROP_DIST, BACKDROP_DIST_THRESH);
+  }
+
+  public void driveToLeftWall() {
+    this.driveByDistanceSensor(ultrasonicLeft, ULTRASONIC_DIST_P, ULTRASONIC_DIST, ULTRASONIC_DIST_THRESH);
+  }
+
+  public void driveToRightWall() {
+    this.driveByDistanceSensor(ultrasonicRight, ULTRASONIC_DIST_P, ULTRASONIC_DIST, ULTRASONIC_DIST_THRESH);
+  }
+
+  public void driveByDistanceSensor(DistanceSensor distanceSensor, double pVal, double targetDistCm,
+      double thresholdCm) {
     this.fr.setMode(RunMode.RUN_WITHOUT_ENCODER);
     this.fl.setMode(RunMode.RUN_WITHOUT_ENCODER);
     this.br.setMode(RunMode.RUN_WITHOUT_ENCODER);
@@ -244,9 +263,9 @@ public class Robot {
     double error;
     int x = 0;
     do {
-      double distance = stackSensor.getDistance(DistanceUnit.CM);
-      error = distance - STACK_DIST;
-      double p = Range.clip(STACK_DIST_P * error, -0.5, 0.5);
+      double distance = distanceSensor.getDistance(DistanceUnit.CM);
+      error = distance - targetDistCm;
+      double p = Range.clip(pVal * error, -0.3, 0.3);
       this.setDriveTrainPower(p, p, p, p);
 
       if (Math.abs(error) < STACK_DIST_THRESH) {
@@ -255,11 +274,11 @@ public class Robot {
         x = 0;
       }
 
-      this.opMode.telemetry.addData("stack distance cm:", distance);
+      this.opMode.telemetry.addData("distance cm:", distance);
       this.opMode.telemetry.addData("error:", error);
       this.opMode.telemetry.addData("power:", p);
       this.opMode.telemetry.update();
-    } while (Math.abs(error) > STACK_DIST_THRESH && x < 10);
+    } while (this.opMode.opModeIsActive() && Math.abs(error) > thresholdCm && x < 10);
 
     this.setDriveTrainPower(0, 0, 0, 0);
   }
