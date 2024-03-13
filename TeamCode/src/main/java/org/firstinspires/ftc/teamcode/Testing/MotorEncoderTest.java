@@ -14,10 +14,10 @@ public class MotorEncoderTest extends LinearOpMode {
     robot = new Robot(this);
     waitForStart();
     while (opModeIsActive()) {
-      telemetry.addData("FR", robot.fr.getCurrentPosition());
-      telemetry.addData("FL", robot.fl.getCurrentPosition());
-      telemetry.addData("BR", robot.br.getCurrentPosition());
-      telemetry.addData("BL", robot.bl.getCurrentPosition());
+//      telemetry.addData("FR", robot.fr.getCurrentPosition());
+//      telemetry.addData("FL", robot.fl.getCurrentPosition());
+//      telemetry.addData("BR", robot.br.getCurrentPosition());
+//      telemetry.addData("BL", robot.bl.getCurrentPosition());
       telemetry.addData("SLIDE L", robot.slideL.getCurrentPosition());
       telemetry.addData("SLIDE R", robot.slideR.getCurrentPosition());
       telemetry.addData("INTAKE", robot.intake.getCurrentPosition());

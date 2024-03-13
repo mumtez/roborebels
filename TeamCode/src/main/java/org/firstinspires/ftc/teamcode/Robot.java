@@ -9,7 +9,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotor.RunMode;
 import com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior;
 import com.qualcomm.robotcore.hardware.DcMotorSimple.Direction;
-import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
@@ -31,11 +30,11 @@ public class Robot {
   public final Servo plane, gateFlip, pixelPull, pixelPullFront;
   public final DistanceSensor stackSensor, backdropSensor;
   public final LVMaxSonarEZ ultrasonicLeft, ultrasonicRight;
-  public final DigitalChannel redLed, greenLed;
+  public final RevLED led;
 
   public static double BACKDROP_DIST_P = 0.03;
   public static double BACKDROP_DIST_THRESH = 1; // cm
-  public static double BACKDROP_DIST = 10; // cm
+  public static double BACKDROP_DIST = 15; // cm
 
   public static double STACK_DIST_P = 0.03;
   public static double STACK_DIST_THRESH = 1; // cm
@@ -43,7 +42,7 @@ public class Robot {
 
   public static double ULTRASONIC_DIST_P = 0.04;
   public static double ULTRASONIC_DIST_THRESH = 4; // cm
-  public static double ULTRASONIC_DIST = 12; // cm
+  public static double ULTRASONIC_DIST = 15.5; // cm
 
   public static double GYRO_TURN_P_GAIN = .06;
   public static double HEADING_THRESHOLD = 1;
@@ -125,14 +124,8 @@ public class Robot {
     ultrasonicLeft = new LVMaxSonarEZ(hardwareMap.analogInput.get("usl"));
     ultrasonicRight = new LVMaxSonarEZ(hardwareMap.analogInput.get("usr"));
 
-    redLed = hardwareMap.get(DigitalChannel.class, "red");
-    greenLed = hardwareMap.get(DigitalChannel.class, "green");
-
-    redLed.setMode(DigitalChannel.Mode.OUTPUT);
-    greenLed.setMode(DigitalChannel.Mode.OUTPUT);
-
-    redLed.setState(false);
-    greenLed.setState(false);
+    led = new RevLED(hardwareMap, "red", "green");
+    led.green();
   }
 
   public void setSlidePower(double pow) {
@@ -237,24 +230,31 @@ public class Robot {
     }
   }
 
+  public enum DIRECTION {
+    LEFT, RIGHT, FORWARD, BACKWARD;
+  }
+
   public void driveToStack() {
-    this.driveByDistanceSensor(stackSensor, STACK_DIST_P, STACK_DIST, STACK_DIST_THRESH);
+    this.driveByDistanceSensor(stackSensor, STACK_DIST_P, STACK_DIST, STACK_DIST_THRESH, DIRECTION.FORWARD);
   }
 
   public void driveToBackdrop() {
-    this.driveByDistanceSensor(backdropSensor, BACKDROP_DIST_P, BACKDROP_DIST, BACKDROP_DIST_THRESH);
+    this.driveByDistanceSensor(backdropSensor, BACKDROP_DIST_P, BACKDROP_DIST, BACKDROP_DIST_THRESH,
+        DIRECTION.BACKWARD);
   }
 
   public void driveToLeftWall() {
-    this.driveByDistanceSensor(ultrasonicLeft, ULTRASONIC_DIST_P, ULTRASONIC_DIST, ULTRASONIC_DIST_THRESH);
+    this.driveByDistanceSensor(ultrasonicLeft, ULTRASONIC_DIST_P, ULTRASONIC_DIST, ULTRASONIC_DIST_THRESH,
+        DIRECTION.LEFT);
   }
 
   public void driveToRightWall() {
-    this.driveByDistanceSensor(ultrasonicRight, ULTRASONIC_DIST_P, ULTRASONIC_DIST, ULTRASONIC_DIST_THRESH);
+    this.driveByDistanceSensor(ultrasonicRight, ULTRASONIC_DIST_P, ULTRASONIC_DIST, ULTRASONIC_DIST_THRESH,
+        DIRECTION.RIGHT);
   }
 
   public void driveByDistanceSensor(DistanceSensor distanceSensor, double pVal, double targetDistCm,
-      double thresholdCm) {
+      double thresholdCm, DIRECTION direction) {
     this.fr.setMode(RunMode.RUN_WITHOUT_ENCODER);
     this.fl.setMode(RunMode.RUN_WITHOUT_ENCODER);
     this.br.setMode(RunMode.RUN_WITHOUT_ENCODER);
@@ -266,7 +266,20 @@ public class Robot {
       double distance = distanceSensor.getDistance(DistanceUnit.CM);
       error = distance - targetDistCm;
       double p = Range.clip(pVal * error, -0.3, 0.3);
-      this.setDriveTrainPower(p, p, p, p);
+      switch (direction) {
+        case LEFT:
+          this.setDriveTrainPower(p, -p, -p, p);
+          break;
+        case RIGHT:
+          this.setDriveTrainPower(-p, p, p, -p);
+          break;
+        case FORWARD:
+          this.setDriveTrainPower(p, p, p, p);
+          break;
+        case BACKWARD:
+          this.setDriveTrainPower(-p, -p, -p, -p);
+          break;
+      }
 
       if (Math.abs(error) < STACK_DIST_THRESH) {
         x++;

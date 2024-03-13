@@ -24,9 +24,15 @@ public class TuneDistanceSensorDrive extends LinearOpMode {
         robot.driveToBackdrop();
       } else if (gamepad1.b) {
         robot.driveToStack();
+      } else if (gamepad1.y) {
+        robot.driveToLeftWall();
+      } else if (gamepad1.x) {
+        robot.driveToRightWall();
       } else {
         telemetry.addLine("PRESS A TO DRIVE TO BACKDROP");
         telemetry.addLine("PRESS B TO DRIVE TO STACK");
+        telemetry.addLine("PRESS Y TO DRIVE TO LEFT");
+        telemetry.addLine("PRESS X TO DRIVE TO RIGHT");
         telemetry.update();
       }
     }
