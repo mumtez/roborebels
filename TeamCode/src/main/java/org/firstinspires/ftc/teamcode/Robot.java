@@ -24,7 +24,17 @@ import org.firstinspires.ftc.teamcode.sensors.RevLED;
 @Config
 public class Robot {
 
-  private final LinearOpMode opMode;
+  public static double BACKDROP_DIST_P = 0.03;
+  public static double BACKDROP_DIST_THRESH = 1; // cm
+  public static double BACKDROP_DIST = 15; // cm
+  public static double STACK_DIST_P = 0.03;
+  public static double STACK_DIST_THRESH = 1; // cm
+  public static double STACK_DIST = 8; // cm
+  public static double ULTRASONIC_DIST_P = 0.04;
+  public static double ULTRASONIC_DIST_THRESH = 4; // cm
+  public static double ULTRASONIC_DIST = 15.5; // cm
+  public static double GYRO_TURN_P_GAIN = .06;
+  public static double HEADING_THRESHOLD = 1;
   public final IMU imu;
   public final DcMotor fl, fr, bl, br;
   public final DcMotor slideL, slideR;
@@ -33,21 +43,7 @@ public class Robot {
   public final DistanceSensor stackSensor, backdropSensor;
   public final LVMaxSonarEZ ultrasonicLeft, ultrasonicRight;
   public final RevLED led;
-
-  public static double BACKDROP_DIST_P = 0.03;
-  public static double BACKDROP_DIST_THRESH = 1; // cm
-  public static double BACKDROP_DIST = 15; // cm
-
-  public static double STACK_DIST_P = 0.03;
-  public static double STACK_DIST_THRESH = 1; // cm
-  public static double STACK_DIST = 8; // cm
-
-  public static double ULTRASONIC_DIST_P = 0.04;
-  public static double ULTRASONIC_DIST_THRESH = 4; // cm
-  public static double ULTRASONIC_DIST = 15.5; // cm
-
-  public static double GYRO_TURN_P_GAIN = .06;
-  public static double HEADING_THRESHOLD = 1;
+  private final LinearOpMode opMode;
 
   public Robot(LinearOpMode opMode) {
     this.opMode = opMode;
@@ -184,7 +180,8 @@ public class Robot {
     int x = 0;
     ElapsedTime timer = new ElapsedTime();
     // keep looping while we are still active, and not on heading.
-    while (this.opMode.opModeIsActive() && x < 10 && timer.milliseconds() < 1000) {
+    // Max time: 1/2 second
+    while (this.opMode.opModeIsActive() && x < 10 && timer.milliseconds() < 500) {
 
       headingError = targetDegrees - getHeading();
 
@@ -230,10 +227,6 @@ public class Robot {
     } else {
       gateFlip.setPosition(.62);
     }
-  }
-
-  public enum DIRECTION {
-    LEFT, RIGHT, FORWARD, BACKWARD;
   }
 
   public void driveToStack() {
@@ -310,5 +303,9 @@ public class Robot {
 
   public void fly() {
     plane.setPosition(1);
+  }
+
+  public enum DIRECTION {
+    LEFT, RIGHT, FORWARD, BACKWARD;
   }
 }
