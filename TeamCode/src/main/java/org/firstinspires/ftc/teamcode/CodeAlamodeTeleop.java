@@ -1,11 +1,14 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor.RunMode;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.teamcode.Robot;
 
+@Disabled
 @TeleOp(name = "KidsTeleop")
 public class CodeAlamodeTeleop extends LinearOpMode {
 
@@ -46,10 +49,10 @@ public class CodeAlamodeTeleop extends LinearOpMode {
         double frontRightPower = (rotY - rotX - rx) / denominator;
         double backRightPower = (rotY + rotX - rx) / denominator;
 
-        robot.fl.setPower(frontLeftPower/2);
-        robot.bl.setPower(backLeftPower/2);
-        robot.fr.setPower(frontRightPower/2);
-        robot.br.setPower(backRightPower/2);
+        robot.fl.setPower(frontLeftPower / 2);
+        robot.bl.setPower(backLeftPower / 2);
+        robot.fr.setPower(frontRightPower / 2);
+        robot.br.setPower(backRightPower / 2);
       }
 
       //robot.intake.setPower((gamepad1.right_trigger * 0.7) - (gamepad1.left_trigger * 0.8));
