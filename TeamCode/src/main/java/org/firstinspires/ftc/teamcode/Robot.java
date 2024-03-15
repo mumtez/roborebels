@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple.Direction;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.hardware.PwmControl.PwmRange;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
@@ -40,6 +41,10 @@ public class Robot {
   public static double LEFT_CLAW_OPEN = 1;
   public static double RIGHT_CLAW_CLOSED = 0;
   public static double RIGHT_CLAW_OPEN = 1;
+
+
+  public static double GATE_CLOSED = 0;
+  public static double GATE_OPEN = 1;
 
   public final IMU imu;
   public final DcMotor fl, fr, bl, br;
@@ -105,7 +110,6 @@ public class Robot {
 
     // Intake
     intake = hardwareMap.dcMotor.get("intake");
-
     intake.setMode(RunMode.STOP_AND_RESET_ENCODER);
     intake.setDirection(Direction.FORWARD);
     intake.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
@@ -113,8 +117,11 @@ public class Robot {
     // Servos
     plane = (ServoImplEx) hardwareMap.servo.get("plane");
     gate = (ServoImplEx) hardwareMap.servo.get("gate");
+    gate.setPwmRange(new PwmRange(500, 2500));
     pixelClawLeft = (ServoImplEx) hardwareMap.servo.get("left claw");
+    pixelClawLeft.setPwmRange(new PwmRange(500, 2500));
     pixelClawRight = (ServoImplEx) hardwareMap.servo.get("right claw");
+    pixelClawRight.setPwmRange(new PwmRange(500, 2500));
 
     // TODO: set a starting plane position
     //plane.setPosition(0);
@@ -228,9 +235,9 @@ public class Robot {
 
   public void toggleDoor(boolean open) {
     if (open) {
-      gate.setPosition(1);
+      gate.setPosition(GATE_OPEN);
     } else {
-      gate.setPosition(.62);
+      gate.setPosition(GATE_CLOSED);
     }
   }
 
@@ -296,13 +303,13 @@ public class Robot {
     this.setDriveTrainPower(0, 0, 0, 0);
   }
 
-  public void flipperControl(boolean x) {
-    if (!x) {
-      pixelClawRight.setPosition(0.78);
-      pixelClawLeft.setPosition(0.22);
+  public void flipperControl(boolean open) {
+    if (open) {
+      pixelClawLeft.setPosition(LEFT_CLAW_OPEN);
+      pixelClawRight.setPosition(RIGHT_CLAW_OPEN);
     } else {
-      pixelClawLeft.setPosition(0.7);
-      pixelClawRight.setPosition(0.3);
+      pixelClawLeft.setPosition(LEFT_CLAW_CLOSED);
+      pixelClawRight.setPosition(RIGHT_CLAW_CLOSED);
     }
   }
 
