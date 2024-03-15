@@ -135,7 +135,7 @@ public class Robot {
 
     // TODO: set a starting plane position
     //plane.setPosition(0);
-    gate.setPosition(1);
+    gate.setPosition(GATE_CLOSED);
     pixelClawRight.setPosition(RIGHT_CLAW_CLOSED);
     pixelClawLeft.setPosition(LEFT_CLAW_CLOSED);
     sweeper.setPosition(SWEEP_IN);
@@ -255,9 +255,9 @@ public class Robot {
 
   public void setSweepOut(boolean out) {
     if (out) {
-      gate.setPosition(SWEEP_OUT);
+      sweeper.setPosition(SWEEP_OUT);
     } else {
-      gate.setPosition(SWEEP_IN);
+      sweeper.setPosition(SWEEP_IN);
     }
   }
 
