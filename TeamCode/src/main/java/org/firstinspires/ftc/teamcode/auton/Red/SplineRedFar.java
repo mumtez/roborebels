@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.auton;
+package org.firstinspires.ftc.teamcode.auton.Red;
 
 import android.util.Size;
 import com.acmerobotics.dashboard.FtcDashboard;
@@ -20,14 +20,13 @@ import org.firstinspires.ftc.vision.VisionPortal;
 @Autonomous(name = "Red Far Spline Autonimous")
 public class SplineRedFar extends LinearOpMode {
 
-  public FtcDashboard dash = FtcDashboard.getInstance();
-  Robot robot;
-  private VisionPortal portal;
-  RedPropThreshold processor;
-
   public static Vector2d RIGHT_BOARD = new Vector2d(47, -32);
   public static Vector2d CENTER_BOARD = new Vector2d(47, -55);
   public static Vector2d LEFT_BOARD = new Vector2d(47, -34);
+  public FtcDashboard dash = FtcDashboard.getInstance();
+  Robot robot;
+  RedPropThreshold processor;
+  private VisionPortal portal;
 
   @Override
   public void runOpMode() throws InterruptedException {

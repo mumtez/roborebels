@@ -1,8 +1,9 @@
-package org.firstinspires.ftc.teamcode.auton;
+package org.firstinspires.ftc.teamcode.auton.Red;
 
 import android.util.Size;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.AccelConstraint;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.ProfileAccelConstraint;
@@ -10,23 +11,23 @@ import com.acmerobotics.roadrunner.TranslationalVelConstraint;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.VelConstraint;
 import com.acmerobotics.roadrunner.ftc.Actions;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.ElapsedTime;
+import java.util.Objects;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.Robot;
+import org.firstinspires.ftc.teamcode.auton.CycleDirection;
+import org.firstinspires.ftc.teamcode.auton.ParkPosition;
 import org.firstinspires.ftc.teamcode.odom.MecanumDrive;
 import org.firstinspires.ftc.teamcode.vision.Position;
 import org.firstinspires.ftc.teamcode.vision.RedPropThreshold;
 import org.firstinspires.ftc.vision.VisionPortal;
 
 @Config
-@Autonomous(name = "Red Close Spline Autonomous")
-public class SplineRedClose extends LinearOpMode {
-
-  public FtcDashboard dash = FtcDashboard.getInstance();
-  Robot robot;
-  RedPropThreshold processor;
+public class RedClose {
 
   public static Pose2d BACKDROP_START = new Pose2d(13, -61, Math.toRadians(90));
 
@@ -59,22 +60,44 @@ public class SplineRedClose extends LinearOpMode {
   public static double SPIKE_RIGHT_HEADING = Math.toRadians(90);
   public static double SPIKE_CENTER_HEADING = Math.toRadians(135);
 
-  // CONFIGURATION
+  public static VelConstraint slowVel = new TranslationalVelConstraint(40);
+  public static AccelConstraint slowAccel = new ProfileAccelConstraint(-40, 40);
 
-  public enum PARK_POSITION {
-    CENTER, CORNER
+  private final LinearOpMode opMode;
+  private final Telemetry telemetry;
+  private final HardwareMap hardwareMap;
+
+  private final double delaySeconds;
+  private final CycleDirection cycle;
+  private final ParkPosition parkPosition;
+  private final Vector2d parkVec;
+  private final Robot robot;
+  private final RedPropThreshold processor;
+  private final MecanumDrive drive;
+  public FtcDashboard dash = FtcDashboard.getInstance();
+
+  public RedClose(LinearOpMode opMode, CycleDirection cycle, ParkPosition parkPosition, double delaySeconds) {
+    this.opMode = opMode;
+    this.telemetry = new MultipleTelemetry(dash.getTelemetry(), opMode.telemetry);
+    this.hardwareMap = opMode.hardwareMap;
+    this.cycle = cycle;
+    this.delaySeconds = delaySeconds;
+
+    this.parkPosition = parkPosition;
+    if (Objects.requireNonNull(parkPosition) == ParkPosition.CENTER) {
+      this.parkVec = PARK_CENTER;
+    } else {
+      this.parkVec = PARK_CORNER;
+    }
+
+    this.drive = new MecanumDrive(hardwareMap, BACKDROP_START);
+    this.processor = new RedPropThreshold();
+    this.robot = new Robot(this.opMode);
   }
 
-  public static PARK_POSITION parkPosition = PARK_POSITION.CENTER; // TODO: change to test all possibilities
+  public void run() {
 
-  VelConstraint slowVel = new TranslationalVelConstraint(40);
-  AccelConstraint slowAccel = new ProfileAccelConstraint(-40, 40);
-
-  @Override
-  public void runOpMode() throws InterruptedException {
-    MecanumDrive drive = new MecanumDrive(hardwareMap, BACKDROP_START);
-    processor = new RedPropThreshold();
-    robot = new Robot(this);
+    ElapsedTime timer = new ElapsedTime();
 
     VisionPortal portal = new VisionPortal.Builder()
         .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
@@ -82,24 +105,18 @@ public class SplineRedClose extends LinearOpMode {
         .addProcessor(processor)
         .build();
 
-    Position x = Position.NONE;
-    while (opModeInInit() && !isStopRequested()) {
-      x = processor.getElePos();
-      telemetry.addLine("Case" + ":" + x.name());
+    // DETECT SPIKE
+    Position spikeDetection = Position.NONE;
+    while (opMode.opModeInInit() && !opMode.isStopRequested()) {
+      spikeDetection = processor.getElePos();
+      telemetry.addLine("Case" + ":" + spikeDetection.name());
       telemetry.addData("RED Prop Position", processor.getElePos());
       telemetry.addData("RED left box avg", processor.averagedLeftBox);
       telemetry.addData("RED right box avg", processor.averagedRightBox);
+      telemetry.addLine();
+      telemetry.addData("Cycle Direction", this.cycle);
+      telemetry.addData("Park", this.parkPosition);
       telemetry.update();
-    }
-
-    Vector2d parkVec;
-    switch (parkPosition) {
-      case CENTER:
-        parkVec = PARK_CENTER;
-        break;
-      default: // CORNER
-        parkVec = PARK_CORNER;
-        break;
     }
 
     Vector2d yellowPlacement;
@@ -107,7 +124,7 @@ public class SplineRedClose extends LinearOpMode {
     Vector2d whitePlacement;
     double stackX;
     double spikeHeading;
-    switch (x) {
+    switch (spikeDetection) {
       case CENTER:
         yellowPlacement = BOARD_CENTER;
         spikePlacement = SPIKE_CENTER;
@@ -139,10 +156,11 @@ public class SplineRedClose extends LinearOpMode {
             .splineTo(spikePlacement, spikeHeading)
             // Board
             .setTangent(Math.toRadians(270))
-            .splineToConstantHeading(new Vector2d(26, spikePlacement.y - 6), Math.toRadians(0))
-            .splineToSplineHeading(new Pose2d(yellowPlacement, Math.toRadians(180)),
-                Math.toRadians(180))
-            .build());
+            .splineToConstantHeading(new Vector2d(spikePlacement.x + 6, spikePlacement.y - 6), Math.toRadians(0))
+            .splineToSplineHeading(new Pose2d(yellowPlacement, Math.toRadians(180)), Math.toRadians(180))
+            .build()
+    );
+
     // TODO: check below for faster
 //        drive.actionBuilder(drive.pose)
 //            // Spike
@@ -152,9 +170,56 @@ public class SplineRedClose extends LinearOpMode {
 //            .splineTo(yellowPlacement,
 //                Math.toRadians(180))
 //            .build());
+
+    // Adjust Position
+    robot.turnByGyro(90);
+    robot.driveToBackdrop();
+
+    // Place Pixel
     robot.setSlidePos(1500, 1);
     robot.waitTime(200);
     robot.setSlidePos(0, 1);
+
+    // TODO: add a delay somewhere
+    // CYCLE
+    boolean safeToContinue = true;
+    while (this.cycle != CycleDirection.NO_CYCLE && safeToContinue && timer.seconds() >= 10
+        && this.opMode.opModeIsActive()) {
+      switch (this.cycle) {
+        case GATE:
+          this.gateCycle(whitePlacement, stackX);
+          break;
+        case TRUSS:
+          this.trussCycle(whitePlacement, stackX);
+          break;
+      }
+      // Place collected pixels if safely crossed field
+      if (drive.pose.position.x > 40) {
+        robot.turnByGyro(90);
+        robot.driveToBackdrop();
+        robot.setSlidePos(1800, 1);
+        robot.waitTime(200);
+        robot.setSlidePos(0, 1);
+      } else {
+        safeToContinue = false;
+      }
+    }
+
+    // PARK if safe
+    if (safeToContinue) {
+      Actions.runBlocking(
+          drive.actionBuilder(drive.pose)
+              .splineToConstantHeading(parkVec, Math.toRadians(0))
+              .build());
+    }
+
+    // STOP
+    robot.setDriveTrainPower(0, 0, 0, 0);
+    robot.setSlidePower(0);
+    robot.intake.setPower(0);
+  }
+
+  private void trussCycle(Vector2d whitePlacement, double stackX) {
     Actions.runBlocking(
         drive.actionBuilder(drive.pose)
             // By truss
@@ -162,6 +227,7 @@ public class SplineRedClose extends LinearOpMode {
             .build());
     // intentional break so slowdown
     robot.turnByGyro(90);
+
     Actions.runBlocking(
         drive.actionBuilder(drive.pose)
             //through truss to corner
@@ -214,19 +280,13 @@ public class SplineRedClose extends LinearOpMode {
 
     robot.intake.setPower(0);
     robot.flipperControl(false);
+  }
 
-    if (drive.pose.position.x > 40) {
-      robot.setSlidePos(1800, 1);
-      robot.waitTime(200);
-      robot.setSlidePos(0, 1);
-      Actions.runBlocking(
-          drive.actionBuilder(drive.pose)
-              // park
-              .splineToConstantHeading(parkVec, Math.toRadians(0))
-              .build());
-    }
-    robot.setDriveTrainPower(0, 0, 0, 0);
+  private void gateCycle(Vector2d whitePlacement, double stackX) {
 
+  }
+
+  private void grabFromStack(double stackX, double stackY) {
 
   }
 }

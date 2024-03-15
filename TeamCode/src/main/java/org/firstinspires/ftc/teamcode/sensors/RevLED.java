@@ -15,6 +15,8 @@ public class RevLED {
 
     this.redLED.setMode(Mode.OUTPUT);
     this.greenLED.setMode(Mode.OUTPUT);
+
+    this.off();
   }
 
   public void off() {

@@ -39,21 +39,25 @@ public class Robot {
 
   public static double LEFT_CLAW_CLOSED = 0;
   public static double LEFT_CLAW_OPEN = 1;
-  public static double RIGHT_CLAW_CLOSED = 0;
-  public static double RIGHT_CLAW_OPEN = 1;
 
+  public static double RIGHT_CLAW_CLOSED = 1;
+  public static double RIGHT_CLAW_OPEN = 0;
 
   public static double GATE_CLOSED = 0;
   public static double GATE_OPEN = 1;
+
+  public static double SWEEP_OUT = 0;
+  public static double SWEEP_IN = 1;
 
   public final IMU imu;
   public final DcMotor fl, fr, bl, br;
   public final DcMotor slideL, slideR;
   public final DcMotor intake;
-  public final ServoImplEx plane, gate, pixelClawLeft, pixelClawRight;
-  public final DistanceSensor stackSensor, backdropSensor;
-  public final LVMaxSonarEZ ultrasonicLeft, ultrasonicRight;
+  public final ServoImplEx plane, gate, pixelClawLeft, pixelClawRight, sweeper;
+  public final DistanceSensor backdropSensor;
+  public final LVMaxSonarEZ ultrasonicLeft, ultrasonicRight, stackSensor;
   public final RevLED led;
+
   private final LinearOpMode opMode;
 
   public Robot(LinearOpMode opMode) {
@@ -116,21 +120,29 @@ public class Robot {
 
     // Servos
     plane = (ServoImplEx) hardwareMap.servo.get("plane");
+
     gate = (ServoImplEx) hardwareMap.servo.get("gate");
     gate.setPwmRange(new PwmRange(500, 2500));
+
     pixelClawLeft = (ServoImplEx) hardwareMap.servo.get("left claw");
     pixelClawLeft.setPwmRange(new PwmRange(500, 2500));
+
     pixelClawRight = (ServoImplEx) hardwareMap.servo.get("right claw");
     pixelClawRight.setPwmRange(new PwmRange(500, 2500));
+
+    sweeper = (ServoImplEx) hardwareMap.servo.get("sweeper");
+    sweeper.setPwmRange(new PwmRange(500, 2500));
 
     // TODO: set a starting plane position
     //plane.setPosition(0);
     gate.setPosition(1);
     pixelClawRight.setPosition(RIGHT_CLAW_CLOSED);
     pixelClawLeft.setPosition(LEFT_CLAW_CLOSED);
+    sweeper.setPosition(SWEEP_IN);
 
-    stackSensor = hardwareMap.get(DistanceSensor.class, "stack2m");
+    // Sensors
     backdropSensor = hardwareMap.get(DistanceSensor.class, "backdrop");
+    stackSensor = new LVMaxSonarEZ(hardwareMap.analogInput.get("stack"));
     ultrasonicLeft = new LVMaxSonarEZ(hardwareMap.analogInput.get("usl"));
     ultrasonicRight = new LVMaxSonarEZ(hardwareMap.analogInput.get("usr"));
 
@@ -193,7 +205,7 @@ public class Robot {
     ElapsedTime timer = new ElapsedTime();
     // keep looping while we are still active, and not on heading.
     // Max time: 1/2 second
-    while (this.opMode.opModeIsActive() && x < 10 && timer.milliseconds() < 500) {
+    while (this.opMode.opModeIsActive() && x < 5 && timer.milliseconds() < 500) {
 
       headingError = targetDegrees - getHeading();
 
@@ -238,6 +250,14 @@ public class Robot {
       gate.setPosition(GATE_OPEN);
     } else {
       gate.setPosition(GATE_CLOSED);
+    }
+  }
+
+  public void setSweepOut(boolean out) {
+    if (out) {
+      gate.setPosition(SWEEP_OUT);
+    } else {
+      gate.setPosition(SWEEP_IN);
     }
   }
 
@@ -298,7 +318,7 @@ public class Robot {
       this.opMode.telemetry.addData("error:", error);
       this.opMode.telemetry.addData("power:", p);
       this.opMode.telemetry.update();
-    } while (this.opMode.opModeIsActive() && Math.abs(error) > thresholdCm && x < 10);
+    } while (this.opMode.opModeIsActive() && Math.abs(error) > thresholdCm && x < 5);
 
     this.setDriveTrainPower(0, 0, 0, 0);
   }
@@ -318,6 +338,6 @@ public class Robot {
   }
 
   public enum DIRECTION {
-    LEFT, RIGHT, FORWARD, BACKWARD;
+    LEFT, RIGHT, FORWARD, BACKWARD
   }
 }

@@ -21,7 +21,7 @@ public class SensorTest extends LinearOpMode {
 
     while (opModeIsActive()) {
       telemetry.addData("Backdrop CM", robot.backdropSensor.getDistance(DistanceUnit.CM));
-      telemetry.addData("Stack CM", robot.stackSensor.getDistance(DistanceUnit.CM));
+      telemetry.addData("Stack US CM", robot.stackSensor.getDistance(DistanceUnit.CM));
       telemetry.addData("Left US CM", robot.ultrasonicRight.getDistance(DistanceUnit.CM));
       telemetry.addData("Right US CM", robot.ultrasonicLeft.getDistance(DistanceUnit.CM));
       telemetry.update();
