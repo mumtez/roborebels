@@ -12,7 +12,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple.Direction;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
-import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.ServoImplEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 import java.util.List;
@@ -33,13 +33,19 @@ public class Robot {
   public static double ULTRASONIC_DIST_P = 0.04;
   public static double ULTRASONIC_DIST_THRESH = 4; // cm
   public static double ULTRASONIC_DIST = 15.5; // cm
-  public static double GYRO_TURN_P_GAIN = .06;
+  public static double GYRO_TURN_P = .06;
   public static double HEADING_THRESHOLD = 1;
+
+  public static double LEFT_CLAW_CLOSED = 0;
+  public static double LEFT_CLAW_OPEN = 1;
+  public static double RIGHT_CLAW_CLOSED = 0;
+  public static double RIGHT_CLAW_OPEN = 1;
+
   public final IMU imu;
   public final DcMotor fl, fr, bl, br;
   public final DcMotor slideL, slideR;
   public final DcMotor intake;
-  public final Servo plane, gateFlip, pixelPull, pixelPullFront;
+  public final ServoImplEx plane, gate, pixelClawLeft, pixelClawRight;
   public final DistanceSensor stackSensor, backdropSensor;
   public final LVMaxSonarEZ ultrasonicLeft, ultrasonicRight;
   public final RevLED led;
@@ -105,17 +111,16 @@ public class Robot {
     intake.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
 
     // Servos
-    plane = hardwareMap.servo.get("plane");
-    gateFlip = hardwareMap.servo.get("gate");
-    pixelPull = hardwareMap.servo.get("pixel");
-    pixelPullFront = hardwareMap.servo.get("front");
+    plane = (ServoImplEx) hardwareMap.servo.get("plane");
+    gate = (ServoImplEx) hardwareMap.servo.get("gate");
+    pixelClawLeft = (ServoImplEx) hardwareMap.servo.get("left claw");
+    pixelClawRight = (ServoImplEx) hardwareMap.servo.get("right claw");
 
-    gateFlip.setPosition(1);
-    pixelPullFront.setPosition(0.78);
-    pixelPull.setPosition(0.22);
-
-    // pixelSensor = hardwareMap.get(RevColorSensorV3.class, "intakeColour");
-    // pixelSensor.enableLed(true);
+    // TODO: set a starting plane position
+    //plane.setPosition(0);
+    gate.setPosition(1);
+    pixelClawRight.setPosition(RIGHT_CLAW_CLOSED);
+    pixelClawLeft.setPosition(LEFT_CLAW_CLOSED);
 
     stackSensor = hardwareMap.get(DistanceSensor.class, "stack2m");
     backdropSensor = hardwareMap.get(DistanceSensor.class, "backdrop");
@@ -193,7 +198,7 @@ public class Robot {
         headingError += 360;
       }
 
-      double turnSpeed = Range.clip(headingError * GYRO_TURN_P_GAIN, -1, 1);
+      double turnSpeed = Range.clip(headingError * GYRO_TURN_P, -1, 1);
 
       // Clip the speed to the maximum permitted value.
       turnSpeed = Range.clip(turnSpeed, -0.4, 0.4);
@@ -223,9 +228,9 @@ public class Robot {
 
   public void toggleDoor(boolean open) {
     if (open) {
-      gateFlip.setPosition(1);
+      gate.setPosition(1);
     } else {
-      gateFlip.setPosition(.62);
+      gate.setPosition(.62);
     }
   }
 
@@ -293,11 +298,11 @@ public class Robot {
 
   public void flipperControl(boolean x) {
     if (!x) {
-      pixelPullFront.setPosition(0.78);
-      pixelPull.setPosition(0.22);
+      pixelClawRight.setPosition(0.78);
+      pixelClawLeft.setPosition(0.22);
     } else {
-      pixelPull.setPosition(0.7);
-      pixelPullFront.setPosition(0.3);
+      pixelClawLeft.setPosition(0.7);
+      pixelClawRight.setPosition(0.3);
     }
   }
 

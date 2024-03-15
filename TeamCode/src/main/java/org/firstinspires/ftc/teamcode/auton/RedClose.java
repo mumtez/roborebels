@@ -65,6 +65,7 @@ public class RedClose {
   private final Telemetry telemetry;
   private final HardwareMap hardwareMap;
 
+  private final double delaySeconds;
   private final CycleDirection cycle;
   private final ParkPosition parkPosition;
   private final Vector2d parkVec;
@@ -73,11 +74,12 @@ public class RedClose {
   private final MecanumDrive drive;
   public FtcDashboard dash = FtcDashboard.getInstance();
 
-  public RedClose(LinearOpMode opMode, CycleDirection cycle, ParkPosition parkPosition) {
+  public RedClose(LinearOpMode opMode, CycleDirection cycle, ParkPosition parkPosition, double delaySeconds) {
     this.opMode = opMode;
     this.telemetry = new MultipleTelemetry(dash.getTelemetry(), opMode.telemetry);
     this.hardwareMap = opMode.hardwareMap;
     this.cycle = cycle;
+    this.delaySeconds = delaySeconds;
 
     this.parkPosition = parkPosition;
     if (Objects.requireNonNull(parkPosition) == ParkPosition.CENTER) {
@@ -176,6 +178,7 @@ public class RedClose {
     robot.waitTime(200);
     robot.setSlidePos(0, 1);
 
+    // TODO: add a delay somewhere
     // CYCLE
     boolean safeToContinue = true;
     while (this.cycle != CycleDirection.NO_CYCLE && safeToContinue && timer.seconds() >= 10
