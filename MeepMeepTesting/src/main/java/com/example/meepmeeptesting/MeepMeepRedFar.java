@@ -23,6 +23,12 @@ public class MeepMeepRedFar {
 
     right.runAction(right.getDrive().actionBuilder(new Pose2d(-36, -61, Math.toRadians(90)))
 
+            //Spike
+            .strafeTo(new Vector2d(-30, -38))
+            .waitSeconds(0.2)
+
+            .strafeTo(new Vector2d(-36, -61))
+            .waitSeconds(.2)
 
             //By truss
             .strafeTo(new Vector2d(10.5, -60))
@@ -31,9 +37,7 @@ public class MeepMeepRedFar {
             //Board
         .splineToLinearHeading(new Pose2d(48, -42, Math.toRadians(90)), Math.toRadians(270))
         .waitSeconds(0.2)
-            //Spike
-        .strafeTo(new Vector2d(24, -38))
-        .waitSeconds(0.2)
+
 
             //By truss
         .strafeTo(new Vector2d(10.5, -60))
@@ -67,6 +71,13 @@ public class MeepMeepRedFar {
         .build();
 
     center.runAction(right.getDrive().actionBuilder(new Pose2d(-36, -61, Math.toRadians(90)))
+            //Spike
+            .strafeTo(new Vector2d(-35, -35))
+            .waitSeconds(0.2)
+
+            .strafeTo(new Vector2d(-36, -61))
+            .waitSeconds(.2)
+
             //By truss
             .strafeTo(new Vector2d(10.5, -60))
             .waitSeconds(0.2)
@@ -74,9 +85,7 @@ public class MeepMeepRedFar {
             //Board
             .splineToLinearHeading(new Pose2d(48, -38, Math.toRadians(90)), Math.toRadians(270))
             .waitSeconds(0.2)
-            //Spike
-            .strafeTo(new Vector2d(12, -35))
-            .waitSeconds(0.2)
+
 
             //By truss
             .strafeTo(new Vector2d(10.5, -60))
@@ -110,7 +119,12 @@ public class MeepMeepRedFar {
         .build();
 
     left.runAction(right.getDrive().actionBuilder(new Pose2d(-36, -61, Math.toRadians(90)))
+            //Spike
+            .strafeTo(new Vector2d(-45, -38))
+            .waitSeconds(0.2)
 
+            .strafeTo(new Vector2d(-36, -61))
+            .waitSeconds(.2)
 
             //By truss
             .strafeTo(new Vector2d(10.5, -60))
@@ -118,9 +132,6 @@ public class MeepMeepRedFar {
 
             //Board
             .splineToLinearHeading(new Pose2d(48, -28, Math.toRadians(90)), Math.toRadians(270))
-            .waitSeconds(0.2)
-            //Spike
-            .splineToLinearHeading(new Pose2d(10, -34, Math.toRadians(180)), Math.toRadians(90))
             .waitSeconds(0.2)
 
             //By truss
@@ -151,8 +162,8 @@ public class MeepMeepRedFar {
     meepMeep.setBackground(Background.FIELD_CENTERSTAGE_JUICE_DARK)
         .setDarkMode(true)
         .setBackgroundAlpha(0.95f)
-        .addEntity(right)
-        .addEntity(left)
+        //.addEntity(right)
+        //.addEntity(left)
         .addEntity(center)
 
         .start();
