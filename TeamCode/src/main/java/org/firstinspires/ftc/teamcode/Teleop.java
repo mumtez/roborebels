@@ -68,11 +68,17 @@ public class Teleop extends LinearOpMode {
       } else {
         yHeld = false;
       }
-      robot.toggleDoor(!gateClosed || (robot.slideL.getCurrentPosition() >= 100));
-      robot.flipperControl(!gamepad1.x);
-      robot.setSweepOut(gamepad1.dpad_up);
-      robot.setSlidePower(!gateClosed ? -gamepad2.right_stick_y : 0);
-      robot.setSlidePower(gamepad2.a ? -1 : 0);
+      // Hang mode
+      if (gamepad2.a) {
+        robot.setSlidePower(-1);
+        robot.flipperControl(false);
+        robot.setGate(true);
+      } else {
+        robot.setGate(!gateClosed || (robot.slideL.getCurrentPosition() >= 100));
+        robot.flipperControl(!gamepad1.x);
+        robot.setSweepOut(gamepad1.dpad_up);
+        robot.setSlidePower(!gateClosed ? -gamepad2.right_stick_y : 0);
+      }
 
       if (gamepad2.a && gamepad2.x) {
         robot.fly();

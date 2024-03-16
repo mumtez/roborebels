@@ -181,6 +181,7 @@ public class RedClose {
     robot.setSlidePos(0, 1);
 
     // TODO: add a delay somewhere
+    // TODO: use the gate
     // CYCLE
     boolean safeToContinue = true;
     while (this.cycle != CycleDirection.NO_CYCLE && safeToContinue && timer.seconds() >= 10

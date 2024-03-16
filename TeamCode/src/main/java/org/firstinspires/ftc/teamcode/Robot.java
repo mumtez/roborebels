@@ -245,7 +245,7 @@ public class Robot {
     }
   }
 
-  public void toggleDoor(boolean open) {
+  public void setGate(boolean open) {
     if (open) {
       gate.setPosition(GATE_OPEN);
     } else {
