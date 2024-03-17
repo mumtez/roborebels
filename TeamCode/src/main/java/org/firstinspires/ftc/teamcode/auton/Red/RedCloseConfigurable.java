@@ -13,7 +13,7 @@ public class RedCloseConfigurable extends LinearOpMode {
 
   public void runOpMode() throws InterruptedException {
 
-    CycleDirection cycleDirection = CycleDirection.TRUSS;
+    CycleDirection cycleDirection = CycleDirection.GATE;
     ParkPosition parkPosition = ParkPosition.CORNER;
     double delaySecs = 0;
 
