@@ -289,7 +289,42 @@ public class RedClose {
   }
 
   private void gateCycle(Vector2d whitePlacement) {
+    robot.flipperControl(true);
+    Actions.runBlocking(
+        drive.actionBuilder(drive.pose)
+            .setTangent(90)
+            .splineToConstantHeading(new Vector2d(24, -9), Math.toDegrees(180))
+            .splineToConstantHeading(new Vector2d(-56, -5), Math.toDegrees(180))
+            .build());
+    robot.setSweepOut(true);
+    robot.waitTime(1500);
+    robot.driveToStack();
+    robot.turnByGyro(115);
+    robot.setSweepOut(false);
+    robot.waitTime(500);
+    robot.turnByGyro(90);
+    robot.intake.setPower(1);
+    robot.setGate(false);
+    Actions.runBlocking(
+        drive.actionBuilder(drive.pose)
+            .lineToX(-63)
+            .waitSeconds(.5)
+            .strafeToConstantHeading(new Vector2d(-57, -8))
+            .lineToX(-63)
+            .lineToX(-57)
+            .build());
 
+    robot.intake.setPower(-.8);
+    robot.waitTime(500);
+
+    Actions.runBlocking(
+        drive.actionBuilder(drive.pose)
+            .setTangent(Math.toDegrees(180))
+            .strafeToConstantHeading(new Vector2d(24, -4))
+            .splineToConstantHeading(whitePlacement, Math.toDegrees(0))
+            .build());
+    robot.setGate(true);
+    robot.intake.setPower(0);
   }
 
   private void grabFromStack(double stackX, double stackY) {

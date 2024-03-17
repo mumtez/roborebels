@@ -289,11 +289,12 @@ public class BlueClose {
   }
 
   private void gateCycle(Vector2d whitePlacement) {
+    robot.flipperControl(true);
     Actions.runBlocking(
         drive.actionBuilder(drive.pose)
             .setTangent(180)
             .splineToConstantHeading(new Vector2d(24, 4), Math.toDegrees(180))
-            .splineToConstantHeading(new Vector2d(-57, 8), Math.toDegrees(180))
+            .splineToConstantHeading(new Vector2d(-57, 5), Math.toDegrees(180))
             .build());
     robot.setSweepOut(true);
     robot.waitTime(2000);
@@ -308,7 +309,7 @@ public class BlueClose {
         drive.actionBuilder(drive.pose)
             .lineToX(-65)
             .waitSeconds(.5)
-            .strafeToConstantHeading(new Vector2d(-62, 10))
+            .strafeToConstantHeading(new Vector2d(-62, 0))
             .lineToX(-65)
             .lineToX(-60)
             .build());
@@ -318,10 +319,12 @@ public class BlueClose {
 
     Actions.runBlocking(
         drive.actionBuilder(drive.pose)
-            .setTangent(Math.toDegrees(270))
-            .splineToConstantHeading(new Vector2d(24, 0), 0)
+            .setTangent(Math.toDegrees(180))
+            .strafeToConstantHeading(new Vector2d(24, 0))
             .splineToConstantHeading(whitePlacement, Math.toDegrees(0))
             .build());
+    robot.setGate(true);
+    robot.intake.setPower(0);
   }
 
   private void grabFromStack(double stackX, double stackY) {
