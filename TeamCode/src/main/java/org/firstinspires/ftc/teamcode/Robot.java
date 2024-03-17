@@ -30,11 +30,11 @@ public class Robot {
   public static double BACKDROP_DIST = 15; // cm
   public static double STACK_DIST_P = 0.03;
   public static double STACK_DIST_THRESH = 1; // cm
-  public static double STACK_DIST = 8; // cm
-  public static double ULTRASONIC_DIST_P = 0.04;
-  public static double ULTRASONIC_DIST_THRESH = 4; // cm
-  public static double ULTRASONIC_DIST = 15.5; // cm
-  public static double GYRO_TURN_P = .06;
+  public static double STACK_DIST = 16; // cm
+  public static double ULTRASONIC_DIST_P = 0.05;
+  public static double ULTRASONIC_DIST_THRESH = 1.5; // cm
+  public static double ULTRASONIC_DIST = 20; // cm
+  public static double GYRO_TURN_P = .055;
   public static double HEADING_THRESHOLD = 1;
 
   public static double LEFT_CLAW_CLOSED = 0;
@@ -114,7 +114,7 @@ public class Robot {
 
     // Intake
     intake = hardwareMap.dcMotor.get("intake");
-    intake.setMode(RunMode.STOP_AND_RESET_ENCODER);
+    intake.setMode(RunMode.RUN_WITHOUT_ENCODER);
     intake.setDirection(Direction.FORWARD);
     intake.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
 
@@ -135,7 +135,7 @@ public class Robot {
 
     // TODO: set a starting plane position
     //plane.setPosition(0);
-    gate.setPosition(GATE_CLOSED);
+    gate.setPosition(GATE_OPEN);
     pixelClawRight.setPosition(RIGHT_CLAW_CLOSED);
     pixelClawLeft.setPosition(LEFT_CLAW_CLOSED);
     sweeper.setPosition(SWEEP_IN);
@@ -148,6 +148,7 @@ public class Robot {
 
     led = new RevLED(hardwareMap, "red", "green");
     led.green();
+
   }
 
   public void setSlidePower(double pow) {
@@ -217,10 +218,7 @@ public class Robot {
         headingError += 360;
       }
 
-      double turnSpeed = Range.clip(headingError * GYRO_TURN_P, -1, 1);
-
-      // Clip the speed to the maximum permitted value.
-      turnSpeed = Range.clip(turnSpeed, -0.4, 0.4);
+      double turnSpeed = Range.clip(headingError * GYRO_TURN_P, -0.6, 0.6);
       this.setDriveTrainPower(turnSpeed, -turnSpeed, turnSpeed, -turnSpeed);
 
       if (Math.abs(headingError) <= HEADING_THRESHOLD) {
@@ -262,7 +260,8 @@ public class Robot {
   }
 
   public void driveToStack() {
-    this.driveByDistanceSensor(stackSensor, STACK_DIST_P, STACK_DIST, STACK_DIST_THRESH, DIRECTION.FORWARD);
+    this.driveByDistanceSensor(stackSensor, STACK_DIST_P, STACK_DIST, STACK_DIST_THRESH,
+        DIRECTION.FORWARD);
   }
 
   public void driveToBackdrop() {
@@ -271,12 +270,14 @@ public class Robot {
   }
 
   public void driveToLeftWall() {
-    this.driveByDistanceSensor(ultrasonicLeft, ULTRASONIC_DIST_P, ULTRASONIC_DIST, ULTRASONIC_DIST_THRESH,
+    this.driveByDistanceSensor(ultrasonicLeft, ULTRASONIC_DIST_P, ULTRASONIC_DIST,
+        ULTRASONIC_DIST_THRESH,
         DIRECTION.LEFT);
   }
 
   public void driveToRightWall() {
-    this.driveByDistanceSensor(ultrasonicRight, ULTRASONIC_DIST_P, ULTRASONIC_DIST, ULTRASONIC_DIST_THRESH,
+    this.driveByDistanceSensor(ultrasonicRight, ULTRASONIC_DIST_P, ULTRASONIC_DIST,
+        ULTRASONIC_DIST_THRESH,
         DIRECTION.RIGHT);
   }
 
@@ -288,11 +289,12 @@ public class Robot {
     this.bl.setMode(RunMode.RUN_WITHOUT_ENCODER);
 
     double error;
+    ElapsedTime timeout = new ElapsedTime();
     int x = 0;
     do {
       double distance = distanceSensor.getDistance(DistanceUnit.CM);
       error = distance - targetDistCm;
-      double p = Range.clip(pVal * error, -0.3, 0.3);
+      double p = Range.clip(pVal * error, -0.6, 0.6);
       switch (direction) {
         case LEFT:
           this.setDriveTrainPower(p, -p, -p, p);
@@ -318,7 +320,8 @@ public class Robot {
       this.opMode.telemetry.addData("error:", error);
       this.opMode.telemetry.addData("power:", p);
       this.opMode.telemetry.update();
-    } while (this.opMode.opModeIsActive() && Math.abs(error) > thresholdCm && x < 5);
+    } while (this.opMode.opModeIsActive() && Math.abs(error) > thresholdCm && x < 5
+        && timeout.milliseconds() < 1000);
 
     this.setDriveTrainPower(0, 0, 0, 0);
   }

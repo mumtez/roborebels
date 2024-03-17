@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.auton.Red;
+package org.firstinspires.ftc.teamcode.auton.Blue;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -6,8 +6,8 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.teamcode.auton.CycleDirection;
 import org.firstinspires.ftc.teamcode.auton.ParkPosition;
 
-@Autonomous(name = "RedClose", group = " ")
-public class RedCloseConfigurable extends LinearOpMode {
+@Autonomous(name = "BlueClose", group = " ")
+public class BlueCloseConfigurable extends LinearOpMode {
 
   @Override
 
@@ -88,6 +88,6 @@ public class RedCloseConfigurable extends LinearOpMode {
       telemetry.update();
     }
 
-    new RedClose(this, cycleDirection, parkPosition, delaySecs).run();
+    new BlueClose(this, cycleDirection, parkPosition, delaySecs).run();
   }
 }

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.auton.Red;
+package org.firstinspires.ftc.teamcode.auton.Blue;
 
 import android.util.Size;
 import com.acmerobotics.dashboard.FtcDashboard;
@@ -17,39 +17,39 @@ import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.auton.CycleDirection;
 import org.firstinspires.ftc.teamcode.auton.ParkPosition;
 import org.firstinspires.ftc.teamcode.odom.MecanumDrive;
+import org.firstinspires.ftc.teamcode.vision.BluePropThreshold;
 import org.firstinspires.ftc.teamcode.vision.Position;
-import org.firstinspires.ftc.teamcode.vision.RedPropThreshold;
 import org.firstinspires.ftc.vision.VisionPortal;
 
 @Config
-public class RedClose {
+public class BlueClose {
 
-  // FOR FULL TOOTH
-  public static Pose2d BACKDROP_START = new Pose2d(13, -61, Math.toRadians(90));
+  // FOR NO TEETH
+  public static Pose2d BACKDROP_START = new Pose2d(13 - 1, 61, Math.toRadians(270));
 
   public static double BOARD_X = 49;
-  public static Vector2d BOARD_LEFT = new Vector2d(BOARD_X, -29);
-  public static Vector2d BOARD_CENTER = new Vector2d(BOARD_X, -36);
-  public static Vector2d BOARD_RIGHT = new Vector2d(BOARD_X, -43);
+  public static Vector2d BOARD_LEFT = new Vector2d(BOARD_X, 29);
+  public static Vector2d BOARD_CENTER = new Vector2d(BOARD_X, 36);
+  public static Vector2d BOARD_RIGHT = new Vector2d(BOARD_X, 43);
 
-  public static Vector2d BOARD_WHITE_LEFT = new Vector2d(BOARD_X - 2, -40);
-  public static Vector2d BOARD_WHITE_CENTER = new Vector2d(BOARD_X - 2, -38);
-  public static Vector2d BOARD_WHITE_RIGHT = new Vector2d(BOARD_X - 2, -35);
+  public static Vector2d BOARD_WHITE_LEFT = new Vector2d(BOARD_X - 2, 40);
+  public static Vector2d BOARD_WHITE_CENTER = new Vector2d(BOARD_X - 2, 38);
+  public static Vector2d BOARD_WHITE_RIGHT = new Vector2d(BOARD_X - 2, 35);
 
-  public static Vector2d SPIKE_LEFT = new Vector2d(7, -35);
-  public static Vector2d SPIKE_CENTER = new Vector2d(13, -33);
-  public static Vector2d SPIKE_RIGHT = new Vector2d(15.5, -35);
+  public static Vector2d SPIKE_LEFT = new Vector2d(7, 35);
+  public static Vector2d SPIKE_CENTER = new Vector2d(13, 33);
+  public static Vector2d SPIKE_RIGHT = new Vector2d(15.5, 35);
 
-  public static Vector2d PARK_CORNER = new Vector2d(60, -64);
-  public static Vector2d PARK_CENTER = new Vector2d(55, -8);
+  public static Vector2d PARK_CORNER = new Vector2d(60, 64);
+  public static Vector2d PARK_CENTER = new Vector2d(55, 8);
 
-  public static Vector2d AUDIENCE_TRUSS = new Vector2d(-38, -63);
-  public static Vector2d BACKDROP_TRUSS = new Vector2d(10.5, -63);
-  public static Vector2d NEAR_STACK = new Vector2d(-57, -36);
+  public static Vector2d AUDIENCE_TRUSS = new Vector2d(-38, 62);
+  public static Vector2d BACKDROP_TRUSS = new Vector2d(10.5, 62);
+  public static Vector2d NEAR_STACK = new Vector2d(-57, 36);
 
   public static double SPIKE_LEFT_HEADING = Math.toRadians(180);
-  public static double SPIKE_RIGHT_HEADING = Math.toRadians(90);
-  public static double SPIKE_CENTER_HEADING = Math.toRadians(135);
+  public static double SPIKE_RIGHT_HEADING = Math.toRadians(270);
+  public static double SPIKE_CENTER_HEADING = Math.toRadians(225);
 
   //public static VelConstraint slowVel = new TranslationalVelConstraint(40);
   //public static AccelConstraint slowAccel = new ProfileAccelConstraint(-40, 40);
@@ -63,11 +63,11 @@ public class RedClose {
   private final ParkPosition parkPosition;
   private final Vector2d parkVec;
   private final Robot robot;
-  private final RedPropThreshold processor;
+  private final BluePropThreshold processor;
   private final MecanumDrive drive;
   public FtcDashboard dash = FtcDashboard.getInstance();
 
-  public RedClose(LinearOpMode opMode, CycleDirection cycle, ParkPosition parkPosition,
+  public BlueClose(LinearOpMode opMode, CycleDirection cycle, ParkPosition parkPosition,
       double delaySeconds) {
     this.opMode = opMode;
     this.telemetry = new MultipleTelemetry(dash.getTelemetry(), opMode.telemetry);
@@ -83,7 +83,7 @@ public class RedClose {
     }
 
     this.drive = new MecanumDrive(hardwareMap, BACKDROP_START);
-    this.processor = new RedPropThreshold();
+    this.processor = new BluePropThreshold();
     this.robot = new Robot(this.opMode);
   }
 
@@ -119,7 +119,7 @@ public class RedClose {
         spikeHeading = SPIKE_CENTER_HEADING;
         break;
 
-      case LEFT:
+      case RIGHT:
         yellowPlacement = BOARD_LEFT;
         spikePlacement = SPIKE_LEFT;
         whitePlacement = BOARD_WHITE_LEFT;
@@ -139,8 +139,8 @@ public class RedClose {
             // Spike
             .splineTo(spikePlacement, spikeHeading)
             // Board
-            .setTangent(Math.toRadians(270))
-            .splineToConstantHeading(new Vector2d(spikePlacement.x + 6, spikePlacement.y - 6),
+            .setTangent(Math.toRadians(90))
+            .splineToConstantHeading(new Vector2d(spikePlacement.x + 6, spikePlacement.y + 6),
                 Math.toRadians(0))
             .splineToSplineHeading(new Pose2d(yellowPlacement, Math.toRadians(180)),
                 Math.toRadians(180))
@@ -158,7 +158,7 @@ public class RedClose {
 //            .build());
 
     // Adjust Position
-    robot.turnByGyro(90);
+    robot.turnByGyro(270);
 
     // Place Pixel
     robot.setSlidePos(1500, 1);
@@ -185,7 +185,7 @@ public class RedClose {
       }
       // Place collected pixels if safely crossed field
       if (drive.pose.position.x > 40) {
-        robot.turnByGyro(90);
+        robot.turnByGyro(270);
         robot.driveToBackdrop();
         robot.setSlidePos(2000, 1);
         robot.waitTime(200);
@@ -199,7 +199,7 @@ public class RedClose {
     if (safeToContinue) {
       Actions.runBlocking(
           drive.actionBuilder(drive.pose)
-              .strafeToConstantHeading(new Vector2d(drive.pose.position.x, parkVec.y))
+              .strafeToConstantHeading(new Vector2d(drive.pose.position.x - 1, parkVec.y))
               .build());
     }
 
@@ -213,22 +213,22 @@ public class RedClose {
     Actions.runBlocking(
         drive.actionBuilder(drive.pose)
             // By truss
-            .splineToConstantHeading(new Vector2d(BACKDROP_TRUSS.x, -50), Math.toRadians(180))
+            .splineToConstantHeading(new Vector2d(BACKDROP_TRUSS.x, 50), Math.toRadians(180))
             .build());
     // intentional break so slowdown
 
     // Align
     ElapsedTime sweepTime = new ElapsedTime();
     robot.setSweepOut(true);
-    robot.turnByGyro(90);
-    robot.driveToLeftWall();
-    drive.pose = new Pose2d(new Vector2d(BACKDROP_TRUSS.x, -56), Math.toRadians(180));
+    robot.turnByGyro(270);
+    robot.driveToRightWall();
+    drive.pose = new Pose2d(new Vector2d(BACKDROP_TRUSS.x, 56), Math.toRadians(180));
     Actions.runBlocking(drive.actionBuilder(drive.pose)
         .strafeToConstantHeading(BACKDROP_TRUSS)
         .build()
     );
     robot.flipperControl(true); // open
-    robot.turnByGyro(90);
+    robot.turnByGyro(270);
     drive.pose = new Pose2d(BACKDROP_TRUSS, Math.toRadians(180));
     while (opMode.opModeIsActive() && sweepTime.milliseconds() < 700) {
     }
@@ -238,14 +238,14 @@ public class RedClose {
             //through truss to corner
             .strafeToConstantHeading(AUDIENCE_TRUSS/*, slowVel, slowAccel*/)
             //near stack
-            .splineToConstantHeading(NEAR_STACK, Math.toRadians(135))
+            .splineToConstantHeading(NEAR_STACK, Math.toRadians(225))
             .build());
 
     robot.driveToStack();
-    robot.turnByGyro(115);
+    robot.turnByGyro(65);
     robot.setSweepOut(false);
     robot.waitTime(500);
-    robot.turnByGyro(90);
+    robot.turnByGyro(270);
     robot.intake.setPower(1);
     robot.setGate(false);
 
@@ -253,7 +253,7 @@ public class RedClose {
         drive.actionBuilder(drive.pose)
             .lineToX(-65)
             .waitSeconds(.5)
-            .strafeToConstantHeading(new Vector2d(-62, -40))
+            .strafeToConstantHeading(new Vector2d(-62, 34))
             .lineToX(-65)
             .lineToX(-60)
             .build());
@@ -265,15 +265,15 @@ public class RedClose {
         drive.actionBuilder(drive.pose)
             //back
             .setReversed(true)
-            .setTangent(Math.toRadians(270))
-            .splineToConstantHeading(new Vector2d(AUDIENCE_TRUSS.x, -56), Math.toRadians(0))
+            .setTangent(Math.toRadians(90))
+            .splineToConstantHeading(new Vector2d(AUDIENCE_TRUSS.x, 56), Math.toRadians(0))
             .build());
     // Intentional stop
 
-    robot.turnByGyro(90);
-    robot.driveToLeftWall();
-    robot.turnByGyro(90);
-    drive.pose = new Pose2d(new Vector2d(AUDIENCE_TRUSS.x, -56), Math.toRadians(180));
+    robot.turnByGyro(270);
+    robot.driveToRightWall();
+    robot.turnByGyro(270);
+    drive.pose = new Pose2d(new Vector2d(AUDIENCE_TRUSS.x, 56), Math.toRadians(180));
 
     Actions.runBlocking(
         drive.actionBuilder(drive.pose)
@@ -289,7 +289,39 @@ public class RedClose {
   }
 
   private void gateCycle(Vector2d whitePlacement) {
+    Actions.runBlocking(
+        drive.actionBuilder(drive.pose)
+            .setTangent(180)
+            .splineToConstantHeading(new Vector2d(24, 4), Math.toDegrees(180))
+            .splineToConstantHeading(new Vector2d(-57, 8), Math.toDegrees(180))
+            .build());
+    robot.setSweepOut(true);
+    robot.waitTime(2000);
+    robot.driveToStack();
+    robot.turnByGyro(65);
+    robot.setSweepOut(false);
+    robot.waitTime(500);
+    robot.turnByGyro(270);
+    robot.intake.setPower(1);
+    robot.setGate(false);
+    Actions.runBlocking(
+        drive.actionBuilder(drive.pose)
+            .lineToX(-65)
+            .waitSeconds(.5)
+            .strafeToConstantHeading(new Vector2d(-62, 10))
+            .lineToX(-65)
+            .lineToX(-60)
+            .build());
 
+    robot.intake.setPower(-.8);
+    robot.waitTime(500);
+
+    Actions.runBlocking(
+        drive.actionBuilder(drive.pose)
+            .setTangent(Math.toDegrees(270))
+            .splineToConstantHeading(new Vector2d(24, 0), 0)
+            .splineToConstantHeading(whitePlacement, Math.toDegrees(0))
+            .build());
   }
 
   private void grabFromStack(double stackX, double stackY) {

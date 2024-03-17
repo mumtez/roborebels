@@ -23,46 +23,45 @@ public class MeepMeepRedFar {
 
     right.runAction(right.getDrive().actionBuilder(new Pose2d(-36, -61, Math.toRadians(90)))
 
-            //Spike
-            .strafeTo(new Vector2d(-30, -38))
-            .waitSeconds(0.2)
+        //Spike
+        .strafeTo(new Vector2d(-30, -38))
+        .waitSeconds(0.2)
 
-            .strafeTo(new Vector2d(-36, -61))
-            .waitSeconds(.2)
+        .strafeTo(new Vector2d(-36, -61))
+        .waitSeconds(.2)
 
-            //By truss
-            .strafeTo(new Vector2d(10.5, -60))
-            .waitSeconds(0.2)
+        //By truss
+        .strafeTo(new Vector2d(10.5, -60))
+        .waitSeconds(0.2)
 
-            //Board
+        //Board
         .splineToLinearHeading(new Pose2d(48, -42, Math.toRadians(90)), Math.toRadians(270))
         .waitSeconds(0.2)
 
-
-            //By truss
+        //By truss
         .strafeTo(new Vector2d(10.5, -60))
         .waitSeconds(0.2)
 
-            //through truss to corner
+        //through truss to corner
         .strafeTo(new Vector2d(-38, -60))
         .waitSeconds(.2)
 
-            //stack
+        //stack
         .strafeTo(new Vector2d(-58, -34))
         .waitSeconds(.2)
 
-            //back
+        //back
         .strafeTo(new Vector2d(-38, -60))
         .waitSeconds(.2)
 
-            //line up with board
+        //line up with board
         .strafeTo(new Vector2d(10.5, -60))
         .waitSeconds(.2)
 
-            //board
+        //board
         .strafeTo(new Vector2d(48, -42))
         .waitSeconds(.2)
-            .build());
+        .build());
 
     RoadRunnerBotEntity center = new DefaultBotBuilder(meepMeep)
         // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
@@ -71,46 +70,45 @@ public class MeepMeepRedFar {
         .build();
 
     center.runAction(right.getDrive().actionBuilder(new Pose2d(-36, -61, Math.toRadians(90)))
-            //Spike
-            .strafeTo(new Vector2d(-35, -35))
-            .waitSeconds(0.2)
+        //Spike
+        .strafeTo(new Vector2d(-35, -35))
+        .waitSeconds(0.2)
 
-            .strafeTo(new Vector2d(-36, -61))
-            .waitSeconds(.2)
+        .strafeTo(new Vector2d(-36, -61))
+        .waitSeconds(.2)
 
-            //By truss
-            .strafeTo(new Vector2d(10.5, -60))
-            .waitSeconds(0.2)
+        //By truss
+        .strafeTo(new Vector2d(10.5, -60))
+        .waitSeconds(0.2)
 
-            //Board
-            .splineToLinearHeading(new Pose2d(48, -38, Math.toRadians(90)), Math.toRadians(270))
-            .waitSeconds(0.2)
+        //Board
+        .splineToLinearHeading(new Pose2d(48, -38, Math.toRadians(90)), Math.toRadians(270))
+        .waitSeconds(0.2)
 
+        //By truss
+        .strafeTo(new Vector2d(10.5, -60))
+        .waitSeconds(0.2)
 
-            //By truss
-            .strafeTo(new Vector2d(10.5, -60))
-            .waitSeconds(0.2)
+        //through truss to corner
+        .strafeTo(new Vector2d(-38, -60))
+        .waitSeconds(.2)
 
-            //through truss to corner
-            .strafeTo(new Vector2d(-38, -60))
-            .waitSeconds(.2)
+        //stack
+        .strafeTo(new Vector2d(-58, -34))
+        .waitSeconds(.2)
 
-            //stack
-            .strafeTo(new Vector2d(-58, -34))
-            .waitSeconds(.2)
+        //back
+        .strafeTo(new Vector2d(-38, -60))
+        .waitSeconds(.2)
 
-            //back
-            .strafeTo(new Vector2d(-38, -60))
-            .waitSeconds(.2)
+        //line up with board
+        .strafeTo(new Vector2d(10.5, -60))
+        .waitSeconds(.2)
 
-            //line up with board
-            .strafeTo(new Vector2d(10.5, -60))
-            .waitSeconds(.2)
-
-            //board
-            .strafeTo(new Vector2d(48, -42))
-            .waitSeconds(.2)
-            .build());
+        //board
+        .strafeTo(new Vector2d(48, -42))
+        .waitSeconds(.2)
+        .build());
 
     RoadRunnerBotEntity left = new DefaultBotBuilder(meepMeep)
         // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
@@ -119,45 +117,45 @@ public class MeepMeepRedFar {
         .build();
 
     left.runAction(right.getDrive().actionBuilder(new Pose2d(-36, -61, Math.toRadians(90)))
-            //Spike
-            .strafeTo(new Vector2d(-45, -38))
-            .waitSeconds(0.2)
+        //Spike
+        .strafeTo(new Vector2d(-45, -38))
+        .waitSeconds(0.2)
 
-            .strafeTo(new Vector2d(-36, -61))
-            .waitSeconds(.2)
+        .strafeTo(new Vector2d(-36, -61))
+        .waitSeconds(.2)
 
-            //By truss
-            .strafeTo(new Vector2d(10.5, -60))
-            .waitSeconds(0.2)
+        //stack
+        .strafeTo(new Vector2d(-58, -34))
+        .waitSeconds(.2)
 
-            //Board
-            .splineToLinearHeading(new Pose2d(48, -28, Math.toRadians(90)), Math.toRadians(270))
-            .waitSeconds(0.2)
+        //through truss to corner
+        .strafeTo(new Vector2d(-38, -60))
+        .waitSeconds(.2)
 
-            //By truss
-            .strafeTo(new Vector2d(10.5, -60))
-            .waitSeconds(0.2)
+        //By truss
+        .strafeTo(new Vector2d(10.5, -60))
+        .waitSeconds(0.2)
 
-            //through truss to corner
-            .strafeTo(new Vector2d(-38, -60))
-            .waitSeconds(.2)
+        //Board
+        .splineToLinearHeading(new Pose2d(48, -28, Math.toRadians(90)), Math.toRadians(270))
+        .waitSeconds(0.2)
 
-            //stack
-            .strafeTo(new Vector2d(-58, -34))
-            .waitSeconds(.2)
+        //By truss
+        .strafeTo(new Vector2d(10.5, -60))
+        .waitSeconds(0.2)
 
-            //back
-            .strafeTo(new Vector2d(-38, -60))
-            .waitSeconds(.2)
+        //back
+        .strafeTo(new Vector2d(-38, -60))
+        .waitSeconds(.2)
 
-            //line up with board
-            .strafeTo(new Vector2d(10.5, -60))
-            .waitSeconds(.2)
+        //line up with board
+        .strafeTo(new Vector2d(10.5, -60))
+        .waitSeconds(.2)
 
-            //board
-            .strafeTo(new Vector2d(48, -42))
-            .waitSeconds(.2)
-            .build());
+        //board
+        .strafeTo(new Vector2d(48, -42))
+        .waitSeconds(.2)
+        .build());
 
     meepMeep.setBackground(Background.FIELD_CENTERSTAGE_JUICE_DARK)
         .setDarkMode(true)
@@ -165,6 +163,8 @@ public class MeepMeepRedFar {
         //.addEntity(right)
         //.addEntity(left)
         .addEntity(center)
+        .addEntity(left)
+        .addEntity(right)
 
         .start();
   }
