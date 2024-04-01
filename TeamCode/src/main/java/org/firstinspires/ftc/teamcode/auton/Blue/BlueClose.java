@@ -32,16 +32,16 @@ public class BlueClose {
   public static Vector2d BOARD_CENTER = new Vector2d(BOARD_X, 36);
   public static Vector2d BOARD_RIGHT = new Vector2d(BOARD_X, 43);
 
-  public static Vector2d BOARD_WHITE_LEFT = new Vector2d(BOARD_X - 2, 40);
-  public static Vector2d BOARD_WHITE_CENTER = new Vector2d(BOARD_X - 2, 38);
-  public static Vector2d BOARD_WHITE_RIGHT = new Vector2d(BOARD_X - 2, 35);
+  public static Vector2d BOARD_WHITE_LEFT = new Vector2d(BOARD_X - 5, 40);
+  public static Vector2d BOARD_WHITE_CENTER = new Vector2d(BOARD_X - 5, 38);
+  public static Vector2d BOARD_WHITE_RIGHT = new Vector2d(BOARD_X - 5, 35);
 
   public static Vector2d SPIKE_LEFT = new Vector2d(7, 35);
   public static Vector2d SPIKE_CENTER = new Vector2d(13, 33);
   public static Vector2d SPIKE_RIGHT = new Vector2d(15.5, 35);
 
   public static Vector2d PARK_CORNER = new Vector2d(60, 64);
-  public static Vector2d PARK_CENTER = new Vector2d(55, 8);
+  public static Vector2d PARK_CENTER = new Vector2d(55, 12);
 
   public static Vector2d AUDIENCE_TRUSS = new Vector2d(-38, 62);
   public static Vector2d BACKDROP_TRUSS = new Vector2d(10.5, 62);
@@ -199,7 +199,7 @@ public class BlueClose {
     if (safeToContinue) {
       Actions.runBlocking(
           drive.actionBuilder(drive.pose)
-              .strafeToConstantHeading(new Vector2d(drive.pose.position.x - 1, parkVec.y))
+              .strafeToConstantHeading(new Vector2d(drive.pose.position.x - 3, parkVec.y))
               .build());
     }
 
@@ -251,10 +251,10 @@ public class BlueClose {
 
     Actions.runBlocking(
         drive.actionBuilder(drive.pose)
-            .lineToX(-65)
+            .lineToX(-63)
             .waitSeconds(.5)
             .strafeToConstantHeading(new Vector2d(-62, 34))
-            .lineToX(-65)
+            .lineToX(-63)
             .lineToX(-60)
             .build());
 

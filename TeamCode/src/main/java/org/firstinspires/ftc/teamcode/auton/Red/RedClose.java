@@ -28,7 +28,7 @@ public class RedClose {
   public static Pose2d BACKDROP_START = new Pose2d(13, -61, Math.toRadians(90));
 
   public static double BOARD_X = 49;
-  public static Vector2d BOARD_LEFT = new Vector2d(BOARD_X, -29);
+  public static Vector2d BOARD_LEFT = new Vector2d(BOARD_X - 1, -29);
   public static Vector2d BOARD_CENTER = new Vector2d(BOARD_X, -36);
   public static Vector2d BOARD_RIGHT = new Vector2d(BOARD_X, -43);
 
