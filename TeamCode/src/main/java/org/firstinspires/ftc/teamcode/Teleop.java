@@ -10,15 +10,13 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 public class Teleop extends LinearOpMode {
 
   Robot robot;
-  private boolean gateClosed = true;
-  private boolean yHeld = false;
 
   @Override
   public void runOpMode() throws InterruptedException {
     robot = new Robot(this);
-    robot.slideR.setMode(RunMode.RUN_WITHOUT_ENCODER);
-    robot.slideL.setMode(RunMode.RUN_WITHOUT_ENCODER);
-    robot.intake.setMode(RunMode.RUN_WITHOUT_ENCODER);
+    robot.slideUP.setMode(RunMode.RUN_WITHOUT_ENCODER);
+
+
     waitForStart();
     // START
 
@@ -53,37 +51,23 @@ public class Teleop extends LinearOpMode {
         backRightPower *= 0.4;
       }
 
+      if (gamepad2.dpad_up) {
+        robot.slideOutOut();
+      }
+
+      if (gamepad2.dpad_down) {
+        robot.slideOutIn();
+      }
+
       robot.fl.setPower(frontLeftPower);
       robot.bl.setPower(backLeftPower);
       robot.fr.setPower(frontRightPower);
       robot.br.setPower(backRightPower);
 
-      robot.intake.setPower(
+      robot.intake.setPosition(
           (gamepad1.right_trigger) - (Range.clip(gamepad1.left_trigger, -0.8, 0.8)));
 
-      if (gamepad2.dpad_up) {
-        if (!yHeld) {
-          gateClosed = !gateClosed;
-        }
-        yHeld = true;
-      } else {
-        yHeld = false;
-      }
-      // Hang mode
-      if (gamepad2.a) {
-        robot.setSlidePower(-1);
-        robot.flipperControl(false);
-        robot.setGate(true);
-      } else {
-        robot.setGate(!gateClosed || (robot.slideL.getCurrentPosition() >= 100));
-        robot.flipperControl(!gamepad1.x);
-        robot.setSweepOut(gamepad1.dpad_up);
-        robot.setSlidePower(!gateClosed ? -gamepad2.right_stick_y : 0);
-      }
 
-      if (gamepad2.y && gamepad2.x) {
-        robot.fly();
-      }
 
       telemetry.update();
     }

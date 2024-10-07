@@ -25,38 +25,21 @@ import org.firstinspires.ftc.teamcode.sensors.RevLED;
 @Config
 public class Robot {
 
-  public static double BACKDROP_DIST_P = 0.03;
-  public static double BACKDROP_DIST_THRESH = 1; // cm
-  public static double BACKDROP_DIST = 15; // cm
-  public static double STACK_DIST_P = 0.03;
-  public static double STACK_DIST_THRESH = 1; // cm
-  public static double STACK_DIST = 16; // cm
-  public static double ULTRASONIC_DIST_P = 0.05;
-  public static double ULTRASONIC_DIST_THRESH = 1.5; // cm
-  public static double ULTRASONIC_DIST = 20; // cm
+  public static double slideOutDist = 0.8;
+  public static double slideInDist = 0.8;
+
+  public static double flipperIn = 0.8;
+  public static double flipperOut = 0.8;
+
   public static double GYRO_TURN_P = .055;
   public static double HEADING_THRESHOLD = 1;
 
-  public static double LEFT_CLAW_CLOSED = 0;
-  public static double LEFT_CLAW_OPEN = 1;
-
-  public static double RIGHT_CLAW_CLOSED = 1;
-  public static double RIGHT_CLAW_OPEN = 0;
-
-  public static double GATE_CLOSED = 0;
-  public static double GATE_OPEN = 1;
-
-  public static double SWEEP_OUT = 0;
-  public static double SWEEP_IN = 1;
-
   public final IMU imu;
   public final DcMotor fl, fr, bl, br;
-  public final DcMotor slideL, slideR;
-  public final DcMotor intake;
-  public final ServoImplEx plane, gate, pixelClawLeft, pixelClawRight, sweeper;
-  public final DistanceSensor backdropSensor;
-  public final LVMaxSonarEZ ultrasonicLeft, ultrasonicRight, stackSensor;
-  public final RevLED led;
+  public final DcMotor slideUP;
+  public final ServoImplEx slideOUT;
+  public final ServoImplEx intake, flipper, outtake;
+
 
   private final LinearOpMode opMode;
 
@@ -100,76 +83,68 @@ public class Robot {
     br.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
 
     // Slides
-    slideL = hardwareMap.dcMotor.get("sl");
-    slideR = hardwareMap.dcMotor.get("sr");
+    slideUP = hardwareMap.dcMotor.get("su");
+    slideOUT = (ServoImplEx) hardwareMap.servo.get("so");
 
-    slideL.setMode(RunMode.STOP_AND_RESET_ENCODER);
-    slideR.setMode(RunMode.STOP_AND_RESET_ENCODER);
+    slideUP.setMode(RunMode.STOP_AND_RESET_ENCODER);
+    //slideOUT.setMode(RunMode.STOP_AND_RESET_ENCODER);
 
-    slideL.setDirection(Direction.REVERSE);
-    slideR.setDirection(Direction.FORWARD);
+    slideUP.setDirection(Direction.REVERSE);
+    //slideOUT.setDirection(Direction.FORWARD);
 
-    slideL.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
-    slideR.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
+    slideUP.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
+    //slideOUT.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
 
     // Intake
-    intake = hardwareMap.dcMotor.get("intake");
-    intake.setMode(RunMode.RUN_WITHOUT_ENCODER);
-    intake.setDirection(Direction.FORWARD);
-    intake.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
 
-    // Servos
-    plane = (ServoImplEx) hardwareMap.servo.get("plane");
-
-    gate = (ServoImplEx) hardwareMap.servo.get("gate");
-    gate.setPwmRange(new PwmRange(500, 2500));
-
-    pixelClawLeft = (ServoImplEx) hardwareMap.servo.get("left claw");
-    pixelClawLeft.setPwmRange(new PwmRange(500, 2500));
-
-    pixelClawRight = (ServoImplEx) hardwareMap.servo.get("right claw");
-    pixelClawRight.setPwmRange(new PwmRange(500, 2500));
-
-    sweeper = (ServoImplEx) hardwareMap.servo.get("sweeper");
-    sweeper.setPwmRange(new PwmRange(500, 2500));
-
-    // TODO: set a starting plane position
-    //plane.setPosition(0);
-    gate.setPosition(GATE_OPEN);
-    pixelClawRight.setPosition(RIGHT_CLAW_CLOSED);
-    pixelClawLeft.setPosition(LEFT_CLAW_CLOSED);
-    sweeper.setPosition(SWEEP_IN);
-
-    // Sensors
-    backdropSensor = hardwareMap.get(DistanceSensor.class, "backdrop");
-    stackSensor = new LVMaxSonarEZ(hardwareMap.analogInput.get("stack"));
-    ultrasonicLeft = new LVMaxSonarEZ(hardwareMap.analogInput.get("usl"));
-    ultrasonicRight = new LVMaxSonarEZ(hardwareMap.analogInput.get("usr"));
-
-    led = new RevLED(hardwareMap, "red", "green");
-    led.green();
+    intake = (ServoImplEx) hardwareMap.servo.get("in");
+    outtake = (ServoImplEx) hardwareMap.servo.get("out");
+    flipper = (ServoImplEx) hardwareMap.servo.get("flip");
 
   }
+
+  public void flipOut(){
+    flipper.setPosition(flipperOut);
+  }
+
+  public void flipIn(){
+    flipper.setPosition(flipperIn);
+  }
+
+
 
   public void setSlidePower(double pow) {
-    slideL.setPower(pow);
-    slideR.setPower(pow);
+    slideUP.setPower(pow);
   }
 
-  public void setSlidePos(int pos, double pow) {
+  public void slideOutOut(){
+    slideOUT.setPosition(slideOutDist);
+
+    flipOut();
+  }
+
+  public void slideOutIn(){
+    slideOUT.setPosition(slideInDist);
+
+    while (this.opMode.opModeIsActive() && Math.abs(slideOUT.getPosition() - slideInDist) > 0.1) {
+      //wait for servo to get close
+
+    }
+
+    flipIn();
+  }
+
+  public void setSlideUpPos(int pos, double pow) {
     setSlidePower(0);
 
-    slideL.setTargetPosition(pos);
-    slideR.setTargetPosition(pos);
+    slideUP.setTargetPosition(pos);
 
-    slideL.setMode(RunMode.RUN_TO_POSITION);
-    slideR.setMode(RunMode.RUN_TO_POSITION);
+    slideUP.setMode(RunMode.RUN_TO_POSITION);
 
     setSlidePower(pow);
 
-    while (this.opMode.opModeIsActive()
-        && Math.abs(slideL.getCurrentPosition() - pos) > 30
-        && Math.abs(slideR.getCurrentPosition() - pos) > 30) {
+    while (this.opMode.opModeIsActive() && Math.abs(slideUP.getCurrentPosition() - pos) > 30)
+    {
       // Wait for slide to end
     }
 
@@ -243,102 +218,7 @@ public class Robot {
     }
   }
 
-  public void setGate(boolean open) {
-    if (open) {
-      gate.setPosition(GATE_OPEN);
-    } else {
-      gate.setPosition(GATE_CLOSED);
-    }
-  }
 
-  public void setSweepOut(boolean out) {
-    if (out) {
-      sweeper.setPosition(SWEEP_OUT);
-    } else {
-      sweeper.setPosition(SWEEP_IN);
-    }
-  }
-
-  public void driveToStack() {
-    this.driveByDistanceSensor(stackSensor, STACK_DIST_P, STACK_DIST, STACK_DIST_THRESH,
-        DIRECTION.FORWARD);
-  }
-
-  public void driveToBackdrop() {
-    this.driveByDistanceSensor(backdropSensor, BACKDROP_DIST_P, BACKDROP_DIST, BACKDROP_DIST_THRESH,
-        DIRECTION.BACKWARD);
-  }
-
-  public void driveToLeftWall() {
-    this.driveByDistanceSensor(ultrasonicLeft, ULTRASONIC_DIST_P, ULTRASONIC_DIST,
-        ULTRASONIC_DIST_THRESH,
-        DIRECTION.LEFT);
-  }
-
-  public void driveToRightWall() {
-    this.driveByDistanceSensor(ultrasonicRight, ULTRASONIC_DIST_P, ULTRASONIC_DIST,
-        ULTRASONIC_DIST_THRESH,
-        DIRECTION.RIGHT);
-  }
-
-  public void driveByDistanceSensor(DistanceSensor distanceSensor, double pVal, double targetDistCm,
-      double thresholdCm, DIRECTION direction) {
-    this.fr.setMode(RunMode.RUN_WITHOUT_ENCODER);
-    this.fl.setMode(RunMode.RUN_WITHOUT_ENCODER);
-    this.br.setMode(RunMode.RUN_WITHOUT_ENCODER);
-    this.bl.setMode(RunMode.RUN_WITHOUT_ENCODER);
-
-    double error;
-    ElapsedTime timeout = new ElapsedTime();
-    int x = 0;
-    do {
-      double distance = distanceSensor.getDistance(DistanceUnit.CM);
-      error = distance - targetDistCm;
-      double p = Range.clip(pVal * error, -0.6, 0.6);
-      switch (direction) {
-        case LEFT:
-          this.setDriveTrainPower(p, -p, -p, p);
-          break;
-        case RIGHT:
-          this.setDriveTrainPower(-p, p, p, -p);
-          break;
-        case FORWARD:
-          this.setDriveTrainPower(p, p, p, p);
-          break;
-        case BACKWARD:
-          this.setDriveTrainPower(-p, -p, -p, -p);
-          break;
-      }
-
-      if (Math.abs(error) < STACK_DIST_THRESH) {
-        x++;
-      } else {
-        x = 0;
-      }
-
-      this.opMode.telemetry.addData("distance cm:", distance);
-      this.opMode.telemetry.addData("error:", error);
-      this.opMode.telemetry.addData("power:", p);
-      this.opMode.telemetry.update();
-    } while (this.opMode.opModeIsActive() && Math.abs(error) > thresholdCm && x < 5
-        && timeout.milliseconds() < 1000);
-
-    this.setDriveTrainPower(0, 0, 0, 0);
-  }
-
-  public void flipperControl(boolean open) {
-    if (open) {
-      pixelClawLeft.setPosition(LEFT_CLAW_OPEN);
-      pixelClawRight.setPosition(RIGHT_CLAW_OPEN);
-    } else {
-      pixelClawLeft.setPosition(LEFT_CLAW_CLOSED);
-      pixelClawRight.setPosition(RIGHT_CLAW_CLOSED);
-    }
-  }
-
-  public void fly() {
-    plane.setPosition(1);
-  }
 
   public enum DIRECTION {
     LEFT, RIGHT, FORWARD, BACKWARD
