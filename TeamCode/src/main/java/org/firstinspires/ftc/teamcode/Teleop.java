@@ -59,6 +59,12 @@ public class Teleop extends LinearOpMode {
         robot.slideOutIn();
       }
 
+      if (gamepad2.a){
+        robot.flipper.setPosition(0);
+      }
+
+      robot.slideOutPush(gamepad2.right_stick_y);
+
       robot.fl.setPower(frontLeftPower);
       robot.bl.setPower(backLeftPower);
       robot.fr.setPower(frontRightPower);
