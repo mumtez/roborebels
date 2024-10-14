@@ -10,6 +10,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 public class Teleop extends LinearOpMode {
 
   Robot robot;
+  double out;
 
   @Override
   public void runOpMode() throws InterruptedException {
@@ -51,27 +52,33 @@ public class Teleop extends LinearOpMode {
         backRightPower *= 0.4;
       }
 
-      if (gamepad2.dpad_up) {
-        robot.slideOutOut();
-      }
-
-      if (gamepad2.dpad_down) {
-        robot.slideOutIn();
-      }
-
-      if (gamepad2.a){
+      if (gamepad1.a){
         robot.flipper.setPosition(0);
       }
+      if (gamepad1.a){
+        robot.flipper.setPosition(0.5);
+      }
 
-      robot.slideOutPush(gamepad2.right_stick_y);
 
       robot.fl.setPower(frontLeftPower);
       robot.bl.setPower(backLeftPower);
       robot.fr.setPower(frontRightPower);
       robot.br.setPower(backRightPower);
 
-      robot.intake.setPosition(
-          (gamepad1.right_trigger) - (Range.clip(gamepad1.left_trigger, -0.8, 0.8)));
+      out -= gamepad1.right_stick_y/1000;
+      out = Math.max(.005, Math.min(x,.4));
+
+      robot.slideOUT.setPosition(out);
+
+      if (gamepad1.right_bumper){
+        robot.intake.setPosition(1);
+      }
+      if (gamepad1.left_bumper){
+        robot.intake.setPosition(0);
+      }
+      if (!gamepad1.left_bumper && !gamepad1.right_bumper){
+        robot.intake.setPosition(0.5);
+      }
 
 
 

@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.hardware.Sensor;
+
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
@@ -39,6 +41,8 @@ public class Robot {
   public final DcMotor slideUP;
   public final ServoImplEx slideOUT;
   public final ServoImplEx intake, flipper, outtake;
+
+  //public final DistanceSensor  intakeSense;
 
 
   private final LinearOpMode opMode;
@@ -84,7 +88,9 @@ public class Robot {
 
     // Slides
     slideUP = hardwareMap.dcMotor.get("su");
+
     slideOUT = (ServoImplEx) hardwareMap.servo.get("so");
+    //slideOUT
 
     slideUP.setMode(RunMode.STOP_AND_RESET_ENCODER);
     //slideOUT.setMode(RunMode.STOP_AND_RESET_ENCODER);
@@ -95,11 +101,16 @@ public class Robot {
     slideUP.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
     //slideOUT.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
 
+
+
     // Intake
 
     intake = (ServoImplEx) hardwareMap.servo.get("in");
     outtake = (ServoImplEx) hardwareMap.servo.get("out");
     flipper = (ServoImplEx) hardwareMap.servo.get("flip");
+
+    // Sensor
+    //intakeSense = hardwareMap.get(DistanceSensor.class, "ins");
 
   }
 
@@ -124,14 +135,22 @@ public class Robot {
   }
 
   public void slideOutIn(){
+    flipIn();
+
+
     slideOUT.setPosition(slideInDist);
 
-    while (this.opMode.opModeIsActive() && Math.abs(slideOUT.getPosition() - slideInDist) > 0.1) {
-      //wait for servo to get close
+//    while (this.opMode.opModeIsActive() && Math.abs(slideOUT.getPosition() - slideInDist) > 0.1) {
+//      //wait for servo to get close
+//    }
+//
+//    // Can also use this if getPosition
+//    // waitTime(1500);
 
-    }
+  }
 
-    flipIn();
+  public void slideOutPush(double dir){
+    slideOUT.setPosition(slideOUT.getPosition() + (dir/100));
   }
 
   public void setSlideUpPos(int pos, double pow) {
