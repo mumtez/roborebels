@@ -52,12 +52,21 @@ public class Teleop extends LinearOpMode {
         backRightPower *= 0.4;
       }
 
-      if (gamepad1.a){
+      if (gamepad1.dpad_up){
         robot.flipper.setPosition(0);
       }
-      if (gamepad1.a){
+      if (gamepad1.dpad_down){
         robot.flipper.setPosition(0.5);
       }
+
+      if (gamepad1.a){
+        robot.outtake.setPosition(0);
+      }
+      if (gamepad1.b){
+        robot.outtake.setPosition(0.5);
+      }
+
+      robot.slideUP.setPower(gamepad1.right_stick_y);
 
 
       robot.fl.setPower(frontLeftPower);
@@ -65,18 +74,21 @@ public class Teleop extends LinearOpMode {
       robot.fr.setPower(frontRightPower);
       robot.br.setPower(backRightPower);
 
-      out -= gamepad1.right_stick_y/1000;
+
+      // INTAKE
+
+      out -= gamepad2.right_stick_y/1000;
       out = Math.max(.005, Math.min(x,.4));
 
       robot.slideOUT.setPosition(out);
 
-      if (gamepad1.right_bumper){
+      if (gamepad2.right_bumper){
         robot.intake.setPosition(1);
       }
-      if (gamepad1.left_bumper){
+      if (gamepad2.left_bumper){
         robot.intake.setPosition(0);
       }
-      if (!gamepad1.left_bumper && !gamepad1.right_bumper){
+      if (!gamepad2.left_bumper && gamepad2.right_bumper){
         robot.intake.setPosition(0.5);
       }
 
