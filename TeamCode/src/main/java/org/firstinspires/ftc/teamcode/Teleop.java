@@ -12,10 +12,13 @@ public class Teleop extends LinearOpMode {
   Robot robot;
   double out;
 
+  boolean flipIn = true;
+  boolean slideOut = false;
+
   @Override
   public void runOpMode() throws InterruptedException {
     robot = new Robot(this);
-    robot.slideUP.setMode(RunMode.RUN_WITHOUT_ENCODER);
+    //robot.slideUP.setMode(RunMode.RUN_WITHOUT_ENCODER);
 
 
     waitForStart();
@@ -53,20 +56,37 @@ public class Teleop extends LinearOpMode {
       }
 
       if (gamepad1.dpad_up){
-        robot.flipper.setPosition(0);
+        robot.slideOUT.setPosition(0);
+        slideOut = false;
       }
       if (gamepad1.dpad_down){
-        robot.flipper.setPosition(0.5);
+        robot.slideOUT.setPosition(0.5);
+        slideOut = true;
       }
 
-      if (gamepad1.a){
-        robot.outtake.setPosition(0);
+      if (gamepad1.a && slideOut){
+        flipIn = false;
+        //robot.flipper.setPosition(0);
       }
-      if (gamepad1.b){
-        robot.outtake.setPosition(0.5);
+      else{
+        flipIn = true;
       }
 
-      robot.slideUP.setPower(gamepad1.right_stick_y);
+
+      if (flipIn && !slideOut){
+        robot.flipper.setPosition(0.01);
+      }
+
+      if(!flipIn)
+      {
+        robot.flipper.setPosition(1.6);
+      }
+
+      if (slideOut && flipIn){
+        robot.flipper.setPosition(1.2);
+      }
+
+      robot.slideUP.setPower(gamepad2.right_stick_y);
 
 
       robot.fl.setPower(frontLeftPower);
@@ -77,18 +97,28 @@ public class Teleop extends LinearOpMode {
 
       // INTAKE
 
-      out -= gamepad2.right_stick_y/1000;
-      out = Math.max(.005, Math.min(x,.4));
+      //out -= gamepad2.right_stick_y;
+      //out = Math.max(.005, Math.min(x,.4));
 
-      robot.slideOUT.setPosition(out);
+      //robot.slideOUT.setPosition(out);
 
+      //telemetry.addData("out: ", out);
+
+      if (gamepad2.dpad_up){
+        robot.slideOUT.setPosition(0.01);
+      }
+      if (gamepad2.dpad_down){
+        robot.slideOUT.setPosition(0.3);
+      }
+
+      //mathew joseph sneyers
       if (gamepad2.right_bumper){
         robot.intake.setPosition(1);
       }
       if (gamepad2.left_bumper){
         robot.intake.setPosition(0);
       }
-      if (!gamepad2.left_bumper && gamepad2.right_bumper){
+      if (!gamepad2.left_bumper && !gamepad2.right_bumper){
         robot.intake.setPosition(0.5);
       }
 

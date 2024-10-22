@@ -15,7 +15,9 @@ import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.PwmControl.PwmRange;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 import java.util.List;
@@ -23,6 +25,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.sensors.LVMaxSonarEZ;
 import org.firstinspires.ftc.teamcode.sensors.RevLED;
+
 
 @Config
 public class Robot {
@@ -40,7 +43,8 @@ public class Robot {
   public final DcMotor fl, fr, bl, br;
   public final DcMotor slideUP;
   public final ServoImplEx slideOUT;
-  public final ServoImplEx intake, flipper, outtake;
+  public final ServoImplEx intake;
+  public final ServoImplEx flipper; //, outtake;
 
   //public final DistanceSensor  intakeSense;
 
@@ -106,8 +110,10 @@ public class Robot {
     // Intake
 
     intake = (ServoImplEx) hardwareMap.servo.get("in");
-    outtake = (ServoImplEx) hardwareMap.servo.get("out");
+    //outtake = (ServoImplEx) hardwareMap.servo.get("out");
     flipper = (ServoImplEx) hardwareMap.servo.get("flip");
+
+    flipper.setDirection(Servo.Direction.REVERSE);
 
     // Sensor
     //intakeSense = hardwareMap.get(DistanceSensor.class, "ins");
@@ -125,7 +131,7 @@ public class Robot {
 
 
   public void setSlidePower(double pow) {
-    slideUP.setPower(pow);
+    //slideUP.setPower(pow);
   }
 
   public void slideOutOut(){
@@ -153,6 +159,7 @@ public class Robot {
     slideOUT.setPosition(slideOUT.getPosition() + (dir/100));
   }
 
+
   public void setSlideUpPos(int pos, double pow) {
     setSlidePower(0);
 
@@ -169,6 +176,8 @@ public class Robot {
 
     setSlidePower(0);
   }
+
+
 
   public double getHeading() {
     return this.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
