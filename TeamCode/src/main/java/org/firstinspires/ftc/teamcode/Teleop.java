@@ -64,6 +64,20 @@ public class Teleop extends LinearOpMode {
         slideOut = true;
       }
 
+      if (slideOut){
+        if (gamepad1.a){
+          robot.flipper.setPosition(1.6);
+        }
+        else{
+          robot.flipper.setPosition(1.2);
+        }
+      }
+      else{
+        robot.flipper.setPosition(0.01);
+      }
+
+      /*
+
       if (gamepad1.a && slideOut){
         flipIn = false;
         //robot.flipper.setPosition(0);
@@ -85,6 +99,8 @@ public class Teleop extends LinearOpMode {
       if (slideOut && flipIn){
         robot.flipper.setPosition(1.2);
       }
+
+       */
 
       robot.slideUP.setPower(gamepad2.right_stick_y);
 
