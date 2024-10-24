@@ -33,8 +33,8 @@ public class Robot {
   public static double slideOutDist = 0.8;
   public static double slideInDist = 0.8;
 
-  public static double flipperIn = 0.8;
-  public static double flipperOut = 0.8;
+  public static double outtakeIn = 0;
+  public static double outtakeOut = 0.8;
 
   public static double GYRO_TURN_P = .055;
   public static double HEADING_THRESHOLD = 1;
@@ -64,8 +64,8 @@ public class Robot {
     // IMU
     imu = hardwareMap.get(IMU.class, "imu");
     IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
-        LogoFacingDirection.RIGHT,
-        RevHubOrientationOnRobot.UsbFacingDirection.UP));
+        LogoFacingDirection.UP,
+        RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD));
     imu.initialize(parameters);
     imu.resetYaw();
 
@@ -105,6 +105,8 @@ public class Robot {
     slideUP.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
     //slideOUT.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
 
+    slideUP.setMode(RunMode.RUN_WITHOUT_ENCODER);
+
 
 
     // Intake
@@ -121,39 +123,19 @@ public class Robot {
   }
 
   public void flipOut(){
-    flipper.setPosition(flipperOut);
+    //outtake.setPosition(outtakeOut);
   }
 
   public void flipIn(){
-    flipper.setPosition(flipperIn);
+    //flipper.setPosition(outtakeIn);
   }
 
 
 
   public void setSlidePower(double pow) {
-    //slideUP.setPower(pow);
+    slideUP.setPower(pow);
   }
 
-  public void slideOutOut(){
-    slideOUT.setPosition(slideOutDist);
-
-    flipOut();
-  }
-
-  public void slideOutIn(){
-    flipIn();
-
-
-    slideOUT.setPosition(slideInDist);
-
-//    while (this.opMode.opModeIsActive() && Math.abs(slideOUT.getPosition() - slideInDist) > 0.1) {
-//      //wait for servo to get close
-//    }
-//
-//    // Can also use this if getPosition
-//    // waitTime(1500);
-
-  }
 
   public void slideOutPush(double dir){
     slideOUT.setPosition(slideOUT.getPosition() + (dir/100));
@@ -173,6 +155,8 @@ public class Robot {
     {
       // Wait for slide to end
     }
+
+    slideUP.setMode(RunMode.RUN_WITHOUT_ENCODER);
 
     setSlidePower(0);
   }
@@ -246,7 +230,56 @@ public class Robot {
     }
   }
 
+  public void encodeDriveForward(double disto, double y) {
+    int targetTicks = distanceToEncoderTicks(disto);
+    fr.setTargetPosition(targetTicks + fr.getCurrentPosition());
+    fl.setTargetPosition(targetTicks + fl.getCurrentPosition());
+    br.setTargetPosition(targetTicks + br.getCurrentPosition());
+    bl.setTargetPosition(targetTicks + bl.getCurrentPosition());
 
+    fr.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    fl.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    br.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    bl.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+    setDriveTrainPower(y, y, y, y);
+
+    while (opMode.opModeIsActive() && fr.isBusy() && fl.isBusy() && br.isBusy() && bl.isBusy()) {
+      // Do Nothing
+    }
+
+    setDriveTrainPower(0, 0, 0, 0);
+
+  }
+
+  public int distanceToEncoderTicks(double distanceMM) {
+    double circumference = Math.PI * 96;
+    double cpr = 537.7;
+    double ticksPerMM = cpr / circumference;
+    return (int) (ticksPerMM * distanceMM);
+  }
+
+  public void encodeDriveStrafe(double disto, double x) {
+    int targetTicks = distanceToEncoderTicks(disto);
+    fr.setTargetPosition(-targetTicks + fr.getCurrentPosition());
+    fl.setTargetPosition(targetTicks + fl.getCurrentPosition());
+    br.setTargetPosition(targetTicks + br.getCurrentPosition());
+    bl.setTargetPosition(-targetTicks + bl.getCurrentPosition());
+
+    fr.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    fl.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    br.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    bl.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+    setDriveTrainPower(x, x, x, x);
+
+    while (opMode.opModeIsActive() && fr.isBusy() && fl.isBusy() && br.isBusy() && bl.isBusy()) {
+      // Wait for drive to end
+    }
+
+    setDriveTrainPower(0, 0, 0, 0);
+
+  }
 
   public enum DIRECTION {
     LEFT, RIGHT, FORWARD, BACKWARD

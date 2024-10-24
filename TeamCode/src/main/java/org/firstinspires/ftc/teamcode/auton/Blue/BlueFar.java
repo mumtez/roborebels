@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.auton.Red;
+package org.firstinspires.ftc.teamcode.auton.Blue;
 
 import android.util.Size;
 import com.acmerobotics.dashboard.FtcDashboard;
@@ -22,7 +22,7 @@ import org.firstinspires.ftc.teamcode.vision.Position;
 import org.firstinspires.ftc.vision.VisionPortal;
 
 @Config
-public class RedClose {
+public class BlueFar {
 
     // FOR NO TEETH
     public static Pose2d BACKDROP_START = new Pose2d(13 - 1, 61, Math.toRadians(270));
@@ -47,7 +47,7 @@ public class RedClose {
     private final MecanumDrive drive;
     public FtcDashboard dash = FtcDashboard.getInstance();
 
-    public RedClose(LinearOpMode opMode, CycleDirection cycle, ParkPosition parkPosition,
+    public BlueFar(LinearOpMode opMode, CycleDirection cycle, ParkPosition parkPosition,
                      double delaySeconds) {
         this.opMode = opMode;
         this.telemetry = new MultipleTelemetry(dash.getTelemetry(), opMode.telemetry);
@@ -94,8 +94,11 @@ public class RedClose {
         robot.setSlideUpPos(1000,1);
         robot.waitTime(100);
 
-        //robot.outPut();
-        //robot.waitTime();
+        robot.flipOut();
+        robot.waitTime(100);
+
+        robot.flipIn();
+        robot.waitTime(100);
 
         robot.setSlideUpPos(0,1);
         robot.waitTime(100);

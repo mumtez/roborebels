@@ -68,13 +68,40 @@ public class BlueClose {
 
   public void run() {
 
-
+    /*
     Actions.runBlocking(
             drive.actionBuilder(drive.pose)
                     // Spike
                     .splineTo(new Vector2d(20, 20), 45)
                     .build()
     );
+
+     */
+
+
+
+    robot.turnByGyro(90);
+    robot.waitTime(100);
+
+    robot.encodeDriveForward(1000, 0.3);
+    robot.waitTime(100);
+
+
+    robot.setSlideUpPos(1000,1);
+    robot.waitTime(100);
+
+    robot.flipOut();
+    robot.waitTime(100);
+
+    robot.flipIn();
+    robot.waitTime(100);
+
+    robot.setSlideUpPos(0,1);
+    robot.waitTime(100);
+
+
+
+
 
 
 
