@@ -14,6 +14,12 @@ public class Teleop extends LinearOpMode {
 
   boolean flipIn = true;
   boolean slideOut = false;
+  boolean timerDone = false;
+
+  boolean timerDone2 = false;
+
+  int timer = 60;
+  int timer2 = 60;
 
   @Override
   public void runOpMode() throws InterruptedException {
@@ -55,52 +61,63 @@ public class Teleop extends LinearOpMode {
         backRightPower *= 0.4;
       }
 
-      if (gamepad1.dpad_up){
-        robot.slideOUT.setPosition(0);
+      if (gamepad1.dpad_down) {
+        robot.slideOUT.setPosition(0.03);
         slideOut = false;
+
+        if (robot.slideOUT.getPosition() != 0.03){
+          timer2 = 0;
+        }
+        timerDone2 = false;
       }
-      if (gamepad1.dpad_down){
-        robot.slideOUT.setPosition(0.5);
+
+      if (!timerDone2){
+        timer2++;
+      }
+      if (timer2 > 100){
+        timerDone2 = true;
+      }
+
+
+      if (gamepad1.dpad_up){;
+        if (robot.slideOUT.getPosition() != 0.4) {
+          timer = 0;
+        }
+        robot.slideOUT.setPosition(0.4);
+        timerDone = false;
         slideOut = true;
       }
 
-      if (slideOut){
+      if (!timerDone){
+        timer++;
+      }
+      if (timer > 60) {
+        timerDone = true;
+      }
+
+
+      telemetry.addData("slide pos", robot.slideOUT.getPosition());
+      telemetry.addData("timer", timer);
+      telemetry.addData("flipIn", slideOut);
+
+      if (slideOut && timerDone){
         if (gamepad1.a){
-          robot.flipper.setPosition(1.6);
+          robot.flipper.setPosition(0.85);
+          flipIn = false;
         }
         else{
-          robot.flipper.setPosition(1.2);
+          robot.flipper.setPosition(0.75);
+          flipIn = true;
         }
       }
       else{
-        robot.flipper.setPosition(0.01);
-      }
-
-      /*
-
-      if (gamepad1.a && slideOut){
-        flipIn = false;
-        //robot.flipper.setPosition(0);
-      }
-      else{
-        flipIn = true;
+        if (timerDone2){
+          robot.flipper.setPosition(0.01);
+        }
       }
 
 
-      if (flipIn && !slideOut){
-        robot.flipper.setPosition(0.01);
-      }
 
-      if(!flipIn)
-      {
-        robot.flipper.setPosition(1.6);
-      }
-
-      if (slideOut && flipIn){
-        robot.flipper.setPosition(1.2);
-      }
-
-       */
 
       robot.slideUP.setPower(gamepad2.right_stick_y);
 
@@ -120,12 +137,6 @@ public class Teleop extends LinearOpMode {
 
       //telemetry.addData("out: ", out);
 
-      if (gamepad2.dpad_up){
-        robot.slideOUT.setPosition(0.01);
-      }
-      if (gamepad2.dpad_down){
-        robot.slideOUT.setPosition(0.3);
-      }
 
       //mathew joseph sneyers
       if (gamepad2.right_bumper){
