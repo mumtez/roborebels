@@ -2,6 +2,7 @@ package com.example.meepmeeptesting;
 
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Vector2d;
+import com.acmerobotics.roadrunner.VelConstraint;
 import com.noahbres.meepmeep.MeepMeep;
 import com.noahbres.meepmeep.MeepMeep.Background;
 import com.noahbres.meepmeep.core.colorscheme.scheme.ColorSchemeBlueDark;
@@ -23,6 +24,8 @@ public class MeepMeepTesting {
   public static void main(String[] args) {
     MeepMeep meepMeep = new MeepMeep(600);
 
+    Pose2d bucket = new Pose2d(new Vector2d(-54, -54), Math.toRadians(225));
+
 
 
 
@@ -37,40 +40,54 @@ public class MeepMeepTesting {
         .setColorScheme(new ColorSchemeRedDark())
         .build();
 
-    right.runAction(right.getDrive().actionBuilder(new Pose2d(10.5, -62, Math.toRadians(270)))
+
+
+    right.runAction(right.getDrive().actionBuilder(new Pose2d(-10.5, -62, Math.toRadians(90)))
             //Board
-        .strafeToSplineHeading(new Vector2d(48, -42), Math.toRadians(180))
-        .waitSeconds(0.2)
+
+        //.strafeToSplineHeading(new Vector2d(-48, -62), Math.toRadians(180))
+
+                            .splineToSplineHeading(bucket, Math.toRadians(260) )
+                            .waitSeconds(.2)
+
+
+                            .splineToLinearHeading(new Pose2d(new Vector2d(-48, -48), Math.toRadians(270)), Math.toRadians(100))
+                            .waitSeconds(.2)
+
+                            .splineToSplineHeading(bucket, Math.toRadians(200))
+                            .waitSeconds(.2)
+
+                            .splineToLinearHeading(new Pose2d(new Vector2d(-56, -48), Math.toRadians(270)), Math.toRadians(160))
+                            .waitSeconds(.2)
+
+                            .splineToSplineHeading(bucket, Math.toRadians(280))
+                            .waitSeconds(.2)
+
+                            .strafeToLinearHeading(new Vector2d(-48, -23.5), Math.toRadians(180))
+                            .waitSeconds(.2)
+
+                            .splineToSplineHeading(bucket, Math.toRadians(260))
+                            .waitSeconds(.2)
+
+                            .splineToSplineHeading(new Pose2d(new Vector2d(-48, -36), Math.toRadians(180)), Math.toRadians(80))
+                            .waitSeconds(.2)
+
+                            .strafeToLinearHeading(new Vector2d(35, -36), Math.toRadians(180))
+                            .waitSeconds(.2)
+
+                            .strafeToLinearHeading(new Vector2d(48, -62), Math.toRadians(180))
+                            .waitSeconds(.2)
+
+        //.waitSeconds(.2)
+
             .build());
 
-    RoadRunnerBotEntity center = new DefaultBotBuilder(meepMeep)
-        // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
-        .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
-        .setColorScheme(new ColorSchemeBlueLight())
-        .build();
 
-    center.runAction(center.getDrive().actionBuilder(new Pose2d(10.5, -62, Math.toRadians(270)))
-            //Board
-            .strafeToSplineHeading(new Vector2d(48, -36), Math.toRadians(180))
-            .build());
 
-    RoadRunnerBotEntity left = new DefaultBotBuilder(meepMeep)
-        // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
-        .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
-        .setColorScheme(new ColorSchemeBlueDark())
-        .build();
-
-    left.runAction(left.getDrive().actionBuilder(new Pose2d(10.5, -62, Math.toRadians(180)))
-            //Board
-            .strafeToSplineHeading(new Vector2d(48, -29), Math.toRadians(180))
-            .build());
-
-    meepMeep.setBackground(Background.FIELD_CENTERSTAGE_JUICE_DARK)
+    meepMeep.setBackground(Background. FIELD_INTO_THE_DEEP_JUICE_DARK)
         .setDarkMode(true)
         .setBackgroundAlpha(0.95f)
-        //.addEntity(right)
-        .addEntity(left)
-        //.addEntity(center)
+        .addEntity(right)
 
         .start();
   }
