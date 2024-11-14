@@ -34,7 +34,7 @@ public class Robot {
 
     public static double INTAKE_OUT = 0.88;
 
-    public static double INTAKE_UP = .29;
+    public static double INTAKE_UP = .32;
     public static double INTAKE_FLAT = .75;
 
     public static double OUTTAKE_IN = 0.8;
@@ -49,7 +49,8 @@ public class Robot {
 
     public final IMU imu;
     public final DcMotor fl, fr, bl, br;
-    public final DcMotor slideUP;
+    public final DcMotor slideLeft;
+    public final DcMotor slideRight;
 
     public final DcMotor hang;
     public final ServoImplEx slideOUT;
@@ -103,18 +104,25 @@ public class Robot {
         hang.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
 
         // Slides
-        slideUP = hardwareMap.dcMotor.get("su");
+        slideLeft = hardwareMap.dcMotor.get("lu");
+        slideRight = hardwareMap.dcMotor.get("ru");
 
-        slideUP.setMode(RunMode.STOP_AND_RESET_ENCODER);
-        //slideOUT.setMode(RunMode.STOP_AND_RESET_ENCODER);
+        slideLeft.setMode(RunMode.STOP_AND_RESET_ENCODER);
+        slideRight.setMode(RunMode.STOP_AND_RESET_ENCODER);
 
-        slideUP.setDirection(Direction.REVERSE);
+        slideLeft.setDirection(Direction.REVERSE);
+        slideRight.setDirection(Direction.REVERSE);
+
         //slideOUT.setDirection(Direction.FORWARD);
 
-        slideUP.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
+        slideLeft.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
+        slideRight.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
+
         //slideOUT.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
 
-        slideUP.setMode(RunMode.RUN_WITHOUT_ENCODER);
+        slideLeft.setMode(RunMode.RUN_WITHOUT_ENCODER);
+        slideRight.setMode(RunMode.RUN_WITHOUT_ENCODER);
+
 
         slideOUT = (ServoImplEx) hardwareMap.servo.get("so");
         //slideOUT
@@ -169,24 +177,66 @@ public class Robot {
     }
 
     public void setVerticalSlidePower(double pow) {
-        slideUP.setPower(pow + KG);
+        slideRight.setPower(pow + KG);
+        slideLeft.setPower(pow + KG);
+
+
     }
 
     public void setSlideUpPos(int pos, double pow) {
         setVerticalSlidePower(0);
 
-        slideUP.setTargetPosition(pos);
+        slideLeft.setTargetPosition(pos);
 
-        slideUP.setMode(RunMode.RUN_TO_POSITION);
+
+        slideLeft.setMode(RunMode.RUN_TO_POSITION);
+        slideRight.setMode(RunMode.RUN_TO_POSITION);
+
 
         setVerticalSlidePower(pow);
 
-        while (this.opMode.opModeIsActive() && Math.abs(slideUP.getCurrentPosition() - pos) > 30) {
+        while (this.opMode.opModeIsActive() && Math.abs(slideLeft.getCurrentPosition() - pos) > 30) {
             // Wait for slide to end
         }
 
         setVerticalSlidePower(0);
-        slideUP.setMode(RunMode.RUN_WITHOUT_ENCODER);
+        slideLeft.setMode(RunMode.RUN_WITHOUT_ENCODER);
+        slideRight.setMode(RunMode.RUN_WITHOUT_ENCODER);
+
+    }
+
+    public void pickUp() {
+        setHorizontalSlidePos(Robot.HORIZONTAL_SLIDE_OUT / 2);
+        waitTime(500);
+
+        rotateIntakeOut();
+        intake.setPower(1);
+        waitTime(500);
+
+        setHorizontalSlidePos(Robot.HORIZONTAL_SLIDE_OUT);
+        waitTime(500);
+
+        intake.setPower(0);
+        rotateIntakeUp();
+        waitTime(500);
+
+        setHorizontalSlidePos(Robot.HORIZONTAL_SLIDE_IN);
+        waitTime(500);
+
+        intake.setPower(-1);
+        waitTime(500);
+
+        rotateIntakeUp();
+    }
+
+    public void deposit() {
+        setHorizontalSlidePos(Robot.HORIZONTAL_SLIDE_IN / 4);
+        setSlideUpPos(Robot.VERTICAL_SLIDE_UP, .8);
+        outtakeOut();
+        waitTime(1000);
+
+        outtakeIn();
+        setSlideUpPos(Robot.VERTICAL_SLIDE_DOWN, 1);
     }
 
     public double getHeading() {

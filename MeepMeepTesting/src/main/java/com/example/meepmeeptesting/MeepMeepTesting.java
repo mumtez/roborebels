@@ -17,6 +17,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.util.Vector;
 
 
 public class MeepMeepTesting {
@@ -25,6 +26,13 @@ public class MeepMeepTesting {
     MeepMeep meepMeep = new MeepMeep(600);
 
     Pose2d bucket = new Pose2d(new Vector2d(-54, -54), Math.toRadians(225));
+    Vector2d leftBlock = new Vector2d(-48, -23.5);
+    Pose2d middleBlock = new Pose2d(new Vector2d(-56, -48), Math.toRadians(270));
+    Pose2d rightBlock = new Pose2d(new Vector2d(-48, -48), Math.toRadians(270));
+
+    Pose2d park1 = new Pose2d(new Vector2d(-48, -36), Math.toRadians(180));
+    Vector2d park2 = new Vector2d(35, -36);
+    Vector2d park3 = new Vector2d(48, -62);
 
 
 
@@ -51,31 +59,31 @@ public class MeepMeepTesting {
                             .waitSeconds(.2)
 
 
-                            .splineToLinearHeading(new Pose2d(new Vector2d(-48, -48), Math.toRadians(270)), Math.toRadians(100))
+                            .splineToLinearHeading(rightBlock, Math.toRadians(100))
                             .waitSeconds(.2)
 
                             .splineToSplineHeading(bucket, Math.toRadians(200))
                             .waitSeconds(.2)
 
-                            .splineToLinearHeading(new Pose2d(new Vector2d(-56, -48), Math.toRadians(270)), Math.toRadians(160))
+                            .splineToLinearHeading(middleBlock, Math.toRadians(160))
                             .waitSeconds(.2)
 
                             .splineToSplineHeading(bucket, Math.toRadians(280))
                             .waitSeconds(.2)
 
-                            .strafeToLinearHeading(new Vector2d(-48, -23.5), Math.toRadians(180))
+                            .strafeToLinearHeading(leftBlock, Math.toRadians(180))
                             .waitSeconds(.2)
 
                             .splineToSplineHeading(bucket, Math.toRadians(260))
                             .waitSeconds(.2)
 
-                            .splineToSplineHeading(new Pose2d(new Vector2d(-48, -36), Math.toRadians(180)), Math.toRadians(80))
+                            .splineToSplineHeading(park1, Math.toRadians(80))
                             .waitSeconds(.2)
 
-                            .strafeToLinearHeading(new Vector2d(35, -36), Math.toRadians(180))
+                            .strafeToLinearHeading(park2, Math.toRadians(180))
                             .waitSeconds(.2)
 
-                            .strafeToLinearHeading(new Vector2d(48, -62), Math.toRadians(180))
+                            .strafeToLinearHeading(park3, Math.toRadians(180))
                             .waitSeconds(.2)
 
         //.waitSeconds(.2)
