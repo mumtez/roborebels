@@ -29,7 +29,9 @@ public class AutonHalf extends LinearOpMode {
             telemetry.addData("FR", robot.fr.getCurrentPosition());
             telemetry.addData("BL", robot.bl.getCurrentPosition());
             telemetry.addData("BR", robot.br.getCurrentPosition());
-            telemetry.addData("slide", robot.slideUP.getCurrentPosition());
+            telemetry.addData("slideL", robot.slideLeft.getCurrentPosition());
+            telemetry.addData("slideR", robot.slideRight.getCurrentPosition());
+
             telemetry.addData("heading", robot.getHeading());
             telemetry.update();
         }

@@ -26,16 +26,16 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 @Config
 public class Robot {
 
-  public static double HORIZONTAL_SLIDE_IN = 0;
-  public static double HORIZONTAL_SLIDE_OUT = 0.4;
+  public static double HORIZONTAL_SLIDE_IN = 0.3;
+  public static double HORIZONTAL_SLIDE_OUT = 0.5;
 
-  public static double INTAKE_OUT = 0.88;
+  public static double INTAKE_OUT = 0.65;
 
-  public static double INTAKE_UP = .32;
-  public static double INTAKE_FLAT = .75;
+  public static double INTAKE_UP = 0.03;
+  public static double INTAKE_FLAT = 0.5;
 
-  public static double OUTTAKE_IN = 0.8;
-  public static double OUTTAKE_OUT = 0.1;
+  public static double OUTTAKE_IN = 0.05;
+  public static double OUTTAKE_OUT = 0.8;
 
   public static int VERTICAL_SLIDE_UP = 2800;
   public static int VERTICAL_SLIDE_DOWN = 0;
@@ -112,7 +112,7 @@ public class Robot {
     slideRight.setMode(RunMode.STOP_AND_RESET_ENCODER);
 
     slideLeft.setDirection(Direction.REVERSE);
-    slideRight.setDirection(Direction.REVERSE);
+    slideRight.setDirection(Direction.FORWARD);
 
     slideLeft.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
     slideRight.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);

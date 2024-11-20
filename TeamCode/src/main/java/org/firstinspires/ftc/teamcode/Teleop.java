@@ -3,7 +3,9 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import com.acmerobotics.dashboard.config.Config;
 
+@Config
 @TeleOp(name = "Teleop")
 public class Teleop extends LinearOpMode {
 
@@ -84,12 +86,13 @@ public class Teleop extends LinearOpMode {
       if (timer2 > 35) {
         timerDone2 = true;
       }
+
       if (timerDone2 && !slideOut) {
         horizontalPos = Robot.HORIZONTAL_SLIDE_IN;
       }
 
       // TODO: make tunable value instead of arbitrary 0.4
-      if (gamepad2.right_stick_y != 0 && robot.slideOUT.getPosition() < 0.4) {
+      if (gamepad2.right_stick_y != 0 && robot.slideOUT.getPosition() < 0.31) {
         horizontalPos = Robot.HORIZONTAL_SLIDE_OUT / 4;
       }
 

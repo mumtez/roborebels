@@ -29,7 +29,9 @@ public class CycleAuton extends LinearOpMode {
             telemetry.addData("FR", robot.fr.getCurrentPosition());
             telemetry.addData("BL", robot.bl.getCurrentPosition());
             telemetry.addData("BR", robot.br.getCurrentPosition());
-            telemetry.addData("slide", robot.slideUP.getCurrentPosition());
+            telemetry.addData("slide", robot.slideLeft.getCurrentPosition());
+            telemetry.addData("slide", robot.slideRight.getCurrentPosition());
+
             telemetry.addData("heading", robot.getHeading());
             telemetry.update();
         }

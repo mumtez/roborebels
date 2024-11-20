@@ -16,13 +16,12 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.odom.MecanumDrive;
-import org.firstinspires.ftc.teamcode.vision.BluePropThreshold;
-import org.firstinspires.ftc.teamcode.vision.Position;
+
 import org.firstinspires.ftc.vision.VisionPortal;
 
 
 @Autonomous(name = "CYCLE ROADRUNNER")
-public class CycleRoadrunner {
+public class CycleRoadrunner extends LinearOpMode{
     Pose2d bucket = new Pose2d(new Vector2d(-54, -54), Math.toRadians(225));
     Vector2d leftBlock = new Vector2d(-48, -23.5);
     Pose2d middleBlock = new Pose2d(new Vector2d(-56, -48), Math.toRadians(270));
@@ -138,6 +137,11 @@ public class CycleRoadrunner {
 
         );
 
+
+    }
+
+    @Override
+    public void runOpMode() throws InterruptedException {
 
     }
 }
