@@ -40,10 +40,12 @@ public class Teleop extends LinearOpMode {
       int vSlideRPos = robot.slideRight.getCurrentPosition();
 
       if (gamepad1.left_bumper) {
-        robot.imu.resetYaw();
+        robot.drive.lazyImu.get().resetYaw();
       }
 
       // === FIELD CENTRIC ===
+
+      boolean slideGoOut = false;
 
       double y = -gamepad1.left_stick_y;
       double x = gamepad1.left_stick_x;
@@ -69,10 +71,15 @@ public class Teleop extends LinearOpMode {
         backRightPower *= 0.4;
       }
 
+      robot.setDriveTrainPower(frontRightPower,frontLeftPower,backRightPower,backLeftPower);
+
+      /*
       robot.fl.setPower(frontLeftPower);
       robot.bl.setPower(backLeftPower);
       robot.fr.setPower(frontRightPower);
       robot.br.setPower(backRightPower);
+
+       */
 
       if (gamepad2.dpad_down) {
         slideOut = false;
@@ -102,8 +109,12 @@ public class Teleop extends LinearOpMode {
       }
 
       // Got moved down
-      if (gamepad2.right_stick_y != 0 && robot.slideOUT.getPosition() < Robot.SLIDEOUT_THRESHOLD) {
-        horizontalPos = Robot.HORIZONTAL_SLIDE_OUT / 4;
+      if (gamepad2.right_stick_y != 0) {
+        slideGoOut = true;
+        horizontalPos = Robot.HORIZONTAL_SLIDE_OUT / 2;
+      }
+      else{
+        slideGoOut = false;
       }
 
       robot.setHorizontalSlidePos(horizontalPos);
@@ -166,6 +177,7 @@ public class Teleop extends LinearOpMode {
       telemetry.addData("V SLIDE L ENC", vSlideLPos);
       telemetry.addData("V SLIDE R ENC", vSlideRPos);
       telemetry.addData("HANG ENC", hangPos);
+      telemetry.addData("Slide go out?: ",slideGoOut);
       telemetry.update();
     }
   }

@@ -31,7 +31,7 @@ public class Robot {
   public static double HORIZONTAL_SLIDE_IN = 0.3;
   public static double HORIZONTAL_SLIDE_OUT = 0.5;
 
-  public static double INTAKE_OUT = 0.65;
+  public static double INTAKE_OUT = 0.61;
 
   public static double INTAKE_UP = 0.03;
   public static double INTAKE_FLAT = 0.5;
@@ -51,9 +51,9 @@ public class Robot {
   // TODO: tune color sensor gain
   public static float INTAKE_COLOR_GAIN = 2;
 
-  public final IMU imu;
+  //public final IMU imu;
   public final MecanumDrive drive;
-  public final DcMotor fl, fr, bl, br;
+  //public final DcMotor fl, fr, bl, br;
   public final DcMotor slideLeft;
   public final DcMotor slideRight;
 
@@ -72,24 +72,17 @@ public class Robot {
 
     this.drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
 
-    // BULK CACHING
-    List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
-    for (LynxModule hub : allHubs) {
-      hub.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
-    }
+
 
     // IMU
+    /*
     imu = hardwareMap.get(IMU.class, "imu");
     IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
         LogoFacingDirection.RIGHT,
         RevHubOrientationOnRobot.UsbFacingDirection.UP));
     imu.initialize(parameters);
-
-    // Drivetrain
-    fl = this.drive.leftFront;
-    fr = this.drive.rightFront;
-    bl = this.drive.leftBack;
-    br = this.drive.rightBack;
+    */
+    
 
     // Hang
     hang = hardwareMap.dcMotor.get("hang");
@@ -143,14 +136,11 @@ public class Robot {
   }
 
   public void initAuton() {
-    this.imu.resetYaw();
-    this.rotateIntakeUp();
+    drive.lazyImu.get().resetYaw();
+    this.flipper.setPosition(0.4);
     this.outtakeIn();
     this.setHorizontalSlidePos(HORIZONTAL_SLIDE_IN);
-    this.fl.setMode(RunMode.STOP_AND_RESET_ENCODER);
-    this.bl.setMode(RunMode.STOP_AND_RESET_ENCODER);
-    this.fr.setMode(RunMode.STOP_AND_RESET_ENCODER);
-    this.br.setMode(RunMode.STOP_AND_RESET_ENCODER);
+
   }
 
   public void setHorizontalSlidePos(double pos) {
@@ -179,14 +169,15 @@ public class Robot {
   }
 
   public void setVerticalSlidePower(double pow) {
-    slideRight.setPower(pow + KG);
-    slideLeft.setPower(pow + KG);
+    slideRight.setPower((pow + KG));
+    slideLeft.setPower((pow + KG));
   }
 
   public void setSlideUpPos(int pos, double pow) {
     setVerticalSlidePower(0);
 
     slideLeft.setTargetPosition(pos);
+    slideRight.setTargetPosition(pos);
 
     slideLeft.setMode(RunMode.RUN_TO_POSITION);
     slideRight.setMode(RunMode.RUN_TO_POSITION);
@@ -238,21 +229,17 @@ public class Robot {
   }
 
   public double getHeading() {
-    return this.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
+    return drive.lazyImu.get().getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
   }
 
   public void setDriveTrainPower(double frPow, double flPow, double brPow, double blPow) {
-    fr.setPower(frPow);
-    fl.setPower(flPow);
-    br.setPower(brPow);
-    bl.setPower(blPow);
+    drive.rightFront.setPower(frPow);
+    drive.leftFront.setPower(flPow);
+    drive.rightBack.setPower(brPow);
+    drive.leftBack.setPower(blPow);
   }
 
   public void turnByGyro(double targetDegrees) {
-    this.fr.setMode(RunMode.RUN_WITHOUT_ENCODER);
-    this.fl.setMode(RunMode.RUN_WITHOUT_ENCODER);
-    this.br.setMode(RunMode.RUN_WITHOUT_ENCODER);
-    this.bl.setMode(RunMode.RUN_WITHOUT_ENCODER);
 
     double headingError = targetDegrees - getHeading();
     // Normalize the error to be within +/- 180 degrees
@@ -296,10 +283,6 @@ public class Robot {
     }
 
     this.setDriveTrainPower(0, 0, 0, 0);
-    this.fl.setMode(RunMode.STOP_AND_RESET_ENCODER);
-    this.bl.setMode(RunMode.STOP_AND_RESET_ENCODER);
-    this.fr.setMode(RunMode.STOP_AND_RESET_ENCODER);
-    this.br.setMode(RunMode.STOP_AND_RESET_ENCODER);
   }
 
   public void waitTime(double ms) {
@@ -308,34 +291,7 @@ public class Robot {
     }
   }
 
-  public void encodeDriveForward(double disto, double y) {
-    int targetTicks = distanceToEncoderTicks(disto);
 
-    setDriveTrainPower(0, 0, 0, 0);
-
-    int frPos = targetTicks + fr.getCurrentPosition();
-    int flPos = targetTicks + fl.getCurrentPosition();
-    int brPos = targetTicks + br.getCurrentPosition();
-    int blPos = targetTicks + bl.getCurrentPosition();
-
-    fr.setTargetPosition(frPos);
-    fl.setTargetPosition(flPos);
-    br.setTargetPosition(brPos);
-    bl.setTargetPosition(blPos);
-
-    fr.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-    fl.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-    br.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-    bl.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-    setDriveTrainPower(y, y, y, y);
-
-    while (opMode.opModeIsActive() && (fr.isBusy() || fl.isBusy() || br.isBusy() || bl.isBusy())) {
-      // Do Nothing
-    }
-
-    setDriveTrainPower(0, 0, 0, 0);
-  }
 
   public int distanceToEncoderTicks(double distanceMM) {
     double circumference = Math.PI * 96;
@@ -344,36 +300,4 @@ public class Robot {
     return (int) (ticksPerMM * distanceMM);
   }
 
-  public void stopReset() {
-    this.fl.setMode(RunMode.STOP_AND_RESET_ENCODER);
-    this.bl.setMode(RunMode.STOP_AND_RESET_ENCODER);
-    this.fr.setMode(RunMode.STOP_AND_RESET_ENCODER);
-    this.br.setMode(RunMode.STOP_AND_RESET_ENCODER);
-    this.waitTime(200);
-  }
-
-  public void encodeDriveStrafe(double disto, double x) {
-    int targetTicks = distanceToEncoderTicks(disto);
-
-    setDriveTrainPower(0, 0, 0, 0);
-
-    fr.setTargetPosition(-targetTicks + fr.getCurrentPosition());
-    fl.setTargetPosition(targetTicks + fl.getCurrentPosition());
-    br.setTargetPosition(targetTicks + br.getCurrentPosition());
-    bl.setTargetPosition(-targetTicks + bl.getCurrentPosition());
-
-    fr.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-    fl.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-    br.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-    bl.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-    setDriveTrainPower(x, x, x, x);
-
-    while (opMode.opModeIsActive() && fr.isBusy() && fl.isBusy() && br.isBusy() && bl.isBusy()) {
-      // Wait for drive to end
-    }
-
-    setDriveTrainPower(0, 0, 0, 0);
-
-  }
 }
