@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.auton.roadrunner;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Vector2d;
@@ -11,6 +12,7 @@ import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.odom.MecanumDrive;
 
 
+@Config
 @Autonomous(name = "CYCLE ROADRUNNER")
 public class CycleRoadrunner extends LinearOpMode {
 
@@ -25,7 +27,7 @@ public class CycleRoadrunner extends LinearOpMode {
   public static Vector2d park2 = new Vector2d(35, -36);
   public static Vector2d park3 = new Vector2d(48, -62);
 
-  public static double turnBlockAngle = 280;
+  public static double turnBlockAngleDeg = 280;
 
   //public static VelConstraint slowVel = new TranslationalVelConstraint(40);
   //public static AccelConstraint slowAccel = new ProfileAccelConstraint(-40, 40);
@@ -126,7 +128,7 @@ public class CycleRoadrunner extends LinearOpMode {
     //turn right
     Actions.runBlocking(
         drive.actionBuilder(drive.pose)
-            .turn(turnBlockAngle)
+            .turn(Math.toRadians(turnBlockAngleDeg))
             .build()
     );
 
@@ -142,7 +144,7 @@ public class CycleRoadrunner extends LinearOpMode {
     //turn left
     Actions.runBlocking(
         drive.actionBuilder(drive.pose)
-            .turn(270)
+            .turn(Math.toRadians(270))
             .build()
     );
 
@@ -157,6 +159,8 @@ public class CycleRoadrunner extends LinearOpMode {
 
     //slide in
     robot.setHorizontalSlidePos(Robot.HORIZONTAL_SLIDE_IN);
+
+    robot.waitTime(500);
 
     robot.intake.setPower(-1);
   }
