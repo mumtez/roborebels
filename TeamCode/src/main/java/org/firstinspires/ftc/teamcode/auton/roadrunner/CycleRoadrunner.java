@@ -1,186 +1,165 @@
 package org.firstinspires.ftc.teamcode.auton.roadrunner;
 
-import android.util.Size;
 import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.util.ElapsedTime;
-import java.util.Objects;
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.odom.MecanumDrive;
 
-import org.firstinspires.ftc.vision.VisionPortal;
-
 
 @Autonomous(name = "CYCLE ROADRUNNER")
-public class CycleRoadrunner extends LinearOpMode{
-    public static Pose2d bucket = new Pose2d(new Vector2d(-54, -54), Math.toRadians(225));
-    public static Vector2d leftBlock = new Vector2d(-48, -23.5);
-    public static Pose2d middleBlock = new Pose2d(new Vector2d(-56, -48), Math.toRadians(270));
-    public static Pose2d rightBlock = new Pose2d(new Vector2d(-48, -48), Math.toRadians(270));
+public class CycleRoadrunner extends LinearOpMode {
 
-    public static Pose2d park1 = new Pose2d(new Vector2d(-48, -36), Math.toRadians(180));
-    public static Vector2d park2 = new Vector2d(35, -36);
-    public static Vector2d park3 = new Vector2d(48, -62);
+  public static Pose2d START = new Pose2d(-10.5, -62, Math.toRadians(90));
 
-    public static double turnBlockAngle = 280;
-    public static double flipperDown = 0.55;
+  public static Pose2d bucket = new Pose2d(new Vector2d(-54, -54), Math.toRadians(225));
+  public static Vector2d leftBlock = new Vector2d(-48, -23.5);
+  public static Pose2d middleBlock = new Pose2d(new Vector2d(-56, -48), Math.toRadians(270));
+  public static Pose2d rightBlock = new Pose2d(new Vector2d(-48, -48), Math.toRadians(270));
 
+  public static Pose2d park1 = new Pose2d(new Vector2d(-48, -36), Math.toRadians(180));
+  public static Vector2d park2 = new Vector2d(35, -36);
+  public static Vector2d park3 = new Vector2d(48, -62);
 
+  public static double turnBlockAngle = 280;
+  public static double flipperDown = 0.55;
 
-    //public static VelConstraint slowVel = new TranslationalVelConstraint(40);
-    //public static AccelConstraint slowAccel = new ProfileAccelConstraint(-40, 40);
+  //public static VelConstraint slowVel = new TranslationalVelConstraint(40);
+  //public static AccelConstraint slowAccel = new ProfileAccelConstraint(-40, 40);
 
-    private  LinearOpMode opMode;
-    private  Telemetry telemetry;
-    private  HardwareMap hardwareMap;
-    private  MecanumDrive drive;
+  private Robot robot;
+  private MecanumDrive drive;
 
-    public Pose2d start = new Pose2d(-10.5, -62, Math.toRadians(90));
+  @Override
+  public void runOpMode() throws InterruptedException {
+    // INIT
+    telemetry = new MultipleTelemetry(FtcDashboard.getInstance().getTelemetry(), telemetry);
 
-    private  Robot robot;
+    robot = new Robot(this);
+    drive = new MecanumDrive(hardwareMap, START);
 
-    public FtcDashboard dash = FtcDashboard.getInstance();
+    waitForStart();
+    // START
 
+    //bucket
+    Actions.runBlocking(
+        drive.actionBuilder(drive.pose)
+            .splineToSplineHeading(bucket, Math.toRadians(260))
+            .build()
+    );
 
-    @Override
-    public void runOpMode() throws InterruptedException {
+    robot.deposit();
 
-        opMode = opMode;
-        telemetry = new MultipleTelemetry(dash.getTelemetry(), opMode.telemetry);
-        hardwareMap = opMode.hardwareMap;
+    //right block
+    Actions.runBlocking(
+        drive.actionBuilder(drive.pose)
+            .splineToLinearHeading(rightBlock, Math.toRadians(100))
+            .build()
+    );
 
-        robot = new Robot(this.opMode);
-        drive = new MecanumDrive(hardwareMap, start);
+    pickUpVertical();
 
-        //bucket
-        Actions.runBlocking(
-                drive.actionBuilder(drive.pose)
-                        .splineToSplineHeading(bucket, Math.toRadians(260))
-                        .build()
-        );
+    //bucket
+    Actions.runBlocking(
+        drive.actionBuilder(drive.pose)
+            .splineToSplineHeading(bucket, Math.toRadians(200))
+            .build()
+    );
 
-        robot.deposit();
+    robot.deposit();
 
-        //right block
-        Actions.runBlocking(
-                drive.actionBuilder(drive.pose)
-                        .splineToLinearHeading(rightBlock, Math.toRadians(100))
-                        .build()
-        );
+    //middle block
+    Actions.runBlocking(
+        drive.actionBuilder(drive.pose)
+            .splineToLinearHeading(middleBlock, Math.toRadians(160))
+            .build()
+    );
 
-        pickUpVertical();
+    pickUpVertical();
 
-        //bucket
-        Actions.runBlocking(
-                drive.actionBuilder(drive.pose)
-                        .splineToSplineHeading(bucket, Math.toRadians(200))
-                        .build()
-        );
+    //bucket
+    Actions.runBlocking(
+        drive.actionBuilder(drive.pose)
+            .splineToSplineHeading(bucket, Math.toRadians(280))
+            .build()
+    );
 
-        robot.deposit();
+    robot.deposit();
 
-        //middle block
-        Actions.runBlocking(
-                drive.actionBuilder(drive.pose)
-                        .splineToLinearHeading(middleBlock, Math.toRadians(160))
-                        .build()
-        );
+    //left block
+    Actions.runBlocking(
+        drive.actionBuilder(drive.pose)
+            .strafeToLinearHeading(leftBlock, Math.toRadians(180))
+            .build()
+    );
 
-        pickUpVertical();
+    robot.pickUp();
 
-        //bucket
-        Actions.runBlocking(
-                drive.actionBuilder(drive.pose)
-                        .splineToSplineHeading(bucket, Math.toRadians(280))
-                        .build()
-        );
+    //bucket
+    Actions.runBlocking(
+        drive.actionBuilder(drive.pose)
+            .splineToSplineHeading(bucket, Math.toRadians(260))
+            .build()
+    );
 
-        robot.deposit();
+    robot.deposit();
 
-        //left block
-        Actions.runBlocking(
-                drive.actionBuilder(drive.pose)
-                        .strafeToLinearHeading(leftBlock, Math.toRadians(180))
-                        .build()
-        );
+    //park
+    Actions.runBlocking(
+        drive.actionBuilder(drive.pose)
+            .splineToSplineHeading(park1, Math.toRadians(80))
+            .waitSeconds(.5)
 
-        robot.pickUp();
+            .strafeToLinearHeading(park2, Math.toRadians(180))
+            .waitSeconds(.5)
 
+            .strafeToLinearHeading(park3, Math.toRadians(180))
+            .build()
+    );
+  }
 
-        //bucket
-        Actions.runBlocking(
-                drive.actionBuilder(drive.pose)
-                        .splineToSplineHeading(bucket, Math.toRadians(260))
-                        .build()
-        );
+  public void pickUpVertical() {
 
-        robot.deposit();
+    //turn right
+    Actions.runBlocking(
+        drive.actionBuilder(drive.pose)
+            .turn(turnBlockAngle)
+            .build()
+    );
 
-        //park
-        Actions.runBlocking(
-                drive.actionBuilder(drive.pose)
-                        .splineToSplineHeading(park1, Math.toRadians(80))
-                        .waitSeconds(.5)
+    //slide out
+    robot.slideOUT.setPosition(Robot.HORIZONTAL_SLIDE_OUT);
 
-                        .strafeToLinearHeading(park2, Math.toRadians(180))
-                        .waitSeconds(.5)
+    //intake down
+    robot.flipper.setPosition(flipperDown);
 
-                        .strafeToLinearHeading(park3, Math.toRadians(180))
-                        .build()
+    //intake on
+    robot.intake.setPower(1);
 
-        );
+    //turn left
+    Actions.runBlocking(
+        drive.actionBuilder(drive.pose)
+            .turn(270)
+            .build()
+    );
 
+    //wait
+    robot.waitTime(500);
 
-    }
+    //intake off
+    robot.intake.setPower(0);
 
-    public void pickUpVertical(){
+    //intake up
+    robot.flipper.setPosition(Robot.INTAKE_UP);
 
-        //turn right
-        Actions.runBlocking(
-                drive.actionBuilder(drive.pose)
-                        .turn(turnBlockAngle)
-                        .build()
-        );
+    //slide in
+    robot.slideOUT.setPosition(Robot.HORIZONTAL_SLIDE_IN);
 
-        //slide out
-        robot.slideOUT.setPosition(robot.HORIZONTAL_SLIDE_OUT);
-
-        //intake down
-        robot.flipper.setPosition(flipperDown);
-
-        //intake on
-        robot.intake.setPower(1);
-
-        //turn left
-        Actions.runBlocking(
-                drive.actionBuilder(drive.pose)
-                        .turn(270)
-                        .build()
-        );
-
-        //wait
-        robot.waitTime(500);
-
-        //intake off
-        robot.intake.setPower(0);
-
-        //intake up
-        robot.flipper.setPosition(robot.INTAKE_UP);
-
-        //slide in
-        robot.slideOUT.setPosition(robot.HORIZONTAL_SLIDE_IN);
-
-        robot.intake.setPower(-1);
-
-    }
+    robot.intake.setPower(-1);
+  }
 
 }
