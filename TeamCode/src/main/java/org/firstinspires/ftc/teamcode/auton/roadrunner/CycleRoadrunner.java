@@ -26,7 +26,6 @@ public class CycleRoadrunner extends LinearOpMode {
   public static Vector2d park3 = new Vector2d(48, -62);
 
   public static double turnBlockAngle = 280;
-  public static double flipperDown = 0.55;
 
   //public static VelConstraint slowVel = new TranslationalVelConstraint(40);
   //public static AccelConstraint slowAccel = new ProfileAccelConstraint(-40, 40);
@@ -132,10 +131,10 @@ public class CycleRoadrunner extends LinearOpMode {
     );
 
     //slide out
-    robot.slideOUT.setPosition(Robot.HORIZONTAL_SLIDE_OUT);
+    robot.setHorizontalSlidePos(Robot.HORIZONTAL_SLIDE_OUT);
 
     //intake down
-    robot.flipper.setPosition(flipperDown);
+    robot.rotateIntakeOut();
 
     //intake on
     robot.intake.setPower(1);
@@ -154,10 +153,10 @@ public class CycleRoadrunner extends LinearOpMode {
     robot.intake.setPower(0);
 
     //intake up
-    robot.flipper.setPosition(Robot.INTAKE_UP);
+    robot.rotateIntakeUp();
 
     //slide in
-    robot.slideOUT.setPosition(Robot.HORIZONTAL_SLIDE_IN);
+    robot.setHorizontalSlidePos(Robot.HORIZONTAL_SLIDE_IN);
 
     robot.intake.setPower(-1);
   }
