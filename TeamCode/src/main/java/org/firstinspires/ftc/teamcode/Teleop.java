@@ -91,10 +91,7 @@ public class Teleop extends LinearOpMode {
         horizontalPos = Robot.HORIZONTAL_SLIDE_IN;
       }
 
-      // TODO: make tunable value instead of arbitrary 0.4
-      if (gamepad2.right_stick_y != 0 && robot.slideOUT.getPosition() < 0.31) {
-        horizontalPos = Robot.HORIZONTAL_SLIDE_OUT / 4;
-      }
+
 
       // TODO: direct control horizontal slides (increment/decrement servo position)
       if (gamepad2.dpad_up) {
@@ -104,6 +101,11 @@ public class Teleop extends LinearOpMode {
         horizontalPos = Robot.HORIZONTAL_SLIDE_OUT;
         timerDone = false;
         slideOut = true;
+      }
+
+      // Got moved down
+      if (gamepad2.right_stick_y != 0 && robot.slideOUT.getPosition() < Robot.SLIDEOUT_THRESHOLD) {
+        horizontalPos = Robot.HORIZONTAL_SLIDE_OUT / 4;
       }
 
       robot.setHorizontalSlidePos(horizontalPos);

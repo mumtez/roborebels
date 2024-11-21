@@ -44,6 +44,8 @@ public class Robot {
   public static double KG = 0.07;
   public static double HEADING_THRESHOLD = 1;
 
+  public static double SLIDEOUT_THRESHOLD = 0.4;
+
   // TODO: tune color sensor gain
   public static float INTAKE_COLOR_GAIN = 2;
 

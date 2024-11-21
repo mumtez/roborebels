@@ -34,30 +34,27 @@ public class CycleRoadrunner extends LinearOpMode{
     //public static VelConstraint slowVel = new TranslationalVelConstraint(40);
     //public static AccelConstraint slowAccel = new ProfileAccelConstraint(-40, 40);
 
-    private final LinearOpMode opMode;
-    private final Telemetry telemetry;
-    private final HardwareMap hardwareMap;
-    private final MecanumDrive drive;
+    private  LinearOpMode opMode;
+    private  Telemetry telemetry;
+    private  HardwareMap hardwareMap;
+    private  MecanumDrive drive;
 
     public Pose2d start = new Pose2d(-10.5, -62, Math.toRadians(90));
 
-
-    private final Robot robot;
+    private  Robot robot;
 
     public FtcDashboard dash = FtcDashboard.getInstance();
 
 
-    public CycleRoadrunner(LinearOpMode opMode) {
-        this.opMode = opMode;
-        this.telemetry = new MultipleTelemetry(dash.getTelemetry(), opMode.telemetry);
-        this.hardwareMap = opMode.hardwareMap;
+    @Override
+    public void runOpMode() throws InterruptedException {
 
-        this.robot = new Robot(this.opMode);
-        this.drive = new MecanumDrive(hardwareMap, start);
-    }
+        opMode = opMode;
+        telemetry = new MultipleTelemetry(dash.getTelemetry(), opMode.telemetry);
+        hardwareMap = opMode.hardwareMap;
 
-
-    public void run() {
+        robot = new Robot(this.opMode);
+        drive = new MecanumDrive(hardwareMap, start);
 
         //bucket
         Actions.runBlocking(
@@ -140,8 +137,4 @@ public class CycleRoadrunner extends LinearOpMode{
 
     }
 
-    @Override
-    public void runOpMode() throws InterruptedException {
-
-    }
 }
