@@ -22,14 +22,19 @@ import org.firstinspires.ftc.vision.VisionPortal;
 
 @Autonomous(name = "CYCLE ROADRUNNER")
 public class CycleRoadrunner extends LinearOpMode{
-    Pose2d bucket = new Pose2d(new Vector2d(-54, -54), Math.toRadians(225));
-    Vector2d leftBlock = new Vector2d(-48, -23.5);
-    Pose2d middleBlock = new Pose2d(new Vector2d(-56, -48), Math.toRadians(270));
-    Pose2d rightBlock = new Pose2d(new Vector2d(-48, -48), Math.toRadians(270));
+    public static Pose2d bucket = new Pose2d(new Vector2d(-54, -54), Math.toRadians(225));
+    public static Vector2d leftBlock = new Vector2d(-48, -23.5);
+    public static Pose2d middleBlock = new Pose2d(new Vector2d(-56, -48), Math.toRadians(270));
+    public static Pose2d rightBlock = new Pose2d(new Vector2d(-48, -48), Math.toRadians(270));
 
-    Pose2d park1 = new Pose2d(new Vector2d(-48, -36), Math.toRadians(180));
-    Vector2d park2 = new Vector2d(35, -36);
-    Vector2d park3 = new Vector2d(48, -62);
+    public static Pose2d park1 = new Pose2d(new Vector2d(-48, -36), Math.toRadians(180));
+    public static Vector2d park2 = new Vector2d(35, -36);
+    public static Vector2d park3 = new Vector2d(48, -62);
+
+    public static double turnBlockAngle = 280;
+    public static double flipperDown = 0.55;
+
+
 
     //public static VelConstraint slowVel = new TranslationalVelConstraint(40);
     //public static AccelConstraint slowAccel = new ProfileAccelConstraint(-40, 40);
@@ -72,7 +77,7 @@ public class CycleRoadrunner extends LinearOpMode{
                         .build()
         );
 
-        robot.pickUp();
+        pickUpVertical();
 
         //bucket
         Actions.runBlocking(
@@ -90,7 +95,7 @@ public class CycleRoadrunner extends LinearOpMode{
                         .build()
         );
 
-        robot.pickUp();
+        pickUpVertical();
 
         //bucket
         Actions.runBlocking(
@@ -134,6 +139,47 @@ public class CycleRoadrunner extends LinearOpMode{
 
         );
 
+
+    }
+
+    public void pickUpVertical(){
+
+        //turn right
+        Actions.runBlocking(
+                drive.actionBuilder(drive.pose)
+                        .turn(turnBlockAngle)
+                        .build()
+        );
+
+        //slide out
+        robot.slideOUT.setPosition(robot.HORIZONTAL_SLIDE_OUT);
+
+        //intake down
+        robot.flipper.setPosition(flipperDown);
+
+        //intake on
+        robot.intake.setPower(1);
+
+        //turn left
+        Actions.runBlocking(
+                drive.actionBuilder(drive.pose)
+                        .turn(270)
+                        .build()
+        );
+
+        //wait
+        robot.waitTime(500);
+
+        //intake off
+        robot.intake.setPower(0);
+
+        //intake up
+        robot.flipper.setPosition(robot.INTAKE_UP);
+
+        //slide in
+        robot.slideOUT.setPosition(robot.HORIZONTAL_SLIDE_IN);
+
+        robot.intake.setPower(-1);
 
     }
 
