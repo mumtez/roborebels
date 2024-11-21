@@ -1,9 +1,9 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import com.acmerobotics.dashboard.config.Config;
 
 @Config
 @TeleOp(name = "Teleop")
@@ -31,10 +31,10 @@ public class Teleop extends LinearOpMode {
 
     // LOOP
     while (opModeIsActive()) {
-      int flPos = robot.fl.getCurrentPosition();
-      int frPos = robot.fr.getCurrentPosition();
-      int blPos = robot.bl.getCurrentPosition();
-      int brPos = robot.br.getCurrentPosition();
+//      int flPos = robot.fl.getCurrentPosition();
+//      int frPos = robot.fr.getCurrentPosition();
+//      int blPos = robot.bl.getCurrentPosition();
+//      int brPos = robot.br.getCurrentPosition();
       int hangPos = robot.hang.getCurrentPosition();
       int vSlideLPos = robot.slideLeft.getCurrentPosition();
       int vSlideRPos = robot.slideRight.getCurrentPosition();
@@ -90,8 +90,6 @@ public class Teleop extends LinearOpMode {
       if (timerDone2 && !slideOut) {
         horizontalPos = Robot.HORIZONTAL_SLIDE_IN;
       }
-
-
 
       // TODO: direct control horizontal slides (increment/decrement servo position)
       if (gamepad2.dpad_up) {
@@ -156,10 +154,10 @@ public class Teleop extends LinearOpMode {
         }
       }
 
-      telemetry.addData("FL", flPos);
-      telemetry.addData("FR", frPos);
-      telemetry.addData("BL", blPos);
-      telemetry.addData("BR", brPos);
+//      telemetry.addData("FL", flPos);
+//      telemetry.addData("FR", frPos);
+//      telemetry.addData("BL", blPos);
+//      telemetry.addData("BR", brPos);
       telemetry.addData("INTAKE ROTATE POS",
           robot.flipper.getPosition()); // Note: servo get position just returns whatever you set the position to
       telemetry.addData("INTAKE POW", robot.intake.getPower());

@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.odom.MecanumDrive;
 
 
 @Config
-@Autonomous(name = "CYCLE ROADRUNNER")
+@Autonomous(name = "CYCLE ROADRUNNER", group = "ROADRUNNER")
 public class CycleRoadrunner extends LinearOpMode {
 
   public static Pose2d START = new Pose2d(-10.5, -62, Math.toRadians(90));
@@ -33,7 +33,7 @@ public class CycleRoadrunner extends LinearOpMode {
   //public static AccelConstraint slowAccel = new ProfileAccelConstraint(-40, 40);
 
   private Robot robot;
-  private MecanumDrive drive;
+  MecanumDrive drive;
 
   @Override
   public void runOpMode() throws InterruptedException {
@@ -41,7 +41,8 @@ public class CycleRoadrunner extends LinearOpMode {
     telemetry = new MultipleTelemetry(FtcDashboard.getInstance().getTelemetry(), telemetry);
 
     robot = new Robot(this);
-    drive = new MecanumDrive(hardwareMap, START);
+    drive = robot.drive;
+    drive.pose = START;
 
     waitForStart();
     // START

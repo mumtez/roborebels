@@ -13,10 +13,10 @@ import org.firstinspires.ftc.teamcode.odom.MecanumDrive;
 
 
 @Config
-@Autonomous(name = "BASIC ROADRUNNER")
+@Autonomous(name = "BASIC ROADRUNNER", group = "ROADRUNNER")
 public class BasicRoadrunner extends LinearOpMode {
 
-  public static Pose2d start = new Pose2d(-10.5, -62, Math.toRadians(90));
+  public static Pose2d START = new Pose2d(-10.5, -62, Math.toRadians(90));
 
   public static Pose2d bucket = new Pose2d(new Vector2d(-54, -54), Math.toRadians(225));
 
@@ -24,15 +24,20 @@ public class BasicRoadrunner extends LinearOpMode {
   public static Vector2d park2 = new Vector2d(35, -36);
   public static Vector2d park3 = new Vector2d(48, -62);
 
-  private Robot robot;
-  private MecanumDrive drive;
+  Robot robot;
+  MecanumDrive drive;
 
   @Override
   public void runOpMode() throws InterruptedException {
+    // INIT
     telemetry = new MultipleTelemetry(FtcDashboard.getInstance().getTelemetry(), telemetry);
 
     robot = new Robot(this);
-    drive = new MecanumDrive(hardwareMap, start);
+    drive = robot.drive;
+    drive.pose = START;
+
+    waitForStart();
+    //START
 
     //bucket
     Actions.runBlocking(
@@ -57,8 +62,5 @@ public class BasicRoadrunner extends LinearOpMode {
 
     );
 
-
   }
-
 }
-

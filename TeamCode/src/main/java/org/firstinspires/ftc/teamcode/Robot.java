@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot.LogoFacingDirection;
@@ -20,6 +21,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 import java.util.List;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.teamcode.odom.MecanumDrive;
 
 // CONFIG
 
@@ -50,6 +52,7 @@ public class Robot {
   public static float INTAKE_COLOR_GAIN = 2;
 
   public final IMU imu;
+  public final MecanumDrive drive;
   public final DcMotor fl, fr, bl, br;
   public final DcMotor slideLeft;
   public final DcMotor slideRight;
@@ -67,6 +70,8 @@ public class Robot {
     this.opMode = opMode;
     HardwareMap hardwareMap = opMode.hardwareMap;
 
+    this.drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
+
     // BULK CACHING
     List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
     for (LynxModule hub : allHubs) {
@@ -81,25 +86,10 @@ public class Robot {
     imu.initialize(parameters);
 
     // Drivetrain
-    fl = hardwareMap.dcMotor.get("fl");
-    fr = hardwareMap.dcMotor.get("fr");
-    bl = hardwareMap.dcMotor.get("bl");
-    br = hardwareMap.dcMotor.get("br");
-
-    fl.setMode(RunMode.RUN_WITHOUT_ENCODER);
-    fr.setMode(RunMode.RUN_WITHOUT_ENCODER);
-    bl.setMode(RunMode.RUN_WITHOUT_ENCODER);
-    br.setMode(RunMode.RUN_WITHOUT_ENCODER);
-
-    fl.setDirection(Direction.REVERSE);
-    fr.setDirection(Direction.FORWARD);
-    bl.setDirection(Direction.REVERSE);
-    br.setDirection(Direction.FORWARD);
-
-    fl.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
-    fr.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
-    bl.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
-    br.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
+    fl = this.drive.leftFront;
+    fr = this.drive.rightFront;
+    bl = this.drive.leftBack;
+    br = this.drive.rightBack;
 
     // Hang
     hang = hardwareMap.dcMotor.get("hang");
