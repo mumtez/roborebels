@@ -27,7 +27,7 @@ public class CycleRoadrunner extends LinearOpMode {
   public static Vector2d park2 = new Vector2d(35, -36);
   public static Vector2d park3 = new Vector2d(48, -62);
 
-  public static double turnBlockAngleDeg = 60;
+  public static double turnBlockAngleDeg = 45;
 
   //public static VelConstraint slowVel = new TranslationalVelConstraint(40);
   //public static AccelConstraint slowAccel = new ProfileAccelConstraint(-40, 40);
@@ -38,14 +38,12 @@ public class CycleRoadrunner extends LinearOpMode {
   @Override
   public void runOpMode() throws InterruptedException {
 
-
     // INIT
     telemetry = new MultipleTelemetry(FtcDashboard.getInstance().getTelemetry(), telemetry);
 
     robot = new Robot(this);
     drive = robot.drive;
     drive.pose = START;
-    //drive = new MecanumDrive(hardwareMap, START);
 
     robot.initAuton();
     waitForStart();
@@ -54,7 +52,7 @@ public class CycleRoadrunner extends LinearOpMode {
     //bucket
     Actions.runBlocking(
         drive.actionBuilder(drive.pose)
-                .setTangent(90)
+            .setTangent(90)
             .splineToLinearHeading(bucket, Math.toRadians(225))
             .build()
     );

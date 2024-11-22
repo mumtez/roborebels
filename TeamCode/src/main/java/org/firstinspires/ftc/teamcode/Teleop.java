@@ -31,10 +31,6 @@ public class Teleop extends LinearOpMode {
 
     // LOOP
     while (opModeIsActive()) {
-//      int flPos = robot.fl.getCurrentPosition();
-//      int frPos = robot.fr.getCurrentPosition();
-//      int blPos = robot.bl.getCurrentPosition();
-//      int brPos = robot.br.getCurrentPosition();
       int hangPos = robot.hang.getCurrentPosition();
       int vSlideLPos = robot.slideLeft.getCurrentPosition();
       int vSlideRPos = robot.slideRight.getCurrentPosition();
@@ -45,7 +41,7 @@ public class Teleop extends LinearOpMode {
 
       // === FIELD CENTRIC ===
 
-      boolean slideGoOut = false;
+      boolean slideGoOut;
 
       double y = -gamepad1.left_stick_y;
       double x = gamepad1.left_stick_x;
@@ -71,7 +67,7 @@ public class Teleop extends LinearOpMode {
         backRightPower *= 0.4;
       }
 
-      robot.setDriveTrainPower(frontRightPower,frontLeftPower,backRightPower,backLeftPower);
+      robot.setDriveTrainPower(frontRightPower, frontLeftPower, backRightPower, backLeftPower);
 
       /*
       robot.fl.setPower(frontLeftPower);
@@ -112,8 +108,7 @@ public class Teleop extends LinearOpMode {
       if (gamepad2.right_stick_y != 0) {
         slideGoOut = true;
         horizontalPos = Robot.HORIZONTAL_SLIDE_OUT / 2;
-      }
-      else{
+      } else {
         slideGoOut = false;
       }
 
@@ -165,19 +160,14 @@ public class Teleop extends LinearOpMode {
         }
       }
 
-//      telemetry.addData("FL", flPos);
-//      telemetry.addData("FR", frPos);
-//      telemetry.addData("BL", blPos);
-//      telemetry.addData("BR", brPos);
-      telemetry.addData("INTAKE ROTATE POS",
-          robot.flipper.getPosition()); // Note: servo get position just returns whatever you set the position to
+      telemetry.addData("INTAKE ROTATE POS", robot.flipper.getPosition());
       telemetry.addData("INTAKE POW", robot.intake.getPower());
       telemetry.addData("OUTTAKE POS", robot.outtake.getPosition());
       telemetry.addData("H SLIDE POS", robot.slideOUT.getPosition());
       telemetry.addData("V SLIDE L ENC", vSlideLPos);
       telemetry.addData("V SLIDE R ENC", vSlideRPos);
       telemetry.addData("HANG ENC", hangPos);
-      telemetry.addData("Slide go out?: ",slideGoOut);
+      telemetry.addData("Slide go out?: ", slideGoOut);
       telemetry.update();
     }
   }

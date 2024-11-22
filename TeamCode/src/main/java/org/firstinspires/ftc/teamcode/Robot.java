@@ -2,9 +2,6 @@ package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Pose2d;
-import com.qualcomm.hardware.lynx.LynxModule;
-import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
-import com.qualcomm.hardware.rev.RevHubOrientationOnRobot.LogoFacingDirection;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServoImplEx;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -12,14 +9,12 @@ import com.qualcomm.robotcore.hardware.DcMotor.RunMode;
 import com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior;
 import com.qualcomm.robotcore.hardware.DcMotorSimple.Direction;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
 import com.qualcomm.robotcore.hardware.SwitchableLight;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
-import java.util.List;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.odom.MecanumDrive;
 
@@ -32,9 +27,9 @@ public class Robot {
   public static double HORIZONTAL_SLIDE_OUT = 0.5;
 
   public static double INTAKE_OUT = 0.61;
-
   public static double INTAKE_UP = 0.03;
   public static double INTAKE_FLAT = 0.5;
+  public static double INTAKE_VERTICAL = 0.4; // TODO: tune
 
   public static double OUTTAKE_IN = 0.05;
   public static double OUTTAKE_OUT = 0.8;
@@ -71,18 +66,6 @@ public class Robot {
     HardwareMap hardwareMap = opMode.hardwareMap;
 
     this.drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
-
-
-
-    // IMU
-    /*
-    imu = hardwareMap.get(IMU.class, "imu");
-    IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
-        LogoFacingDirection.RIGHT,
-        RevHubOrientationOnRobot.UsbFacingDirection.UP));
-    imu.initialize(parameters);
-    */
-    
 
     // Hang
     hang = hardwareMap.dcMotor.get("hang");
@@ -290,7 +273,6 @@ public class Robot {
     while (opMode.opModeIsActive() && System.currentTimeMillis() - startTime < ms) {
     }
   }
-
 
 
   public int distanceToEncoderTicks(double distanceMM) {
