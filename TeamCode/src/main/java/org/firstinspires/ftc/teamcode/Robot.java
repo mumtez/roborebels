@@ -29,7 +29,7 @@ public class Robot {
   public static double INTAKE_OUT = 0.61;
   public static double INTAKE_UP = 0.03;
   public static double INTAKE_FLAT = 0.5;
-  public static double INTAKE_VERTICAL = 0.4; // TODO: tune
+  public static double INTAKE_VERTICAL = 0.2; // TODO: tune
 
   public static double OUTTAKE_IN = 0.05;
   public static double OUTTAKE_OUT = 0.8;
@@ -205,13 +205,39 @@ public class Robot {
   }
 
   public void deposit() {
-    setHorizontalSlidePos(Robot.HORIZONTAL_SLIDE_IN / 4);
+
+    intake.setPower(-.5);
+    waitTime(300);
+
+    intake.setPower(0);
+    waitTime(300);
+
+    intake.setPower(-.5);
+    waitTime(300);
+
+    intake.setPower(0);
+    waitTime(300);
+
+    intake.setPower(-.5);
+    waitTime(300);
+
+    intake.setPower(0);
+
+
+    waitTime(500);
+
+    setHorizontalSlidePos(HORIZONTAL_SLIDE_IN + 0.08);
+    waitTime(1000);
+
     setSlideUpPos(Robot.VERTICAL_SLIDE_UP, .8);
     outtakeOut();
     waitTime(1000);
 
     outtakeIn();
     setSlideUpPos(Robot.VERTICAL_SLIDE_DOWN, 1);
+
+    waitTime(500);
+    setHorizontalSlidePos(HORIZONTAL_SLIDE_IN);
   }
 
   public double getHeading() {

@@ -107,7 +107,7 @@ public class Teleop extends LinearOpMode {
       // Got moved down
       if (gamepad2.right_stick_y != 0) {
         slideGoOut = true;
-        horizontalPos = Robot.HORIZONTAL_SLIDE_OUT / 2;
+        horizontalPos = Robot.HORIZONTAL_SLIDE_OUT / 1.5;
       } else {
         slideGoOut = false;
       }

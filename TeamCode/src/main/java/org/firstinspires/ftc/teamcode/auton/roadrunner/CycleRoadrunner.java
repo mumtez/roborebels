@@ -16,18 +16,13 @@ import org.firstinspires.ftc.teamcode.odom.MecanumDrive;
 @Autonomous(name = "CYCLE ROADRUNNER", group = "ROADRUNNER")
 public class CycleRoadrunner extends LinearOpMode {
 
-  public static Pose2d START = new Pose2d(-30.5, -62, Math.toRadians(0));
+  public static double blockPickUpX = -49.5;
 
-  public static Pose2d bucket = new Pose2d(new Vector2d(-56, -56), Math.toRadians(45));
-  public static Vector2d leftBlock = new Vector2d(-48, -23.5);
-  public static Pose2d middleBlock = new Pose2d(new Vector2d(-56, -48), Math.toRadians(90));
-  public static Pose2d rightBlock = new Pose2d(new Vector2d(-48, -48), Math.toRadians(90));
+  public static double leftPickUpY = -53;
 
-  public static Pose2d park1 = new Pose2d(new Vector2d(-48, -36), Math.toRadians(180));
-  public static Vector2d park2 = new Vector2d(35, -36);
-  public static Vector2d park3 = new Vector2d(48, -62);
 
-  public static double turnBlockAngleDeg = 45;
+  public static double turnBlockAngleDeg = 90;
+  public static double endTurnBlockAngleDeg = 45;
 
   //public static VelConstraint slowVel = new TranslationalVelConstraint(40);
   //public static AccelConstraint slowAccel = new ProfileAccelConstraint(-40, 40);
@@ -37,6 +32,17 @@ public class CycleRoadrunner extends LinearOpMode {
 
   @Override
   public void runOpMode() throws InterruptedException {
+
+    Pose2d START = new Pose2d(-30.5, -62, Math.toRadians(0));
+
+    Pose2d bucket = new Pose2d(new Vector2d(-56, -56), Math.toRadians(45));
+    Vector2d leftBlock = new Vector2d(blockPickUpX, leftPickUpY);
+    Pose2d middleBlock = new Pose2d(new Vector2d(blockPickUpX, -54), Math.toRadians(90));
+    Pose2d rightBlock = new Pose2d(new Vector2d(blockPickUpX, leftPickUpY), Math.toRadians(90));
+
+    Pose2d park1 = new Pose2d(new Vector2d(-48, -36), Math.toRadians(180));
+    Vector2d park2 = new Vector2d(35, -36);
+    Vector2d park3 = new Vector2d(48, -62);
 
     // INIT
     telemetry = new MultipleTelemetry(FtcDashboard.getInstance().getTelemetry(), telemetry);
@@ -60,25 +66,34 @@ public class CycleRoadrunner extends LinearOpMode {
     robot.deposit();
 
     //right block
-    /*
+
     Actions.runBlocking(
         drive.actionBuilder(drive.pose)
-            .splineToLinearHeading(rightBlock, Math.toRadians(260))
+            .splineToLinearHeading(rightBlock, Math.toRadians(225))
             .build()
     );
 
-     */
+
 
     pickUpVertical();
+
+    robot.waitTime(1000);
+
 
     //bucket
     Actions.runBlocking(
         drive.actionBuilder(drive.pose)
-            .splineToSplineHeading(bucket, Math.toRadians(200))
+            .strafeTo(new Vector2d(-56, -56))
             .build()
     );
 
+    robot.waitTime(1000);
+
+
     robot.deposit();
+
+    robot.waitTime(1000);
+
 
     //middle block
     Actions.runBlocking(
@@ -151,13 +166,14 @@ public class CycleRoadrunner extends LinearOpMode {
 
     //intake on
     robot.intake.setPower(1);
+    robot.waitTime(500);
 
     robot.waitTime(1000);
 
     //turn left
     Actions.runBlocking(
         drive.actionBuilder(drive.pose)
-            .turnTo(Math.toRadians(90))
+            .turnTo(Math.toRadians(endTurnBlockAngleDeg))
             .build()
     );
 
@@ -177,7 +193,7 @@ public class CycleRoadrunner extends LinearOpMode {
 
     robot.waitTime(500);
 
-    robot.intake.setPower(-1);
+
   }
 
 }
