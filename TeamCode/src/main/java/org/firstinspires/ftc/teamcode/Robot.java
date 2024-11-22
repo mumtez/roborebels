@@ -120,10 +120,9 @@ public class Robot {
 
   public void initAuton() {
     drive.lazyImu.get().resetYaw();
-    this.flipper.setPosition(0.4);
+    this.rotateIntakeVertical();
     this.outtakeIn();
     this.setHorizontalSlidePos(HORIZONTAL_SLIDE_IN);
-
   }
 
   public void setHorizontalSlidePos(double pos) {
@@ -149,6 +148,10 @@ public class Robot {
 
   public void rotateIntakeOut() {
     this.flipper.setPosition(INTAKE_OUT);
+  }
+
+  public void rotateIntakeVertical() {
+    this.flipper.setPosition(INTAKE_VERTICAL);
   }
 
   public void setVerticalSlidePower(double pow) {
@@ -273,7 +276,6 @@ public class Robot {
     while (opMode.opModeIsActive() && System.currentTimeMillis() - startTime < ms) {
     }
   }
-
 
   public int distanceToEncoderTicks(double distanceMM) {
     double circumference = Math.PI * 96;
