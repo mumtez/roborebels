@@ -13,22 +13,33 @@ import org.firstinspires.ftc.teamcode.odom.MecanumDrive;
 
 
 @Config
-@Autonomous(name = "BASIC ROADRUNNER", group = "ROADRUNNER")
+@Autonomous(name = "BUCKET ROADRUNNER", group = "ROADRUNNER")
 public class BasicRoadrunner extends LinearOpMode {
 
-  public static Pose2d START = new Pose2d(-10.5, -62, Math.toRadians(90));
 
-  public static Pose2d bucket = new Pose2d(new Vector2d(-54, -54), Math.toRadians(225));
+  //public static VelConstraint slowVel = new TranslationalVelConstraint(40);
+  //public static AccelConstraint slowAccel = new ProfileAccelConstraint(-40, 40);
 
-  public static Pose2d park1 = new Pose2d(new Vector2d(-48, -36), Math.toRadians(180));
-  public static Vector2d park2 = new Vector2d(35, -36);
-  public static Vector2d park3 = new Vector2d(48, -62);
+  public static Vector2d bucketVec = new Vector2d (-56, -56);
 
-  Robot robot;
+  public static Vector2d park1Vec = new Vector2d(-48, -36);
+  public static Vector2d park2Vec;
+  public static Vector2d park3Vec;
+
+  private Robot robot;
   MecanumDrive drive;
 
   @Override
   public void runOpMode() throws InterruptedException {
+
+    Pose2d START = new Pose2d(-30.5, -62, Math.toRadians(0));
+
+    Pose2d bucket = new Pose2d(bucketVec, Math.toRadians(45));
+
+    Pose2d park1 = new Pose2d(park1Vec, Math.toRadians(180));
+    Vector2d park2Vec = new Vector2d(35, -36);
+    Vector2d park3Vec = new Vector2d(48, -62);
+
     // INIT
     telemetry = new MultipleTelemetry(FtcDashboard.getInstance().getTelemetry(), telemetry);
 
@@ -36,31 +47,38 @@ public class BasicRoadrunner extends LinearOpMode {
     drive = robot.drive;
     drive.pose = START;
 
+    robot.initAuton();
     waitForStart();
-    //START
+    // START
 
     //bucket
     Actions.runBlocking(
-        drive.actionBuilder(drive.pose)
-            .splineToSplineHeading(bucket, Math.toRadians(260))
-            .build()
+            drive.actionBuilder(drive.pose)
+                    .setTangent(90)
+                    .splineToLinearHeading(bucket, Math.toRadians(225))
+                    .build()
     );
 
     robot.deposit();
 
+
+    //TODO CHECK IF PARKING WORKS
+    /*
+
     //park
     Actions.runBlocking(
-        drive.actionBuilder(drive.pose)
-            .splineToSplineHeading(park1, Math.toRadians(80))
-            .waitSeconds(.5)
+            drive.actionBuilder(drive.pose)
+                    .splineToSplineHeading(park1, Math.toRadians(80))
+                    .waitSeconds(.5)
 
-            .strafeToLinearHeading(park2, Math.toRadians(180))
-            .waitSeconds(.5)
+                    .strafeToLinearHeading(park2, Math.toRadians(180))
+                    .waitSeconds(.5)
 
-            .strafeToLinearHeading(park3, Math.toRadians(180))
-            .build()
-
+                    .strafeToLinearHeading(park3, Math.toRadians(180))
+                    .build()
     );
 
+
+     */
   }
 }
