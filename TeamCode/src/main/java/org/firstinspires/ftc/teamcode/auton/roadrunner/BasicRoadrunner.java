@@ -37,8 +37,8 @@ public class BasicRoadrunner extends LinearOpMode {
     Pose2d bucket = new Pose2d(bucketVec, Math.toRadians(45));
 
     Pose2d park1 = new Pose2d(park1Vec, Math.toRadians(180));
-    Vector2d park2Vec = new Vector2d(35, -36);
-    Vector2d park3Vec = new Vector2d(48, -62);
+    Vector2d park2 = new Vector2d(35, -36);
+    Vector2d park3 = new Vector2d(48, -62);
 
     // INIT
     telemetry = new MultipleTelemetry(FtcDashboard.getInstance().getTelemetry(), telemetry);
@@ -63,7 +63,7 @@ public class BasicRoadrunner extends LinearOpMode {
 
 
     //TODO CHECK IF PARKING WORKS
-    /*
+
 
     //park
     Actions.runBlocking(
@@ -79,6 +79,6 @@ public class BasicRoadrunner extends LinearOpMode {
     );
 
 
-     */
+
   }
 }

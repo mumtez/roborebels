@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServoImplEx;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -183,16 +184,45 @@ public class Robot {
 
     }
 
+    /*
+    public void startSlideUpPos(int pos, double pow) {
+        setVerticalSlidePower(0);
+
+        slideLeft.setTargetPosition(pos);
+        slideRight.setTargetPosition(pos);
+
+        slideLeft.setMode(RunMode.RUN_TO_POSITION);
+        slideRight.setMode(RunMode.RUN_TO_POSITION);
+
+        setVerticalSlidePower(pow);
+
+    }
+
+    public void endSlideUpPos(int pos){
+
+        while (this.opMode.opModeIsActive() && Math.abs(slideLeft.getCurrentPosition() - pos) > 30) {
+            // Wait for slide to end
+        }
+
+        setVerticalSlidePower(0);
+
+        slideLeft.setMode(RunMode.RUN_WITHOUT_ENCODER);
+        slideRight.setMode(RunMode.RUN_WITHOUT_ENCODER);
+    }
+
+     */
+
     public void pickUp() {
         setHorizontalSlidePos(Robot.HORIZONTAL_SLIDE_OUT / 2);
         waitTime(500);
 
         rotateIntakeOut();
         intake.setPower(1);
-        waitTime(500);
+
 
         setHorizontalSlidePos(Robot.HORIZONTAL_SLIDE_OUT);
         waitTime(500);
+
 
         intake.setPower(0);
         rotateIntakeUp();
@@ -208,38 +238,34 @@ public class Robot {
     }
 
     public void deposit() {
-
-        intake.setPower(-.5);
-        waitTime(300);
-
         intake.setPower(0);
-        waitTime(300);
-
-        intake.setPower(-.5);
-        waitTime(300);
-
-        intake.setPower(0);
-        waitTime(300);
-
-        intake.setPower(-.5);
-        waitTime(300);
-
-        intake.setPower(0);
-
-
-        waitTime(500);
 
         setHorizontalSlidePos(HORIZONTAL_SLIDE_TRANSFER + 0.08);
-        waitTime(1000);
+        waitTime(300);
 
         setSlideUpPos(Robot.VERTICAL_SLIDE_UP, .8);
         outtakeOut();
-        waitTime(1000);
+
+        waitTime(500);
 
         outtakeIn();
         setSlideUpPos(Robot.VERTICAL_SLIDE_DOWN, 1);
 
+        setHorizontalSlidePos(HORIZONTAL_SLIDE_TRANSFER);
+    }
+
+    public void firstDeposit() {
+
+        setHorizontalSlidePos(HORIZONTAL_SLIDE_TRANSFER + 0.08);
+        waitTime(200);
+
+        setSlideUpPos(Robot.VERTICAL_SLIDE_UP, .8);
+        outtakeOut();
         waitTime(500);
+
+        outtakeIn();
+        setSlideUpPos(Robot.VERTICAL_SLIDE_DOWN, 1);
+
         setHorizontalSlidePos(HORIZONTAL_SLIDE_TRANSFER);
     }
 

@@ -17,15 +17,23 @@ import org.firstinspires.ftc.teamcode.odom.MecanumDrive;
 @Autonomous(name = "ONE CYCLE ROADRUNNER", group = "ROADRUNNER")
 public class OneCycleRoadrunner extends LinearOpMode {
 
-    public static double blockPickUpX = -49.5;
+    public static double blockPickUpX = -23;
 
-    public static double leftPickUpY = -53;
+    public static double rightPickUpY = -34;
+
+    public static double rightAngle = 160;
+
+    public static Vector2d middleBlockVec = new Vector2d(-31, -34);
+
+    public static double middleAngle = 160;
 
 
     public static double turnBlockAngleDeg = 90;
     public static double endTurnBlockAngleDeg = 45;
 
-    public static Vector2d bucketVec = new Vector2d(-56, -56);
+    public static Vector2d bucketVec = new Vector2d(-56, -57);
+
+
 
     public static Vector2d park1Vec = new Vector2d(-48, -36);
     public static Vector2d park2Vec;
@@ -44,7 +52,9 @@ public class OneCycleRoadrunner extends LinearOpMode {
 
         Pose2d bucket = new Pose2d(bucketVec, Math.toRadians(45));
 
-        Pose2d rightBlock = new Pose2d(new Vector2d(blockPickUpX, leftPickUpY), Math.toRadians(90));
+        Pose2d rightBlock = new Pose2d(new Vector2d(blockPickUpX, rightPickUpY), Math.toRadians(rightAngle));
+
+        Pose2d middleBlock = new Pose2d(middleBlockVec, Math.toRadians(middleAngle));
 
         Pose2d park1 = new Pose2d(park1Vec, Math.toRadians(180));
         Vector2d park2Vec = new Vector2d(35, -36);
@@ -69,7 +79,7 @@ public class OneCycleRoadrunner extends LinearOpMode {
                         .build()
         );
 
-        robot.deposit();
+        robot.firstDeposit();
 
         //right block
 
@@ -80,23 +90,51 @@ public class OneCycleRoadrunner extends LinearOpMode {
         );
 
 
-        pickUpVertical();
+        pickUp();
 
-        robot.waitTime(1000);
+        robot.waitTime(300);
+
+        //bucket
+        Actions.runBlocking(
+                drive.actionBuilder(drive.pose)
+                        .strafeToLinearHeading(bucketVec, Math.toRadians(45))
+                        .build()
+        );
+
+        //robot.waitTime(1000);
+
+        robot.deposit();
+
+        ////////////////////////////
+        //SECOND BLOCK
+        /////////////////////////////
+
+        Actions.runBlocking(
+                drive.actionBuilder(drive.pose)
+                        .splineToLinearHeading(middleBlock, Math.toRadians(225))
+                        .build()
+        );
+
+        pickUp();
+
+        robot.waitTime(300);
 
 
         //bucket
         Actions.runBlocking(
                 drive.actionBuilder(drive.pose)
-                        .strafeTo(new Vector2d(-56, -56))
+                        .strafeToLinearHeading(bucketVec, Math.toRadians(45))
                         .build()
         );
 
-        robot.waitTime(1000);
+       // robot.waitTime(1000);
 
         robot.deposit();
 
-        robot.waitTime(1000);
+       // robot.waitTime(1000);
+
+
+
 
 
         //TODO: CHECK IF PARKING WORKS
@@ -117,6 +155,40 @@ public class OneCycleRoadrunner extends LinearOpMode {
 
 
      */
+    }
+
+    private void pickUp() {
+        robot.setHorizontalSlidePos(Robot.HORIZONTAL_SLIDE_OUT / 2);
+        robot.waitTime(400);
+
+        robot.rotateIntakeOut();
+        robot.intake.setPower(1);
+
+
+        robot.setHorizontalSlidePos(Robot.HORIZONTAL_SLIDE_OUT);
+
+        robot.waitTime(400);
+
+        Actions.runBlocking(
+                drive.actionBuilder(drive.pose)
+                        .strafeTo(new Vector2d(drive.pose.position.x-3,drive.pose.position.y))
+                        .build()
+        );
+
+        robot.waitTime(400);
+
+        robot.intake.setPower(0);
+        robot.rotateIntakeUp();
+
+        robot.waitTime(700);
+
+        robot.setHorizontalSlidePos(Robot.HORIZONTAL_SLIDE_TRANSFER);
+        robot.waitTime(500);
+
+        robot.intake.setPower(-1);
+        robot.waitTime(500);
+
+        robot.rotateIntakeUp();
     }
 
     public void pickUpVertical() {
