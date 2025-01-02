@@ -15,20 +15,20 @@ public class Claw {
     public final ServoImplEx claw, clawUpArm, clawDownArm;
 
 
-    public static float clawOpenPos;
-    public static float clawClosePos;
+    public static double clawOpenPos;
+    public static double clawClosePos;
 
 
-    public static float upArmDefault;
-    public static float upArmPlace;
-    public static float upArmWall;
-    public static float upArmBucket;
+    public static double upArmDefault;
+    public static double upArmPlace;
+    public static double upArmWall = 0.6;
+    public static double upArmBucket;
 
 
-    public static float downArmDefault;
-    public static float downArmPlace;
-    public static float downArmWall;
-    public static float downArmBucket;
+    public static double downArmDefault;
+    public static double downArmPlace;
+    public static double downArmWall = 0.8;
+    public static double downArmBucket = 0.9;
 
 
     private final LinearOpMode opMode;

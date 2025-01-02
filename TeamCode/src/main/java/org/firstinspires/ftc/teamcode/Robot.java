@@ -26,22 +26,9 @@ import org.firstinspires.ftc.teamcode.subsystems.Claw;
 @Config
 public class Robot {
 
-    //public Claw claw;
-
-    public static float clawOpenPos;
-    public static float clawClosePos;
+    public Claw claw;
 
 
-    public static double upArmDefault;
-    public static double upArmPlace;
-    public static double upArmWall = 0.6;
-    public static double upArmBucket;
-
-
-    public static double downArmDefault;
-    public static double downArmPlace;
-    public static double downArmWall = 0.8;
-    public static double downArmBucket = 0.9;
 
     public static double HORIZONTAL_SLIDE_START = 0.2;
     public static double HORIZONTAL_SLIDE_TRANSFER = 0.31;
@@ -81,7 +68,7 @@ public class Robot {
     public final DcMotor intake;
     public final ServoImplEx flipper;//, outtake;
 
-    public final ServoImplEx claw, clawUpArm, clawDownArm;
+    public final ServoImplEx clawHand, clawUpArm, clawDownArm;
 
 
 
@@ -102,7 +89,7 @@ public class Robot {
         //hang.setMode(RunMode.RUN_WITHOUT_ENCODER);
         //hang.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
 
-        claw = (ServoImplEx) hardwareMap.servo.get("c");
+        clawHand = (ServoImplEx) hardwareMap.servo.get("c");
         clawUpArm = (ServoImplEx) hardwareMap.servo.get("cu");
         clawDownArm = (ServoImplEx) hardwareMap.servo.get("cd");
 
@@ -308,36 +295,16 @@ public class Robot {
          */
     }
 
-    public void setDefault(){
-        clawDownArm.setPosition(downArmDefault);
-        clawUpArm.setPosition(upArmDefault);
-    }
-
-    public void setPlace(){
-        clawDownArm.setPosition(downArmPlace);
-        clawUpArm.setPosition(upArmPlace);
-    }
-
-    public void setWall(){
-        clawDownArm.setPosition(downArmWall);
-        clawUpArm.setPosition(upArmWall);
-    }
-
-    public void setBucket(){
-        clawDownArm.setPosition(downArmBucket);
-        clawUpArm.setPosition(upArmBucket);
-    }
-
     public void placeBar(){
         setHorizontalSlidePos(HORIZONTAL_SLIDE_TRANSFER + 0.08);
         waitTime(200);
 
         setSlideUpPos(Robot.VERTICAL_SLIDE_BAR, .8);
-        setPlace();
+        claw.setPlace();
 
         //clawOpen();
 
-        setDefault();
+        claw.setDefault();
         setSlideUpPos(Robot.VERTICAL_SLIDE_DOWN, 1);
     }
 
