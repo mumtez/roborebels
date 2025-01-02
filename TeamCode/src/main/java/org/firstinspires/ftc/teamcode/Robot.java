@@ -19,12 +19,29 @@ import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.odom.MecanumDrive;
+import org.firstinspires.ftc.teamcode.subsystems.Claw;
 
 // CONFIG
 
 @Config
 public class Robot {
 
+    //public Claw claw;
+
+    public static float clawOpenPos;
+    public static float clawClosePos;
+
+
+    public static double upArmDefault;
+    public static double upArmPlace;
+    public static double upArmWall = 0.6;
+    public static double upArmBucket;
+
+
+    public static double downArmDefault;
+    public static double downArmPlace;
+    public static double downArmWall = 0.8;
+    public static double downArmBucket = 0.9;
 
     public static double HORIZONTAL_SLIDE_START = 0.2;
     public static double HORIZONTAL_SLIDE_TRANSFER = 0.31;
@@ -41,6 +58,9 @@ public class Robot {
     public static int VERTICAL_SLIDE_UP = 2800;
     public static int VERTICAL_SLIDE_DOWN = 0;
 
+    public static int  VERTICAL_SLIDE_DEFAULT = 400;
+    public static int VERTICAL_SLIDE_BAR = 2000;
+
     public static double GYRO_TURN_P = .055;
     public static double KG = 0.07;
     public static double HEADING_THRESHOLD = 1;
@@ -56,10 +76,14 @@ public class Robot {
     public final DcMotor slideLeft;
     public final DcMotor slideRight;
 
-    public final DcMotor hang;
+    //public final DcMotor hang;
     public final ServoImplEx slideOUT;
-    public final CRServoImplEx intake;
-    public final ServoImplEx flipper, outtake;
+    public final DcMotor intake;
+    public final ServoImplEx flipper;//, outtake;
+
+    public final ServoImplEx claw, clawUpArm, clawDownArm;
+
+
 
     public final NormalizedColorSensor intakeColor;
 
@@ -69,12 +93,18 @@ public class Robot {
         this.opMode = opMode;
         HardwareMap hardwareMap = opMode.hardwareMap;
 
+        //claw = new Claw(opMode);
+
         this.drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
 
         // Hang
-        hang = hardwareMap.dcMotor.get("hang");
-        hang.setMode(RunMode.RUN_WITHOUT_ENCODER);
-        hang.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
+        //hang = hardwareMap.dcMotor.get("hang");
+        //hang.setMode(RunMode.RUN_WITHOUT_ENCODER);
+        //hang.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
+
+        claw = (ServoImplEx) hardwareMap.servo.get("c");
+        clawUpArm = (ServoImplEx) hardwareMap.servo.get("cu");
+        clawDownArm = (ServoImplEx) hardwareMap.servo.get("cd");
 
         // Slides
         slideLeft = hardwareMap.dcMotor.get("lu");
@@ -96,8 +126,8 @@ public class Robot {
 
         // Intake
 
-        intake = (CRServoImplEx) hardwareMap.crservo.get("in");
-        outtake = (ServoImplEx) hardwareMap.servo.get("out");
+        intake = hardwareMap.dcMotor.get("int");
+        //outtake = (ServoImplEx) hardwareMap.servo.get("out");
         flipper = (ServoImplEx) hardwareMap.servo.get("flip");
 
         flipper.setDirection(Servo.Direction.REVERSE);
@@ -125,7 +155,7 @@ public class Robot {
     public void initAuton() {
         drive.lazyImu.get().resetYaw();
         this.rotateIntakeVertical();
-        this.outtakeIn();
+        //this.outtakeIn();
         this.setHorizontalSlidePos(HORIZONTAL_SLIDE_START);
     }
 
@@ -134,6 +164,8 @@ public class Robot {
         this.slideOUT.setPosition(pos);
     }
 
+    /*
+
     public void outtakeOut() {
         outtake.setPosition(OUTTAKE_OUT);
     }
@@ -141,6 +173,8 @@ public class Robot {
     public void outtakeIn() {
         outtake.setPosition(OUTTAKE_IN);
     }
+
+     */
 
     public void rotateIntakeFlat() {
         this.flipper.setPosition(INTAKE_FLAT);
@@ -238,6 +272,7 @@ public class Robot {
     }
 
     public void deposit() {
+        /*
         intake.setPower(0);
 
         setHorizontalSlidePos(HORIZONTAL_SLIDE_TRANSFER + 0.08);
@@ -252,10 +287,12 @@ public class Robot {
         setSlideUpPos(Robot.VERTICAL_SLIDE_DOWN, 1);
 
         setHorizontalSlidePos(HORIZONTAL_SLIDE_TRANSFER);
+
+         */
     }
 
     public void firstDeposit() {
-
+        /*
         setHorizontalSlidePos(HORIZONTAL_SLIDE_TRANSFER + 0.08);
         waitTime(200);
 
@@ -267,6 +304,41 @@ public class Robot {
         setSlideUpPos(Robot.VERTICAL_SLIDE_DOWN, 1);
 
         setHorizontalSlidePos(HORIZONTAL_SLIDE_TRANSFER);
+
+         */
+    }
+
+    public void setDefault(){
+        clawDownArm.setPosition(downArmDefault);
+        clawUpArm.setPosition(upArmDefault);
+    }
+
+    public void setPlace(){
+        clawDownArm.setPosition(downArmPlace);
+        clawUpArm.setPosition(upArmPlace);
+    }
+
+    public void setWall(){
+        clawDownArm.setPosition(downArmWall);
+        clawUpArm.setPosition(upArmWall);
+    }
+
+    public void setBucket(){
+        clawDownArm.setPosition(downArmBucket);
+        clawUpArm.setPosition(upArmBucket);
+    }
+
+    public void placeBar(){
+        setHorizontalSlidePos(HORIZONTAL_SLIDE_TRANSFER + 0.08);
+        waitTime(200);
+
+        setSlideUpPos(Robot.VERTICAL_SLIDE_BAR, .8);
+        setPlace();
+
+        //clawOpen();
+
+        setDefault();
+        setSlideUpPos(Robot.VERTICAL_SLIDE_DOWN, 1);
     }
 
     public double getHeading() {

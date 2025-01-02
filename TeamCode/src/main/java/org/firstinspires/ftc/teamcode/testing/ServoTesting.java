@@ -37,9 +37,9 @@ public class ServoTesting extends LinearOpMode {
       }
 
       if (gamepad1.y) {
-        robot.outtake.setPosition((0.5));
+        //robot.outtake.setPosition((0.5));
       } else {
-        robot.outtake.setPosition(0);
+        //robot.outtake.setPosition(0);
       }
     }
   }
