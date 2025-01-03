@@ -34,8 +34,10 @@ public class SensorTest extends LinearOpMode {
     Color.colorToHSV(rgba.toColor(), hsv);
     telemetry.addData("GAIN", robot.intakeColor.getGain());
     telemetry.addLine(
-        String.format(Locale.US, "R %3f, G %3f, B %3f, A %3f", rgba.red, rgba.green, rgba.blue, rgba.alpha));
-    telemetry.addLine(String.format(Locale.US, "HUE %3f, SAT %3f, VAL %3f", hsv[0], hsv[1], hsv[2]));
+        String.format(Locale.US, "R %3f, G %3f, B %3f, A %3f", rgba.red, rgba.green, rgba.blue,
+            rgba.alpha));
+    telemetry.addLine(
+        String.format(Locale.US, "HUE %3f, SAT %3f, VAL %3f", hsv[0], hsv[1], hsv[2]));
 
     telemetry.update();
   }

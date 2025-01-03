@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.Robot;
 public class ServoTesting extends LinearOpMode {
 
   Robot robot;
-
+  
   @Override
   public void runOpMode() throws InterruptedException {
     robot = new Robot(this);

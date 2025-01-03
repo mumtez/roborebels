@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.Robot;
 @Config
 @TeleOp(name = "Flip Test", group = "TESTING")
 public class FlipperTest extends LinearOpMode {
-
+ 
   Robot robot;
 
   public static double flipPos = 0.5;
