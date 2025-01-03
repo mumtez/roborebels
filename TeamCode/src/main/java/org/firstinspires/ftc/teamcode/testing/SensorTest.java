@@ -16,6 +16,7 @@ public class SensorTest extends LinearOpMode {
 
   @Override
   public void runOpMode() throws InterruptedException {
+    /*
     robot = new Robot(this);
 
     waitForStart();
@@ -25,8 +26,10 @@ public class SensorTest extends LinearOpMode {
 
       updateTelemetry();
     }
-  }
 
+     */
+  }
+/*
   void updateTelemetry() {
     telemetry.addLine("INTAKE CS ----------");
     NormalizedRGBA rgba = robot.intakeColor.getNormalizedColors();
@@ -41,4 +44,6 @@ public class SensorTest extends LinearOpMode {
 
     telemetry.update();
   }
+
+ */
 }

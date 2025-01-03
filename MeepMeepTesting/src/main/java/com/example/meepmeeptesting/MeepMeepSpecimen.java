@@ -15,9 +15,11 @@ public class MeepMeepSpecimen {
         MeepMeep meepMeep = new MeepMeep(600);
 
         Pose2d bar = new Pose2d(new Vector2d(0, -35), Math.toRadians(270));
-        Vector2d leftBlock = new Vector2d(62, -5);
-        Pose2d middleBlock = new Pose2d(new Vector2d(56, -5), Math.toRadians(270));
-        Pose2d rightBlock = new Pose2d(new Vector2d(48, -5), Math.toRadians(270));
+        Pose2d leftBlock = new Pose2d(new Vector2d(62, -5), Math.toRadians(270));
+        Pose2d middleBlock = new Pose2d(new Vector2d(54, -5), Math.toRadians(270));
+        Pose2d rightBlock = new Pose2d(new Vector2d(46, -5), Math.toRadians(270));
+
+        Pose2d wallPickup = new Pose2d( new Vector2d(30, 60), Math.toRadians(270));
 
 
         Pose2d park1 = new Pose2d(new Vector2d(-48, -36), Math.toRadians(180));
@@ -39,35 +41,34 @@ public class MeepMeepSpecimen {
 
                         .waitSeconds(1.5)
 
+
+
                 .splineToLinearHeading(bar, Math.toRadians(180))
                 .waitSeconds(.2)
 
                 .splineToSplineHeading(rightBlock, Math.toRadians(45))
                 .waitSeconds(.2)
 
-                .splineTo(new Vector2d(48, -55),0 )
-                //.waitSeconds(.2)
+                .splineToLinearHeading(new Pose2d( new Vector2d(42, -55), Math.toRadians(270)),90 )
 
-                .splineTo(new Vector2d(48, -5),90)
+                .splineToLinearHeading(new Pose2d( new Vector2d(42, -5), Math.toRadians(270)),90)
                 //.waitSeconds(.2)
 
                 .splineToLinearHeading(middleBlock, Math.toRadians(160))
-             //   .waitSeconds(.2)
-
-                .strafeTo(new Vector2d(56, -55))
-             //   .waitSeconds(.2)
-
-                .strafeTo(new Vector2d(56, -5))
                 .waitSeconds(.2)
 
-                .strafeToLinearHeading(leftBlock, Math.toRadians(180))
+                .splineToLinearHeading(new Pose2d( new Vector2d(54, -55), Math.toRadians(270)),90 )
+
+                .splineToLinearHeading(new Pose2d( new Vector2d(54, -5), Math.toRadians(270)),90)
+                .waitSeconds(.2)
+
+                .splineToLinearHeading(leftBlock, Math.toRadians(180))
                 .waitSeconds(.2)
 
                 .strafeTo(new Vector2d(62, -55))
                 .waitSeconds(.2)
 
-                .strafeTo(new Vector2d(62, -5))
-                .waitSeconds(.2)
+                .splineToLinearHeading(wallPickup, 90)
 
                 //.waitSeconds(.2)
 

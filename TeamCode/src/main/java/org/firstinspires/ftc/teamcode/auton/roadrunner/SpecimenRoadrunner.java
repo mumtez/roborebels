@@ -17,26 +17,8 @@ import org.firstinspires.ftc.teamcode.odom.MecanumDrive;
 @Autonomous(name = "SPECIMEN ROADRUNNER", group = "ROADRUNNER")
 public class SpecimenRoadrunner extends LinearOpMode {
 
-  public static double blockPickUpX = -23;
-
-  public static double rightPickUpY = -34;
-
-  public static double rightAngle = 160;
-
-  public static Vector2d middleBlockVec = new Vector2d(-31, -34);
-
-  public static double middleAngle = 160;
-
-
-  public static double turnBlockAngleDeg = 90;
-  public static double endTurnBlockAngleDeg = 45;
-
-  public static Vector2d bucketVec = new Vector2d(-56, -57);
-
-
-  public static Vector2d park1Vec = new Vector2d(-48, -36);
-  public static Vector2d park2Vec;
-  public static Vector2d park3Vec;
+  public static Vector2d barVec = new Vector2d(0, -35);
+  public static double barTan = Math.toRadians(0);
 
   //public static VelConstraint slowVel = new TranslationalVelConstraint(40);
   //public static AccelConstraint slowAccel = new ProfileAccelConstraint(-40, 40);
@@ -47,18 +29,14 @@ public class SpecimenRoadrunner extends LinearOpMode {
   @Override
   public void runOpMode() throws InterruptedException {
 
-    Pose2d START = new Pose2d(-30.5, -62, Math.toRadians(0));
+    Pose2d START = new Pose2d(10.5, -62, Math.toRadians(270));
 
-    Pose2d bar = new Pose2d(bucketVec, Math.toRadians(45));
+    Pose2d bar = new Pose2d(new Vector2d(0, -35), Math.toRadians(270));
+    Pose2d leftBlock = new Pose2d(new Vector2d(62, -5), Math.toRadians(270));
+    Pose2d middleBlock = new Pose2d(new Vector2d(54, -5), Math.toRadians(270));
+    Pose2d rightBlock = new Pose2d(new Vector2d(46, -5), Math.toRadians(270));
 
-    Pose2d rightBlock = new Pose2d(new Vector2d(blockPickUpX, rightPickUpY), Math.toRadians(rightAngle));
-
-    Pose2d middleBlock = new Pose2d(middleBlockVec, Math.toRadians(middleAngle));
-
-    Pose2d park1 = new Pose2d(park1Vec, Math.toRadians(180));
-    Vector2d park2Vec = new Vector2d(35, -36);
-    Vector2d park3Vec = new Vector2d(48, -62);
-
+    Pose2d wallPickup = new Pose2d( new Vector2d(30, 60), Math.toRadians(270));
     // INIT
     telemetry = new MultipleTelemetry(FtcDashboard.getInstance().getTelemetry(), telemetry);
 
@@ -70,84 +48,78 @@ public class SpecimenRoadrunner extends LinearOpMode {
     waitForStart();
     // START
 
-    //bucket
+    robot.startSlideUpPos(Robot.VERTICAL_SLIDE_DEFAULT, 0.8);
+    robot.claw.setUnder();
+
+    robot.waitTime(400);
+
+
     Actions.runBlocking(
         drive.actionBuilder(drive.localizer.getPose())
-            .setTangent(90)
-            .splineToLinearHeading(bar, Math.toRadians(225))
+            .splineToLinearHeading(bar, Math.toRadians(180))
             .build()
     );
 
-    robot.placeBar();
+    placeBar();
 
     //right block
 
     Actions.runBlocking(
         drive.actionBuilder(drive.localizer.getPose())
-            .splineToLinearHeading(rightBlock, Math.toRadians(225))
+            .splineToSplineHeading(rightBlock, Math.toRadians(45))
+                .splineToLinearHeading(new Pose2d( new Vector2d(42, -55), Math.toRadians(270)),90 )
+                .splineToLinearHeading(new Pose2d( new Vector2d(42, -5), Math.toRadians(270)),90)
             .build()
     );
-
-    pickUp();
 
     robot.waitTime(300);
 
-    //bucket
     Actions.runBlocking(
-        drive.actionBuilder(drive.localizer.getPose())
-            .strafeToLinearHeading(bucketVec, Math.toRadians(45))
-            .build()
+            drive.actionBuilder(drive.localizer.getPose())
+                    .splineToLinearHeading(middleBlock, Math.toRadians(160))
+
+                    .splineToLinearHeading(new Pose2d( new Vector2d(54, -55), Math.toRadians(270)),90 )
+
+                    .splineToLinearHeading(new Pose2d( new Vector2d(54, -5), Math.toRadians(270)),90)
+                    .build()
     );
-
-    //robot.waitTime(1000);
-
-    robot.deposit();
-
-    ////////////////////////////
-    //SECOND BLOCK
-    /////////////////////////////
-
-    Actions.runBlocking(
-        drive.actionBuilder(drive.localizer.getPose())
-            .splineToLinearHeading(middleBlock, Math.toRadians(225))
-            .build()
-    );
-
-    pickUp();
 
     robot.waitTime(300);
 
-    //bucket
     Actions.runBlocking(
-        drive.actionBuilder(drive.localizer.getPose())
-            .strafeToLinearHeading(bucketVec, Math.toRadians(45))
-            .build()
-    );
+            drive.actionBuilder(drive.localizer.getPose())
+                    .splineToLinearHeading(leftBlock, Math.toRadians(180))
 
-    // robot.waitTime(1000);
-
-    robot.deposit();
-
-    // robot.waitTime(1000);
-
-    //TODO: CHECK IF PARKING WORKS
-    /*
-
-    //park
-    Actions.runBlocking(
-        drive.actionBuilder(drive.pose)
-            .splineToSplineHeading(park1, Math.toRadians(80))
-            .waitSeconds(.5)
-
-            .strafeToLinearHeading(park2, Math.toRadians(180))
-            .waitSeconds(.5)
-
-            .strafeToLinearHeading(park3, Math.toRadians(180))
-            .build()
+                    .strafeTo(new Vector2d(62, -55))
+                    .waitSeconds(.2)
+                    .build()
     );
 
 
-     */
+  }
+
+  public void placeBar() {
+    //robot.setHorizontalSlidePos(Robot.HORIZONTAL_SLIDE_TRANSFER + 0.08);
+    //robot.waitTime(200);
+    robot.startSlideUpPos(Robot.VERTICAL_SLIDE_DEFAULT, 0.8);
+
+    Actions.runBlocking(
+            drive.actionBuilder(drive.localizer.getPose())
+                    .strafeTo(new Vector2d(drive.localizer.getPose().position.x, drive.localizer.getPose().position.y + 3))
+                    .build()
+    );
+
+    robot.claw.setPlace();
+
+    Actions.runBlocking(
+            drive.actionBuilder(drive.localizer.getPose())
+                    .strafeTo(new Vector2d(drive.localizer.getPose().position.x, drive.localizer.getPose().position.y - 10))
+                    .build()
+    );
+
+    robot.claw.clawOpen();
+
+    //robot.claw.setDefault();
   }
 
   private void pickUp() {

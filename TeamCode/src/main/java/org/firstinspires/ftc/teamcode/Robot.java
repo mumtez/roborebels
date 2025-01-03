@@ -67,10 +67,10 @@ public class Robot {
   public final DcMotor intake;
   public final ServoImplEx flipper;//, outtake;
 
-  public final ServoImplEx clawHand, clawUpArm, clawDownArm;
+  //public final ServoImplEx clawHand, clawUpArm, clawDownArm;
 
 
-  public final NormalizedColorSensor intakeColor;
+  //public final NormalizedColorSensor intakeColor;
 
   private final LinearOpMode opMode;
 
@@ -78,7 +78,7 @@ public class Robot {
     this.opMode = opMode;
     HardwareMap hardwareMap = opMode.hardwareMap;
 
-    //claw = new Claw(opMode);
+    claw = new Claw(opMode);
 
     this.drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
 
@@ -87,9 +87,9 @@ public class Robot {
     //hang.setMode(RunMode.RUN_WITHOUT_ENCODER);
     //hang.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
 
-    clawHand = (ServoImplEx) hardwareMap.servo.get("c");
-    clawUpArm = (ServoImplEx) hardwareMap.servo.get("cu");
-    clawDownArm = (ServoImplEx) hardwareMap.servo.get("cd");
+    //clawHand = (ServoImplEx) hardwareMap.servo.get("c");
+    //clawUpArm = (ServoImplEx) hardwareMap.servo.get("cu");
+    //clawDownArm = (ServoImplEx) hardwareMap.servo.get("cd");
 
     // Slides
     slideLeft = hardwareMap.dcMotor.get("lu");
@@ -116,14 +116,16 @@ public class Robot {
     flipper = (ServoImplEx) hardwareMap.servo.get("flip");
 
     flipper.setDirection(Servo.Direction.REVERSE);
-
+/*
     // Sensor
-    intakeColor = hardwareMap.get(NormalizedColorSensor.class, "ins");
-    intakeColor.setGain(INTAKE_COLOR_GAIN);
+    //intakeColor = hardwareMap.get(NormalizedColorSensor.class, "ins");
+   // intakeColor.setGain(INTAKE_COLOR_GAIN);
     if (intakeColor instanceof SwitchableLight) {
       ((SwitchableLight) intakeColor).enableLight(
           true); // Turn the light ON to observe objects that dont emit their own light
     }
+
+ */
     // TODO: utilize color sensor + tune GAIN for environment
     //    NormalizedRGBA colors = intakeColor.getNormalizedColors();
     //    Access colors:
@@ -140,6 +142,8 @@ public class Robot {
   public void initAuton() {
     drive.lazyImu.get().resetYaw();
     this.rotateIntakeVertical();
+    //this.startSlideUpPos(VERTICAL_SLIDE_DEFAULT, 0.8);
+    claw.clawClose();
     //this.outtakeIn();
     this.setHorizontalSlidePos(HORIZONTAL_SLIDE_START);
   }
@@ -203,7 +207,7 @@ public class Robot {
 
   }
 
-    /*
+
     public void startSlideUpPos(int pos, double pow) {
         setVerticalSlidePower(0);
 
@@ -216,7 +220,7 @@ public class Robot {
         setVerticalSlidePower(pow);
 
     }
-
+    /*
     public void endSlideUpPos(int pos){
 
         while (this.opMode.opModeIsActive() && Math.abs(slideLeft.getCurrentPosition() - pos) > 30) {
@@ -291,18 +295,6 @@ public class Robot {
          */
   }
 
-  public void placeBar() {
-    setHorizontalSlidePos(HORIZONTAL_SLIDE_TRANSFER + 0.08);
-    waitTime(200);
-
-    setSlideUpPos(Robot.VERTICAL_SLIDE_BAR, .8);
-    claw.setPlace();
-
-    //clawOpen();
-
-    claw.setDefault();
-    setSlideUpPos(Robot.VERTICAL_SLIDE_DOWN, 1);
-  }
 
   public double getHeading() {
     return drive.lazyImu.get().getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);

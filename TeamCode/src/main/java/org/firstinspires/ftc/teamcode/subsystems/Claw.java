@@ -15,20 +15,22 @@ public class Claw {
   public final ServoImplEx claw, clawUpArm, clawDownArm;
 
 
-  public static double clawOpenPos;
-  public static double clawClosePos;
+  public static double clawOpenPos = 0.65;
+  public static double clawClosePos = 0.4;
 
 
   public static double upArmDefault;
-  public static double upArmPlace;
-  public static double upArmWall = 0.6;
+  public static double upArmPlace = .6;
+  public static double upArmWall = 0.4;
   public static double upArmBucket;
+  public static double upArmUnder = 0.73;
 
 
   public static double downArmDefault;
-  public static double downArmPlace;
-  public static double downArmWall = 0.8;
+  public static double downArmPlace = 0.2;
+  public static double downArmWall = 0.95;
   public static double downArmBucket = 0.9;
+  public static double downArmUnder = 0.16;
 
 
   private final LinearOpMode opMode;
@@ -46,11 +48,11 @@ public class Claw {
   }
 
   public void clawClose() {
-    claw.setPosition(clawOpenPos);
+    claw.setPosition(clawClosePos);
   }
 
   public void clawOpen() {
-    claw.setPosition(clawClosePos);
+    claw.setPosition(clawOpenPos);
   }
 
 
@@ -73,6 +75,11 @@ public class Claw {
   public void setBucket() {
     clawDownArm.setPosition(downArmBucket);
     clawUpArm.setPosition(upArmBucket);
+  }
+
+  public void setUnder() {
+    clawDownArm.setPosition(downArmUnder);
+    clawUpArm.setPosition(upArmUnder);
   }
 
   // TODO: can't do this here. Use a boolean return value instead or something

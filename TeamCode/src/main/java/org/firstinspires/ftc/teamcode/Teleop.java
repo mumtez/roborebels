@@ -82,7 +82,8 @@ public class Teleop extends LinearOpMode {
        */
 
       // Hor slide w/ stick instead of toggle
-      //slideOutPos += Math.max(0, Math.min(1, gamepad2.left_stick_y/500));
+      //horizontalPos -= gamepad2.left_stick_y/500;
+      //horizontalPos = Math.max(0, Math.min(1, slideOutPos));
 
       if (gamepad2.dpad_down) {
         slideOut = false;
@@ -111,7 +112,6 @@ public class Teleop extends LinearOpMode {
         slideOut = true;
       }
 
-      // Got moved down
       if (gamepad2.right_stick_y != 0) {
         slideGoOut = true;
         horizontalPos = Robot.HORIZONTAL_SLIDE_OUT / 1.2;
@@ -169,6 +169,9 @@ public class Teleop extends LinearOpMode {
 
              */
 
+      robot.intake.setPower(gamepad2.left_trigger - gamepad2.right_trigger); //    /3?
+
+      /*
       if (gamepad2.right_bumper) {
         robot.intake.setPower(1);
       } else if (gamepad2.left_bumper) {
@@ -176,6 +179,8 @@ public class Teleop extends LinearOpMode {
       } else {
         robot.intake.setPower(0);
       }
+
+       */
 
             /*
             if (gamepad1.dpad_left) {
