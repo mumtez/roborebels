@@ -20,10 +20,10 @@ public class Claw {
 
 
   public static double upArmDefault;
-  public static double upArmPlace = .6;
-  public static double upArmWall = 0.4;
+  public static double upArmPlace = .47;
+  public static double upArmWall = 0.27;
   public static double upArmBucket;
-  public static double upArmUnder = 0.73;
+  public static double upArmUnder = 0.60;
 
 
   public static double downArmDefault;

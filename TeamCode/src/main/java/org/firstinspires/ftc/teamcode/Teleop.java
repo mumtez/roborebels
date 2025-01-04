@@ -73,18 +73,6 @@ public class Teleop extends LinearOpMode {
 
       robot.setDriveTrainPower(frontRightPower, frontLeftPower, backRightPower, backLeftPower);
 
-      /*
-      robot.fl.setPower(frontLeftPower);
-      robot.bl.setPower(backLeftPower);
-      robot.fr.setPower(frontRightPower);
-      robot.br.setPower(backRightPower);
-
-       */
-
-      // Hor slide w/ stick instead of toggle
-      //horizontalPos -= gamepad2.left_stick_y/500;
-      //horizontalPos = Math.max(0, Math.min(1, slideOutPos));
-
       if (gamepad2.dpad_down) {
         slideOut = false;
         timer2 = 0;
@@ -135,7 +123,7 @@ public class Teleop extends LinearOpMode {
           robot.rotateIntakeFlat();
         }
       } else {
-        robot.rotateIntakeUp();
+        robot.rotateIntakeDown();
       }
 
       //robot.setVerticalSlidePower(-gamepad2.right_stick_y);
@@ -169,7 +157,7 @@ public class Teleop extends LinearOpMode {
 
              */
 
-      robot.intake.setPower(gamepad2.left_trigger - gamepad2.right_trigger); //    /3?
+      robot.intake.setPower(gamepad2.left_trigger - gamepad2.right_trigger);
 
       /*
       if (gamepad2.right_bumper) {

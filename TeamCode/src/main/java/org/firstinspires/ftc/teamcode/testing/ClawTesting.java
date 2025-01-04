@@ -4,16 +4,13 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.Robot;
-import org.firstinspires.ftc.teamcode.subsystems.Claw;
 
-@Config
 @TeleOp(name = "Claw Test", group = "TESTING")
+@Config
 public class ClawTesting extends LinearOpMode {
 
   Robot robot;
-  Claw claw;
-
-  public static double flipPos = 0.5;
+  public static double position = 0;
 
   @Override
   public void runOpMode() throws InterruptedException {
@@ -49,11 +46,23 @@ public class ClawTesting extends LinearOpMode {
       }
 
       if (gamepad1.dpad_down) {
-        robot.startSlideUpPos(robot.VERTICAL_SLIDE_DEFAULT, 0.8);
+        robot.startSlideUpPos(Robot.VERTICAL_SLIDE_DEFAULT, 0.8);
       }
 
       if (gamepad1.dpad_up) {
-        robot.startSlideUpPos(robot.VERTICAL_SLIDE_UP, 0.8);
+        robot.startSlideUpPos(Robot.VERTICAL_SLIDE_UP, 0.8);
+      }
+      if (gamepad2.a) {
+        robot.rotateIntakeOut();
+      }
+      if (gamepad2.b) {
+        robot.rotateIntakeFlat();
+      }
+
+      robot.intake.setPower(gamepad2.left_trigger - gamepad2.right_trigger);
+
+      if (gamepad2.dpad_up) {
+        robot.setHorizontalSlidePos(position);
       }
 
     }

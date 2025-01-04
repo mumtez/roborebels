@@ -29,29 +29,21 @@ public class Robot {
   public Claw claw;
 
 
-  public static double HORIZONTAL_SLIDE_START = 0.2;
-  public static double HORIZONTAL_SLIDE_TRANSFER = 0.31;
-  public static double HORIZONTAL_SLIDE_OUT = 0.5;
+  public static double HORIZONTAL_SLIDE_TRANSFER = 0.4;
+  public static double HORIZONTAL_SLIDE_OUT = .67;
 
-  public static double INTAKE_OUT = 0.61;
-  public static double INTAKE_UP = 0.03;
-  public static double INTAKE_FLAT = 0.5;
-  public static double INTAKE_VERTICAL = 0.2; // TODO: tune
+  public static double INTAKE_OUT = 0.2;
+  public static double INTAKE_UP = 0.12;
 
-  public static double OUTTAKE_IN = 0.07;
-  public static double OUTTAKE_OUT = 0.8;
 
   public static int VERTICAL_SLIDE_UP = 2800;
-  public static int VERTICAL_SLIDE_DOWN = 0;
 
   public static int VERTICAL_SLIDE_DEFAULT = 400;
-  public static int VERTICAL_SLIDE_BAR = 2000;
 
   public static double GYRO_TURN_P = .055;
   public static double KG = 0.07;
   public static double HEADING_THRESHOLD = 1;
 
-  public static double SLIDEOUT_THRESHOLD = 0.4;
 
   // TODO: tune color sensor gain
   public static float INTAKE_COLOR_GAIN = 2;
@@ -68,7 +60,6 @@ public class Robot {
   public final ServoImplEx flipper;//, outtake;
 
   //public final ServoImplEx clawHand, clawUpArm, clawDownArm;
-
 
   //public final NormalizedColorSensor intakeColor;
 
@@ -141,11 +132,11 @@ public class Robot {
 
   public void initAuton() {
     drive.lazyImu.get().resetYaw();
-    this.rotateIntakeVertical();
+    this.rotateIntakeDown();
     //this.startSlideUpPos(VERTICAL_SLIDE_DEFAULT, 0.8);
     claw.clawClose();
     //this.outtakeIn();
-    this.setHorizontalSlidePos(HORIZONTAL_SLIDE_START);
+    this.setHorizontalSlidePos(HORIZONTAL_SLIDE_TRANSFER);
   }
 
   public void setHorizontalSlidePos(double pos) {
@@ -166,19 +157,15 @@ public class Robot {
      */
 
   public void rotateIntakeFlat() {
-    this.flipper.setPosition(INTAKE_FLAT);
+    this.flipper.setPosition(INTAKE_UP);
   }
 
-  public void rotateIntakeUp() {
-    this.flipper.setPosition(INTAKE_UP);
+  public void rotateIntakeDown() {
+    this.flipper.setPosition(INTAKE_OUT);
   }
 
   public void rotateIntakeOut() {
     this.flipper.setPosition(INTAKE_OUT);
-  }
-
-  public void rotateIntakeVertical() {
-    this.flipper.setPosition(INTAKE_VERTICAL);
   }
 
   public void setVerticalSlidePower(double pow) {
@@ -208,18 +195,18 @@ public class Robot {
   }
 
 
-    public void startSlideUpPos(int pos, double pow) {
-        setVerticalSlidePower(0);
+  public void startSlideUpPos(int pos, double pow) {
+    setVerticalSlidePower(0);
 
-        slideLeft.setTargetPosition(pos);
-        slideRight.setTargetPosition(pos);
+    slideLeft.setTargetPosition(pos);
+    slideRight.setTargetPosition(pos);
 
-        slideLeft.setMode(RunMode.RUN_TO_POSITION);
-        slideRight.setMode(RunMode.RUN_TO_POSITION);
+    slideLeft.setMode(RunMode.RUN_TO_POSITION);
+    slideRight.setMode(RunMode.RUN_TO_POSITION);
 
-        setVerticalSlidePower(pow);
+    setVerticalSlidePower(pow);
 
-    }
+  }
     /*
     public void endSlideUpPos(int pos){
 
@@ -234,66 +221,6 @@ public class Robot {
     }
 
      */
-
-  public void pickUp() {
-    setHorizontalSlidePos(Robot.HORIZONTAL_SLIDE_OUT / 2);
-    waitTime(500);
-
-    rotateIntakeOut();
-    intake.setPower(1);
-
-    setHorizontalSlidePos(Robot.HORIZONTAL_SLIDE_OUT);
-    waitTime(500);
-
-    intake.setPower(0);
-    rotateIntakeUp();
-    waitTime(500);
-
-    setHorizontalSlidePos(Robot.HORIZONTAL_SLIDE_TRANSFER);
-    waitTime(500);
-
-    intake.setPower(-1);
-    waitTime(500);
-
-    rotateIntakeUp();
-  }
-
-  public void deposit() {
-        /*
-        intake.setPower(0);
-
-        setHorizontalSlidePos(HORIZONTAL_SLIDE_TRANSFER + 0.08);
-        waitTime(300);
-
-        setSlideUpPos(Robot.VERTICAL_SLIDE_UP, .8);
-        outtakeOut();
-
-        waitTime(500);
-
-        outtakeIn();
-        setSlideUpPos(Robot.VERTICAL_SLIDE_DOWN, 1);
-
-        setHorizontalSlidePos(HORIZONTAL_SLIDE_TRANSFER);
-
-         */
-  }
-
-  public void firstDeposit() {
-        /*
-        setHorizontalSlidePos(HORIZONTAL_SLIDE_TRANSFER + 0.08);
-        waitTime(200);
-
-        setSlideUpPos(Robot.VERTICAL_SLIDE_UP, .8);
-        outtakeOut();
-        waitTime(500);
-
-        outtakeIn();
-        setSlideUpPos(Robot.VERTICAL_SLIDE_DOWN, 1);
-
-        setHorizontalSlidePos(HORIZONTAL_SLIDE_TRANSFER);
-
-         */
-  }
 
 
   public double getHeading() {
