@@ -24,13 +24,15 @@ public class Claw {
   public static double upArmWall = 0.27;
   public static double upArmBucket;
   public static double upArmUnder = 0.60;
+  public static double upArmTransfer = 0.60;
 
 
   public static double downArmDefault;
   public static double downArmPlace = 0.2;
   public static double downArmWall = 0.95;
-  public static double downArmBucket = 0.9;
+  public static double downArmBucket;
   public static double downArmUnder = 0.16;
+  public static double downArmTransfer = 0.9;
 
 
   private final LinearOpMode opMode;
@@ -65,6 +67,11 @@ public class Claw {
   public void setPlace() {
     clawDownArm.setPosition(downArmPlace);
     clawUpArm.setPosition(upArmPlace);
+  }
+
+  public void setTransfer() {
+    clawDownArm.setPosition(downArmTransfer);
+    clawUpArm.setPosition(upArmTransfer);
   }
 
   public void setWall() {

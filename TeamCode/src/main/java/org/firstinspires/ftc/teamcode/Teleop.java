@@ -73,6 +73,11 @@ public class Teleop extends LinearOpMode {
 
       robot.setDriveTrainPower(frontRightPower, frontLeftPower, backRightPower, backLeftPower);
 
+      //TODO: Test this
+      //horizontalPos -= gamepad2.left_stick_y/500;
+      //horizontalPos = Math.max(0, Math.min(1, slideOutPos));
+
+
       if (gamepad2.dpad_down) {
         slideOut = false;
         timer2 = 0;
@@ -128,34 +133,36 @@ public class Teleop extends LinearOpMode {
 
       //robot.setVerticalSlidePower(-gamepad2.right_stick_y);
 
-      if (gamepad2.dpad_left) {
+      if (gamepad1.dpad_left) {
         robot.setSlideUpPos(robot.VERTICAL_SLIDE_DEFAULT, 0.8);
       }
 
-      if (gamepad2.dpad_right) {
+      if (gamepad1.dpad_up) {
         robot.setSlideUpPos(robot.VERTICAL_SLIDE_UP, 0.8);
+      }
+
+      if (gamepad1.dpad_down) {
+        robot.setSlideUpPos(robot.VERTICAL_SLIDE_DOWN, 0.8);
       }
 
       outtaking = gamepad1.b;
 
-            /*
-            if (outtaking && (vSlideLPos + vSlideRPos) / 2 > 10) {
-                robot.claw.setPlace();
-            }
+      if (gamepad2.x){
+        robot.claw.setTransfer();
+      }
+      if (gamepad2.y){
+        robot.claw.setBucket();
+      }
+      if (gamepad2.b){
+        robot.claw.setBucket();
+      }
 
-            if (gamepad1.a){
-                robot.claw.setDefault();
-            }
-
-            if (gamepad1.x){
-                robot.claw.setBucket();
-            }
-
-            if (gamepad1.y){
-                robot.claw.setWall();
-            }
-
-             */
+      if (gamepad2.right_bumper) {
+        robot.claw.clawOpen();
+      }
+      if (gamepad2.left_bumper) {
+        robot.claw.clawClose();
+      }
 
       robot.intake.setPower(gamepad2.left_trigger - gamepad2.right_trigger);
 
