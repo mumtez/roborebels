@@ -34,7 +34,7 @@ public class SpecimenRoadrunner extends LinearOpMode {
   public static TranslationalVelConstraint SLOW = new TranslationalVelConstraint(55);
   public static ProfileAccelConstraint SLOW_ACCEL = new ProfileAccelConstraint(-40, 55);
 
-  private Robot robot;
+  Robot robot;
   MecanumDrive drive;
 
   @Override

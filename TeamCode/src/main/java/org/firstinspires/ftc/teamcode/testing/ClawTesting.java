@@ -53,7 +53,7 @@ public class ClawTesting extends LinearOpMode {
         robot.startSlideUpPos(Robot.VERTICAL_SLIDE_UP, 0.8);
       }
       if (gamepad2.a) {
-        robot.rotateIntakeOut();
+        robot.rotateIntakeDown();
       }
       if (gamepad2.b) {
         robot.rotateIntakeFlat();

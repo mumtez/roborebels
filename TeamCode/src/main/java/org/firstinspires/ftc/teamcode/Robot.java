@@ -2,18 +2,14 @@ package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Pose2d;
-import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.CRServoImplEx;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotor.RunMode;
 import com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior;
 import com.qualcomm.robotcore.hardware.DcMotorSimple.Direction;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
-import com.qualcomm.robotcore.hardware.SwitchableLight;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -28,8 +24,7 @@ public class Robot {
 
   public Claw claw;
 
-
-  public static double HORIZONTAL_SLIDE_TRANSFER = 0.4;
+  public static double HORIZONTAL_SLIDE_TRANSFER = 0.39;
   public static double HORIZONTAL_SLIDE_OUT = .67;
 
   public static double INTAKE_OUT = 0.2;
@@ -38,9 +33,7 @@ public class Robot {
   public static int VERTICAL_SLIDE_UP = 2800;
 
   public static int VERTICAL_SLIDE_DEFAULT = 400;
-  public static int VERTICAL_SLIDE_DOWN = 200;
-
-
+  public static int VERTICAL_SLIDE_PRE_TRANSFER = 800;
 
   public static double GYRO_TURN_P = .055;
   public static double KG = 0.07;
@@ -79,9 +72,6 @@ public class Robot {
     slideLeft = hardwareMap.dcMotor.get("lu");
     slideRight = hardwareMap.dcMotor.get("ru");
 
-    slideLeft.setMode(RunMode.STOP_AND_RESET_ENCODER);
-    slideRight.setMode(RunMode.STOP_AND_RESET_ENCODER);
-
     slideLeft.setDirection(Direction.REVERSE);
     slideRight.setDirection(Direction.FORWARD);
 
@@ -96,9 +86,7 @@ public class Robot {
     // Intake
 
     intake = hardwareMap.dcMotor.get("int");
-    //outtake = (ServoImplEx) hardwareMap.servo.get("out");
     flipper = (ServoImplEx) hardwareMap.servo.get("flip");
-
     flipper.setDirection(Servo.Direction.REVERSE);
 /*
     // Sensor
@@ -124,10 +112,13 @@ public class Robot {
   }
 
   public void initAuton() {
+    slideLeft.setMode(RunMode.STOP_AND_RESET_ENCODER);
+    slideRight.setMode(RunMode.STOP_AND_RESET_ENCODER);
+
     drive.lazyImu.get().resetYaw();
     this.rotateIntakeDown();
     claw.clawClose();
-    // TODO: init the arm position
+    claw.setInit();
     this.setHorizontalSlidePos(HORIZONTAL_SLIDE_TRANSFER);
   }
 
@@ -135,18 +126,6 @@ public class Robot {
     pos = Range.clip(pos, HORIZONTAL_SLIDE_TRANSFER, HORIZONTAL_SLIDE_OUT);
     this.slideOUT.setPosition(pos);
   }
-
-    /*
-
-    public void outtakeOut() {
-        outtake.setPosition(OUTTAKE_OUT);
-    }
-
-    public void outtakeIn() {
-        outtake.setPosition(OUTTAKE_IN);
-    }
-
-     */
 
   public void rotateIntakeFlat() {
     this.flipper.setPosition(INTAKE_UP);
@@ -156,36 +135,10 @@ public class Robot {
     this.flipper.setPosition(INTAKE_OUT);
   }
 
-  public void rotateIntakeOut() {
-    this.flipper.setPosition(INTAKE_OUT);
-  }
-
   public void setVerticalSlidePower(double pow) {
     slideRight.setPower((pow + KG));
     slideLeft.setPower((pow + KG));
   }
-
-  public void setSlideUpPos(int pos, double pow) {
-    setVerticalSlidePower(0);
-
-    slideLeft.setTargetPosition(pos);
-    slideRight.setTargetPosition(pos);
-
-    slideLeft.setMode(RunMode.RUN_TO_POSITION);
-    slideRight.setMode(RunMode.RUN_TO_POSITION);
-
-    setVerticalSlidePower(pow);
-
-    while (this.opMode.opModeIsActive() && Math.abs(slideLeft.getCurrentPosition() - pos) > 30) {
-      // Wait for slide to end
-    }
-
-    setVerticalSlidePower(0);
-    slideLeft.setMode(RunMode.RUN_WITHOUT_ENCODER);
-    slideRight.setMode(RunMode.RUN_WITHOUT_ENCODER);
-
-  }
-
 
   public void startSlideUpPos(int pos, double pow) {
     setVerticalSlidePower(0);
@@ -199,21 +152,18 @@ public class Robot {
     setVerticalSlidePower(pow);
 
   }
-    /*
-    public void endSlideUpPos(int pos){
 
-        while (this.opMode.opModeIsActive() && Math.abs(slideLeft.getCurrentPosition() - pos) > 30) {
-            // Wait for slide to end
-        }
+  public void endSlideUpPos(int pos) {
 
-        setVerticalSlidePower(0);
-
-        slideLeft.setMode(RunMode.RUN_WITHOUT_ENCODER);
-        slideRight.setMode(RunMode.RUN_WITHOUT_ENCODER);
+    while (this.opMode.opModeIsActive() && Math.abs(slideLeft.getCurrentPosition() - pos) > 30) {
+      // Wait for slide to end
     }
 
-     */
+    setVerticalSlidePower(0);
 
+    slideLeft.setMode(RunMode.RUN_WITHOUT_ENCODER);
+    slideRight.setMode(RunMode.RUN_WITHOUT_ENCODER);
+  }
 
   public double getHeading() {
     return drive.lazyImu.get().getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
@@ -277,12 +227,4 @@ public class Robot {
     while (opMode.opModeIsActive() && System.currentTimeMillis() - startTime < ms) {
     }
   }
-
-  public int distanceToEncoderTicks(double distanceMM) {
-    double circumference = Math.PI * 96;
-    double cpr = 537.7;
-    double ticksPerMM = cpr / circumference;
-    return (int) (ticksPerMM * distanceMM);
-  }
-
 }

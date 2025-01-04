@@ -9,44 +9,35 @@ import com.acmerobotics.dashboard.FtcDashboard;
 // CONFIG
 
 @Config
-
 public class Claw {
 
   public final ServoImplEx claw, clawUpArm, clawDownArm;
 
-
   public static double clawOpenPos = 0.65;
   public static double clawClosePos = 0.4;
 
-
-  public static double upArmDefault;
   public static double upArmPlace = .47;
   public static double upArmWall = 0.27;
-  public static double upArmBucket;
+  public static double upArmBucket = 0.75;
   public static double upArmUnder = 0.60;
-  public static double upArmTransfer = 0.60;
+  public static double upArmTransfer = 0.00;
+  public static double upArmInit = 0.60;
 
 
-  public static double downArmDefault;
   public static double downArmPlace = 0.2;
   public static double downArmWall = 0.95;
-  public static double downArmBucket;
+  public static double downArmBucket = 0.35;
   public static double downArmUnder = 0.16;
-  public static double downArmTransfer = 0.9;
+  public static double downArmTransfer = 0.92;
+  public static double downArmInit = 0.85;
 
-
-  private final LinearOpMode opMode;
 
   public Claw(LinearOpMode opMode) {
-
-    this.opMode = opMode;
     HardwareMap hardwareMap = opMode.hardwareMap;
 
     claw = (ServoImplEx) hardwareMap.servo.get("c");
     clawUpArm = (ServoImplEx) hardwareMap.servo.get("cu");
     clawDownArm = (ServoImplEx) hardwareMap.servo.get("cd");
-
-
   }
 
   public void clawClose() {
@@ -55,13 +46,6 @@ public class Claw {
 
   public void clawOpen() {
     claw.setPosition(clawOpenPos);
-  }
-
-
-  public void setDefault() {
-    clawDownArm.setPosition(downArmDefault);
-    waitTime(100); // TODO: can't do this here -- will cause lots of issues
-    clawUpArm.setPosition(upArmDefault);
   }
 
   public void setPlace() {
@@ -89,12 +73,9 @@ public class Claw {
     clawUpArm.setPosition(upArmUnder);
   }
 
-  // TODO: can't do this here. Use a boolean return value instead or something
-  public void waitTime(double ms) {
-    double startTime = System.currentTimeMillis();
-    while (opMode.opModeIsActive() && System.currentTimeMillis() - startTime < ms) {
-    }
+  public void setInit() {
+    clawDownArm.setPosition(downArmInit);
+    clawUpArm.setPosition(upArmInit);
   }
-
 
 }

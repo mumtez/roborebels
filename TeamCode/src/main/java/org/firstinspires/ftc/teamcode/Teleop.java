@@ -4,27 +4,21 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import com.qualcomm.robotcore.hardware.DcMotor.RunMode;
+import com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior;
+import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.teamcode.subsystems.Claw;
 
 @Config
-@TeleOp(name = "Teleop")
+@TeleOp(name = "TELEOP", group = "TELEOP")
 public class Teleop extends LinearOpMode {
 
+  public static double HORIZONTAL_SPEED = 200; // INCREASE --> SLOW DOWN | DECREASE --> SPEED UP
+
   Robot robot;
-
-  boolean slideOut = false;
-  boolean outtaking = false;
-
-  int timer = 60;
-  int timer2 = 60;
-
-  boolean timerDone = false;
-  boolean timerDone2 = false;
-
-  double horizontalPos = 0;
-
-  float slideOutPos = 0;
+  double horizontalPos = Robot.HORIZONTAL_SLIDE_TRANSFER;
+  boolean transferPos = false;
+  boolean transferSlide = false;
 
   @Override
   public void runOpMode() throws InterruptedException {
@@ -33,9 +27,20 @@ public class Teleop extends LinearOpMode {
     waitForStart();
     // START
 
+    robot.startSlideUpPos(Robot.VERTICAL_SLIDE_PRE_TRANSFER, 0.8);
+    robot.claw.clawClose();
+    robot.waitTime(500);
+    robot.claw.setTransfer();
+    robot.rotateIntakeFlat();
+
+    robot.slideLeft.setMode(RunMode.RUN_WITHOUT_ENCODER);
+    robot.slideLeft.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
+    robot.slideRight.setMode(RunMode.RUN_WITHOUT_ENCODER);
+    robot.slideRight.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
+
     // LOOP
     while (opModeIsActive()) {
-      //int hangPos = robot.hang.getCurrentPosition();
+
       int vSlideLPos = robot.slideLeft.getCurrentPosition();
       int vSlideRPos = robot.slideRight.getCurrentPosition();
 
@@ -44,8 +49,6 @@ public class Teleop extends LinearOpMode {
       }
 
       // === FIELD CENTRIC ===
-
-      boolean slideGoOut;
 
       double y = -gamepad1.left_stick_y;
       double x = gamepad1.left_stick_x;
@@ -73,113 +76,63 @@ public class Teleop extends LinearOpMode {
 
       robot.setDriveTrainPower(frontRightPower, frontLeftPower, backRightPower, backLeftPower);
 
-      //TODO: Test this
-      //horizontalPos -= gamepad2.left_stick_y/500;
-      //horizontalPos = Math.max(0, Math.min(1, slideOutPos));
-
-
-      if (gamepad2.dpad_down) {
-        slideOut = false;
-        timer2 = 0;
-        timerDone2 = false;
+      if (!(transferPos && transferSlide)) {
+        horizontalPos -= gamepad2.right_stick_y / HORIZONTAL_SPEED;
+        horizontalPos = Range.clip(horizontalPos, Robot.HORIZONTAL_SLIDE_TRANSFER, Robot.HORIZONTAL_SLIDE_OUT);
+        robot.setHorizontalSlidePos(horizontalPos);
       }
 
-      if (!timerDone2) {
-        timer2++;
-      }
-      if (timer2 > 35) {
-        timerDone2 = true;
-      }
+      // Don't use because of belt skipping -- can be used later with addition of mag lim switch on slide
+//      if (gamepad2.dpad_left) {
+//        robot.startSlideUpPos(Robot.VERTICAL_SLIDE_DEFAULT, 0.7);
+//        transferSlide = true;
+//      } else if (gamepad2.dpad_up) {
+//        robot.startSlideUpPos(Robot.VERTICAL_SLIDE_UP, 0.8);
+//        transferSlide = false;
+//      } else if (gamepad2.dpad_right) {
+//        robot.startSlideUpPos(Robot.VERTICAL_SLIDE_PRE_TRANSFER, 0.7);
+//        transferSlide = false;
+//      }
 
-      if (timerDone2 && !slideOut) {
-        horizontalPos = Robot.HORIZONTAL_SLIDE_TRANSFER;
-      }
+      robot.setVerticalSlidePower(-gamepad2.left_stick_y);
+      transferSlide = Math.abs(vSlideLPos - Robot.VERTICAL_SLIDE_DEFAULT) < 20;
 
-      // TODO: direct control horizontal slides (increment/decrement servo position)
-      if (gamepad2.dpad_up) {
-        if (robot.slideOUT.getPosition() != Robot.HORIZONTAL_SLIDE_OUT) {
-          timer = 0;
-        }
-        horizontalPos = Robot.HORIZONTAL_SLIDE_OUT;
-        timerDone = false;
-        slideOut = true;
-      }
-
-      if (gamepad2.right_stick_y != 0) {
-        slideGoOut = true;
-        horizontalPos = Robot.HORIZONTAL_SLIDE_OUT / 1.2;
-      } else {
-        slideGoOut = false;
-      }
-
-      robot.setHorizontalSlidePos(horizontalPos);
-
-      if (!timerDone) {
-        timer++;
-      }
-      if (timer > 35) {
-        timerDone = true;
-      }
-
-      if (slideOut && timerDone) {
-        if (gamepad2.a) {
-          robot.rotateIntakeOut();
-        } else {
-          robot.rotateIntakeFlat();
-        }
-      } else {
-        robot.rotateIntakeDown();
-      }
-
-      //robot.setVerticalSlidePower(-gamepad2.right_stick_y);
-
-      if (gamepad1.dpad_left) {
-        robot.setSlideUpPos(robot.VERTICAL_SLIDE_DEFAULT, 0.8);
-      }
-
-      if (gamepad1.dpad_up) {
-        robot.setSlideUpPos(robot.VERTICAL_SLIDE_UP, 0.8);
-      }
-
-      if (gamepad1.dpad_down) {
-        robot.setSlideUpPos(robot.VERTICAL_SLIDE_DOWN, 0.8);
-      }
-
-      outtaking = gamepad1.b;
-
-      if (gamepad2.x){
+      if (gamepad2.cross && Math.abs(vSlideLPos) > 800) {
         robot.claw.setTransfer();
+        transferPos = true;
       }
-      if (gamepad2.y){
-        robot.claw.setBucket();
-      }
-      if (gamepad2.b){
-        robot.claw.setBucket();
+
+      if (!(transferPos && transferSlide)) {
+        if (gamepad2.square) {
+          robot.claw.setUnder();
+          transferPos = false;
+        } else if (gamepad2.circle) {
+          robot.claw.setPlace();
+          transferPos = false;
+        } else if (gamepad2.triangle) {
+          robot.claw.setBucket();
+          transferPos = false;
+        } else if (gamepad2.touchpad) {
+          robot.claw.setWall();
+          transferPos = false;
+        }
       }
 
       if (gamepad2.right_bumper) {
         robot.claw.clawOpen();
-      }
-      if (gamepad2.left_bumper) {
+      } else if (gamepad2.left_bumper) {
         robot.claw.clawClose();
       }
 
       robot.intake.setPower(gamepad2.left_trigger - gamepad2.right_trigger);
-
-      if (gamepad2.right_bumper) {
-        robot.intake.setPower(1);
-      } else if (gamepad2.left_bumper) {
-        robot.intake.setPower(-1);
-      } else {
-        robot.intake.setPower(0);
+      if (Math.abs(gamepad2.right_stick_y) > 0.1) {
+        robot.rotateIntakeFlat();
+      } else if (gamepad2.ps) {
+        robot.rotateIntakeDown();
       }
 
-      telemetry.addData("INTAKE ROTATE POS", robot.flipper.getPosition());
-      telemetry.addData("INTAKE POW", robot.intake.getPower());
-      telemetry.addData("H SLIDE POS", robot.slideOUT.getPosition());
       telemetry.addData("V SLIDE L ENC", vSlideLPos);
       telemetry.addData("V SLIDE R ENC", vSlideRPos);
-      telemetry.addData("Slide go out?: ", slideGoOut);
       telemetry.update();
     }
   }
