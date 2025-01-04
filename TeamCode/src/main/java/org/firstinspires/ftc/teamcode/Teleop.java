@@ -159,7 +159,6 @@ public class Teleop extends LinearOpMode {
 
       robot.intake.setPower(gamepad2.left_trigger - gamepad2.right_trigger);
 
-      /*
       if (gamepad2.right_bumper) {
         robot.intake.setPower(1);
       } else if (gamepad2.left_bumper) {
@@ -168,26 +167,11 @@ public class Teleop extends LinearOpMode {
         robot.intake.setPower(0);
       }
 
-       */
-
-            /*
-            if (gamepad1.dpad_left) {
-                robot.hang.setPower(1);
-            } else if (gamepad1.dpad_right) {
-                robot.hang.setPower(-1);
-            } else {
-                robot.hang.setPower(0);
-            }
-
-             */
-
       telemetry.addData("INTAKE ROTATE POS", robot.flipper.getPosition());
       telemetry.addData("INTAKE POW", robot.intake.getPower());
-      //telemetry.addData("OUTTAKE POS", robot.outtake.getPosition());
       telemetry.addData("H SLIDE POS", robot.slideOUT.getPosition());
       telemetry.addData("V SLIDE L ENC", vSlideLPos);
       telemetry.addData("V SLIDE R ENC", vSlideRPos);
-      //telemetry.addData("HANG ENC", hangPos);
       telemetry.addData("Slide go out?: ", slideGoOut);
       telemetry.update();
     }

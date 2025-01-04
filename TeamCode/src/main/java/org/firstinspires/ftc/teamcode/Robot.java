@@ -35,7 +35,6 @@ public class Robot {
   public static double INTAKE_OUT = 0.2;
   public static double INTAKE_UP = 0.12;
 
-
   public static int VERTICAL_SLIDE_UP = 2800;
 
   public static int VERTICAL_SLIDE_DEFAULT = 400;
@@ -44,13 +43,10 @@ public class Robot {
   public static double KG = 0.07;
   public static double HEADING_THRESHOLD = 1;
 
-
   // TODO: tune color sensor gain
-  public static float INTAKE_COLOR_GAIN = 2;
+  // public static float INTAKE_COLOR_GAIN = 2;
 
-  //public final IMU imu;
   public final MecanumDrive drive;
-  //public final DcMotor fl, fr, bl, br;
   public final DcMotor slideLeft;
   public final DcMotor slideRight;
 
@@ -58,8 +54,6 @@ public class Robot {
   public final ServoImplEx slideOUT;
   public final DcMotor intake;
   public final ServoImplEx flipper;//, outtake;
-
-  //public final ServoImplEx clawHand, clawUpArm, clawDownArm;
 
   //public final NormalizedColorSensor intakeColor;
 
@@ -77,10 +71,6 @@ public class Robot {
     //hang = hardwareMap.dcMotor.get("hang");
     //hang.setMode(RunMode.RUN_WITHOUT_ENCODER);
     //hang.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
-
-    //clawHand = (ServoImplEx) hardwareMap.servo.get("c");
-    //clawUpArm = (ServoImplEx) hardwareMap.servo.get("cu");
-    //clawDownArm = (ServoImplEx) hardwareMap.servo.get("cd");
 
     // Slides
     slideLeft = hardwareMap.dcMotor.get("lu");
@@ -133,9 +123,8 @@ public class Robot {
   public void initAuton() {
     drive.lazyImu.get().resetYaw();
     this.rotateIntakeDown();
-    //this.startSlideUpPos(VERTICAL_SLIDE_DEFAULT, 0.8);
     claw.clawClose();
-    //this.outtakeIn();
+    // TODO: init the arm position
     this.setHorizontalSlidePos(HORIZONTAL_SLIDE_TRANSFER);
   }
 

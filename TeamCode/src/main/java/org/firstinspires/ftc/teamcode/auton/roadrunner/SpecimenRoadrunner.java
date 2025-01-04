@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.ProfileAccelConstraint;
 import com.acmerobotics.roadrunner.TranslationalVelConstraint;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
@@ -18,17 +19,20 @@ import org.firstinspires.ftc.teamcode.odom.MecanumDrive;
 @Autonomous(name = "SPECIMEN ROADRUNNER", group = "ROADRUNNER")
 public class SpecimenRoadrunner extends LinearOpMode {
 
-  public static Vector2d bar = new Vector2d(0, -35);
-  public static Vector2d leftBlock = new Vector2d(42, -5);
-  public static Vector2d middleBlock = new Vector2d(54, -5);
-  public static Vector2d rightBlock = new Vector2d(56, -5);
+  public static Vector2d bar = new Vector2d(2, -32);
+  public static Vector2d bar2 = new Vector2d(1, -32);
+  public static Vector2d bar3 = new Vector2d(1, -32);
+  public static Vector2d bar4 = new Vector2d(1, -32);
+  public static Vector2d bar5 = new Vector2d(1, -32);
 
-  public static Vector2d wallPickup = new Vector2d(42, -54);
+  public static Vector2d leftBlock = new Vector2d(41, -18);
+  public static Vector2d middleBlock = new Vector2d(49, -18);
+  public static Vector2d rightBlock = new Vector2d(56.5, -18);
 
-  public static TranslationalVelConstraint SLOW = new TranslationalVelConstraint(30);
+  public static Vector2d wallPickup = new Vector2d(42, -63);
 
-  //public static VelConstraint slowVel = new TranslationalVelConstraint(40);
-  //public static AccelConstraint slowAccel = new ProfileAccelConstraint(-40, 40);
+  public static TranslationalVelConstraint SLOW = new TranslationalVelConstraint(55);
+  public static ProfileAccelConstraint SLOW_ACCEL = new ProfileAccelConstraint(-40, 55);
 
   private Robot robot;
   MecanumDrive drive;
@@ -52,8 +56,6 @@ public class SpecimenRoadrunner extends LinearOpMode {
     robot.startSlideUpPos(Robot.VERTICAL_SLIDE_DEFAULT, 0.8);
     robot.claw.setUnder();
 
-    robot.waitTime(300);
-
     Actions.runBlocking(
         drive.actionBuilder(drive.localizer.getPose())
             .setTangent(Math.toRadians(90))
@@ -61,82 +63,131 @@ public class SpecimenRoadrunner extends LinearOpMode {
             .build()
     );
 
-    placeBar();
-
-    //left block
-
     Actions.runBlocking(
         drive.actionBuilder(drive.localizer.getPose())
-            .strafeToConstantHeading(new Vector2d(29, -52))
-            .strafeToConstantHeading(new Vector2d(29, -5))
-            .setTangent(Math.toRadians(90))
-            .splineToConstantHeading(leftBlock, Math.toRadians(270))
+            .afterTime(0, () -> {
+              robot.claw.setPlace();
+            })
             .setTangent(Math.toRadians(270))
-            .splineToConstantHeading(new Vector2d(42, -50), Math.toRadians(270))
+            .splineToConstantHeading(new Vector2d(31, -40), Math.toRadians(90))
+            .afterTime(0.1, () -> {
+              robot.claw.clawOpen();
+            })
+
+            // AWAY PLACE
             .setTangent(Math.toRadians(90))
-            .splineToConstantHeading(new Vector2d(42, -5), Math.toRadians(90))
+            .splineToConstantHeading(new Vector2d(32, leftBlock.y + 5), Math.toRadians(0))
+
+            // LEFT BLOCK
+            .setTangent(Math.toRadians(0))
+            .splineToConstantHeading(leftBlock, Math.toRadians(0), SLOW, SLOW_ACCEL)
+            .setTangent(Math.toRadians(270))
+            .splineToConstantHeading(new Vector2d(leftBlock.x, wallPickup.y + 10), Math.toRadians(270))
+
+            // MIDDLE
+            .setTangent(Math.toRadians(90))
+            .splineToConstantHeading(new Vector2d(leftBlock.x, middleBlock.y + 5), Math.toRadians(0))
+            .setTangent(0)
+            .splineToConstantHeading(middleBlock, Math.toRadians(0), SLOW, SLOW_ACCEL)
+            .setTangent(Math.toRadians(270))
+            .splineToConstantHeading(new Vector2d(middleBlock.x, wallPickup.y + 10), Math.toRadians(270))
+
+            // RIGHT
+//            .setTangent(Math.toRadians(90))
+//            .splineToConstantHeading(new Vector2d(middleBlock.x, rightBlock.y + 5), Math.toRadians(0))
+//            .setTangent(0)
+//            .splineToConstantHeading(rightBlock, Math.toRadians(0), SLOW, SLOW_ACCEL)
+//            .splineToConstantHeading(new Vector2d(rightBlock.x, wallPickup.y + 10), Math.toRadians(90))
+
+            // ALIGN WALL
+            //.splineToConstantHeading(new Vector2d(wallPickup.x, wallPickup.y + 18), Math.toRadians(90))
             .build()
     );
 
-    Actions.runBlocking(
-        drive.actionBuilder(drive.localizer.getPose())
-            .splineToConstantHeading(middleBlock, Math.toRadians(160))
-            .splineToConstantHeading(new Vector2d(54, -47), Math.toRadians(90))
-            .splineToConstantHeading(new Vector2d(50, -5), Math.toRadians(90), SLOW)
-            .build()
-    );
-
-    Actions.runBlocking(
-        drive.actionBuilder(drive.localizer.getPose())
-            .splineToConstantHeading(rightBlock, Math.toRadians(180), SLOW)
-            .strafeToConstantHeading(new Vector2d(56, -47), SLOW)
-            .strafeToConstantHeading(new Vector2d(wallPickup.x, wallPickup.y + 10), SLOW)
-            .build());
-    robot.claw.clawOpen();
-    robot.claw.setWall();
-    robot.waitTime(3000);
-    Actions.runBlocking(
-        drive.actionBuilder(drive.localizer.getPose())
-            .strafeToConstantHeading(wallPickup)
-            .build()
-    );
-    robot.claw.clawClose();
-    robot.waitTime(1000);
-    robot.claw.setUnder();
-
-    robot.waitTime(1000);
-
+    getWall();
     Actions.runBlocking(
         drive.actionBuilder(drive.localizer.getPose())
             .setTangent(Math.toRadians(90))
-            .splineToConstantHeading(bar, Math.toRadians(90))
+            .splineToConstantHeading(bar2, Math.toRadians(90))
             .build()
     );
-
     placeBar();
+
+    getWall();
+    Actions.runBlocking(
+        drive.actionBuilder(drive.localizer.getPose())
+            .setTangent(Math.toRadians(90))
+            .splineToConstantHeading(bar3, Math.toRadians(90))
+            .build()
+    );
+    placeBar();
+
+    getWall();
+    Actions.runBlocking(
+        drive.actionBuilder(drive.localizer.getPose())
+            .setTangent(Math.toRadians(90))
+            .splineToConstantHeading(bar4, Math.toRadians(90))
+            .build()
+    );
+    placeBar();
+
+    Actions.runBlocking(
+        drive.actionBuilder(drive.localizer.getPose())
+            .afterTime(0, () -> {
+              robot.claw.setPlace();
+            })
+            .setTangent(Math.toRadians(270))
+            .splineToConstantHeading(new Vector2d(wallPickup.x, wallPickup.y), Math.toRadians(270))
+            .afterTime(0.1, () -> {
+              robot.claw.clawOpen();
+            })
+            .build()
+    );
+
+//    getWall();
+//    Actions.runBlocking(
+//        drive.actionBuilder(drive.localizer.getPose())
+//            .setTangent(Math.toRadians(90))
+//            .splineToConstantHeading(bar5, Math.toRadians(90))
+//            .build()
+//    );
+//    placeBar();
 
   }
 
+
   public void placeBar() {
-    robot.startSlideUpPos(Robot.VERTICAL_SLIDE_DEFAULT, 0.8);
 
     Actions.runBlocking(
         drive.actionBuilder(drive.localizer.getPose())
-            .strafeTo(new Vector2d(drive.localizer.getPose().position.x, drive.localizer.getPose().position.y + 3))
+            .afterTime(0, () -> {
+              robot.claw.setPlace();
+            })
+            .setTangent(Math.toRadians(270))
+            .splineToConstantHeading(new Vector2d(wallPickup.x, wallPickup.y + 18), Math.toRadians(270))
+            .afterTime(0.1, () -> {
+              robot.claw.clawOpen();
+            })
             .build()
     );
+  }
 
-    robot.claw.setPlace();
-
-    Actions.runBlocking(
-        drive.actionBuilder(drive.localizer.getPose())
-            .strafeTo(new Vector2d(drive.localizer.getPose().position.x, drive.localizer.getPose().position.y - 10))
-            .build()
-    );
-
+  public void getWall() {
     robot.claw.clawOpen();
+    robot.claw.setWall();
 
-    //robot.claw.setDefault();
+    Actions.runBlocking(
+        drive.actionBuilder(drive.localizer.getPose())
+            .setTangent(Math.toRadians(270))
+            .splineToConstantHeading(new Vector2d(wallPickup.x, wallPickup.y + 18), Math.toRadians(270))
+            .waitSeconds(0.1)
+            .splineToConstantHeading(wallPickup, Math.toRadians(270), SLOW, SLOW_ACCEL)
+            .build()
+    );
+
+    robot.claw.clawClose();
+    robot.waitTime(200);
+    robot.claw.setUnder();
   }
 
 }
