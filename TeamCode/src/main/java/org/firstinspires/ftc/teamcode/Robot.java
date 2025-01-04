@@ -39,6 +39,9 @@ public class Robot {
   public static int VERTICAL_SLIDE_UP = 2800;
 
   public static int VERTICAL_SLIDE_DEFAULT = 400;
+  public static int VERTICAL_SLIDE_DOWN = 200;
+
+
 
   public static double GYRO_TURN_P = .055;
   public static double KG = 0.07;
