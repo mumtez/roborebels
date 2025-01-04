@@ -20,6 +20,8 @@ public class Teleop extends LinearOpMode {
   boolean transferPos = false;
   boolean transferSlide = false;
 
+  boolean wallPos = false;
+
   @Override
   public void runOpMode() throws InterruptedException {
     robot = new Robot(this);
@@ -97,24 +99,29 @@ public class Teleop extends LinearOpMode {
       robot.setVerticalSlidePower(-gamepad2.left_stick_y);
       transferSlide = Math.abs(vSlideLPos - Robot.VERTICAL_SLIDE_DEFAULT) < 20;
 
-      if (gamepad2.cross && Math.abs(vSlideLPos) > 800) {
+      if (gamepad2.cross && Math.abs(vSlideLPos) > 800 && wallPos) {
         robot.claw.setTransfer();
         transferPos = true;
+        wallPos = false;
       }
 
       if (!(transferPos && transferSlide)) {
         if (gamepad2.square) {
           robot.claw.setUnder();
           transferPos = false;
+          wallPos = false;
         } else if (gamepad2.circle) {
           robot.claw.setPlace();
           transferPos = false;
+          wallPos = false;
         } else if (gamepad2.triangle) {
           robot.claw.setBucket();
           transferPos = false;
+          wallPos = false;
         } else if (gamepad2.touchpad) {
           robot.claw.setWall();
           transferPos = false;
+          wallPos = true;
         }
       }
 
