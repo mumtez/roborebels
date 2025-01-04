@@ -27,8 +27,9 @@ public class Robot {
   public static double HORIZONTAL_SLIDE_TRANSFER = 0.39;
   public static double HORIZONTAL_SLIDE_OUT = .67;
 
-  public static double INTAKE_OUT = 0.2;
-  public static double INTAKE_UP = 0.12;
+  public static double INTAKE_OUT = 0.23;
+  public static double INTAKE_UP = 0.1;
+  public static double INTAKE_BACK = 0.1;
 
   public static int VERTICAL_SLIDE_UP = 2800;
 
@@ -131,6 +132,10 @@ public class Robot {
     this.flipper.setPosition(INTAKE_UP);
   }
 
+  public void rotateIntakeBack() {
+    this.flipper.setPosition(INTAKE_BACK);
+  }
+
   public void rotateIntakeDown() {
     this.flipper.setPosition(INTAKE_OUT);
   }
@@ -155,9 +160,12 @@ public class Robot {
 
   public void endSlideUpPos(int pos) {
 
+
     while (this.opMode.opModeIsActive() && Math.abs(slideLeft.getCurrentPosition() - pos) > 30) {
       // Wait for slide to end
     }
+
+
 
     setVerticalSlidePower(0);
 

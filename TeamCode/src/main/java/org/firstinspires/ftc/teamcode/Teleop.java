@@ -100,10 +100,38 @@ public class Teleop extends LinearOpMode {
       transferSlide = Math.abs(vSlideLPos - Robot.VERTICAL_SLIDE_DEFAULT) < 20;
 
       if (gamepad2.cross && Math.abs(vSlideLPos) > 800 && wallPos) {
+        //robot.rotateIntakeBack();
         robot.claw.setTransfer();
         transferPos = true;
         wallPos = false;
+
       }
+
+      //Combined transfer
+
+      /*
+      if (gamepad2.dpad_up && Math.abs(vSlideLPos) > 800){
+
+        robot.startSlideUpPos(Robot.VERTICAL_SLIDE_PRE_TRANSFER, 0.8);
+
+        robot.waitTime(300);
+
+        robot.claw.setWall();
+        transferPos = false;
+        wallPos = true;
+
+        robot.waitTime(300);
+
+        robot.claw.setTransfer();
+        transferPos = true;
+        wallPos = false;
+
+        robot.endSlideUpPos(Robot.VERTICAL_SLIDE_PRE_TRANSFER);
+      }
+
+       */
+
+
 
       if (!(transferPos && transferSlide)) {
         if (gamepad2.square) {
@@ -125,11 +153,23 @@ public class Teleop extends LinearOpMode {
         }
       }
 
+
       if (gamepad2.right_bumper) {
         robot.claw.clawOpen();
       } else if (gamepad2.left_bumper) {
         robot.claw.clawClose();
       }
+
+
+      /*
+      if (gamepad2.right_bumper) {
+        robot.claw.clawOpen();
+      }
+      else{
+        robot.claw.clawClose();
+      }
+
+       */
 
       robot.intake.setPower(gamepad2.left_trigger - gamepad2.right_trigger);
       if (gamepad2.right_stick_y > 0.1) {

@@ -120,7 +120,7 @@ public class SpecimenRoadrunner extends LinearOpMode {
             .splineToConstantHeading(bar3, Math.toRadians(90))
             .build()
     );
-    placeBar();
+    placeBarFast();
 
     getWall();
     Actions.runBlocking(
@@ -144,6 +144,9 @@ public class SpecimenRoadrunner extends LinearOpMode {
             .build()
     );
 
+
+    robot.startSlideUpPos(Robot.VERTICAL_SLIDE_UP, 0.8);
+
 //    getWall();
 //    Actions.runBlocking(
 //        drive.actionBuilder(drive.localizer.getPose())
@@ -165,10 +168,26 @@ public class SpecimenRoadrunner extends LinearOpMode {
             })
             .setTangent(Math.toRadians(270))
             .splineToConstantHeading(new Vector2d(wallPickup.x, wallPickup.y + 18), Math.toRadians(270))
-            .afterTime(0.1, () -> {
+            .afterTime(0, () -> {
               robot.claw.clawOpen();
             })
             .build()
+    );
+  }
+
+  public void placeBarFast() {
+
+    Actions.runBlocking(
+            drive.actionBuilder(drive.localizer.getPose())
+                    .afterTime(0, () -> {
+                      robot.claw.setPlace();
+                    })
+                    .setTangent(Math.toRadians(270))
+                    .splineToConstantHeading(new Vector2d(wallPickup.x, wallPickup.y + 18), Math.toRadians(270))
+                    .afterTime(0.07, () -> {
+                      robot.claw.clawOpen();
+                    })
+                    .build()
     );
   }
 

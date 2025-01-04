@@ -7,6 +7,7 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.ProfileAccelConstraint;
 import com.acmerobotics.roadrunner.TranslationalVelConstraint;
 import com.acmerobotics.roadrunner.Vector2d;
+import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -28,6 +29,9 @@ public class BucketRoadRunner extends LinearOpMode {
   Robot robot;
   MecanumDrive drive;
 
+  public static Vector2d bar = new Vector2d(2, -32);
+
+
   @Override
   public void runOpMode() throws InterruptedException {
     Pose2d START = new Pose2d(START_VEC.x, START_VEC.y, Math.toRadians(270));
@@ -44,6 +48,13 @@ public class BucketRoadRunner extends LinearOpMode {
     // START
 
     robot.startSlideUpPos(Robot.VERTICAL_SLIDE_DEFAULT, 0.8);
+
+    Actions.runBlocking(
+            drive.actionBuilder(drive.localizer.getPose())
+                    .setTangent(Math.toRadians(90))
+                    .splineToConstantHeading(bar, Math.toRadians(90))
+                    .build()
+    );
 
     // TODO: IMPLEMENT
   }
