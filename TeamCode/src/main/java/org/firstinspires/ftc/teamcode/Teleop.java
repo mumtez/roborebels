@@ -125,7 +125,7 @@ public class Teleop extends LinearOpMode {
       }
 
       robot.intake.setPower(gamepad2.left_trigger - gamepad2.right_trigger);
-      if (Math.abs(gamepad2.right_stick_y) > 0.1) {
+      if (gamepad2.right_stick_y > 0.1) {
         robot.rotateIntakeFlat();
       } else if (gamepad2.ps) {
         robot.rotateIntakeDown();
