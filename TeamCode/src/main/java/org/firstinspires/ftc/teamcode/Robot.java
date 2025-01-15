@@ -54,7 +54,7 @@ public class Robot {
 
   //public final NormalizedColorSensor intakeColor;
 
-  private final LinearOpMode opMode;
+  public final LinearOpMode opMode;
 
   public Robot(LinearOpMode opMode) {
     this.opMode = opMode;
