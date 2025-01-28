@@ -1,9 +1,9 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.pedropathing.localization.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-
 import com.qualcomm.robotcore.hardware.DcMotor.RunMode;
 import com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior;
 import com.qualcomm.robotcore.util.Range;
@@ -12,7 +12,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 @Config
 @TeleOp(name = "TELEOP", group = "TELEOP")
 public class Teleop extends LinearOpMode {
-
+  
+  public static double START_HEADING = Math.toRadians(0);
   public static double HORIZONTAL_SPEED = 200; // INCREASE --> SLOW DOWN | DECREASE --> SPEED UP
 
   Robot robot;
@@ -28,6 +29,8 @@ public class Teleop extends LinearOpMode {
 
     waitForStart();
     // START
+    robot.follower.setStartingPose(new Pose(0, 0, START_HEADING));
+    robot.follower.startTeleopDrive();
 
     robot.startSlideUpPos(Robot.VERTICAL_SLIDE_PRE_TRANSFER, 0.8);
     robot.claw.clawClose();
@@ -36,9 +39,7 @@ public class Teleop extends LinearOpMode {
     robot.rotateIntakeFlat();
 
     robot.slideLeft.setMode(RunMode.RUN_WITHOUT_ENCODER);
-    robot.slideLeft.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
     robot.slideRight.setMode(RunMode.RUN_WITHOUT_ENCODER);
-    robot.slideRight.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
 
     // LOOP
     while (opModeIsActive()) {
@@ -47,36 +48,16 @@ public class Teleop extends LinearOpMode {
       int vSlideRPos = robot.slideRight.getCurrentPosition();
 
       if (gamepad1.left_bumper) {
-        robot.drive.lazyImu.get().resetYaw();
+        robot.follower.resetOffset();
       }
 
       // === FIELD CENTRIC ===
-
-      double y = -gamepad1.left_stick_y;
-      double x = gamepad1.left_stick_x;
-      double rx = gamepad1.right_stick_x;
-
-      double botHeading = AngleUnit.DEGREES.toRadians(robot.getHeading());
-
-      double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
-      double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
-      rotX = rotX * 1.1;  // Counteract imperfect strafing
-
-      double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
-      double frontLeftPower = (rotY + rotX + rx) / denominator;
-      double backLeftPower = (rotY - rotX + rx) / denominator;
-      double frontRightPower = (rotY - rotX - rx) / denominator;
-      double backRightPower = (rotY + rotX - rx) / denominator;
-
-      // Slow mode
-      if (gamepad1.right_bumper) {
-        frontLeftPower *= 0.4;
-        backLeftPower *= 0.4;
-        frontRightPower *= 0.4;
-        backRightPower *= 0.4;
-      }
-
-      robot.setDriveTrainPower(frontRightPower, frontLeftPower, backRightPower, backLeftPower);
+      robot.follower.setTeleOpMovementVectors(
+          -gamepad1.left_stick_y,
+          -gamepad1.left_stick_x,
+          -gamepad1.right_stick_x,
+          false);
+      robot.follower.update();
 
       if (!(transferPos && transferSlide)) {
         horizontalPos -= gamepad2.right_stick_y / HORIZONTAL_SPEED;
@@ -131,8 +112,6 @@ public class Teleop extends LinearOpMode {
 
        */
 
-
-
       if (!(transferPos && transferSlide)) {
         if (gamepad2.square) {
           robot.claw.setUnder();
@@ -152,7 +131,6 @@ public class Teleop extends LinearOpMode {
           wallPos = true;
         }
       }
-
 
       if (gamepad2.right_bumper) {
         robot.claw.clawOpen();

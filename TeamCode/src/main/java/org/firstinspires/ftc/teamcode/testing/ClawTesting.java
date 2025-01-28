@@ -5,8 +5,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.Robot;
 
-@TeleOp(name = "Claw Test", group = "TESTING")
 @Config
+@TeleOp(name = "Claw Test", group = "TESTING")
 public class ClawTesting extends LinearOpMode {
 
   Robot robot;
