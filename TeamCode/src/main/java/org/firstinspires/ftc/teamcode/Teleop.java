@@ -156,6 +156,24 @@ public class Teleop extends LinearOpMode {
         robot.intake.rotateDown();
       }
 
+      if ( (robot.team_color == 0 && robot.intakeColor.red() > robot.COLOR_THRESHOLD) ||    //team red and red in bot
+              (robot.team_color == 1 && robot.intakeColor.blue() > robot.COLOR_THRESHOLD)){   //team blue and blue in bot
+        gamepad1.rumble(5);
+        gamepad2.rumble(5);
+      }
+
+      if (    (horizontalPos >= Robot.HORIZONTAL_SLIDE_OUT) && // Make sure slide is out                                      and
+              ((robot.team_color == 0 && robot.intakeColor.blue() > robot.COLOR_THRESHOLD) ||    //team red and blue in bot   (or
+              (robot.team_color == 1 && robot.intakeColor.red() > robot.COLOR_THRESHOLD))) { //team blue and red in bot           )
+          //outake
+          //robot.intake.setPower(-1 or +1?)
+          //prob check intakeColor first
+      }
+
+
+      telemetry.addData("Red in bot", robot.intakeColor.red());
+      telemetry.addData("Blue in bot", robot.intakeColor.blue());
+
       telemetry.addData("V SLIDE L ENC", vSlideLPos);
       telemetry.addData("V SLIDE R ENC", vSlideRPos);
       telemetry.update();

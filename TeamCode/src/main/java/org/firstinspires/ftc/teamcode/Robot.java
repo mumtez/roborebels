@@ -26,6 +26,12 @@ public class Robot {
 
   public final Follower follower;
 
+  public static int team_color = 0;  //0 red 1 blue
+  public static double COLOR_THRESHOLD = 0.5;
+
+  // TODO: tune color sensor gain
+  public static float INTAKE_COLOR_GAIN = 2;
+
   public final Claw claw;
   public final Intake intake;
 
