@@ -15,9 +15,7 @@ public class ClawTesting extends LinearOpMode {
   @Override
   public void runOpMode() throws InterruptedException {
     robot = new Robot(this);
-
     waitForStart();
-    // START
 
     // LOOP
     while (opModeIsActive()) {
@@ -53,16 +51,16 @@ public class ClawTesting extends LinearOpMode {
         robot.startSlideUpPos(Robot.VERTICAL_SLIDE_UP, 0.8);
       }
       if (gamepad2.a) {
-        robot.rotateIntakeDown();
+        robot.intake.rotateDown();
       }
       if (gamepad2.b) {
-        robot.rotateIntakeFlat();
+        robot.intake.rotateFlat();
       }
 
       robot.intake.setPower(gamepad2.left_trigger - gamepad2.right_trigger);
 
       if (gamepad2.dpad_up) {
-        robot.setHorizontalSlidePos(position);
+        robot.intake.setHorizontalSlidePos(position);
       }
 
     }

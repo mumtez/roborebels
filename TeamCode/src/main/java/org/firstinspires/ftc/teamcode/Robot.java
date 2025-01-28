@@ -15,6 +15,7 @@ import com.qualcomm.robotcore.hardware.ServoImplEx;
 import com.qualcomm.robotcore.util.Range;
 import java.util.List;
 import org.firstinspires.ftc.teamcode.subsystems.Claw;
+import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import pedroPathing.constants.FConstants;
 import pedroPathing.constants.LConstants;
 
@@ -23,15 +24,8 @@ import pedroPathing.constants.LConstants;
 @Config
 public class Robot {
 
-  public static double HORIZONTAL_SLIDE_TRANSFER = 0.39;
-  public static double HORIZONTAL_SLIDE_OUT = .67;
-
-  public static double INTAKE_OUT = 0.23;
-  public static double INTAKE_UP = 0.1;
-  public static double INTAKE_BACK = 0.1;
 
   public static int VERTICAL_SLIDE_UP = 2800;
-
   public static int VERTICAL_SLIDE_DEFAULT = 400;
   public static int VERTICAL_SLIDE_PRE_TRANSFER = 800;
   public static double KG = 0.07;
@@ -42,14 +36,12 @@ public class Robot {
   public final Follower follower;
 
   public final Claw claw;
+  public final Intake intake;
 
   public final DcMotor slideLeft;
   public final DcMotor slideRight;
 
   public final DcMotor hang;
-  public final DcMotor intake;
-  public final ServoImplEx slideOUT;
-  public final ServoImplEx flipper;
 
   //public final NormalizedColorSensor intakeColor;
 
@@ -69,8 +61,9 @@ public class Robot {
     // FOLLOWER (Pedro Pathing)
     follower = new Follower(hardwareMap);
 
-    // CLAW
+    // CLAW / INTAKE
     claw = new Claw(opMode);
+    intake = new Intake(opMode);
 
     // HANG
     hang = hardwareMap.dcMotor.get("hang");
@@ -78,25 +71,17 @@ public class Robot {
     hang.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
 
     // VERTICAL SLIDES
+    // TODO: add magnetic limit switch to bottom out encoder vals
     slideLeft = hardwareMap.dcMotor.get("lu");
     slideRight = hardwareMap.dcMotor.get("ru");
-
     slideLeft.setDirection(Direction.REVERSE);
     slideRight.setDirection(Direction.FORWARD);
-
     slideLeft.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
     slideRight.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
-
     slideLeft.setMode(RunMode.RUN_WITHOUT_ENCODER);
     slideRight.setMode(RunMode.RUN_WITHOUT_ENCODER);
 
-    // HORIZONTAL SLIDES
-    slideOUT = (ServoImplEx) hardwareMap.servo.get("so");
 
-    // INTAKE
-    intake = hardwareMap.dcMotor.get("int");
-    flipper = (ServoImplEx) hardwareMap.servo.get("flip");
-    flipper.setDirection(Servo.Direction.REVERSE);
 /*
     intakeColor = hardwareMap.get(NormalizedColorSensor.class, "ins");
     intakeColor.setGain(INTAKE_COLOR_GAIN);
@@ -123,27 +108,11 @@ public class Robot {
     slideLeft.setMode(RunMode.STOP_AND_RESET_ENCODER);
     slideRight.setMode(RunMode.STOP_AND_RESET_ENCODER);
 
-    this.rotateIntakeDown();
     claw.clawClose();
     claw.setInit();
-    this.setHorizontalSlidePos(HORIZONTAL_SLIDE_TRANSFER);
-  }
 
-  public void setHorizontalSlidePos(double pos) {
-    pos = Range.clip(pos, HORIZONTAL_SLIDE_TRANSFER, HORIZONTAL_SLIDE_OUT);
-    this.slideOUT.setPosition(pos);
-  }
-
-  public void rotateIntakeFlat() {
-    this.flipper.setPosition(INTAKE_UP);
-  }
-
-  public void rotateIntakeBack() {
-    this.flipper.setPosition(INTAKE_BACK);
-  }
-
-  public void rotateIntakeDown() {
-    this.flipper.setPosition(INTAKE_OUT);
+    this.intake.rotateDown();
+    this.intake.setHorizontalSlidePos(Intake.SLIDE_TRANSFER);
   }
 
   public void setVerticalSlidePower(double pow) {
@@ -151,6 +120,7 @@ public class Robot {
     slideLeft.setPower(pow);
   }
 
+  // TODO: use a custom PID for improved performance
   public void startSlideUpPos(int pos, double pow) {
     setVerticalSlidePower(0);
 
@@ -174,17 +144,6 @@ public class Robot {
     slideLeft.setMode(RunMode.RUN_WITHOUT_ENCODER);
     slideRight.setMode(RunMode.RUN_WITHOUT_ENCODER);
   }
-
-  public double getHeading() {
-    return Math.toDegrees(follower.getHeadingOffset());
-  }
-
-//  public void setDriveTrainPower(double frPow, double flPow, double brPow, double blPow) {
-//    drive.rightFront.setPower(frPow);
-//    drive.leftFront.setPower(flPow);
-//    drive.rightBack.setPower(brPow);
-//    drive.leftBack.setPower(blPow);
-//  }
 
   public void waitTime(double ms) {
     double startTime = System.currentTimeMillis();

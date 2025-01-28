@@ -8,16 +8,17 @@ import com.qualcomm.robotcore.hardware.DcMotor.RunMode;
 import com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior;
 import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.teamcode.subsystems.Intake;
 
 @Config
 @TeleOp(name = "TELEOP", group = "TELEOP")
 public class Teleop extends LinearOpMode {
-  
+
   public static double START_HEADING = Math.toRadians(0);
   public static double HORIZONTAL_SPEED = 200; // INCREASE --> SLOW DOWN | DECREASE --> SPEED UP
 
   Robot robot;
-  double horizontalPos = Robot.HORIZONTAL_SLIDE_TRANSFER;
+  double horizontalPos = Intake.SLIDE_TRANSFER;
   boolean transferPos = false;
   boolean transferSlide = false;
 
@@ -36,7 +37,7 @@ public class Teleop extends LinearOpMode {
     robot.claw.clawClose();
     robot.waitTime(500);
     robot.claw.setTransfer();
-    robot.rotateIntakeFlat();
+    robot.intake.rotateFlat();
 
     robot.slideLeft.setMode(RunMode.RUN_WITHOUT_ENCODER);
     robot.slideRight.setMode(RunMode.RUN_WITHOUT_ENCODER);
@@ -61,8 +62,8 @@ public class Teleop extends LinearOpMode {
 
       if (!(transferPos && transferSlide)) {
         horizontalPos -= gamepad2.right_stick_y / HORIZONTAL_SPEED;
-        horizontalPos = Range.clip(horizontalPos, Robot.HORIZONTAL_SLIDE_TRANSFER, Robot.HORIZONTAL_SLIDE_OUT);
-        robot.setHorizontalSlidePos(horizontalPos);
+        horizontalPos = Range.clip(horizontalPos, Intake.SLIDE_TRANSFER, Intake.SLIDE_OUT);
+        robot.intake.setHorizontalSlidePos(horizontalPos);
       }
 
       // Don't use because of belt skipping -- can be used later with addition of mag lim switch on slide
@@ -151,9 +152,9 @@ public class Teleop extends LinearOpMode {
 
       robot.intake.setPower(gamepad2.left_trigger - gamepad2.right_trigger);
       if (gamepad2.right_stick_y > 0.1) {
-        robot.rotateIntakeFlat();
+        robot.intake.rotateFlat();
       } else if (gamepad2.ps) {
-        robot.rotateIntakeDown();
+        robot.intake.rotateDown();
       }
 
       telemetry.addData("V SLIDE L ENC", vSlideLPos);

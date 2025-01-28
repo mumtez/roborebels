@@ -6,25 +6,25 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.Robot;
 
 @Config
-@TeleOp(name = "intake Test", group = "TESTING")
+@TeleOp(name = "Intake Test", group = "TESTING")
 public class IntakeTesting extends LinearOpMode {
 
-    Robot robot;
+  Robot robot;
 
-    public static double flipPos = 0.5;
+  public static double rotatePos = 0.5;
 
-    @Override
-    public void runOpMode() throws InterruptedException {
-        robot = new Robot(this);
+  @Override
+  public void runOpMode() throws InterruptedException {
+    robot = new Robot(this);
 
-        waitForStart();
-        // START
+    waitForStart();
+    // START
 
-        // LOOP
-        while (opModeIsActive()) {
+    // LOOP
+    while (opModeIsActive()) {
+      robot.intake.rotate.setPosition(rotatePos);
+      robot.intake.setPower(gamepad1.right_trigger - gamepad1.left_trigger);
 
-            robot.intake.setPower(gamepad1.right_trigger - gamepad1.left_trigger);
-
-        }
     }
+  }
 }
