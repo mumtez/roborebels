@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotor.RunMode;
 import com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior;
@@ -40,8 +41,11 @@ public class Robot {
   public static double KG = 0.07;
   public static double HEADING_THRESHOLD = 1;
 
+  public static int team_color = 0;  //0 red 1 blue
+  public static double COLOR_THRESHOLD = 0.5;
+
   // TODO: tune color sensor gain
-  // public static float INTAKE_COLOR_GAIN = 2;
+  public static float INTAKE_COLOR_GAIN = 2;
 
   public final MecanumDrive drive;
   public final DcMotor slideLeft;
@@ -52,7 +56,7 @@ public class Robot {
   public final DcMotor intake;
   public final ServoImplEx flipper;//, outtake;
 
-  //public final NormalizedColorSensor intakeColor;
+  public final ColorSensor intakeColor;
 
   public final LinearOpMode opMode;
 
@@ -89,16 +93,20 @@ public class Robot {
     intake = hardwareMap.dcMotor.get("int");
     flipper = (ServoImplEx) hardwareMap.servo.get("flip");
     flipper.setDirection(Servo.Direction.REVERSE);
-/*
+
     // Sensor
-    //intakeColor = hardwareMap.get(NormalizedColorSensor.class, "ins");
-   // intakeColor.setGain(INTAKE_COLOR_GAIN);
+    intakeColor = hardwareMap.get(ColorSensor.class, "ins");
+
+    /*
+    intakeColor.setGain(INTAKE_COLOR_GAIN);
     if (intakeColor instanceof SwitchableLight) {
       ((SwitchableLight) intakeColor).enableLight(
           true); // Turn the light ON to observe objects that dont emit their own light
     }
 
- */
+     */
+
+
     // TODO: utilize color sensor + tune GAIN for environment
     //    NormalizedRGBA colors = intakeColor.getNormalizedColors();
     //    Access colors:

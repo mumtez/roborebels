@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 public class FConstants {
     static {
-        FollowerConstants.localizers = Localizers.THREE_WHEEL;
+        FollowerConstants.localizers = Localizers.TWO_WHEEL;
 
         FollowerConstants.leftFrontMotorName = "fl";
         FollowerConstants.leftRearMotorName = "bl";
@@ -24,9 +24,11 @@ public class FConstants {
 
         FollowerConstants.xMovement = 75.2449;
         FollowerConstants.yMovement = 109.03;
+        //Maybe retest
 
         FollowerConstants.forwardZeroPowerAcceleration = -29.0683;
         FollowerConstants.lateralZeroPowerAcceleration = -116.4933;
+        //Maybe retest
 
         FollowerConstants.translationalPIDFCoefficients.setCoefficients(0.028,0,0.0005,0.0001);
         FollowerConstants.useSecondaryTranslationalPID = false;
