@@ -10,8 +10,6 @@ import com.qualcomm.robotcore.hardware.ServoImplEx;
 @Config
 public class Claw {
 
-  public final ServoImplEx claw, clawUpArm, clawDownArm;
-
   public static double clawOpenPos = 0.65;
   public static double clawClosePos = 0.4;
 
@@ -22,7 +20,6 @@ public class Claw {
   public static double upArmTransfer = 0.00;
   public static double upArmInit = 0.60;
 
-
   public static double downArmPlace = 0.2;
   public static double downArmWall = 0.95;
   public static double downArmBucket = 0.35;
@@ -30,6 +27,8 @@ public class Claw {
   public static double downArmTransfer = 0.92;
   public static double downArmInit = 0.85;
 
+  public final ServoImplEx claw, clawUpArm, clawDownArm;
+  // TODO: add color/touch/limit sensor
 
   public Claw(LinearOpMode opMode) {
     HardwareMap hardwareMap = opMode.hardwareMap;

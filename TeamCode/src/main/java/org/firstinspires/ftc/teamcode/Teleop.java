@@ -39,8 +39,7 @@ public class Teleop extends LinearOpMode {
     robot.claw.setTransfer();
     robot.intake.rotateFlat();
 
-    robot.slideLeft.setMode(RunMode.RUN_WITHOUT_ENCODER);
-    robot.slideRight.setMode(RunMode.RUN_WITHOUT_ENCODER);
+    robot.setVerticalSlideMode(RunMode.RUN_WITHOUT_ENCODER);
 
     // LOOP
     while (opModeIsActive()) {
