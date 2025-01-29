@@ -36,9 +36,9 @@ public class Robot {
   public final DcMotor slideRight;
   public final DcMotor hang;
 
-  public final TouchSensor maglim;
+  //public final TouchSensor maglim;
 
-  public final Servo rgb;
+  //public final Servo rgb;
 
   public int team_color = 0;  //0 red 1 blue
 
@@ -76,10 +76,10 @@ public class Robot {
     slideRight.setMode(RunMode.RUN_WITHOUT_ENCODER);
 
     // TODO: wire + use magnetic limit switch to offset slide encoder vals
-    maglim = hardwareMap.touchSensor.get("mag");
+    //maglim = hardwareMap.touchSensor.get("mag");
 
     // TODO: use color beacon to show which color is in the intake
-    rgb = hardwareMap.servo.get("rgb");
+    //rgb = hardwareMap.servo.get("rgb");
   }
 
   public void initAuton() {

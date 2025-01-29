@@ -8,20 +8,29 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 public class LConstants {
 
   static {
-    // TODO: measure offsets
-    PinpointConstants.forwardY = 1;
-    PinpointConstants.strafeX = -2.5;
+    PinpointConstants.forwardY  = 3.5;
+    PinpointConstants.strafeX = 0;
+
     PinpointConstants.distanceUnit = DistanceUnit.INCH;
-    PinpointConstants.hardwareMapName = "pinpoint";
+    PinpointConstants.hardwareMapName = "pinpoint";  // change name
+
+
     PinpointConstants.useYawScalar = false;
     PinpointConstants.yawScalar = 1.0;
+
     PinpointConstants.useCustomEncoderResolution = false;
     PinpointConstants.encoderResolution = GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD;
-    PinpointConstants.customEncoderResolution = 13.26291192;
-    PinpointConstants.forwardEncoderDirection = EncoderDirection.REVERSED;
-    PinpointConstants.strafeEncoderDirection = EncoderDirection.REVERSED;
+    PinpointConstants.customEncoderResolution = 13.26291192; // Useless ?
+
+    PinpointConstants.forwardEncoderDirection = GoBildaPinpointDriver.EncoderDirection.REVERSED;
+    PinpointConstants.strafeEncoderDirection = GoBildaPinpointDriver.EncoderDirection.REVERSED;
   }
 }
+
+
+
+
+
 
 
 
