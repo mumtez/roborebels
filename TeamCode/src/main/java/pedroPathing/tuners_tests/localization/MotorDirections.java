@@ -28,80 +28,86 @@ import pedroPathing.constants.LConstants;
 
 @TeleOp(name = "Motor Directions", group = "Teleop Test")
 public class MotorDirections extends OpMode {
-    private Telemetry telemetryA;
 
-    private DcMotorEx leftFront;
-    private DcMotorEx leftRear;
-    private DcMotorEx rightFront;
-    private DcMotorEx rightRear;
-    private List<DcMotorEx> motors;
+  private Telemetry telemetryA;
 
-    @Override
-    public void init() {
-        Constants.setConstants(FConstants.class, LConstants.class);
+  private DcMotorEx leftFront;
+  private DcMotorEx leftRear;
+  private DcMotorEx rightFront;
+  private DcMotorEx rightRear;
+  private List<DcMotorEx> motors;
 
-        leftFront = hardwareMap.get(DcMotorEx.class, leftFrontMotorName);
-        leftRear = hardwareMap.get(DcMotorEx.class, leftRearMotorName);
-        rightRear = hardwareMap.get(DcMotorEx.class, rightRearMotorName);
-        rightFront = hardwareMap.get(DcMotorEx.class, rightFrontMotorName);
-        leftFront.setDirection(leftFrontMotorDirection);
-        leftRear.setDirection(leftRearMotorDirection);
-        rightFront.setDirection(rightFrontMotorDirection);
-        rightRear.setDirection(rightRearMotorDirection);
+  @Override
+  public void init() {
+    Constants.setConstants(FConstants.class, LConstants.class);
 
-        motors = Arrays.asList(leftFront, leftRear, rightFront, rightRear);
+    leftFront = hardwareMap.get(DcMotorEx.class, leftFrontMotorName);
+    leftRear = hardwareMap.get(DcMotorEx.class, leftRearMotorName);
+    rightRear = hardwareMap.get(DcMotorEx.class, rightRearMotorName);
+    rightFront = hardwareMap.get(DcMotorEx.class, rightFrontMotorName);
+    leftFront.setDirection(leftFrontMotorDirection);
+    leftRear.setDirection(leftRearMotorDirection);
+    rightFront.setDirection(rightFrontMotorDirection);
+    rightRear.setDirection(rightRearMotorDirection);
 
-        for (DcMotorEx motor : motors) {
-            MotorConfigurationType motorConfigurationType = motor.getMotorType().clone();
-            motorConfigurationType.setAchieveableMaxRPMFraction(1.0);
-            motor.setMotorType(motorConfigurationType);
-        }
+    motors = Arrays.asList(leftFront, leftRear, rightFront, rightRear);
 
-        for (DcMotorEx motor : motors) {
-            motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        }
-
-        telemetryA = new MultipleTelemetry(this.telemetry, FtcDashboard.getInstance().getTelemetry());
-        telemetryA.addLine("This will allow you to test the directions of your motors. You can change the directions in FTCDashboard -> FollowerConstants.");
-        telemetryA.update();
+    for (DcMotorEx motor : motors) {
+      MotorConfigurationType motorConfigurationType = motor.getMotorType().clone();
+      motorConfigurationType.setAchieveableMaxRPMFraction(1.0);
+      motor.setMotorType(motorConfigurationType);
     }
 
-    @Override
-    public void loop() {
-        Constants.setConstants(FConstants.class, LConstants.class);
-        leftFront.setDirection(leftFrontMotorDirection);
-        leftRear.setDirection(leftRearMotorDirection);
-        rightFront.setDirection(rightFrontMotorDirection);
-        rightRear.setDirection(rightRearMotorDirection);
-
-        if(gamepad1.a)
-            leftFront.setPower(1);
-        else
-            leftFront.setPower(0);
-
-        if(gamepad1.y)
-            leftRear.setPower(1);
-        else
-            leftRear.setPower(0);
-
-        if(gamepad1.b)
-            rightFront.setPower(1);
-        else
-            rightFront.setPower(0);
-
-        if(gamepad1.x)
-            rightRear.setPower(1);
-        else
-            rightRear.setPower(0);
-
-        telemetryA.addLine("Press A to spin the left front motor at 100% power");
-        telemetryA.addLine("Press Y to spin the left rear motor at 100% power");
-        telemetryA.addLine("Press B to spin the right front motor at 100% power");
-        telemetryA.addLine("Press X to spin the right rear motor at 100% power");
-        telemetryA.addData("Left Front Motor Direction: ", leftFrontMotorDirection);
-        telemetryA.addData("Left Rear Motor Direction: ", leftRearMotorDirection);
-        telemetryA.addData("Right Front Motor Direction: ", rightFrontMotorDirection);
-        telemetryA.addData("Right Rear Motor Direction: ", rightRearMotorDirection);
-        telemetryA.update();
+    for (DcMotorEx motor : motors) {
+      motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
     }
+
+    telemetryA = new MultipleTelemetry(this.telemetry, FtcDashboard.getInstance().getTelemetry());
+    telemetryA.addLine(
+        "This will allow you to test the directions of your motors. You can change the directions in FTCDashboard -> FollowerConstants.");
+    telemetryA.update();
+  }
+
+  @Override
+  public void loop() {
+    Constants.setConstants(FConstants.class, LConstants.class);
+    leftFront.setDirection(leftFrontMotorDirection);
+    leftRear.setDirection(leftRearMotorDirection);
+    rightFront.setDirection(rightFrontMotorDirection);
+    rightRear.setDirection(rightRearMotorDirection);
+
+    if (gamepad1.cross) {
+      leftFront.setPower(1);
+    } else {
+      leftFront.setPower(0);
+    }
+
+    if (gamepad1.triangle) {
+      leftRear.setPower(1);
+    } else {
+      leftRear.setPower(0);
+    }
+
+    if (gamepad1.circle) {
+      rightFront.setPower(1);
+    } else {
+      rightFront.setPower(0);
+    }
+
+    if (gamepad1.square) {
+      rightRear.setPower(1);
+    } else {
+      rightRear.setPower(0);
+    }
+
+    telemetryA.addLine("Press cross to spin the left front motor at 100% power");
+    telemetryA.addLine("Press triangle to spin the left rear motor at 100% power");
+    telemetryA.addLine("Press circle to spin the right front motor at 100% power");
+    telemetryA.addLine("Press square to spin the right rear motor at 100% power");
+    telemetryA.addData("Left Front Motor Direction: ", leftFrontMotorDirection);
+    telemetryA.addData("Left Rear Motor Direction: ", leftRearMotorDirection);
+    telemetryA.addData("Right Front Motor Direction: ", rightFrontMotorDirection);
+    telemetryA.addData("Right Rear Motor Direction: ", rightRearMotorDirection);
+    telemetryA.update();
+  }
 }

@@ -5,6 +5,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor.RunMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.Robot;
 
@@ -13,10 +14,12 @@ import org.firstinspires.ftc.teamcode.Robot;
 public class SlidePIDTesting extends LinearOpMode {
 
   //TODO: TUNING (https://www.robotsforroboticists.com/pid-control/)
-  public static double kp = 0;
+  // Tuned but need a mag lim switch due to encoder drift / belt skipping
+  public static double kp = 0.01;
   public static double ki = 0;
-  public static double kd = 0;
-  public static double TARGET = 100;
+  public static double kd = 0.0001;
+  public static double KG = 0.07;
+  public static double TARGET = 1000;
 
   private final ElapsedTime timer = new ElapsedTime();
   private double lastError = 0;
@@ -29,22 +32,31 @@ public class SlidePIDTesting extends LinearOpMode {
     telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
     Robot robot = new Robot(this);
+    robot.setVerticalSlideMode(RunMode.STOP_AND_RESET_ENCODER);
 
     waitForStart();
+    robot.setVerticalSlideMode(RunMode.RUN_WITHOUT_ENCODER);
     timer.reset();
 
     while (opModeIsActive()) {
-      int reference = robot.slideLeft.getCurrentPosition();
+      int leftRef = robot.slideLeft.getCurrentPosition();
+      int rightRef = robot.slideRight.getCurrentPosition();
 
+      //int reference = (leftRef + rightRef) / 2; // does not seem to improve performance
+      int reference = leftRef;
       double power = PIDControl(TARGET, reference);
-      robot.setVerticalSlidePower(power);
+      robot.setVerticalSlidePower(power + KG);
 
-      if (gamepad1.a) {
+      if (gamepad1.square) {
         reset();
       }
 
       telemetry.addData("TARGET", TARGET);
       telemetry.addData("REFERENCE", reference);
+      telemetry.addData("OUTPUT", power);
+
+      telemetry.addData("left slide ticks", leftRef);
+      telemetry.addData("right slide ticks", rightRef);
       telemetry.update();
     }
 
@@ -58,10 +70,15 @@ public class SlidePIDTesting extends LinearOpMode {
 
   public double PIDControl(double reference, double state) {
     double error = reference - state;
-    integralSum += error * timer.seconds();
-    double derivative = (error - lastError) / timer.seconds();
+    double dt = timer.seconds();
+
+    integralSum += error * dt;
+    double derivative = (error - lastError) / dt;
+
     lastError = error;
 
-    return (error * kp) + (derivative * kd) + (integralSum * ki);
+    double output = (error * kp) + (derivative * kd) + (integralSum * ki);
+    timer.reset(); // TODO: Rob added this, see if you can understand why it's necessary
+    return output;
   }
 }

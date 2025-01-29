@@ -10,6 +10,8 @@ import com.qualcomm.robotcore.hardware.DcMotor.RunMode;
 import com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior;
 import com.qualcomm.robotcore.hardware.DcMotorSimple.Direction;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 import java.util.List;
 import org.firstinspires.ftc.teamcode.subsystems.Claw;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
@@ -24,23 +26,21 @@ public class Robot {
   public static int VERTICAL_SLIDE_PRE_TRANSFER = 800;
   public static double KG = 0.07;
 
+  private final LinearOpMode opMode;
+
   public final Follower follower;
-
-  public static int team_color = 0;  //0 red 1 blue
-  public static double COLOR_THRESHOLD = 0.5;
-
-  // TODO: tune color sensor gain
-  public static float INTAKE_COLOR_GAIN = 2;
-
   public final Claw claw;
   public final Intake intake;
 
   public final DcMotor slideLeft;
   public final DcMotor slideRight;
-
   public final DcMotor hang;
 
-  private final LinearOpMode opMode;
+  public final TouchSensor maglim;
+
+  public final Servo rgb;
+
+  public int team_color = 0;  //0 red 1 blue
 
   public Robot(LinearOpMode opMode) {
     this.opMode = opMode;
@@ -68,14 +68,18 @@ public class Robot {
     // VERTICAL SLIDES
     slideLeft = hardwareMap.dcMotor.get("lu");
     slideRight = hardwareMap.dcMotor.get("ru");
-    slideLeft.setDirection(Direction.REVERSE);
-    slideRight.setDirection(Direction.FORWARD);
+    slideLeft.setDirection(Direction.FORWARD);
+    slideRight.setDirection(Direction.REVERSE);
     slideLeft.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
     slideRight.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
     slideLeft.setMode(RunMode.RUN_WITHOUT_ENCODER);
     slideRight.setMode(RunMode.RUN_WITHOUT_ENCODER);
 
-    // TODO: add magnetic limit switch to bottom out encoder vals
+    // TODO: wire + use magnetic limit switch to offset slide encoder vals
+    maglim = hardwareMap.touchSensor.get("mag");
+
+    // TODO: use color beacon to show which color is in the intake
+    rgb = hardwareMap.servo.get("rgb");
   }
 
   public void initAuton() {
@@ -108,21 +112,10 @@ public class Robot {
 
     slideLeft.setMode(RunMode.RUN_TO_POSITION);
     slideRight.setMode(RunMode.RUN_TO_POSITION);
-
     setVerticalSlidePower(pow);
   }
 
-  public void endSlideUpPos(int pos) {
-
-    while (this.opMode.opModeIsActive() && Math.abs(slideLeft.getCurrentPosition() - pos) > 30) {
-      // Wait for slide to end
-    }
-
-    setVerticalSlidePower(0);
-
-    slideLeft.setMode(RunMode.RUN_WITHOUT_ENCODER);
-    slideRight.setMode(RunMode.RUN_WITHOUT_ENCODER);
-  }
+  // TODO: add method to return true if slides are within a threshold of a position
 
   public void waitTime(double ms) {
     double startTime = System.currentTimeMillis();

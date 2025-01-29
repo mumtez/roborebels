@@ -14,21 +14,21 @@ public class Claw {
   public static double clawClosePos = 0.4;
 
   public static double upArmPlace = .47;
-  public static double upArmWall = 0.27;
-  public static double upArmBucket = 0.75;
+  public static double upArmWall = 0.34;
+  public static double upArmBucket = 0.78;
   public static double upArmUnder = 0.60;
   public static double upArmTransfer = 0.00;
   public static double upArmInit = 0.60;
 
   public static double downArmPlace = 0.2;
-  public static double downArmWall = 0.95;
+  public static double downArmWall = 0.84;
   public static double downArmBucket = 0.35;
   public static double downArmUnder = 0.16;
   public static double downArmTransfer = 0.92;
   public static double downArmInit = 0.85;
 
   public final ServoImplEx claw, clawUpArm, clawDownArm;
-  // TODO: add color/touch/limit sensor
+  // TODO: add color/touch/limit sensor (states?)
 
   public Claw(LinearOpMode opMode) {
     HardwareMap hardwareMap = opMode.hardwareMap;

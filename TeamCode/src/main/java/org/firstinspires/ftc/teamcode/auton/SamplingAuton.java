@@ -24,8 +24,6 @@ public class SamplingAuton extends OpMode {
 
   private Follower follower;
 
-  PathChain auton;
-
   private PathChain path1, path2, path3, path4, path5, path6, path7, path8, path9, path10, path11;
 
   private int pathState = 0;

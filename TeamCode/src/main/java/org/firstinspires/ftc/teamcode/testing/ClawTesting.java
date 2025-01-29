@@ -27,20 +27,28 @@ public class ClawTesting extends LinearOpMode {
         robot.claw.clawClose();
       }
 
-      if (gamepad1.b) {
+      if (gamepad1.circle) {
         robot.claw.setPlace();
       }
 
-      if (gamepad1.a) {
+      if (gamepad1.square) {
         robot.claw.setUnder();
       }
 
-      if (gamepad1.x) {
+      if (gamepad1.cross) {
         robot.claw.setBucket();
       }
 
-      if (gamepad1.y) {
+      if (gamepad1.triangle) {
         robot.claw.setWall();
+      }
+
+      if (gamepad1.left_trigger > 0.5) {
+        robot.claw.setInit();
+      }
+
+      if (gamepad1.right_trigger > 0.5) {
+        robot.claw.setTransfer();
       }
 
       if (gamepad1.dpad_down) {
@@ -50,14 +58,14 @@ public class ClawTesting extends LinearOpMode {
       if (gamepad1.dpad_up) {
         robot.startSlideUpPos(Robot.VERTICAL_SLIDE_UP, 0.8);
       }
-      if (gamepad2.a) {
+      if (gamepad2.square) {
         robot.intake.rotateDown();
       }
-      if (gamepad2.b) {
+      if (gamepad2.cross) {
         robot.intake.rotateFlat();
       }
 
-      robot.intake.setPower(gamepad2.left_trigger - gamepad2.right_trigger);
+      robot.intake.setPower(gamepad2.right_trigger - gamepad2.left_trigger);
 
       if (gamepad2.dpad_up) {
         robot.intake.setHorizontalSlidePos(position);

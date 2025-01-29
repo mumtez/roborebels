@@ -7,34 +7,31 @@ import com.qualcomm.robotcore.hardware.DcMotor.RunMode;
 import com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
+import com.qualcomm.robotcore.hardware.NormalizedRGBA;
+import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo.Direction;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
-import com.qualcomm.robotcore.util.Range;
+import com.qualcomm.robotcore.hardware.SwitchableLight;
 
 @Config
 public class Intake {
 
-  public static double SLIDE_TRANSFER = 0.39;
-  public static double SLIDE_OUT = .67;
+  public static double SLIDE_IN = 0.405;
+  public static double SLIDE_TRANSFER = 0.405;
+  public static double SLIDE_OUT = 0.68;
 
-  public static double INTAKE_DOWN = 0.23;
-  public static double INTAKE_FLAT = 0.1;
+  public static double INTAKE_DOWN = 0.16;
+  public static double INTAKE_FLAT = 0.05;
+
+  public static float COLOR_GAIN = 2;
+  public static float COLOR_THRESHOLD = 10;
 
   private final DcMotor intake;
   public final ServoImplEx rotate, hSlide;
-  // TODO: add color sensor
-  // public static float INTAKE_COLOR_GAIN = 2;
-  // public final NormalizedColorSensor color;
 
-  /*
-    intakeColor = hardwareMap.get(NormalizedColorSensor.class, "ins");
-    intakeColor.setGain(INTAKE_COLOR_GAIN);
-    if (intakeColor instanceof SwitchableLight) {
-      ((SwitchableLight) intakeColor).enableLight(
-          true); // Turn the light ON to observe objects that dont emit their own light
-    }
+  public final NormalizedColorSensor color;
 
- */
   // TODO: utilize color sensor + tune GAIN for environment
   //    NormalizedRGBA colors = intakeColor.getNormalizedColors();
   //    Access colors:
@@ -60,11 +57,24 @@ public class Intake {
 
     hSlide = (ServoImplEx) hardwareMap.servo.get("so");
     hSlide.setDirection(Direction.FORWARD);
+
+    color = hardwareMap.get(NormalizedColorSensor.class, "ins");
+    color.setGain(COLOR_GAIN);
+    if (color instanceof SwitchableLight) {
+      ((SwitchableLight) color).enableLight(true);
+      // Turn the light ON to observe objects that don't emit their own light
+    }
   }
 
+  public NormalizedRGBA senseColor() {
+    return this.color.getNormalizedColors();
+  }
+
+  public double senseDistance() {
+    return ((OpticalDistanceSensor) this.color).getLightDetected();
+  }
 
   public void setHorizontalSlidePos(double pos) {
-    pos = Range.clip(pos, SLIDE_TRANSFER, SLIDE_OUT);
     this.hSlide.setPosition(pos);
   }
 
