@@ -21,11 +21,11 @@ public class Intake {
   public static double SLIDE_TRANSFER = 0.405;
   public static double SLIDE_OUT = 0.68;
 
-  public static double INTAKE_DOWN = 0.16;
+  public static double INTAKE_DOWN = 0.18;
   public static double INTAKE_FLAT = 0.05;
 
   public static float COLOR_GAIN = 2;
-  public static float COLOR_THRESHOLD = 10;
+  public static float COLOR_THRESHOLD = 0.02f;
 
   private final DcMotor intake;
   public final ServoImplEx rotate, hSlide;

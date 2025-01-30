@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.subsystems.Intake;
 public class Teleop extends LinearOpMode {
 
   public static double START_HEADING = Math.toRadians(0);
-  public static double HORIZONTAL_SPEED = 200; // INCREASE --> SLOW DOWN | DECREASE --> SPEED UP
+  public static double HORIZONTAL_SPEED = 100; // INCREASE --> SLOW DOWN | DECREASE --> SPEED UP
 
   Robot robot;
   double horizontalPos = Intake.SLIDE_TRANSFER;
@@ -28,6 +28,19 @@ public class Teleop extends LinearOpMode {
   @Override
   public void runOpMode() throws InterruptedException {
     robot = new Robot(this);
+
+    if (gamepad1.triangle){
+      robot.team_color = 0;
+      telemetry.update();
+    }
+    if (gamepad1.circle){
+      robot.team_color = 1;
+      telemetry.update();
+    }
+
+    telemetry.addData("Team (red 0, blue 1): ", robot.team_color);
+    telemetry.update();
+
 
     waitForStart();
     // START
@@ -91,7 +104,7 @@ public class Teleop extends LinearOpMode {
 
       //Combined transfer
 
-      /*
+
       if (gamepad2.dpad_up && Math.abs(vSlideLPos) > 800){
 
         robot.startSlideUpPos(Robot.VERTICAL_SLIDE_PRE_TRANSFER, 0.8);
@@ -108,10 +121,18 @@ public class Teleop extends LinearOpMode {
         transferPos = true;
         wallPos = false;
 
-        robot.endSlideUpPos(Robot.VERTICAL_SLIDE_PRE_TRANSFER);
+        robot.waitTime(300);
+
+        robot.startSlideUpPos(Robot.VERTICAL_SLIDE_DEFAULT, 0.8);
+
+        robot.waitTime(300);
+
+        robot.claw.clawClose();
+
+        robot.endSlideUpPos();
       }
 
-       */
+
 
       if (!(transferPos && transferSlide)) {
         if (gamepad2.square) {
@@ -150,34 +171,39 @@ public class Teleop extends LinearOpMode {
 
        */
 
-      robot.intake.setPower(gamepad2.left_trigger - gamepad2.right_trigger);
+      robot.intake.setPower(gamepad2.right_trigger - gamepad2.left_trigger);
       if (gamepad2.right_stick_y > 0.1) {
         robot.intake.rotateFlat();
       } else if (gamepad2.ps) {
         robot.intake.rotateDown();
       }
 
+      //TODO:  Change to colors from robot.intake rather than teleop colors ?
+
       NormalizedRGBA colors = robot.intake.senseColor(); // Important: only make 1 i2c call per loop
       double distance = robot.intake.senseDistance();
 
-      if ((robot.team_color == 0 && colors.red > Intake.COLOR_THRESHOLD) ||    //team red and red in bot
-          (robot.team_color == 1 && colors.blue > Intake.COLOR_THRESHOLD)) {   //team blue and blue in bot
-        gamepad1.rumble(5);
-        gamepad2.rumble(5);
+      if ((robot.team_color == 0 && robot.intake.senseColor().red > Intake.COLOR_THRESHOLD) ||    //team red and red in bot
+          (robot.team_color == 1 && robot.intake.senseColor().blue > Intake.COLOR_THRESHOLD)) {   //team blue and blue in bot
+        gamepad1.rumble(150);
+        gamepad2.rumble(150);
       }
 
       // TODO: this actually means the slide is at max extension, not just "out"
-      if ((horizontalPos >= Intake.SLIDE_OUT) && // Make sure slide is out and
+      if (
           (
               (robot.team_color == 0 && colors.blue > Intake.COLOR_THRESHOLD) //team red and blue in bot
                   || (robot.team_color == 1 && colors.red > Intake.COLOR_THRESHOLD) //team blue and red in bot
           )
       ) {
-        //outake
-        //robot.intake.setPower(-1 or +1?)
-        //prob check intakeColor first
+
+        robot.intake.rotateFlat();
+        robot.intake.setPower(-1);
+        robot.waitTime(500);
+        robot.intake.setPower(0);
       }
 
+      telemetry.addData("Team (red 0, blue 1): ", robot.team_color);
       telemetry.addData("Red in bot", colors.red);
       telemetry.addData("Blue in bot", colors.blue);
       telemetry.addData("color sum", colors.red + colors.blue + colors.alpha + colors.green);

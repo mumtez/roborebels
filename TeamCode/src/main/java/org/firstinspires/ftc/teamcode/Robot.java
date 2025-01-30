@@ -115,6 +115,16 @@ public class Robot {
     setVerticalSlidePower(pow);
   }
 
+  public void endSlideUpPos(){
+
+    setVerticalSlidePower(0);
+
+    slideLeft.setMode(RunMode.RUN_WITHOUT_ENCODER);
+    slideRight.setMode(RunMode.RUN_WITHOUT_ENCODER);
+
+  }
+
+
   // TODO: add method to return true if slides are within a threshold of a position
 
   public void waitTime(double ms) {
