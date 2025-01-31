@@ -13,18 +13,7 @@ import org.firstinspires.ftc.teamcode.Robot;
 @TeleOp(name = "SLIDE PID TESTING", group = "TESTING")
 public class SlidePIDTesting extends LinearOpMode {
 
-  //TODO: TUNING (https://www.robotsforroboticists.com/pid-control/)
-  // Tuned but need a mag lim switch due to encoder drift / belt skipping
-  public static double kp = 0.01;
-  public static double ki = 0;
-  public static double kd = 0.0001;
-  public static double KG = 0.07;
-  public static double TARGET = 1000;
-
-  private final ElapsedTime timer = new ElapsedTime();
-  private double lastError = 0;
-  private double integralSum = 0;
-
+  public static int TARGET = 1000;
 
   @Override
   public void runOpMode() throws InterruptedException {
@@ -32,53 +21,23 @@ public class SlidePIDTesting extends LinearOpMode {
     telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
     Robot robot = new Robot(this);
-    robot.setVerticalSlideMode(RunMode.STOP_AND_RESET_ENCODER);
+    robot.slides.setMode(RunMode.STOP_AND_RESET_ENCODER);
 
     waitForStart();
-    robot.setVerticalSlideMode(RunMode.RUN_WITHOUT_ENCODER);
-    timer.reset();
+    robot.slides.setMode(RunMode.RUN_WITHOUT_ENCODER);
 
     while (opModeIsActive()) {
-      int leftRef = robot.slideLeft.getCurrentPosition();
-      int rightRef = robot.slideRight.getCurrentPosition();
-
-      //int reference = (leftRef + rightRef) / 2; // does not seem to improve performance
-      int reference = leftRef;
-      double power = PIDControl(TARGET, reference);
-      robot.setVerticalSlidePower(power + KG);
-
       if (gamepad1.square) {
-        reset();
+        robot.slides.setTarget(TARGET);
       }
 
-      telemetry.addData("TARGET", TARGET);
-      telemetry.addData("REFERENCE", reference);
-      telemetry.addData("OUTPUT", power);
+      robot.slides.updatePIDControl();
 
-      telemetry.addData("left slide ticks", leftRef);
-      telemetry.addData("right slide ticks", rightRef);
+      telemetry.addData("TARGET", TARGET);
+      telemetry.addData("REFERENCE", robot.slides.position);
       telemetry.update();
     }
 
   }
 
-  public void reset() {
-    timer.reset();
-    lastError = 0;
-    integralSum = 0;
-  }
-
-  public double PIDControl(double reference, double state) {
-    double error = reference - state;
-    double dt = timer.seconds();
-
-    integralSum += error * dt;
-    double derivative = (error - lastError) / dt;
-
-    lastError = error;
-
-    double output = (error * kp) + (derivative * kd) + (integralSum * ki);
-    timer.reset(); // TODO: Rob added this, see if you can understand why it's necessary
-    return output;
-  }
 }

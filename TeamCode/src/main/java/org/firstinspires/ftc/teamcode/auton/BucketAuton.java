@@ -5,39 +5,31 @@ import com.pedropathing.follower.Follower;
 import com.pedropathing.localization.Pose;
 import com.pedropathing.pathgen.BezierCurve;
 import com.pedropathing.pathgen.BezierLine;
-import com.pedropathing.pathgen.PathBuilder;
 import com.pedropathing.pathgen.PathChain;
 import com.pedropathing.pathgen.Point;
 import com.pedropathing.util.Constants;
 import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-
-import org.firstinspires.ftc.robotcore.external.Telemetry;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.Robot;
-
 import pedroPathing.constants.FConstants;
 import pedroPathing.constants.LConstants;
 
-
 @Config
 @Autonomous(name = "BUCKET", group = "PEDRO")
-public class BucketAuton extends OpMode {
+public class BucketAuton extends LinearOpMode {
 
-  private Robot robot;
-
-  private Telemetry telemetryA;
-
-  private Follower follower;
+  Robot robot;
+  Follower follower;
 
   // x values
-  double[] xValues2 = {
-          9.757, 24.163, 17.000, 57.000, 66.000
+  public static double[] xValues2 = {
+      9.757, 24.163, 17.000, 57.000, 66.000
   };
 
   // y values
-  double[] yValues2 = {
-          84.983, 106.658, 127.000, 120.000, 100.000
+  public static double[] yValues2 = {
+      84.983, 106.658, 127.000, 120.000, 100.000
   };
 
   // Rewriting points
@@ -48,64 +40,63 @@ public class BucketAuton extends OpMode {
   Point p5 = new Point(xValues2[4], yValues2[4], Point.CARTESIAN);
 
 
-
-
-
   private PathChain path1, path2, path3, path4, path5, path6, path7, path8, path9;
-
   private int pathState = 0;
-
   private Timer pathTimer;
 
-  public static Point wallPickup = new Point(42, -63);
 
   public void buildPaths() {
 
     path1 = follower.pathBuilder()
-            .addPath(new BezierCurve(p1, p2, p3))
-            .setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(135))
-            .build();
+        .addPath(new BezierCurve(p1, p2, p3))
+        .setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(135))
+        .build();
 
     path2 = follower.pathBuilder()
-            .addPath(new BezierLine(p3, p3))
-            .setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(165))
-            .build();
+        .addPath(new BezierLine(p3, p3))
+        .setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(165))
+        .build();
 
     path3 = follower.pathBuilder()
-            .addPath(new BezierLine(p3, p3))
-            .setLinearHeadingInterpolation(Math.toRadians(165), Math.toRadians(135))
-            .build();
+        .addPath(new BezierLine(p3, p3))
+        .setLinearHeadingInterpolation(Math.toRadians(165), Math.toRadians(135))
+        .build();
 
     path4 = follower.pathBuilder()
-            .addPath(new BezierLine(p3, p3))
-            .setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(191))
-            .build();
+        .addPath(new BezierLine(p3, p3))
+        .setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(191))
+        .build();
 
     path5 = follower.pathBuilder()
-            .addPath(new BezierLine(p3, p3))
-            .setLinearHeadingInterpolation(Math.toRadians(191), Math.toRadians(135))
-            .build();
+        .addPath(new BezierLine(p3, p3))
+        .setLinearHeadingInterpolation(Math.toRadians(191), Math.toRadians(135))
+        .build();
 
     path6 = follower.pathBuilder()
-            .addPath(new BezierLine(p3, p3))
-            .setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(210))
-            .build();
+        .addPath(new BezierLine(p3, p3))
+        .setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(210))
+        .build();
 
     path7 = follower.pathBuilder()
-            .addPath(new BezierLine(p3, p3))
-            .setLinearHeadingInterpolation(Math.toRadians(210), Math.toRadians(135))
-            .build();
+        .addPath(new BezierLine(p3, p3))
+        .setLinearHeadingInterpolation(Math.toRadians(210), Math.toRadians(135))
+        .build();
 
     path8 = follower.pathBuilder()
-            .addPath(new BezierCurve(p3, p4, p5))
-            .setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(90))
-            .build();
+        .addPath(new BezierCurve(p3, p4, p5))
+        .setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(90))
+        .build();
 
     path9 = follower.pathBuilder()
-            .addPath(new BezierCurve(p5, p4, p3))
-            .setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(135))
-            .build();
+        .addPath(new BezierCurve(p5, p4, p3))
+        .setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(135))
+        .build();
 
+  }
+
+  public void setPathState(int pState) {
+    pathState = pState;
+    pathTimer.resetTimer();
   }
 
   public void autonomousPathUpdate() {
@@ -194,34 +185,24 @@ public class BucketAuton extends OpMode {
     }
   }
 
-  public void setPathState(int pState) {
-    pathState = pState;
-    pathTimer.resetTimer();
+
+  @Override
+  public void runOpMode() throws InterruptedException {
+    robot = new Robot(this);
+    follower = robot.follower;
+    follower.setStartingPose(new Pose(10.000, 65.000));
+
+    pathTimer = new Timer();
+    buildPaths();
+
+    waitForStart();
+
+    while (opModeIsActive()) {
+      follower.update();
+      autonomousPathUpdate();
+      telemetry.addData("Path State", pathState);
+      telemetry.addData("Position", follower.getPose().toString());
+      telemetry.update();
+    }
   }
-
-
-@Override
-public void init() {
-  Constants.setConstants(FConstants.class, LConstants.class);
-  pathTimer = new Timer();
-  Constants.setConstants(FConstants.class, LConstants.class);
-  follower = new Follower(hardwareMap);
-  follower.setStartingPose(new Pose(10.000, 65.000));
-  buildPaths();
-}
-
-/**
- * This runs the OpMode, updating the Follower as well as printing out the debug statements to the Telemetry, as well
- * as the FTC Dashboard.
- */
-
-
-@Override
-public void loop() {
-  follower.update();
-  autonomousPathUpdate();
-  telemetry.addData("Path State", pathState);
-  telemetry.addData("Position", follower.getPose().toString());
-  telemetry.update();
-}
 }

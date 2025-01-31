@@ -1,9 +1,13 @@
 package org.firstinspires.ftc.teamcode.testing;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor.RunMode;
 import org.firstinspires.ftc.teamcode.Robot;
+import org.firstinspires.ftc.teamcode.subsystems.VerticalSlides;
 
 @Config
 @TeleOp(name = "Claw Test", group = "TESTING")
@@ -14,8 +18,12 @@ public class ClawTesting extends LinearOpMode {
 
   @Override
   public void runOpMode() throws InterruptedException {
+    telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
     robot = new Robot(this);
+
+    robot.slides.setMode(RunMode.STOP_AND_RESET_ENCODER);
     waitForStart();
+    robot.slides.setMode(RunMode.RUN_WITHOUT_ENCODER);
 
     // LOOP
     while (opModeIsActive()) {
@@ -51,13 +59,16 @@ public class ClawTesting extends LinearOpMode {
         robot.claw.setTransfer();
       }
 
-      if (gamepad1.dpad_down) {
-        robot.startSlideUpPos(Robot.VERTICAL_SLIDE_DEFAULT, 0.8);
+      if (gamepad1.dpad_left) {
+        robot.slides.setTarget(VerticalSlides.TRANSFER);
+      }
+      if (gamepad1.dpad_right) {
+        robot.slides.setTarget(VerticalSlides.DEFAULT);
+      }
+      if (gamepad1.dpad_up) {
+        robot.slides.setTarget(VerticalSlides.UP);
       }
 
-      if (gamepad1.dpad_up) {
-        robot.startSlideUpPos(Robot.VERTICAL_SLIDE_UP, 0.8);
-      }
       if (gamepad2.square) {
         robot.intake.rotateDown();
       }
@@ -67,10 +78,14 @@ public class ClawTesting extends LinearOpMode {
 
       robot.intake.setPower(gamepad2.right_trigger - gamepad2.left_trigger);
 
-      if (gamepad2.dpad_up) {
+      if (gamepad2.dpad_down) {
         robot.intake.setHorizontalSlidePos(position);
       }
 
+      robot.slides.updatePIDControl();
+
+      telemetry.addData("SLIDE REFERENCE", robot.slides.position);
+      telemetry.update();
     }
   }
 }

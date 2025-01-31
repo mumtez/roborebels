@@ -7,127 +7,227 @@ import com.pedropathing.pathgen.BezierCurve;
 import com.pedropathing.pathgen.BezierLine;
 import com.pedropathing.pathgen.PathChain;
 import com.pedropathing.pathgen.Point;
-import com.pedropathing.util.Constants;
 import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-
-import org.firstinspires.ftc.robotcore.external.Telemetry;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.Robot;
-
-import pedroPathing.constants.FConstants;
-import pedroPathing.constants.LConstants;
-
 
 @Config
 @Autonomous(name = "SPECIMEN", group = "PEDRO")
-public class SamplingAuton extends OpMode {
+public class SamplingAuton extends LinearOpMode {
 
-  private Robot robot;
-
-  private Telemetry telemetryA;
-
-  private Follower follower;
+  Robot robot;
+  Follower follower;
 
   // x values
   public static double[] xValues = {
-          10.000, 37.000, 19.290, 65.495, 47.776, 19.000, 68.000, 60.336, 19.000, 40.000, 10.000, 37.000, 28.000
+      10.000, 37.000, 19.290, 65.495, 47.776, 19.000, 68.000, 60.336, 19.000, 40.000, 10.000, 37.000, 28.000
   };
 
   // y values
   public static double[] yValues = {
-          65.000, 65.000, 29.159, 33.869, 22.654, 23.000, 23.000, 15.252, 19.065, 19.000, 19.000, 70.000, 70.000
+      65.000, 65.000, 29.159, 33.869, 22.654, 23.000, 23.000, 15.252, 19.065, 19.000, 19.000, 70.000, 70.000
   };
 
 
-
-
-  public static Point p1 = new Point (xValues[0], yValues[0], Point.CARTESIAN);   //10.000, 65.000
-  public static Point p2 = new Point (xValues[1], yValues[1], Point.CARTESIAN);   //37.000, 65.00
-  public static Point p3 = new Point (xValues[2], yValues[2], Point.CARTESIAN);   //9.290, 29.159
-  public static Point p4 = new Point (xValues[3], yValues[3], Point.CARTESIAN);   //65.495, 33.869
-  public static Point p5 = new Point (xValues[4], yValues[4], Point.CARTESIAN);   //47.776, 22.654
-  public static Point p6 = new Point (xValues[5], yValues[5], Point.CARTESIAN);   //19.000, 23.000
-  public static Point p7 = new Point (xValues[6], yValues[6], Point.CARTESIAN);   //68.000, 23.000
-  public static Point p8 = new Point (xValues[7], yValues[7], Point.CARTESIAN);   //60.336, 15.252
-  public static Point p9 = new Point (xValues[8], yValues[8], Point.CARTESIAN);   //19.000, 19.065
-  public static Point p10 = new Point(xValues[9], yValues[9], Point.CARTESIAN);   //40.000, 19.000
-  public static Point p11 = new Point(xValues[10], yValues[10], Point.CARTESIAN); //10.000, 19.000
-  public static Point p12 = new Point(xValues[11], yValues[11], Point.CARTESIAN); //37.000, 70.000
-  public static Point p13 = new Point(xValues[12], yValues[12], Point.CARTESIAN); //28.000, 70.000
-
-
-  private PathChain path1, path2, path3, path4, path5, path6, path7, path8, path9, path10, path11, tempPath;
-
-  private int pathState = 0;
-
-  private Timer pathTimer;
+  Point p1 = new Point(xValues[0], yValues[0], Point.CARTESIAN);   //10.000, 65.000
+  Point p2 = new Point(xValues[1], yValues[1], Point.CARTESIAN);   //37.000, 65.00
+  Point p3 = new Point(xValues[2], yValues[2], Point.CARTESIAN);   //9.290, 29.159
+  Point p4 = new Point(xValues[3], yValues[3], Point.CARTESIAN);   //65.495, 33.869
+  Point p5 = new Point(xValues[4], yValues[4], Point.CARTESIAN);   //47.776, 22.654
+  Point p6 = new Point(xValues[5], yValues[5], Point.CARTESIAN);   //19.000, 23.000
+  Point p7 = new Point(xValues[6], yValues[6], Point.CARTESIAN);   //68.000, 23.000
+  Point p8 = new Point(xValues[7], yValues[7], Point.CARTESIAN);   //60.336, 15.252
+  Point p9 = new Point(xValues[8], yValues[8], Point.CARTESIAN);   //19.000, 19.065
+  Point p10 = new Point(xValues[9], yValues[9], Point.CARTESIAN);   //40.000, 19.000
+  Point p11 = new Point(xValues[10], yValues[10], Point.CARTESIAN); //10.000, 19.000
+  Point p12 = new Point(xValues[11], yValues[11], Point.CARTESIAN); //37.000, 70.000
+  Point p13 = new Point(xValues[12], yValues[12], Point.CARTESIAN); //28.000, 70.000
 
   public static Point wallPickup = new Point(42, -63);
+
+  private PathChain path1, path2, path3, path4, path5, path6, path7, path8, path9, path10, path11, tempPath;
+  private int pathState = 0;
+  private Timer pathTimer;
+
+  public void setPathState(int pState) {
+    pathState = pState;
+    pathTimer.resetTimer();
+  }
 
   public void buildPaths() {
 
     path1 = follower.pathBuilder()//to bar
-            .addPath(new BezierLine(p1, p2))
-            .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
-            .build();
+        .addPath(new BezierLine(p1, p2))
+        .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
+        .build();
 
     path2 = follower.pathBuilder()//set up for push
-            .addPath(new BezierCurve(p2, p3, p4))
-            .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
-            .build();
+        .addPath(new BezierCurve(p2, p3, p4))
+        .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
+        .build();
 
     path3 = follower.pathBuilder()//push 1
-            .addPath(new BezierCurve(p4, p5, p6))
-            .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
-            .build();
+        .addPath(new BezierCurve(p4, p5, p6))
+        .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
+        .build();
 
     path4 = follower.pathBuilder()//set up push 2
-            .addPath(new BezierLine(p6, p7))
-            .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
-            .build();
+        .addPath(new BezierLine(p6, p7))
+        .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
+        .build();
 
     path5 = follower.pathBuilder()//push 2
-            .addPath(new BezierCurve(p7, p8, p9))
-            .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
-            .build();
+        .addPath(new BezierCurve(p7, p8, p9))
+        .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
+        .build();
 
     path6 = follower.pathBuilder()//set up push 3
-            .addPath(new BezierLine(p9, p10))
-            .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
-            .build();
+        .addPath(new BezierLine(p9, p10))
+        .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
+        .build();
 
     path7 = follower.pathBuilder()//push 3 / pick up wall
-            .addPath(new BezierLine(p10, p11))
-            .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
-            .build();
+        .addPath(new BezierLine(p10, p11))
+        .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
+        .build();
 
     path8 = follower.pathBuilder()//place bar
-            .addPath(new BezierLine(p11, p12))
-            .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
-            .build();
+        .addPath(new BezierLine(p11, p12))
+        .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
+        .build();
 
     path9 = follower.pathBuilder()//pick up wall
-            .addPath(new BezierLine(p12, p11))
-            .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
-            .build();
+        .addPath(new BezierLine(p12, p11))
+        .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
+        .build();
 
     path10 = follower.pathBuilder()//place bar
-            .addPath(new BezierLine(p11, p12))
-            .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
-            .build();
+        .addPath(new BezierLine(p11, p12))
+        .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
+        .build();
 
     path11 = follower.pathBuilder()
-            .addPath(new BezierLine(p12, p13))
-            .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
-            .build();
+        .addPath(new BezierLine(p12, p13))
+        .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
+        .build();
+  }
+
+  public void getWall() {
+    robot.claw.clawOpen();
+    robot.claw.setWall();
+
+    tempPath = follower.pathBuilder()
+        .addPath(new BezierLine(new Point(follower.getPose()),
+            new Point(wallPickup.getX(), wallPickup.getY() + 18, Point.CARTESIAN)))
+        .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
+        .build();
+    follower.followPath(tempPath, true);
+    robot.waitTime(100);
+
+    tempPath = follower.pathBuilder()
+        .addPath(new BezierLine(new Point(follower.getPose()), wallPickup))
+        .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
+        .build();
+
+    follower.followPath(tempPath, true);
+
+/*
+    Actions.runBlocking(
+            drive.actionBuilder(drive.localizer.getPose())
+                    .setTangent(Math.toRadians(270))
+                    .splineToConstantHeading(new Point(wallPickup.x, wallPickup.y + 18), Math.toRadians(270))
+                    .waitSeconds(0.1)
+                    .splineToConstantHeading(wallPickup, Math.toRadians(270), SLOW, SLOW_ACCEL)
+                    .build()
+    );
+
+ */
+
+    robot.claw.clawClose();
+    robot.waitTime(200);
+    robot.claw.setUnder();
+  }
+
+  public void placeBarFast() {
+
+    robot.claw.setPlace();
+
+    tempPath = follower.pathBuilder()
+        .addPath(new BezierLine(new Point(follower.getPose()),
+            new Point(wallPickup.getX(), wallPickup.getY() + 9, Point.CARTESIAN)))
+        .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
+        .build();
+    follower.followPath(tempPath, true);
+    robot.waitTime(70);
+    robot.claw.clawOpen();
+
+    tempPath = follower.pathBuilder()
+        .addPath(new BezierLine(new Point(follower.getPose()),
+            new Point(wallPickup.getX(), wallPickup.getY() + 18, Point.CARTESIAN)))
+        .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
+        .build();
+    follower.followPath(tempPath, true);
+
+
+/*
+    Actions.runBlocking(
+            drive.actionBuilder(drive.localizer.getPose())
+                    .afterTime(0, () -> {
+                      robot.claw.setPlace();
+                    })
+                    .setTangent(Math.toRadians(270))
+                    .splineToConstantHeading(new Vector2d(wallPickup.getX(), wallPickup.getY() + 18), Math.toRadians(270))
+                    .afterTime(0.07, () -> {
+                      robot.claw.clawOpen();
+                    })
+                    .build()
+    );
+
+ */
+  }
+
+  public void placeBar() {
+
+    robot.claw.setPlace();
+
+    tempPath = follower.pathBuilder()
+        .addPath(new BezierLine(new Point(follower.getPose()),
+            new Point(wallPickup.getX(), wallPickup.getY() + 9, Point.CARTESIAN)))
+        .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
+        .build();
+    follower.followPath(tempPath, true);
+    robot.waitTime(200);
+    robot.claw.clawOpen();
+
+    tempPath = follower.pathBuilder()
+        .addPath(new BezierLine(new Point(follower.getPose()),
+            new Point(wallPickup.getX(), wallPickup.getY() + 18, Point.CARTESIAN)))
+        .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
+        .build();
+    follower.followPath(tempPath, true);
+
+    /*
+    Actions.runBlocking(
+            drive.actionBuilder(drive.localizer.getPose())
+                    .afterTime(0, () -> {
+                      robot.claw.setPlace();
+                    })
+                    .setTangent(Math.toRadians(270))
+                    .splineToConstantHeading(new Vector2d(wallPickup.getX()), wallPickup.getY() + 18), Math.toRadians(270))
+            .afterTime(0, () -> {
+                        robot.claw.clawOpen();
+                      })
+                              .build();
+                    }
+
+     */
   }
 
   public void autonomousPathUpdate() {
     switch (pathState) {
       case 0:
         follower.followPath(path1);
-
 
         setPathState(1);
         break;
@@ -230,143 +330,24 @@ public class SamplingAuton extends OpMode {
     }
   }
 
-  public void setPathState(int pState) {
-    pathState = pState;
-    pathTimer.resetTimer();
-  }
-
-  public void getWall() {
-    robot.claw.clawOpen();
-    robot.claw.setWall();
-
-
-    tempPath = follower.pathBuilder()
-            .addPath(new BezierLine(new Point(follower.getPose()), new Point(wallPickup.getX(), wallPickup.getY() + 18, Point.CARTESIAN)))
-            .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
-            .build();
-    follower.followPath(tempPath, true);
-    robot.waitTime(100);
-
-    tempPath = follower.pathBuilder()
-            .addPath(new BezierLine(new Point(follower.getPose()), wallPickup))
-            .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
-            .build();
-
-    follower.followPath(tempPath, true);
-
-/*
-    Actions.runBlocking(
-            drive.actionBuilder(drive.localizer.getPose())
-                    .setTangent(Math.toRadians(270))
-                    .splineToConstantHeading(new Point(wallPickup.x, wallPickup.y + 18), Math.toRadians(270))
-                    .waitSeconds(0.1)
-                    .splineToConstantHeading(wallPickup, Math.toRadians(270), SLOW, SLOW_ACCEL)
-                    .build()
-    );
-
- */
-
-    robot.claw.clawClose();
-    robot.waitTime(200);
-    robot.claw.setUnder();
-  }
-
-  public void placeBarFast() {
-
-    robot.claw.setPlace();
-
-    tempPath = follower.pathBuilder()
-            .addPath(new BezierLine(new Point(follower.getPose()), new Point(wallPickup.getX(), wallPickup.getY() + 9, Point.CARTESIAN)))
-            .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
-            .build();
-    follower.followPath(tempPath, true);
-    robot.waitTime(70);
-    robot.claw.clawOpen();
-
-    tempPath = follower.pathBuilder()
-            .addPath(new BezierLine(new Point(follower.getPose()), new Point(wallPickup.getX(), wallPickup.getY() + 18, Point.CARTESIAN)))
-            .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
-            .build();
-    follower.followPath(tempPath, true);
-
-
-/*
-    Actions.runBlocking(
-            drive.actionBuilder(drive.localizer.getPose())
-                    .afterTime(0, () -> {
-                      robot.claw.setPlace();
-                    })
-                    .setTangent(Math.toRadians(270))
-                    .splineToConstantHeading(new Vector2d(wallPickup.getX(), wallPickup.getY() + 18), Math.toRadians(270))
-                    .afterTime(0.07, () -> {
-                      robot.claw.clawOpen();
-                    })
-                    .build()
-    );
-
- */
-  }
-
-  public void placeBar() {
-
-    robot.claw.setPlace();
-
-    tempPath = follower.pathBuilder()
-            .addPath(new BezierLine(new Point(follower.getPose()), new Point(wallPickup.getX(), wallPickup.getY() + 9, Point.CARTESIAN)))
-            .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
-            .build();
-    follower.followPath(tempPath, true);
-    robot.waitTime(200);
-    robot.claw.clawOpen();
-
-    tempPath = follower.pathBuilder()
-            .addPath(new BezierLine(new Point(follower.getPose()), new Point(wallPickup.getX(), wallPickup.getY() + 18, Point.CARTESIAN)))
-            .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
-            .build();
-    follower.followPath(tempPath, true);
-
-    /*
-    Actions.runBlocking(
-            drive.actionBuilder(drive.localizer.getPose())
-                    .afterTime(0, () -> {
-                      robot.claw.setPlace();
-                    })
-                    .setTangent(Math.toRadians(270))
-                    .splineToConstantHeading(new Vector2d(wallPickup.getX()), wallPickup.getY() + 18), Math.toRadians(270))
-            .afterTime(0, () -> {
-                        robot.claw.clawOpen();
-                      })
-                              .build();
-                    }
-
-     */
-  }
-
-
   @Override
-  public void init() {
-    Constants.setConstants(FConstants.class, LConstants.class);
-    pathTimer = new Timer();
-    Constants.setConstants(FConstants.class, LConstants.class);
-    follower = new Follower(hardwareMap);
+  public void runOpMode() throws InterruptedException {
+    robot = new Robot(this);
+    follower = robot.follower;
     follower.setStartingPose(new Pose(10.000, 65.000));
+
+    pathTimer = new Timer();
     buildPaths();
+
+    waitForStart();
+
+    while (opModeIsActive()) {
+      follower.update();
+      autonomousPathUpdate();
+
+      telemetry.addData("Path State", pathState);
+      telemetry.addData("Position", follower.getPose().toString());
+      telemetry.update();
+    }
   }
-
-  /**
-   * This runs the OpMode, updating the Follower as well as printing out the debug statements to the Telemetry, as well
-   * as the FTC Dashboard.
-   */
-
-
-  @Override
-  public void loop() {
-    follower.update();
-    autonomousPathUpdate();
-    telemetry.addData("Path State", pathState);
-    telemetry.addData("Position", follower.getPose().toString());
-    telemetry.update();
-  }
-
-
 }
