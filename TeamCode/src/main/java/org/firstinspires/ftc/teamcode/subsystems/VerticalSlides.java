@@ -14,7 +14,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class VerticalSlides {
 
   public static int TRANSFER = 430;
-  public static int DEFAULT = 600;
+  public static int DEFAULT = 750;
   public static int UP = 2800;
 
   public static double kp = 0.01;
@@ -64,6 +64,10 @@ public class VerticalSlides {
     lastError = 0;
     integralSum = 0;
     this.targetPos = targetPos;
+  }
+
+  public int getTarget() {
+    return this.targetPos;
   }
 
   private void updatePosition() {

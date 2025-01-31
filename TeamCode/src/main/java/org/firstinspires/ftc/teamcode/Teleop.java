@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.pedropathing.localization.Pose;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor.RunMode;
@@ -9,9 +10,12 @@ import com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.teamcode.Robot.AllianceColor;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
+import org.firstinspires.ftc.teamcode.subsystems.VerticalSlides;
 
-@Config
+@Disabled
+//@Config
 @TeleOp(name = "TELEOP", group = "TELEOP")
 public class Teleop extends LinearOpMode {
 
@@ -19,47 +23,41 @@ public class Teleop extends LinearOpMode {
   public static double HORIZONTAL_SPEED = 100; // INCREASE --> SLOW DOWN | DECREASE --> SPEED UP
 
   Robot robot;
+
   double horizontalPos = Intake.SLIDE_TRANSFER;
   boolean transferPos = false;
   boolean transferSlide = false;
-
   boolean wallPos = false;
 
   @Override
   public void runOpMode() throws InterruptedException {
     robot = new Robot(this);
 
-    if (gamepad1.triangle){
-      robot.team_color = 0;
+    while (opModeInInit()) {
+      if (gamepad1.triangle) {
+        robot.setAllianceColor(AllianceColor.RED);
+      }
+      if (gamepad1.circle) {
+        robot.setAllianceColor(AllianceColor.BLUE);
+      }
+
+      telemetry.addData("Team: ", robot.getAllianceColor());
       telemetry.update();
     }
-    if (gamepad1.circle){
-      robot.team_color = 1;
-      telemetry.update();
-    }
 
-    telemetry.addData("Team (red 0, blue 1): ", robot.team_color);
-    telemetry.update();
-
-
-    waitForStart();
     // START
     robot.follower.setStartingPose(new Pose(0, 0, START_HEADING));
     robot.follower.startTeleopDrive();
 
-    robot.startSlideUpPos(Robot.VERTICAL_SLIDE_PRE_TRANSFER, 0.8);
+    robot.slides.setTarget(VerticalSlides.DEFAULT);
+
     robot.claw.clawClose();
     robot.waitTime(500);
     robot.claw.setTransfer();
     robot.intake.rotateFlat();
 
-    robot.setVerticalSlideMode(RunMode.RUN_WITHOUT_ENCODER);
-
     // LOOP
     while (opModeIsActive()) {
-
-      int vSlideLPos = robot.slideLeft.getCurrentPosition();
-      int vSlideRPos = robot.slideRight.getCurrentPosition();
 
       if (gamepad1.left_bumper) {
         robot.follower.resetOffset();
@@ -79,60 +77,53 @@ public class Teleop extends LinearOpMode {
         robot.intake.setHorizontalSlidePos(horizontalPos);
       }
 
-      // Don't use because of belt skipping -- can be used later with addition of mag lim switch on slide
-//      if (gamepad2.dpad_left) {
-//        robot.startSlideUpPos(Robot.VERTICAL_SLIDE_DEFAULT, 0.7);
-//        transferSlide = true;
-//      } else if (gamepad2.dpad_up) {
-//        robot.startSlideUpPos(Robot.VERTICAL_SLIDE_UP, 0.8);
-//        transferSlide = false;
-//      } else if (gamepad2.dpad_right) {
-//        robot.startSlideUpPos(Robot.VERTICAL_SLIDE_PRE_TRANSFER, 0.7);
-//        transferSlide = false;
-//      }
-
-      robot.setVerticalSlidePower(-gamepad2.left_stick_y);
-      transferSlide = Math.abs(vSlideLPos - Robot.VERTICAL_SLIDE_DEFAULT) < 20;
-
-      if (gamepad2.cross && Math.abs(vSlideLPos) > 800 && wallPos) {
-        //robot.rotateIntakeBack();
-        robot.claw.setTransfer();
-        transferPos = true;
-        wallPos = false;
-
+      if (gamepad2.dpad_left) {
+        robot.slides.setTarget(VerticalSlides.TRANSFER);
+      } else if (gamepad2.dpad_up) {
+        robot.slides.setTarget(VerticalSlides.UP);
+      } else if (gamepad2.dpad_right) {
+        robot.slides.setTarget(VerticalSlides.DEFAULT);
       }
+      robot.slides.updatePIDControl();
+
+//      robot.slides.setPower(-gamepad2.left_stick_y);
+//      transferSlide = Math.abs(vSlideLPos - Robot.VERTICAL_SLIDE_DEFAULT) < 20;
+
+//      if (gamepad2.cross && Math.abs(vSlideLPos) > 800 && wallPos) {
+//        //robot.rotateIntakeBack();
+//        robot.claw.setTransfer();
+//        transferPos = true;
+//        wallPos = false;
+//
+//      }
 
       //Combined transfer
 
-
-      if (gamepad2.dpad_up && Math.abs(vSlideLPos) > 800){
-
-        robot.startSlideUpPos(Robot.VERTICAL_SLIDE_PRE_TRANSFER, 0.8);
-
-        robot.waitTime(300);
-
-        robot.claw.setWall();
-        transferPos = false;
-        wallPos = true;
-
-        robot.waitTime(300);
-
-        robot.claw.setTransfer();
-        transferPos = true;
-        wallPos = false;
-
-        robot.waitTime(300);
-
-        robot.startSlideUpPos(Robot.VERTICAL_SLIDE_DEFAULT, 0.8);
-
-        robot.waitTime(300);
-
-        robot.claw.clawClose();
-
-        robot.endSlideUpPos();
-      }
-
-
+//      if (gamepad2.dpad_up && Math.abs(vSlideLPos) > 800) {
+//
+//        robot.slides.setTarget(Robot.VERTICAL_SLIDE_PRE_TRANSFER);
+//        robot.slides.updatePIDControl();
+//
+//        robot.waitTime(300);
+//
+//        robot.claw.setWall();
+//        transferPos = false;
+//        wallPos = true;
+//
+//        robot.waitTime(300);
+//
+//        robot.claw.setTransfer();
+//        transferPos = true;
+//        wallPos = false;
+//
+//        robot.waitTime(300);
+//
+//        robot.slides.setTarget(Robot.VERTICAL_SLIDE_DEFAULT);
+//
+//        robot.waitTime(300);
+//
+//        robot.claw.clawClose();
+//      }
 
       if (!(transferPos && transferSlide)) {
         if (gamepad2.square) {
@@ -160,17 +151,6 @@ public class Teleop extends LinearOpMode {
         robot.claw.clawClose();
       }
 
-
-      /*
-      if (gamepad2.right_bumper) {
-        robot.claw.clawOpen();
-      }
-      else{
-        robot.claw.clawClose();
-      }
-
-       */
-
       robot.intake.setPower(gamepad2.right_trigger - gamepad2.left_trigger);
       if (gamepad2.right_stick_y > 0.1) {
         robot.intake.rotateFlat();
@@ -178,39 +158,45 @@ public class Teleop extends LinearOpMode {
         robot.intake.rotateDown();
       }
 
-      //TODO:  Change to colors from robot.intake rather than teleop colors ?
-
-      NormalizedRGBA colors = robot.intake.senseColor(); // Important: only make 1 i2c call per loop
-      double distance = robot.intake.senseDistance();
-
-      if ((robot.team_color == 0 && robot.intake.senseColor().red > Intake.COLOR_THRESHOLD) ||    //team red and red in bot
-          (robot.team_color == 1 && robot.intake.senseColor().blue > Intake.COLOR_THRESHOLD)) {   //team blue and blue in bot
+      robot.intake.senseColor(); // Important: only make 1 i2c call per loop
+      NormalizedRGBA colors = robot.intake.getColors();
+      if (((robot.getAllianceColor() == AllianceColor.RED && colors.red > Intake.COLOR_THRESHOLD) ||
+          //team red and red in bot
+          (robot.getAllianceColor() == AllianceColor.BLUE
+              && colors.blue > Intake.COLOR_THRESHOLD)) && !(colors.red > 0.04 && colors.blue > 0.04)) {   //team blue
+        // and
+        // blue in bot
         gamepad1.rumble(150);
         gamepad2.rumble(150);
+        robot.intake.rgb.setPosition(robot.getAllianceColor() == AllianceColor.RED ? 0.28 : 0.63);
+      } else if (colors.red > 0.01 && colors.blue > 0.01) {
+        robot.intake.rgb.setPosition(.388);
+      } else {
+        robot.intake.rgb.setPosition(0);
       }
 
       // TODO: this actually means the slide is at max extension, not just "out"
       if (
           (
-              (robot.team_color == 0 && colors.blue > Intake.COLOR_THRESHOLD) //team red and blue in bot
-                  || (robot.team_color == 1 && colors.red > Intake.COLOR_THRESHOLD) //team blue and red in bot
-          )
+              (robot.getAllianceColor() == AllianceColor.RED && colors.blue > Intake.COLOR_THRESHOLD)
+                  //team red and blue in bot
+                  || (robot.getAllianceColor() == AllianceColor.BLUE
+                  && colors.red > Intake.COLOR_THRESHOLD) //team blue and red in bot
+          ) && !(colors.red > 0.04 && colors.blue > .04)
       ) {
 
         robot.intake.rotateFlat();
         robot.intake.setPower(-1);
-        robot.waitTime(500);
+        robot.waitTime(500);// TODO: don't wait time in teleop -- will remove all control from the drivers. Use a
+        // separate elapsed time object or integer countdown instead so that rest of controls are not impeded
         robot.intake.setPower(0);
       }
 
-      telemetry.addData("Team (red 0, blue 1): ", robot.team_color);
+      telemetry.addData("Team: ", robot.getAllianceColor());
       telemetry.addData("Red in bot", colors.red);
       telemetry.addData("Blue in bot", colors.blue);
       telemetry.addData("color sum", colors.red + colors.blue + colors.alpha + colors.green);
-      telemetry.addData("Intake dist", distance);
 
-      telemetry.addData("V SLIDE L ENC", vSlideLPos);
-      telemetry.addData("V SLIDE R ENC", vSlideRPos);
       telemetry.update();
     }
   }

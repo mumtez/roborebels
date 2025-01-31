@@ -31,6 +31,8 @@ public class Claw {
   public final ServoImplEx claw, clawUpArm, clawDownArm;
   // TODO: add color/touch/limit sensor (states?)
 
+  private boolean clawClosed = false;
+
   public Claw(LinearOpMode opMode) {
     HardwareMap hardwareMap = opMode.hardwareMap;
 
@@ -40,10 +42,12 @@ public class Claw {
   }
 
   public void clawClose() {
+    this.clawClosed = true;
     claw.setPosition(clawClosePos);
   }
 
   public void clawOpen() {
+    this.clawClosed = false;
     claw.setPosition(clawOpenPos);
   }
 
@@ -77,4 +81,7 @@ public class Claw {
     clawUpArm.setPosition(upArmInit);
   }
 
+  public boolean isClawClosed() {
+    return clawClosed;
+  }
 }

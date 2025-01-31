@@ -8,10 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotor.RunMode;
 import com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior;
-import com.qualcomm.robotcore.hardware.DcMotorSimple.Direction;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.TouchSensor;
 import java.util.List;
 import org.firstinspires.ftc.teamcode.subsystems.Claw;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
@@ -19,8 +16,11 @@ import org.firstinspires.ftc.teamcode.subsystems.VerticalSlides;
 import pedroPathing.constants.FConstants;
 import pedroPathing.constants.LConstants;
 
-@Config
 public class Robot {
+
+  public enum AllianceColor {
+    RED, BLUE
+  }
 
   private final LinearOpMode opMode;
 
@@ -31,12 +31,15 @@ public class Robot {
 
   public final DcMotor hang;
 
-  public final Servo rgb;
-
-  public int team_color = 0;  //0 red 1 blue
+  private AllianceColor allianceColor;  //0 red 1 blue
 
   public Robot(LinearOpMode opMode) {
+    this(opMode, AllianceColor.RED);
+  }
+
+  public Robot(LinearOpMode opMode, AllianceColor allianceColor) {
     this.opMode = opMode;
+    this.allianceColor = allianceColor;
     HardwareMap hardwareMap = opMode.hardwareMap;
     Constants.setConstants(FConstants.class, LConstants.class);
 
@@ -58,9 +61,6 @@ public class Robot {
     hang = hardwareMap.dcMotor.get("hang");
     hang.setMode(RunMode.RUN_WITHOUT_ENCODER);
     hang.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
-
-    // TODO: use color beacon to show which color is in the intake
-    rgb = hardwareMap.servo.get("rgb");
   }
 
   public void initAuton() {
@@ -71,6 +71,14 @@ public class Robot {
 
     this.intake.rotateDown();
     this.intake.setHorizontalSlidePos(Intake.SLIDE_TRANSFER);
+  }
+
+  public void setAllianceColor(AllianceColor allianceColor) {
+    this.allianceColor = allianceColor;
+  }
+
+  public AllianceColor getAllianceColor() {
+    return this.allianceColor;
   }
 
   // TODO: add method to return true if slides are within a threshold of a position
