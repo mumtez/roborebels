@@ -19,7 +19,7 @@ public class BaseTeleop {
     BUCKET_INTAKING, BUCKET_PRE_TRANSFER, BUCKET_TRANSFER, BUCKET_POST_TRANSFER, BUCKET_PLACE, BUCKET_POST_PLACE
   }
 
-  public static double HORIZONTAL_SPEED = 100;
+  public static double HORIZONTAL_SPEED = 80;
 
   final Robot robot;
   final LinearOpMode opMode;
@@ -64,7 +64,7 @@ public class BaseTeleop {
 
     // --- START ---
     robot.slides.setTarget(VerticalSlides.DEFAULT);
-    robot.claw.setTransfer();
+    robot.claw.setTransferClear();
     robot.intake.senseColor();
     robot.intake.senseDistance();
     stateTimer.reset();
@@ -78,9 +78,9 @@ public class BaseTeleop {
       }
 
       // Manual Override
-      if (currentGamepad1.back && !previousGamepad1.back) {
-        manualOverride = !manualOverride;
-      }
+//      if (currentGamepad1.back && !previousGamepad1.back) {
+//        manualOverride = !manualOverride;
+//      }
 
       // Mode Switch
       if (currentGamepad2.back && !previousGamepad2.back) {
@@ -135,11 +135,8 @@ public class BaseTeleop {
     horizontalPos = Range.clip(horizontalPos, Intake.SLIDE_TRANSFER, Intake.SLIDE_OUT);
     robot.intake.setHorizontalSlidePos(horizontalPos);
 
-    // INTAKE
 
-    // CLAW
   }
-
 
   public void specimenModeUpdate() {
     switch (state) {
@@ -210,10 +207,10 @@ public class BaseTeleop {
 
         if (currentGamepad2.cross) {
           state = ModeState.BUCKET_PRE_TRANSFER;
+          robot.slides.setTarget(VerticalSlides.DEFAULT + 200);
           robot.intake.rotateFlat();
           horizontalPos = Intake.SLIDE_TRANSFER;
           robot.intake.setHorizontalSlidePos(Intake.SLIDE_TRANSFER);
-          robot.slides.setTarget(VerticalSlides.DEFAULT);
           robot.claw.setTransfer();
           robot.claw.clawOpen();
           stateTimer.reset();
@@ -240,6 +237,7 @@ public class BaseTeleop {
         if (stateTimer.milliseconds() > 400) {
           if (robot.slides.getTarget() != VerticalSlides.DEFAULT) {
             robot.slides.setTarget(VerticalSlides.DEFAULT);
+            robot.claw.setTransferClear();
           }
           if (currentGamepad2.square) {
             robot.claw.clawOpen();
