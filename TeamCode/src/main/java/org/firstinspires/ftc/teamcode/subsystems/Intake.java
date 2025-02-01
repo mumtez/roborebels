@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotor.RunMode;
 import com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
@@ -25,17 +26,16 @@ public class Intake {
     RED, BLUE, YELLOW, NONE
   }
 
-  public static double SLIDE_IN = 0.405;
-  public static double SLIDE_TRANSFER = 0.405;
-  public static double SLIDE_OUT = 0.68;
+  public static double SLIDE_TRANSFER = 0.54;
+  public static double SLIDE_OUT = 0.97;
 
-  public static double INTAKE_DOWN = 0.18;
+  public static double INTAKE_DOWN = 0.17;
   public static double INTAKE_FLAT = 0.05;
 
   public static float COLOR_GAIN = 2;
-  public static float RED_THRESHOLD = 0.023f;
-  public static float BLUE_THRESHOLD = 0.023f;
-  public static float COLOR_THRESHOLD = 0.02f;
+  public static double RED_THRESHOLD = 0.02;
+  public static double BLUE_THRESHOLD = 0.02;
+  public static double COLOR_THRESHOLD = 0.01;
   public static double DIST_THRESHOLD_CM = 2;
 
   private final DcMotor intake;
@@ -111,7 +111,8 @@ public class Intake {
     this.rotate.setPosition(INTAKE_DOWN);
   }
 
-  public void update(double power, boolean flat, double hSlidePos, AllianceColor allianceColor) {
+  public void update(double power, boolean flat, double hSlidePos, AllianceColor allianceColor, Gamepad gp1,
+      Gamepad gp2) {
     this.senseDistance();
     this.senseColor();
 
@@ -119,9 +120,9 @@ public class Intake {
     if (this.dist < DIST_THRESHOLD_CM) {
       this.sampleColor = SampleColor.YELLOW;
 
-      if (this.colors.red > Intake.RED_THRESHOLD) {
+      if (this.colors.red >= Intake.RED_THRESHOLD && this.colors.blue < Intake.COLOR_THRESHOLD) {
         this.sampleColor = SampleColor.RED;
-      } else if (this.colors.blue > Intake.BLUE_THRESHOLD) {
+      } else if (this.colors.blue >= Intake.BLUE_THRESHOLD && this.colors.red < Intake.COLOR_THRESHOLD) {
         this.sampleColor = SampleColor.BLUE;
       }
     } else {
@@ -131,13 +132,16 @@ public class Intake {
     // If spitting, finish spit (400ms)
     if (this.spitTimer.milliseconds() > 400) {
       // actions based on collected sample color
-      switch (sampleColor) {
+      switch (this.sampleColor) {
         case RED:
           this.rgb.setPosition(0.28);
           if (allianceColor == AllianceColor.BLUE) {
             spit();
           } else {
             manualControl(power, flat);
+            gp1.rumble(300);
+            gp2.rumble(300);
+
           }
           break;
         case BLUE:
@@ -146,11 +150,15 @@ public class Intake {
             spit();
           } else {
             manualControl(power, flat);
+            gp1.rumble(300);
+            gp2.rumble(300);
           }
           break;
         case YELLOW:
           this.rgb.setPosition(0.388);
           manualControl(power, flat);
+          gp1.rumble(300);
+          gp2.rumble(300);
           break;
         case NONE:
           this.rgb.setPosition(0);

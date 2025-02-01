@@ -13,7 +13,7 @@ public class IntakeTesting extends LinearOpMode {
   Robot robot;
 
   public static double rotatePos = Intake.INTAKE_FLAT;
-  public static double hSlidePos = Intake.SLIDE_IN;
+  public static double hSlidePos = Intake.SLIDE_TRANSFER;
 
   @Override
   public void runOpMode() throws InterruptedException {

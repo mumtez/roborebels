@@ -14,8 +14,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class VerticalSlides {
 
   public static int TRANSFER = 430;
-  public static int DEFAULT = 750;
-  public static int UP = 2800;
+  public static int DEFAULT = 600;
+  public static int UP = 2000;
+  public static int SPECIMEN = 300;
 
   public static double kp = 0.01;
   public static double ki = 0;

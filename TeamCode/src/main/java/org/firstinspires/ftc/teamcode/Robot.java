@@ -2,13 +2,19 @@ package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.pedropathing.follower.Follower;
+import com.pedropathing.localization.GoBildaPinpointDriver;
 import com.pedropathing.util.Constants;
 import com.qualcomm.hardware.lynx.LynxModule;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot.LogoFacingDirection;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot.UsbFacingDirection;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotor.RunMode;
 import com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior;
+import com.qualcomm.robotcore.hardware.DcMotorSimple.Direction;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.IMU;
 import java.util.List;
 import org.firstinspires.ftc.teamcode.subsystems.Claw;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
@@ -24,7 +30,10 @@ public class Robot {
 
   private final LinearOpMode opMode;
 
-  public final Follower follower;
+  public Follower follower;
+  public DcMotor fr, fl, br, bl;
+  public IMU imu;
+
   public final Claw claw;
   public final Intake intake;
   public final VerticalSlides slides;
@@ -38,6 +47,10 @@ public class Robot {
   }
 
   public Robot(LinearOpMode opMode, AllianceColor allianceColor) {
+    this(opMode, allianceColor, true);
+  }
+
+  public Robot(LinearOpMode opMode, AllianceColor allianceColor, boolean auton) {
     this.opMode = opMode;
     this.allianceColor = allianceColor;
     HardwareMap hardwareMap = opMode.hardwareMap;
@@ -49,8 +62,41 @@ public class Robot {
       hub.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
     }
 
-    // FOLLOWER (Pedro Pathing)
-    follower = new Follower(hardwareMap);
+    if (auton) {
+      // FOLLOWER (Pedro Pathing)
+      follower = new Follower(hardwareMap);
+    } else {
+      imu = hardwareMap.get(IMU.class, "imu");
+
+      // Adjust the orientation parameters to match the orientation of
+      // the rev hub on the robot
+      IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
+          LogoFacingDirection.RIGHT,
+          UsbFacingDirection.UP));
+      imu.initialize(parameters);
+      opMode.telemetry.addData("IMU Initialized", true);
+      opMode.telemetry.update();
+
+      fl = hardwareMap.dcMotor.get("fl");
+      fr = hardwareMap.dcMotor.get("fr");
+      bl = hardwareMap.dcMotor.get("bl");
+      br = hardwareMap.dcMotor.get("br");
+
+      fl.setDirection(Direction.REVERSE);
+      fr.setDirection(Direction.FORWARD);
+      bl.setDirection(Direction.REVERSE);
+      br.setDirection(Direction.FORWARD);
+
+      fl.setMode(RunMode.RUN_WITHOUT_ENCODER);
+      fr.setMode(RunMode.RUN_WITHOUT_ENCODER);
+      bl.setMode(RunMode.RUN_WITHOUT_ENCODER);
+      br.setMode(RunMode.RUN_WITHOUT_ENCODER);
+
+      fl.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
+      fr.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
+      bl.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
+      br.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
+    }
 
     // CLAW / INTAKE
     claw = new Claw(opMode);
