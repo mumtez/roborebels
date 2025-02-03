@@ -235,7 +235,10 @@ public class BaseTeleop {
         if (stateTimer.milliseconds() > 400) {
           if (robot.slides.getTarget() != VerticalSlides.DEFAULT) {
             robot.slides.setTarget(VerticalSlides.DEFAULT);
+            robot.intake.setHorizontalSlidePos(Intake.SLIDE_POST_TRANSFER);
             robot.claw.setTransferClear();
+
+
           }
           if (currentGamepad2.square) {
             robot.claw.clawOpen();
@@ -307,6 +310,7 @@ public class BaseTeleop {
     telemetry.addData("Colors RED ", robot.intake.getColors().red);
     telemetry.addData("Colors BLUE ", robot.intake.getColors().blue);
     telemetry.addData("Colors GREEN ", robot.intake.getColors().green);
+    telemetry.addData("H Slide ", robot.intake.TESTHSlide);
 
     telemetry.update();
   }

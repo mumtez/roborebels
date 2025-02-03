@@ -29,6 +29,9 @@ public class Teleop extends LinearOpMode {
   boolean transferSlide = false;
   boolean wallPos = false;
 
+  int outtakeTimer = 0;
+  int endTimer = 300;
+
   @Override
   public void runOpMode() throws InterruptedException {
     robot = new Robot(this);
@@ -175,7 +178,6 @@ public class Teleop extends LinearOpMode {
         robot.intake.rgb.setPosition(0);
       }
 
-      // TODO: this actually means the slide is at max extension, not just "out"
       if (
           (
               (robot.getAllianceColor() == AllianceColor.RED && colors.blue > Intake.COLOR_THRESHOLD)
@@ -186,11 +188,20 @@ public class Teleop extends LinearOpMode {
       ) {
 
         robot.intake.rotateFlat();
-        robot.intake.setPower(-1);
-        robot.waitTime(500);// TODO: don't wait time in teleop -- will remove all control from the drivers. Use a
-        // separate elapsed time object or integer countdown instead so that rest of controls are not impeded
-        robot.intake.setPower(0);
+
+        if (outtakeTimer < endTimer) {
+          robot.intake.setPower(-1);
+        }
+        else{
+          robot.intake.setPower(0);
+        }
+        outtakeTimer++;
+
       }
+      else{
+        outtakeTimer = 0;
+      }
+
 
       telemetry.addData("Team: ", robot.getAllianceColor());
       telemetry.addData("Red in bot", colors.red);

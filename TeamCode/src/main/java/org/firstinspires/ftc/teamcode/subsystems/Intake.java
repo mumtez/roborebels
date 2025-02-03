@@ -25,7 +25,11 @@ public class Intake {
     RED, BLUE, YELLOW, NONE
   }
 
+  public double TESTHSlide = 0;
+
   public static double SLIDE_TRANSFER = 0.6;
+  public static double SLIDE_POST_TRANSFER = 0.67;
+
   public static double SLIDE_OUT = 0.96;
 
   public static double INTAKE_DOWN = 0.17;
@@ -171,6 +175,8 @@ public class Intake {
     }
 
     this.setHorizontalSlidePos(hSlidePos);
+    TESTHSlide = hSlidePos;
+
   }
 
   public void spit() {

@@ -27,10 +27,10 @@ public class BucketAuton extends LinearOpMode {
 
   // MAIN POINTS
   public static double[] START = {9, 105, Math.toRadians(270)};
-  public static double[] PLACE_BUCKET = {16, 128, Math.toRadians(315)};
-  public static double[] INTAKE_ONE = {24, 121, Math.toRadians(0)};
-  public static double[] INTAKE_TWO = {24, 132, Math.toRadians(0)};
-  public static double[] INTAKE_THREE = {24, 128, Math.toRadians(35)};
+  public static double[] PLACE_BUCKET = {25, 120, Math.toRadians(315)};
+  public static double[] INTAKE_ONE = {28, 118, Math.toRadians(0)};
+  public static double[] INTAKE_TWO = {30, 124, Math.toRadians(0)};
+  public static double[] INTAKE_THREE = {38, 120, Math.toRadians(50)};
   public static double[] INTAKE_SUB = {60, 98, Math.toRadians(270)};
   public static double[] INTAKE_SUB_SECONDARY = {63, 101, Math.toRadians(280)};
   public static double[] END = {60, 98, Math.toRadians(90)};
@@ -212,12 +212,17 @@ public class BucketAuton extends LinearOpMode {
 
       // MOVE TO INTAKE 1
       case 2:
-        robot.intake.update(1, false, HSLIDE_1, robot.getAllianceColor());
-        if (!robot.follower.isBusy() && robot.intake.validSampleIn(robot.getAllianceColor())) {
-          robot.intake.update(0, true, Intake.SLIDE_TRANSFER, robot.getAllianceColor());
-          robot.follower.followPath(placeOne);
-          setPathState(3);
-        }
+          robot.slides.setTarget(VerticalSlides.PRE_TRANSFER);
+          if (robot.slides.atTarget(30) && pathTimer.getElapsedTimeSeconds() > 1) {
+            robot.intake.update(1, false, HSLIDE_1, robot.getAllianceColor());
+          }
+
+          if (!robot.follower.isBusy() && robot.intake.validSampleIn(robot.getAllianceColor())) {
+            robot.intake.update(0, true, Intake.SLIDE_TRANSFER, robot.getAllianceColor());
+            robot.follower.followPath(placeOne);
+            setPathState(3);
+          }
+
         break;
 
       // TRANSFER INTAKE 1
@@ -256,7 +261,10 @@ public class BucketAuton extends LinearOpMode {
 
       // INTAKE 2
       case 5:
-        robot.intake.update(1, false, HSLIDE_2, robot.getAllianceColor());
+        robot.slides.setTarget(VerticalSlides.PRE_TRANSFER);
+        if (robot.slides.atTarget(30) && pathTimer.getElapsedTimeSeconds() > 1) {
+          robot.intake.update(1, false, HSLIDE_2, robot.getAllianceColor());
+        }
         if (!robot.follower.isBusy() && robot.intake.validSampleIn(robot.getAllianceColor())) {
           robot.intake.update(0, true, Intake.SLIDE_TRANSFER, robot.getAllianceColor());
           robot.follower.followPath(placeTwo);
@@ -301,7 +309,10 @@ public class BucketAuton extends LinearOpMode {
       // INTAKE 3
 
       case 8:
-        robot.intake.update(1, false, HSLIDE_3, robot.getAllianceColor());
+        robot.slides.setTarget(VerticalSlides.PRE_TRANSFER);
+        if (robot.slides.atTarget(30) && pathTimer.getElapsedTimeSeconds() > 1) {
+          robot.intake.update(1, false, HSLIDE_3, robot.getAllianceColor());
+        }
         if (!robot.follower.isBusy() && robot.intake.validSampleIn(robot.getAllianceColor())) {
           robot.intake.update(0, true, Intake.SLIDE_TRANSFER, robot.getAllianceColor());
           robot.follower.followPath(placeThree);
@@ -353,23 +364,26 @@ public class BucketAuton extends LinearOpMode {
         break;
 
       case 111:
+
         robot.intake.update(1, false, Intake.SLIDE_OUT, robot.getAllianceColor());
-        if (robot.intake.validSampleIn(robot.getAllianceColor())) {
-          robot.intake.update(0, true, Intake.SLIDE_TRANSFER, robot.getAllianceColor());
-          Pose current = robot.follower.getPose();
-          robot.follower.pathBuilder()
-              .addBezierCurve(
-                  new Point(current),
-                  bucketIntakeSubControl,
-                  new Point(placeBucketPose)
-              )
-              .setLinearHeadingInterpolation(current.getHeading(), placeBucketPose.getHeading())
-              .build();
-          setPathState(12);
-        }
-        if (!robot.follower.isBusy()) {
-          robot.follower.followPath(pickupSubMovementOne);
-          setPathState(112);
+        if (pathTimer.getElapsedTimeSeconds() > 1){
+          if (robot.intake.validSampleIn(robot.getAllianceColor())) {
+            robot.intake.update(0, true, Intake.SLIDE_TRANSFER, robot.getAllianceColor());
+            Pose current = robot.follower.getPose();
+            robot.follower.pathBuilder()
+                    .addBezierCurve(
+                            new Point(current),
+                            bucketIntakeSubControl,
+                            new Point(placeBucketPose)
+                    )
+                    .setLinearHeadingInterpolation(current.getHeading(), placeBucketPose.getHeading())
+                    .build();
+            setPathState(12);
+          }
+          if (!robot.follower.isBusy()) {
+            robot.follower.followPath(pickupSubMovementOne);
+            setPathState(112);
+          }
         }
         break;
 
@@ -413,7 +427,7 @@ public class BucketAuton extends LinearOpMode {
         break;
 
       case 122:
-        if (robot.slides.atTarget(30)) {
+        if (!robot.follower.isBusy() && robot.slides.atTarget(30)) {
           robot.slides.setTarget(VerticalSlides.UP);
           robot.claw.setBucket();
           setPathState(13);
@@ -482,6 +496,7 @@ public class BucketAuton extends LinearOpMode {
       autonomousPathUpdate();
       telemetry.addData("Path State", pathState);
       telemetry.addData("Position", robot.follower.getPose().toString());
+
       telemetry.update();
     }
   }
