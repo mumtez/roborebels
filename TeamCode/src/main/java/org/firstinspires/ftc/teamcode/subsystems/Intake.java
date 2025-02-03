@@ -7,7 +7,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotor.RunMode;
 import com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
@@ -111,8 +110,19 @@ public class Intake {
     this.rotate.setPosition(INTAKE_DOWN);
   }
 
-  public void update(double power, boolean flat, double hSlidePos, AllianceColor allianceColor, Gamepad gp1,
-      Gamepad gp2) {
+  public SampleColor getSampleColor() {
+    return sampleColor;
+  }
+
+  public boolean validSampleIn(AllianceColor allianceColor) {
+    if (allianceColor == AllianceColor.RED) {
+      return this.sampleColor == SampleColor.RED || this.sampleColor == SampleColor.YELLOW;
+    } else {
+      return this.sampleColor == SampleColor.BLUE || this.sampleColor == SampleColor.YELLOW;
+    }
+  }
+
+  public void update(double power, boolean flat, double hSlidePos, AllianceColor allianceColor) {
     this.senseDistance();
     this.senseColor();
 
@@ -139,9 +149,6 @@ public class Intake {
             spit();
           } else {
             manualControl(power, flat);
-            gp1.rumble(300);
-            gp2.rumble(300);
-
           }
           break;
         case BLUE:
@@ -150,15 +157,11 @@ public class Intake {
             spit();
           } else {
             manualControl(power, flat);
-            gp1.rumble(300);
-            gp2.rumble(300);
           }
           break;
         case YELLOW:
           this.rgb.setPosition(0.388);
           manualControl(power, flat);
-          gp1.rumble(300);
-          gp2.rumble(300);
           break;
         case NONE:
           this.rgb.setPosition(0);

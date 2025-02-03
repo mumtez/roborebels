@@ -8,16 +8,13 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.Robot;
+import org.firstinspires.ftc.teamcode.Robot.ModeState;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
+import org.firstinspires.ftc.teamcode.subsystems.Intake.SampleColor;
 import org.firstinspires.ftc.teamcode.subsystems.VerticalSlides;
 
 @Config
 public class BaseTeleop {
-
-  public enum ModeState {
-    SPEC_WALL, SPEC_PRE_CLIP, SPEC_CLIP, SPEC_POST_CLIP,
-    BUCKET_INTAKING, BUCKET_PRE_TRANSFER, BUCKET_TRANSFER, BUCKET_POST_TRANSFER, BUCKET_PLACE, BUCKET_POST_PLACE
-  }
 
   public static double HORIZONTAL_SPEED = 80;
 
@@ -77,6 +74,7 @@ public class BaseTeleop {
         robot.imu.resetYaw();
       }
 
+      // TODO: enable if desired
       // Manual Override
 //      if (currentGamepad1.back && !previousGamepad1.back) {
 //        manualOverride = !manualOverride;
@@ -125,7 +123,7 @@ public class BaseTeleop {
     }
   }
 
-  // TODO: fill out
+  // TODO: fill out if desired
   public void manualControls() {
     // V SLIDES
     robot.slides.setPower(-currentGamepad2.left_stick_y);
@@ -259,6 +257,7 @@ public class BaseTeleop {
           state = ModeState.BUCKET_POST_PLACE;
           stateTimer.reset();
         }
+        // TODO: cancel raise button
         break;
 
       case BUCKET_POST_PLACE:
@@ -290,9 +289,13 @@ public class BaseTeleop {
         currentGamepad2.right_trigger - currentGamepad2.left_trigger,
         intakeFlat,
         horizontalPos,
-        robot.getAllianceColor(),
-        opMode.gamepad1, opMode.gamepad2
+        robot.getAllianceColor()
     );
+
+    if (robot.intake.validSampleIn(robot.getAllianceColor())) {
+      opMode.gamepad1.rumble(300);
+      opMode.gamepad2.rumble(300);
+    }
   }
 
   public void updateTelemetry() {

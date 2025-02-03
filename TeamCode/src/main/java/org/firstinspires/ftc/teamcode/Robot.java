@@ -28,6 +28,11 @@ public class Robot {
     RED, BLUE
   }
 
+  public enum ModeState {
+    SPEC_WALL, SPEC_PRE_CLIP, SPEC_CLIP, SPEC_POST_CLIP,
+    BUCKET_INTAKING, BUCKET_PRE_TRANSFER, BUCKET_TRANSFER, BUCKET_POST_TRANSFER, BUCKET_PLACE, BUCKET_POST_PLACE
+  }
+
   private final LinearOpMode opMode;
 
   public Follower follower;
@@ -115,7 +120,7 @@ public class Robot {
     claw.clawClose();
     claw.setInit();
 
-    this.intake.rotateDown();
+    this.intake.rotateFlat();
     this.intake.setHorizontalSlidePos(Intake.SLIDE_TRANSFER);
   }
 
