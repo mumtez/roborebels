@@ -20,14 +20,19 @@ public class BucketAuton extends LinearOpMode {
 
   Robot robot;
 
+  public static double HSLIDE_1 = Intake.SLIDE_OUT;
+  public static double HSLIDE_2 = Intake.SLIDE_OUT;
+  public static double HSLIDE_3 = Intake.SLIDE_OUT;
+
+
   // MAIN POINTS
   public static double[] START = {9, 105, Math.toRadians(270)};
   public static double[] PLACE_BUCKET = {16, 128, Math.toRadians(315)};
-  public static double[] INTAKE_ONE = {24, 120, Math.toRadians(0)};
+  public static double[] INTAKE_ONE = {24, 121, Math.toRadians(0)};
   public static double[] INTAKE_TWO = {24, 132, Math.toRadians(0)};
   public static double[] INTAKE_THREE = {24, 128, Math.toRadians(35)};
   public static double[] INTAKE_SUB = {60, 98, Math.toRadians(270)};
-  public static double[] INTAKE_SUB_SECONDARY = {65, 105, Math.toRadians(300)};
+  public static double[] INTAKE_SUB_SECONDARY = {63, 101, Math.toRadians(280)};
   public static double[] END = {60, 98, Math.toRadians(90)};
 
   // CONTROL POINTS
@@ -207,7 +212,7 @@ public class BucketAuton extends LinearOpMode {
 
       // MOVE TO INTAKE 1
       case 2:
-        robot.intake.update(1, false, Intake.SLIDE_OUT, robot.getAllianceColor());
+        robot.intake.update(1, false, HSLIDE_1, robot.getAllianceColor());
         if (!robot.follower.isBusy() && robot.intake.validSampleIn(robot.getAllianceColor())) {
           robot.intake.update(0, true, Intake.SLIDE_TRANSFER, robot.getAllianceColor());
           robot.follower.followPath(placeOne);
@@ -251,7 +256,7 @@ public class BucketAuton extends LinearOpMode {
 
       // INTAKE 2
       case 5:
-        robot.intake.update(1, false, Intake.SLIDE_OUT, robot.getAllianceColor());
+        robot.intake.update(1, false, HSLIDE_2, robot.getAllianceColor());
         if (!robot.follower.isBusy() && robot.intake.validSampleIn(robot.getAllianceColor())) {
           robot.intake.update(0, true, Intake.SLIDE_TRANSFER, robot.getAllianceColor());
           robot.follower.followPath(placeTwo);
@@ -296,7 +301,7 @@ public class BucketAuton extends LinearOpMode {
       // INTAKE 3
 
       case 8:
-        robot.intake.update(1, false, Intake.SLIDE_OUT, robot.getAllianceColor());
+        robot.intake.update(1, false, HSLIDE_3, robot.getAllianceColor());
         if (!robot.follower.isBusy() && robot.intake.validSampleIn(robot.getAllianceColor())) {
           robot.intake.update(0, true, Intake.SLIDE_TRANSFER, robot.getAllianceColor());
           robot.follower.followPath(placeThree);
@@ -434,8 +439,9 @@ public class BucketAuton extends LinearOpMode {
   }
 
   private void place(PathChain nextPath) {
+    robot.waitTime(500);
     robot.claw.clawOpen();
-    robot.waitTime(400);
+    robot.waitTime(500);
 
     robot.follower.followPath(nextPath);
     robot.slides.setTarget(VerticalSlides.DEFAULT);

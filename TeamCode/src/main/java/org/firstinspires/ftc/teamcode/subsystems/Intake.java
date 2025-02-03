@@ -25,8 +25,8 @@ public class Intake {
     RED, BLUE, YELLOW, NONE
   }
 
-  public static double SLIDE_TRANSFER = 0.54;
-  public static double SLIDE_OUT = 0.97;
+  public static double SLIDE_TRANSFER = 0.6;
+  public static double SLIDE_OUT = 0.96;
 
   public static double INTAKE_DOWN = 0.17;
   public static double INTAKE_FLAT = 0.05;
