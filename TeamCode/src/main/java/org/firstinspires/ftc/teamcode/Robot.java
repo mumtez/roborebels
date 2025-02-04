@@ -132,10 +132,12 @@ public class Robot {
     return this.allianceColor;
   }
 
-  // TODO: add method to return true if slides are within a threshold of a position
-  public void waitTime(double ms) {
-    double startTime = System.currentTimeMillis();
-    while (opMode.opModeIsActive() && System.currentTimeMillis() - startTime < ms) {
+  public void waitTime(long ms) {
+    long startTime = System.currentTimeMillis();
+
+    while (this.opMode.opModeIsActive() && System.currentTimeMillis() - startTime < ms) {
+      follower.update();
+      slides.updatePIDControl();
     }
   }
 }
