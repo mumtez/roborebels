@@ -29,7 +29,7 @@ public class BucketAuton extends LinearOpMode {
   public static double[] START = {9, 105, Math.toRadians(270)};
   public static double[] PLACE_BUCKET = {25, 120, Math.toRadians(315)};
   public static double[] INTAKE_ONE = {28, 118, Math.toRadians(0)};
-  public static double[] INTAKE_TWO = {30, 124, Math.toRadians(0)};
+  public static double[] INTAKE_TWO = {30, 122, Math.toRadians(0)};
   public static double[] INTAKE_THREE = {38, 120, Math.toRadians(50)};
   public static double[] INTAKE_SUB = {60, 98, Math.toRadians(270)};
   public static double[] INTAKE_SUB_SECONDARY = {63, 101, Math.toRadians(280)};
@@ -188,7 +188,7 @@ public class BucketAuton extends LinearOpMode {
 
       // MOVE TO SCORE PRELOAD
       case 0:
-        robot.follower.followPath(placePreLoad, true);
+        robot.follower.followPath(placePreLoad,0.8 ,true);  //TODO: Make sure maxPower is from 0 to 1
         robot.slides.setMode(RunMode.RUN_WITHOUT_ENCODER);
         robot.slides.setTarget(VerticalSlides.DEFAULT);
         setPathState(101);
@@ -261,7 +261,9 @@ public class BucketAuton extends LinearOpMode {
 
       // INTAKE 2
       case 5:
+        if (robot.slides.atTarget(30)) {
         robot.slides.setTarget(VerticalSlides.PRE_TRANSFER);
+      }
         if (robot.slides.atTarget(30) && pathTimer.getElapsedTimeSeconds() > 1) {
           robot.intake.update(1, false, HSLIDE_2, robot.getAllianceColor());
         }
@@ -309,7 +311,9 @@ public class BucketAuton extends LinearOpMode {
       // INTAKE 3
 
       case 8:
-        robot.slides.setTarget(VerticalSlides.PRE_TRANSFER);
+        if (robot.slides.atTarget(30)) {
+          robot.slides.setTarget(VerticalSlides.PRE_TRANSFER);
+        }
         if (robot.slides.atTarget(30) && pathTimer.getElapsedTimeSeconds() > 1) {
           robot.intake.update(1, false, HSLIDE_3, robot.getAllianceColor());
         }
