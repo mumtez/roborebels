@@ -188,7 +188,7 @@ public class BucketAuton extends LinearOpMode {
 
       // MOVE TO SCORE PRELOAD
       case 0:
-        robot.follower.followPath(placePreLoad);
+        robot.follower.followPath(placePreLoad, true);
         robot.slides.setMode(RunMode.RUN_WITHOUT_ENCODER);
         robot.slides.setTarget(VerticalSlides.DEFAULT);
         setPathState(101);
@@ -219,7 +219,7 @@ public class BucketAuton extends LinearOpMode {
 
           if (!robot.follower.isBusy() && robot.intake.validSampleIn(robot.getAllianceColor())) {
             robot.intake.update(0, true, Intake.SLIDE_TRANSFER, robot.getAllianceColor());
-            robot.follower.followPath(placeOne);
+            robot.follower.followPath(placeOne, true);
             setPathState(3);
           }
 
@@ -267,7 +267,7 @@ public class BucketAuton extends LinearOpMode {
         }
         if (!robot.follower.isBusy() && robot.intake.validSampleIn(robot.getAllianceColor())) {
           robot.intake.update(0, true, Intake.SLIDE_TRANSFER, robot.getAllianceColor());
-          robot.follower.followPath(placeTwo);
+          robot.follower.followPath(placeTwo, true);
           setPathState(6);
         }
         break;
@@ -315,7 +315,7 @@ public class BucketAuton extends LinearOpMode {
         }
         if (!robot.follower.isBusy() && robot.intake.validSampleIn(robot.getAllianceColor())) {
           robot.intake.update(0, true, Intake.SLIDE_TRANSFER, robot.getAllianceColor());
-          robot.follower.followPath(placeThree);
+          robot.follower.followPath(placeThree, true);
           setPathState(9);
         }
         break;
@@ -381,7 +381,7 @@ public class BucketAuton extends LinearOpMode {
             setPathState(12);
           }
           if (!robot.follower.isBusy()) {
-            robot.follower.followPath(pickupSubMovementOne);
+            robot.follower.followPath(pickupSubMovementOne, true);
             setPathState(112);
           }
         }
@@ -402,7 +402,7 @@ public class BucketAuton extends LinearOpMode {
           setPathState(12);
         }
         if (!robot.follower.isBusy()) {
-          robot.follower.followPath(pickupSubMovementTwo);
+          robot.follower.followPath(pickupSubMovementTwo, true);
           setPathState(111);
         }
         break;
@@ -457,7 +457,7 @@ public class BucketAuton extends LinearOpMode {
     robot.claw.clawOpen();
     robot.waitTime(500);
 
-    robot.follower.followPath(nextPath);
+    robot.follower.followPath(nextPath, true);
     robot.slides.setTarget(VerticalSlides.DEFAULT);
     robot.claw.setTransfer();
   }
