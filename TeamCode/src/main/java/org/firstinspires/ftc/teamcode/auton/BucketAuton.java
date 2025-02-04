@@ -369,25 +369,26 @@ public class BucketAuton extends LinearOpMode {
 
       case 111:
         robot.intake.update(1, false, Intake.SLIDE_OUT, robot.getAllianceColor());
-//        if (pathTimer.getElapsedTimeSeconds() > 1) {
-        if (robot.intake.validSampleIn(robot.getAllianceColor())) {
-          robot.intake.update(0, true, Intake.SLIDE_TRANSFER, robot.getAllianceColor());
-          Pose current = robot.follower.getPose();
-          robot.follower.pathBuilder()
-              .addBezierCurve(
-                  new Point(current),
-                  bucketIntakeSubControl,
-                  new Point(placeBucketPose)
-              )
-              .setLinearHeadingInterpolation(current.getHeading(), placeBucketPose.getHeading())
-              .build();
-          setPathState(12);
+        // TODO: is this wait necessary? Can it be reduced / removed
+        if (pathTimer.getElapsedTimeSeconds() > 1) {
+          if (robot.intake.validSampleIn(robot.getAllianceColor())) {
+            robot.intake.update(0, true, Intake.SLIDE_TRANSFER, robot.getAllianceColor());
+            Pose current = robot.follower.getPose();
+            robot.follower.pathBuilder()
+                .addBezierCurve(
+                    new Point(current),
+                    bucketIntakeSubControl,
+                    new Point(placeBucketPose)
+                )
+                .setLinearHeadingInterpolation(current.getHeading(), placeBucketPose.getHeading())
+                .build();
+            setPathState(12);
+          }
+          if (!robot.follower.isBusy()) {
+            robot.follower.followPath(pickupSubMovementOne, true);
+            setPathState(112);
+          }
         }
-        if (!robot.follower.isBusy()) {
-          robot.follower.followPath(pickupSubMovementOne, true);
-          setPathState(112);
-        }
-//        }
         break;
 
       case 112:
