@@ -43,7 +43,7 @@ public class BucketAuton extends LinearOpMode {
   public static double[] END = {60, 98, Math.toRadians(90)};
 
   // CONTROL POINTS
-  public static double[] START_BUCKET_CONTROL = {26, 118};
+  public static double[] START_BUCKET_CONTROL = {35, 105};
   public static double[] BUCKET_INTAKE_SUB_CONTROL = {54, 126};
 
   // PATHS
@@ -195,7 +195,7 @@ public class BucketAuton extends LinearOpMode {
 
       // MOVE TO SCORE PRELOAD
       case 0:
-        robot.follower.followPath(placePreLoad, 0.8, true);  //TODO: Make sure maxPower is from 0 to 1
+        robot.follower.followPath(placePreLoad, 1, true);  //TODO: may need reduced power
         robot.slides.setMode(RunMode.RUN_WITHOUT_ENCODER);
         robot.slides.setTarget(VerticalSlides.DEFAULT);
         setPathState(101);
