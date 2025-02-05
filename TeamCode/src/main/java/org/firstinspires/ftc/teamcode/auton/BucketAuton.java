@@ -206,6 +206,7 @@ public class BucketAuton extends LinearOpMode {
         if (robot.slides.atTarget(30)) {
           robot.slides.setTarget(VerticalSlides.UP+100);
           robot.claw.setBucket();
+          robot.intake.update(0, true, HSLIDE_1 / 2, robot.getAllianceColor());
           setPathState(1);
         }
         break;
@@ -252,6 +253,7 @@ public class BucketAuton extends LinearOpMode {
         if (robot.slides.atTarget(30)) {
           robot.slides.setTarget(VerticalSlides.UP + 100);
           robot.claw.setBucket();
+          robot.intake.update(0, true, HSLIDE_2 / 2, robot.getAllianceColor());
           setPathState(4);
         }
         break;
@@ -299,6 +301,7 @@ public class BucketAuton extends LinearOpMode {
         if (robot.slides.atTarget(30)) {
           robot.slides.setTarget(VerticalSlides.UP + 100);
           robot.claw.setBucket();
+          robot.intake.update(0, true, HSLIDE_3 / 2, robot.getAllianceColor());
           setPathState(7);
         }
         break;

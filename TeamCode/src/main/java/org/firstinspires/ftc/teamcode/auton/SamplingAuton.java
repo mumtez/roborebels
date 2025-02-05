@@ -293,15 +293,15 @@ public class SamplingAuton extends LinearOpMode {
 
       case 1:
         if (!robot.follower.isBusy() && robot.slides.atTarget(30)) {
-          place(pickupOne);
-          setPathState(2);
+            robot.follower.followPath(pickupOne);
+            setPathState(2);
         }
         break;
 
       // MOVE TO INTAKE 1
       case 2:
         robot.slides.setTarget(VerticalSlides.PRE_TRANSFER);
-        if (robot.slides.atTarget(30) && pathTimer.getElapsedTimeSeconds() > 1) {
+        if (robot.slides.atTarget(30) && !robot.follower.isBusy()) {
           robot.intake.update(1, false, HSLIDE_1, robot.getAllianceColor());
         }
 
@@ -318,6 +318,10 @@ public class SamplingAuton extends LinearOpMode {
       case 4:
         if (!robot.follower.isBusy() && robot.slides.atTarget(30)) {
           robot.intake.update(-1, true, HSLIDE_1, robot.getAllianceColor());
+        }
+        if (!(robot.intake.validSampleIn(robot.getAllianceColor()))){
+          robot.follower.followPath(pickupTwo);
+          robot.intake.update(0, true, Intake.SLIDE_TRANSFER, robot.getAllianceColor());
           setPathState(5);
         }
         break;
@@ -325,7 +329,7 @@ public class SamplingAuton extends LinearOpMode {
       // INTAKE 2
       case 5:
         robot.slides.setTarget(VerticalSlides.PRE_TRANSFER);
-        if (robot.slides.atTarget(30) && pathTimer.getElapsedTimeSeconds() > 1) {
+        if (robot.slides.atTarget(30) && !robot.follower.isBusy()) {
           robot.intake.update(1, false, HSLIDE_2, robot.getAllianceColor());
         }
         if (!robot.follower.isBusy() && robot.intake.validSampleIn(robot.getAllianceColor())) {
@@ -341,6 +345,11 @@ public class SamplingAuton extends LinearOpMode {
         if (!robot.follower.isBusy() && robot.slides.atTarget(30)) {
           place(pickupThree);
           robot.intake.update(-1, true, HSLIDE_2, robot.getAllianceColor());
+        }
+
+        if (!(robot.intake.validSampleIn(robot.getAllianceColor()))){
+          robot.follower.followPath(pickupTwo);
+          robot.intake.update(0, true, Intake.SLIDE_TRANSFER, robot.getAllianceColor());
           setPathState(8);
         }
         break;
