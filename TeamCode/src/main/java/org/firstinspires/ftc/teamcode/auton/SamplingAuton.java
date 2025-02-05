@@ -24,15 +24,15 @@ public class SamplingAuton extends LinearOpMode {
   public static double HSLIDE_2 = Intake.SLIDE_OUT;
   public static double HSLIDE_3 = Intake.SLIDE_OUT;
 
+  public static double PLACE_DELAY = 0.8;
+
 
   // MAIN POINTS
-  public static double[] START = {9, 105, Math.toRadians(270)};
-  public static double[] PLACE_WALL = {25, 118, Math.toRadians(180)};
-  public static double[] INTAKE_ONE = {28, 118, Math.toRadians(0)};
-  public static double[] INTAKE_TWO = {30, 124, Math.toRadians(0)};
-  public static double[] INTAKE_THREE = {38, 120, Math.toRadians(50)};
-  public static double[] INTAKE_SUB = {60, 98, Math.toRadians(270)};
-
+  public static double[] START = {9, 58, Math.toRadians(270)};
+  public static double[] PLACE_WALL = {25, 23, Math.toRadians(180)};
+  public static double[] INTAKE_ONE = {28, 23, Math.toRadians(0)};
+  public static double[] INTAKE_TWO = {30, 12, Math.toRadians(0)};
+  public static double[] INTAKE_THREE = {38, 16, Math.toRadians(-50)};
   //TODO: TUNE THESE
   public static double[] GRAB_WALL = {12, 118, Math.toRadians(180)};
   public static double[] PRE_BAR = {40, 70, Math.toRadians(0)};
@@ -46,11 +46,13 @@ public class SamplingAuton extends LinearOpMode {
   // CONTROL POINTS
   public static double[] START_BUCKET_CONTROL = {26, 118};
   public static double[] BUCKET_INTAKE_SUB_CONTROL = {54, 126};
+  public static double[] POST_BAR_CONTROL = {33, 67};
+
 
   // PATHS
   private Pose startPose, placeWallPose, grabWallPose, preBarPose, placeBarPose, postBarPose, intakeOnePose, intakeTwoPose, intakeThreePose, intakeSubPose,
           intakeSubSecondaryPose, endPose;
-  private Point startBucketControl, bucketIntakeSubControl;
+  private Point startBucketControl, bucketIntakeSubControl, postBarControl;
 
   PathChain placePreLoad,
           pickupOne, placeOne,
@@ -59,6 +61,8 @@ public class SamplingAuton extends LinearOpMode {
           pickupFour,
           pickupSubMovementOne, pickupSubMovementTwo,
           grabOne, grabTwo, grabThree,
+          prePlaceBar, placeBar, postPlaceBar,
+          preloadPrePlaceBar,
           placeFour,
           end;
 
@@ -80,13 +84,13 @@ public class SamplingAuton extends LinearOpMode {
     intakeOnePose = poseFromArr(INTAKE_ONE);
     intakeTwoPose = poseFromArr(INTAKE_TWO);
     intakeThreePose = poseFromArr(INTAKE_THREE);
-    intakeSubPose = poseFromArr(INTAKE_SUB);
     intakeSubSecondaryPose = poseFromArr(INTAKE_SUB_SECONDARY);
     endPose = poseFromArr(END);
 
     // CONTROL POINT SETUP
     startBucketControl = new Point(START_BUCKET_CONTROL[0], START_BUCKET_CONTROL[1]);
     bucketIntakeSubControl = new Point(BUCKET_INTAKE_SUB_CONTROL[0], BUCKET_INTAKE_SUB_CONTROL[1]);
+    postBarControl = new Point(POST_BAR_CONTROL[0],POST_BAR_CONTROL[1]);
 
     // PATH CHAIN SETUP
 
@@ -101,7 +105,7 @@ public class SamplingAuton extends LinearOpMode {
 
     pickupOne = robot.follower.pathBuilder()
             .addBezierLine(
-                    new Point(placeWallPose),
+                    new Point(postBarPose),
                     new Point(intakeOnePose)
             )
             .setLinearHeadingInterpolation(placeWallPose.getHeading(), intakeOnePose.getHeading())
@@ -189,7 +193,69 @@ public class SamplingAuton extends LinearOpMode {
             )
             .setLinearHeadingInterpolation(placeWallPose.getHeading(), endPose.getHeading())
             .build();
-  }
+
+    grabOne = robot.follower.pathBuilder()
+            .addBezierLine(
+                    new Point(placeWallPose),
+                    new Point(grabWallPose)
+            )
+            .setLinearHeadingInterpolation(placeWallPose.getHeading(), grabWallPose.getHeading())
+            .build();
+
+    grabTwo = robot.follower.pathBuilder()
+            .addBezierLine(
+                    new Point(postBarPose),
+                    new Point(grabWallPose)
+            )
+            .setLinearHeadingInterpolation(postBarPose.getHeading(), grabWallPose.getHeading())
+            .build();
+
+    grabThree = robot.follower.pathBuilder()
+            .addBezierLine(
+                    new Point(postBarPose),
+                    new Point(grabWallPose)
+            )
+            .setLinearHeadingInterpolation(postBarPose.getHeading(), grabWallPose.getHeading())
+            .build();
+
+    preloadPrePlaceBar = robot.follower.pathBuilder() //TODO: maybe add control point
+            .addBezierLine(
+                    new Point(startPose),
+                    new Point(preBarPose)
+            )
+            .setLinearHeadingInterpolation(startPose.getHeading(), preBarPose.getHeading())
+            .build();
+
+    prePlaceBar = robot.follower.pathBuilder()
+            .addBezierLine(
+                    new Point(grabWallPose),
+                    new Point(preBarPose)
+            )
+            .setLinearHeadingInterpolation(grabWallPose.getHeading(), preBarPose.getHeading())
+            .build();
+
+    placeBar = robot.follower.pathBuilder()
+            .addBezierLine(
+                    new Point(preBarPose),
+                    new Point(placeBarPose)
+            )
+            .setLinearHeadingInterpolation(preBarPose.getHeading(), placeBarPose.getHeading())
+            .build();
+
+    postPlaceBar = robot.follower.pathBuilder()
+            .addBezierCurve(
+                    new Point(placeBarPose),
+                    postBarControl,
+                    new Point(postBarPose)
+            )
+            .setLinearHeadingInterpolation(placeBarPose.getHeading(), postBarPose.getHeading())
+            .build();
+
+
+
+
+
+}
 
   public void setPathState(int pState) {
     pathState = pState;
@@ -198,20 +264,29 @@ public class SamplingAuton extends LinearOpMode {
 
   public void autonomousPathUpdate() {
     switch (pathState) {
-
-      // MOVE TO SCORE PRELOAD
       case 0:
-        robot.follower.followPath(placePreLoad, true);
-        robot.slides.setMode(RunMode.RUN_WITHOUT_ENCODER);
-        robot.slides.setTarget(VerticalSlides.DEFAULT);
-        setPathState(101);
+        if(!robot.follower.isBusy()){
+          robot.follower.followPath(preloadPrePlaceBar);
+          robot.claw.clawClose();
+          robot.claw.setUnder();
+          setPathState(101);
+        }
         break;
 
-      // SCORE PRELOAD
       case 101:
-        if (robot.slides.atTarget(30)) {
-          robot.slides.setTarget(VerticalSlides.UP);
-          robot.claw.setBucket();
+        if(!robot.follower.isBusy()){
+          robot.follower.followPath(placeBar);
+          setPathState(102);
+        }
+        break;
+
+      case 102:
+        if(!robot.follower.isBusy()){
+          robot.claw.setPlace();
+          robot.follower.followPath(postPlaceBar);
+        }
+        if (pathTimer.getElapsedTimeSeconds() > PLACE_DELAY){
+          robot.claw.clawOpen();
           setPathState(1);
         }
         break;
@@ -293,18 +368,124 @@ public class SamplingAuton extends LinearOpMode {
         }
         break;
 
-
+      //GRAB ONE
       case 11:
         if(!robot.follower.isBusy()){
           robot.claw.setWall();
           robot.claw.clawOpen();
-         // robot.follower.followPath();
+          robot.follower.followPath(grabOne);
+          setPathState(12);
+        }
+        break;
 
+      // PLACE ONE SETUP
+      case 12:
+        if(!robot.follower.isBusy()){
+          robot.claw.clawClose();
+          robot.claw.setUnder();
+          robot.follower.followPath(prePlaceBar);
+          setPathState(13);
+        }
+        break;
+
+      //PLACE ONE
+      case 13:
+        if(!robot.follower.isBusy()){
+          robot.follower.followPath(placeBar);
+          setPathState(14);
+        }
+        break;
+
+        //RELEASE CLAW
+      case 14:
+        if(!robot.follower.isBusy()){
+          robot.claw.setPlace();
+          robot.follower.followPath(postPlaceBar);
+        }
+        if (pathTimer.getElapsedTimeSeconds() > PLACE_DELAY){
+          robot.claw.clawOpen();
+          setPathState(15);
+        }
+        break;
+
+      //GRAB TWO
+      case 15:
+        if(!robot.follower.isBusy()){
+          robot.claw.setWall();
+          robot.claw.clawOpen();
+          robot.follower.followPath(grabTwo);
+          setPathState(16);
+        }
+        break;
+
+        //PLACE TWO SETUP
+      case 16:
+        if(!robot.follower.isBusy()){
+          robot.claw.clawClose();
+          robot.claw.setUnder();
+          robot.follower.followPath(prePlaceBar);
+          setPathState(17);
+        }
+        break;
+
+        //PLACE TWO
+      case 17:
+        if(!robot.follower.isBusy()){
+          robot.follower.followPath(placeBar);
+          setPathState(18);
+        }
+        break;
+
+        //RELEASE CLAW
+      case 18:
+        if(!robot.follower.isBusy()){
+          robot.claw.setPlace();
+          robot.follower.followPath(postPlaceBar);
+        }
+        if (pathTimer.getElapsedTimeSeconds() > PLACE_DELAY){
+          robot.claw.clawOpen();
+          setPathState(19);
+        }
+        break;
+
+      case 19:
+        if(!robot.follower.isBusy()){
+          robot.claw.setWall();
+          robot.claw.clawOpen();
+          robot.follower.followPath(grabOne);
+          setPathState(20);
+        }
+        break;
+
+      case 20:
+        if(!robot.follower.isBusy()){
+          robot.claw.clawClose();
+          robot.claw.setUnder();
+          robot.follower.followPath(prePlaceBar);
+          setPathState(21);
+        }
+        break;
+
+      case 21:
+        if(!robot.follower.isBusy()){
+          robot.follower.followPath(placeBar);
+          setPathState(22);
+        }
+        break;
+
+      case 22:
+        if(!robot.follower.isBusy()){
+          robot.claw.setPlace();
+          robot.follower.followPath(postPlaceBar);
+        }
+        if (pathTimer.getElapsedTimeSeconds() > PLACE_DELAY){
+          robot.claw.clawOpen();
+          setPathState(99); //TODO: Will this try to go through the truss?
         }
         break;
 
       // LV1 ASCENT
-      case 14:
+      case 99:
         if (!robot.follower.isBusy()) {
           robot.claw.setPlace();
           setPathState(15);

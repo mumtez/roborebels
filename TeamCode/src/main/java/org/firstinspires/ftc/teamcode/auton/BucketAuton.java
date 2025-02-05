@@ -204,7 +204,7 @@ public class BucketAuton extends LinearOpMode {
       // SCORE PRELOAD
       case 101:
         if (robot.slides.atTarget(30)) {
-          robot.slides.setTarget(VerticalSlides.UP);
+          robot.slides.setTarget(VerticalSlides.UP+100);
           robot.claw.setBucket();
           setPathState(1);
         }
@@ -250,7 +250,7 @@ public class BucketAuton extends LinearOpMode {
 
       case 32:
         if (robot.slides.atTarget(30)) {
-          robot.slides.setTarget(VerticalSlides.UP);
+          robot.slides.setTarget(VerticalSlides.UP + 100);
           robot.claw.setBucket();
           setPathState(4);
         }
@@ -266,11 +266,11 @@ public class BucketAuton extends LinearOpMode {
 
       // INTAKE 2
       case 5:
-        if (pathTimer.getElapsedTimeSeconds() > INTAKE_2_DELAY) {
+        if (!robot.follower.isBusy() && pathTimer.getElapsedTimeSeconds() > INTAKE_2_DELAY) {
           robot.intake.update(1, false, HSLIDE_2, robot.getAllianceColor());
         }
 
-        if (robot.intake.validSampleIn(robot.getAllianceColor())) {
+        if (!robot.follower.isBusy() && robot.intake.validSampleIn(robot.getAllianceColor())) {
           robot.intake.update(0, true, Intake.SLIDE_TRANSFER, robot.getAllianceColor());
           robot.follower.followPath(placeTwo, true);
           setPathState(6);
@@ -279,10 +279,10 @@ public class BucketAuton extends LinearOpMode {
 
       // TRANSFER 2
       case 6:
-        if (pathTimer.getElapsedTimeSeconds() > TRANSFER_DELAY) {
+        if (!robot.follower.isBusy() && pathTimer.getElapsedTimeSeconds() > TRANSFER_DELAY) {
           robot.slides.setTarget(VerticalSlides.TRANSFER);
         }
-        if (pathTimer.getElapsedTimeSeconds() > TRANSFER_DELAY_2 && robot.slides.atTarget(30)) {
+        if (!robot.follower.isBusy() && pathTimer.getElapsedTimeSeconds() > TRANSFER_DELAY_2 && robot.slides.atTarget(30)) {
           robot.claw.clawClose();
           setPathState(61);
         }
@@ -297,7 +297,7 @@ public class BucketAuton extends LinearOpMode {
 
       case 62:
         if (robot.slides.atTarget(30)) {
-          robot.slides.setTarget(VerticalSlides.UP);
+          robot.slides.setTarget(VerticalSlides.UP + 100);
           robot.claw.setBucket();
           setPathState(7);
         }
@@ -314,10 +314,10 @@ public class BucketAuton extends LinearOpMode {
       // INTAKE 3
 
       case 8:
-        if (pathTimer.getElapsedTimeSeconds() > INTAKE_3_DELAY) {
+        if (!robot.follower.isBusy() && pathTimer.getElapsedTimeSeconds() > INTAKE_3_DELAY) {
           robot.intake.update(1, false, HSLIDE_3, robot.getAllianceColor());
         }
-        if (robot.intake.validSampleIn(robot.getAllianceColor())) {
+        if (!robot.follower.isBusy() && robot.intake.validSampleIn(robot.getAllianceColor())) {
           robot.intake.update(0, true, Intake.SLIDE_TRANSFER, robot.getAllianceColor());
           robot.follower.followPath(placeThree, true);
           setPathState(9);
@@ -326,10 +326,10 @@ public class BucketAuton extends LinearOpMode {
 
       // TRANSFER 3
       case 9:
-        if (pathTimer.getElapsedTimeSeconds() > TRANSFER_DELAY) {
+        if (!robot.follower.isBusy() && pathTimer.getElapsedTimeSeconds() > TRANSFER_DELAY) {
           robot.slides.setTarget(VerticalSlides.TRANSFER);
         }
-        if (pathTimer.getElapsedTimeSeconds() > TRANSFER_DELAY_2 && robot.slides.atTarget(30)) {
+        if (!robot.follower.isBusy() && pathTimer.getElapsedTimeSeconds() > TRANSFER_DELAY_2 && robot.slides.atTarget(30)) {
           robot.claw.clawClose();
           setPathState(91);
         }
@@ -344,7 +344,7 @@ public class BucketAuton extends LinearOpMode {
 
       case 92:
         if (robot.slides.atTarget(30)) {
-          robot.slides.setTarget(VerticalSlides.UP);
+          robot.slides.setTarget(VerticalSlides.UP + 100);
           robot.claw.setBucket();
           setPathState(10);
         }
@@ -362,15 +362,16 @@ public class BucketAuton extends LinearOpMode {
       case 11:
         robot.intake.update(0, true, Intake.SLIDE_TRANSFER, robot.getAllianceColor());
         if (!robot.follower.isBusy()) {
-          robot.intake.update(1, false, Intake.SLIDE_OUT, robot.getAllianceColor());
+          robot.intake.update(1, true, Intake.SLIDE_OUT, robot.getAllianceColor());
+          if (pathTimer.getElapsedTimeSeconds() > 1){
+            robot.intake.update(1, false, Intake.SLIDE_OUT, robot.getAllianceColor());
+          }
           setPathState(111);
         }
         break;
 
       case 111:
         robot.intake.update(1, false, Intake.SLIDE_OUT, robot.getAllianceColor());
-        // TODO: is this wait necessary? Can it be reduced / removed
-        if (pathTimer.getElapsedTimeSeconds() > 1) {
           if (robot.intake.validSampleIn(robot.getAllianceColor())) {
             robot.intake.update(0, true, Intake.SLIDE_TRANSFER, robot.getAllianceColor());
             Pose current = robot.follower.getPose();
@@ -388,7 +389,6 @@ public class BucketAuton extends LinearOpMode {
             robot.follower.followPath(pickupSubMovementOne, true);
             setPathState(112);
           }
-        }
         break;
 
       case 112:
