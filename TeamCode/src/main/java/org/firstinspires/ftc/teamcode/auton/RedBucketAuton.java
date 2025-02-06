@@ -15,8 +15,8 @@ import org.firstinspires.ftc.teamcode.subsystems.VerticalSlides;
 
 // TODO tune
 @Config
-@Autonomous(name = "BUCKET", group = "PEDRO")
-public class BucketAuton extends LinearOpMode {
+@Autonomous(name = "RED BUCKET", group = "PEDRO")
+public class RedBucketAuton extends LinearOpMode {
 
   Robot robot;
 
@@ -47,29 +47,6 @@ public class BucketAuton extends LinearOpMode {
   public static double[] INTAKE_SUB_SECONDARY = {63, 101, Math.toRadians(280)};
   public static double[] END = {60, 98, Math.toRadians(90)};
 
-
-
-
-
-
-
-
-
-  //TODO: MAKE SURE IT DOESNT PICK UP THE WRONG COLOR
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   // CONTROL POINTS
   public static double[] START_BUCKET_CONTROL = {35, 105};
   public static double[] BUCKET_INTAKE_SUB_CONTROL = {54, 126};
@@ -91,6 +68,7 @@ public class BucketAuton extends LinearOpMode {
 
   private int pathState = 0;
   private Timer pathTimer;
+  private Timer outtakeTimer;
 
   public Pose poseFromArr(double[] arr) {
     return new Pose(arr[0], arr[1], arr[2]);
@@ -450,7 +428,8 @@ public class BucketAuton extends LinearOpMode {
           robot.intake.update(1, false, Intake.SLIDE_OUT, robot.getAllianceColor());
         }
           if (robot.intake.validSampleIn(robot.getAllianceColor())) {
-            robot.intake.update(0, true, Intake.SLIDE_TRANSFER, robot.getAllianceColor());
+            robot.intake.update(-1, true, Intake.SLIDE_TRANSFER, robot.getAllianceColor());
+            outtakeTimer.resetTimer();
             Pose current = robot.follower.getPose();
             robot.follower.followPath(
             robot.follower.pathBuilder()
@@ -471,7 +450,8 @@ public class BucketAuton extends LinearOpMode {
 
       case 112:
         if (robot.intake.validSampleIn(robot.getAllianceColor())) {
-          robot.intake.update(0, true, Intake.SLIDE_TRANSFER, robot.getAllianceColor());
+          robot.intake.update(-1, true, Intake.SLIDE_TRANSFER, robot.getAllianceColor());
+          outtakeTimer.resetTimer();
           Pose current = robot.follower.getPose();
           robot.follower.followPath(
           robot.follower.pathBuilder()
@@ -491,11 +471,14 @@ public class BucketAuton extends LinearOpMode {
         }
         break;
 
-        //TODO: OUTAKE QUARTER SECOND
 
       // TRANSFER SUBMERSIBLE
 
       case 12:
+        if (outtakeTimer.getElapsedTimeSeconds() > 0.1){
+          robot.intake.update(0, true, Intake.SLIDE_TRANSFER, robot.getAllianceColor());
+        }
+
         if (pathTimer.getElapsedTimeSeconds() > 1) {
           robot.slides.setTarget(VerticalSlides.TRANSFER);
         }
@@ -556,21 +539,23 @@ public class BucketAuton extends LinearOpMode {
     robot = new Robot(this);
 
     pathTimer = new Timer();
+    outtakeTimer = new Timer();
     buildPaths();
     robot.initAuton();
 
     AllianceColor color = AllianceColor.RED;
+    robot.setAllianceColor(color);
     // INIT LOOP
     while (opModeInInit()) {
       if (gamepad1.square) {
-        color = AllianceColor.RED;
+        //color = AllianceColor.RED;
       }
       if (gamepad1.cross) {
-        color = AllianceColor.BLUE;
+        //color = AllianceColor.BLUE;
       }
-      robot.setAllianceColor(color);
+      //robot.setAllianceColor(color);
 
-      telemetry.addLine("SQUARE = RED | CROSS = BLUE");
+      //telemetry.addLine("SQUARE = RED | CROSS = BLUE");
       telemetry.addData("ALLIANCE", robot.getAllianceColor());
       telemetry.update();
     }
