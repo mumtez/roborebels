@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
 
@@ -17,7 +16,7 @@ public class Claw {
 
   public static double upArmPlace = 0.63;
   public static double upArmWall = 0.46;
-  public static double upArmBucket = 1;
+  public static double upArmBucket = .94;
   public static double upArmUnder = 0.82;
   public static double upArmTransfer = 0.16;
   public static double upArmInit = 0.82;

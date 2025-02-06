@@ -32,8 +32,8 @@ public class Intake {
 
   public static double SLIDE_OUT = 0.96;
 
-  public static double INTAKE_DOWN = 0.17;
-  public static double INTAKE_FLAT = 0.05;
+  public static double INTAKE_DOWN = 0.14;
+  public static double INTAKE_FLAT = 0.00;
 
   public static float COLOR_GAIN = 2;
   public static double RED_THRESHOLD = 0.02;
@@ -136,7 +136,8 @@ public class Intake {
 
       if (this.colors.red >= Intake.RED_THRESHOLD && this.colors.blue < Intake.COLOR_THRESHOLD) {
         this.sampleColor = SampleColor.RED;
-      } else if (this.colors.blue >= Intake.BLUE_THRESHOLD && this.colors.red < Intake.COLOR_THRESHOLD) {
+      } else if (this.colors.blue >= Intake.BLUE_THRESHOLD
+          && this.colors.red < Intake.COLOR_THRESHOLD) {
         this.sampleColor = SampleColor.BLUE;
       }
     } else {
