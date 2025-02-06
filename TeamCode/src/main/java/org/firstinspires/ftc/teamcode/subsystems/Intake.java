@@ -27,7 +27,7 @@ public class Intake {
 
   public double TESTHSlide = 0;
 
-  public static double SLIDE_TRANSFER = 0.6;
+  public static double SLIDE_TRANSFER = 0.58;
   public static double SLIDE_POST_TRANSFER = 0.67;
 
   public static double SLIDE_OUT = 0.96;

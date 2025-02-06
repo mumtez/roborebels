@@ -29,31 +29,60 @@ public class BucketAuton extends LinearOpMode {
   public static double INTAKE_2_DELAY = 1.0;
   public static double INTAKE_3_DELAY = 1.0;
 
+  public static double SUB_TIMER = 0.2;
+  public static double INTAKE_OVERIDE = 4;
+
   public static double TRANSFER_DELAY = 0.8;
   public static double TRANSFER_DELAY_2 = TRANSFER_DELAY + 0.1;
 
   // MAIN POINTS
   public static double[] START = {9, 105, Math.toRadians(270)};
   public static double[] PLACE_BUCKET = {25, 120, Math.toRadians(315)};
+  public static double[] PLACE_BUCKET_TWO = {27, 122, Math.toRadians(315)};
+
   public static double[] INTAKE_ONE = {28, 118, Math.toRadians(0)};
-  public static double[] INTAKE_TWO = {30, 122, Math.toRadians(0)};
+  public static double[] INTAKE_TWO = {30, 122.5, Math.toRadians(0)};
   public static double[] INTAKE_THREE = {38, 120, Math.toRadians(50)};
   public static double[] INTAKE_SUB = {60, 98, Math.toRadians(270)};
   public static double[] INTAKE_SUB_SECONDARY = {63, 101, Math.toRadians(280)};
   public static double[] END = {60, 98, Math.toRadians(90)};
+
+
+
+
+
+
+
+
+
+  //TODO: MAKE SURE IT DOESNT PICK UP THE WRONG COLOR
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   // CONTROL POINTS
   public static double[] START_BUCKET_CONTROL = {35, 105};
   public static double[] BUCKET_INTAKE_SUB_CONTROL = {54, 126};
 
   // PATHS
-  private Pose startPose, placeBucketPose, intakeOnePose, intakeTwoPose, intakeThreePose, intakeSubPose,
+  private Pose startPose, placeBucketPose, placeBucketPoseTwo, intakeOnePose, intakeTwoPose, intakeThreePose, intakeSubPose,
       intakeSubSecondaryPose, endPose;
   private Point startBucketControl, bucketIntakeSubControl;
 
   PathChain placePreLoad,
       pickupOne, placeOne,
       pickupTwo, placeTwo,
+      failedOne, failedTwo, failedThree,
       pickupThree, placeThree,
       pickupFour,
       pickupSubMovementOne, pickupSubMovementTwo,
@@ -71,6 +100,8 @@ public class BucketAuton extends LinearOpMode {
     // POSE SETUP
     startPose = poseFromArr(START);
     placeBucketPose = poseFromArr(PLACE_BUCKET);
+    placeBucketPoseTwo = poseFromArr(PLACE_BUCKET_TWO);
+
     intakeOnePose = poseFromArr(INTAKE_ONE);
     intakeTwoPose = poseFromArr(INTAKE_TWO);
     intakeThreePose = poseFromArr(INTAKE_THREE);
@@ -101,6 +132,14 @@ public class BucketAuton extends LinearOpMode {
         .setLinearHeadingInterpolation(placeBucketPose.getHeading(), intakeOnePose.getHeading())
         .build();
 
+    failedOne = robot.follower.pathBuilder()
+            .addBezierLine(
+                    new Point(intakeOnePose),
+                    new Point(intakeTwoPose)
+            )
+            .setLinearHeadingInterpolation(intakeOnePose.getHeading(), intakeTwoPose.getHeading())
+            .build();
+
     placeOne = robot.follower.pathBuilder()
         .addBezierLine(
             new Point(intakeOnePose),
@@ -117,33 +156,49 @@ public class BucketAuton extends LinearOpMode {
         .setLinearHeadingInterpolation(placeBucketPose.getHeading(), intakeTwoPose.getHeading())
         .build();
 
+    failedTwo = robot.follower.pathBuilder()
+            .addBezierLine(
+                    new Point(intakeTwoPose),
+                    new Point(intakeThreePose)
+            )
+            .setLinearHeadingInterpolation(intakeTwoPose.getHeading(), intakeThreePose.getHeading())
+            .build();
+
     placeTwo = robot.follower.pathBuilder()
         .addBezierLine(
             new Point(intakeTwoPose),
-            new Point(placeBucketPose)
+            new Point(placeBucketPoseTwo)
         )
         .setLinearHeadingInterpolation(intakeTwoPose.getHeading(), placeBucketPose.getHeading())
         .build();
 
     pickupThree = robot.follower.pathBuilder()
         .addBezierLine(
-            new Point(placeBucketPose),
+            new Point(placeBucketPoseTwo),
             new Point(intakeThreePose)
         )
         .setLinearHeadingInterpolation(placeBucketPose.getHeading(), intakeThreePose.getHeading())
         .build();
 
+    failedThree = robot.follower.pathBuilder()
+            .addBezierLine(
+                    new Point(intakeThreePose),
+                    new Point(intakeSubPose)
+            )
+            .setLinearHeadingInterpolation(intakeThreePose.getHeading(), intakeSubPose.getHeading())
+            .build();
+
     placeThree = robot.follower.pathBuilder()
         .addBezierLine(
             new Point(intakeThreePose),
-            new Point(placeBucketPose)
+            new Point(placeBucketPoseTwo)
         )
         .setLinearHeadingInterpolation(intakeThreePose.getHeading(), placeBucketPose.getHeading())
         .build();
 
     pickupFour = robot.follower.pathBuilder()
         .addBezierCurve(
-            new Point(placeBucketPose),
+            new Point(placeBucketPoseTwo),
             bucketIntakeSubControl,
             new Point(intakeSubPose)
         )
@@ -229,6 +284,12 @@ public class BucketAuton extends LinearOpMode {
           robot.follower.followPath(placeOne, true);
           setPathState(3);
         }
+
+        if (pathTimer.getElapsedTimeSeconds() > INTAKE_OVERIDE){
+          robot.intake.update(-1,true, HSLIDE_1,robot.getAllianceColor());
+          robot.follower.followPath(failedOne);
+          setPathState(5);
+        }
         break;
 
       // TRANSFER INTAKE 1
@@ -276,6 +337,13 @@ public class BucketAuton extends LinearOpMode {
           robot.intake.update(0, true, Intake.SLIDE_TRANSFER, robot.getAllianceColor());
           robot.follower.followPath(placeTwo, true);
           setPathState(6);
+        }
+
+        if (pathTimer.getElapsedTimeSeconds() > INTAKE_OVERIDE){
+          robot.intake.update(-1,true, HSLIDE_2,robot.getAllianceColor());
+          robot.follower.followPath(failedTwo);
+          setPathState(8);
+
         }
         break;
 
@@ -325,6 +393,13 @@ public class BucketAuton extends LinearOpMode {
           robot.follower.followPath(placeThree, true);
           setPathState(9);
         }
+
+        if (pathTimer.getElapsedTimeSeconds() > INTAKE_OVERIDE){
+          robot.intake.update(-1,true, HSLIDE_3,robot.getAllianceColor());
+          robot.follower.followPath(failedThree);
+          setPathState(11);
+
+        }
         break;
 
       // TRANSFER 3
@@ -366,18 +441,18 @@ public class BucketAuton extends LinearOpMode {
         robot.intake.update(0, true, Intake.SLIDE_TRANSFER, robot.getAllianceColor());
         if (!robot.follower.isBusy()) {
           robot.intake.update(1, true, Intake.SLIDE_OUT, robot.getAllianceColor());
-          if (pathTimer.getElapsedTimeSeconds() > 1){
-            robot.intake.update(1, false, Intake.SLIDE_OUT, robot.getAllianceColor());
-          }
           setPathState(111);
         }
         break;
 
       case 111:
-        robot.intake.update(1, false, Intake.SLIDE_OUT, robot.getAllianceColor());
+        if (pathTimer.getElapsedTimeSeconds() > SUB_TIMER){
+          robot.intake.update(1, false, Intake.SLIDE_OUT, robot.getAllianceColor());
+        }
           if (robot.intake.validSampleIn(robot.getAllianceColor())) {
             robot.intake.update(0, true, Intake.SLIDE_TRANSFER, robot.getAllianceColor());
             Pose current = robot.follower.getPose();
+            robot.follower.followPath(
             robot.follower.pathBuilder()
                 .addBezierCurve(
                     new Point(current),
@@ -385,7 +460,7 @@ public class BucketAuton extends LinearOpMode {
                     new Point(placeBucketPose)
                 )
                 .setLinearHeadingInterpolation(current.getHeading(), placeBucketPose.getHeading())
-                .build();
+                .build());
             setPathState(12);
           }
           if (!robot.follower.isBusy()) {
@@ -398,6 +473,7 @@ public class BucketAuton extends LinearOpMode {
         if (robot.intake.validSampleIn(robot.getAllianceColor())) {
           robot.intake.update(0, true, Intake.SLIDE_TRANSFER, robot.getAllianceColor());
           Pose current = robot.follower.getPose();
+          robot.follower.followPath(
           robot.follower.pathBuilder()
               .addBezierCurve(
                   new Point(current),
@@ -405,7 +481,8 @@ public class BucketAuton extends LinearOpMode {
                   new Point(placeBucketPose)
               )
               .setLinearHeadingInterpolation(current.getHeading(), placeBucketPose.getHeading())
-              .build();
+              .build());
+
           setPathState(12);
         }
         if (!robot.follower.isBusy()) {
@@ -413,6 +490,8 @@ public class BucketAuton extends LinearOpMode {
           setPathState(111);
         }
         break;
+
+        //TODO: OUTAKE QUARTER SECOND
 
       // TRANSFER SUBMERSIBLE
 

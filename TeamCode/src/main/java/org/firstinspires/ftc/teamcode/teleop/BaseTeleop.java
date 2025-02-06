@@ -224,7 +224,7 @@ public class BaseTeleop {
         break;
 
       case BUCKET_TRANSFER:
-        if (stateTimer.milliseconds() > 400) {
+        if (stateTimer.milliseconds() > 300) {
           robot.claw.clawClose();
           state = ModeState.BUCKET_POST_TRANSFER;
           stateTimer.reset();
@@ -232,11 +232,11 @@ public class BaseTeleop {
         break;
 
       case BUCKET_POST_TRANSFER:
-        if (stateTimer.milliseconds() > 400) {
+        if (stateTimer.milliseconds() > 300) {
           if (robot.slides.getTarget() != VerticalSlides.DEFAULT) {
             robot.slides.setTarget(VerticalSlides.DEFAULT);
-            robot.intake.setHorizontalSlidePos(Intake.SLIDE_POST_TRANSFER);
-            robot.claw.setTransferClear();
+            //robot.intake.setHorizontalSlidePos(Intake.SLIDE_POST_TRANSFER);
+            //robot.claw.setTransferClear();
 
 
           }

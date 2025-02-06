@@ -28,16 +28,17 @@ public class SamplingAuton extends LinearOpMode {
 
 
   // MAIN POINTS
-  public static double[] START = {9, 58, Math.toRadians(270)};
+  public static double[] START = {9, 58, Math.toRadians(180)};
   public static double[] PLACE_WALL = {25, 23, Math.toRadians(180)};
   public static double[] INTAKE_ONE = {28, 23, Math.toRadians(0)};
   public static double[] INTAKE_TWO = {30, 12, Math.toRadians(0)};
   public static double[] INTAKE_THREE = {38, 16, Math.toRadians(-50)};
   //TODO: TUNE THESE
   public static double[] GRAB_WALL = {12, 118, Math.toRadians(180)};
-  public static double[] PRE_BAR = {40, 70, Math.toRadians(0)};
-  public static double[] PLACE_BAR = {45, 70, Math.toRadians(0)};
-  public static double[] POST_BAR = {35, 60, Math.toRadians(0)};
+  public static double[] PRE_BAR = {40, 70, Math.toRadians(180)};
+  public static double[] PLACE_BAR = {45, 70, Math.toRadians(180)};
+  public static double[] POST_BAR = {35, 60, Math.toRadians(180)};
+  public static double[] INTAKE_SUB = {60, 98, Math.toRadians(270)};
 
 
   public static double[] INTAKE_SUB_SECONDARY = {63, 101, Math.toRadians(280)};
@@ -84,6 +85,7 @@ public class SamplingAuton extends LinearOpMode {
     intakeOnePose = poseFromArr(INTAKE_ONE);
     intakeTwoPose = poseFromArr(INTAKE_TWO);
     intakeThreePose = poseFromArr(INTAKE_THREE);
+    intakeSubPose = poseFromArr(INTAKE_SUB);
     intakeSubSecondaryPose = poseFromArr(INTAKE_SUB_SECONDARY);
     endPose = poseFromArr(END);
 
@@ -283,7 +285,9 @@ public class SamplingAuton extends LinearOpMode {
       case 102:
         if(!robot.follower.isBusy()){
           robot.claw.setPlace();
-          robot.follower.followPath(postPlaceBar);
+          if (pathTimer.getElapsedTimeSeconds() > PLACE_DELAY/4) {
+            robot.follower.followPath(postPlaceBar);
+          }
         }
         if (pathTimer.getElapsedTimeSeconds() > PLACE_DELAY){
           robot.claw.clawOpen();

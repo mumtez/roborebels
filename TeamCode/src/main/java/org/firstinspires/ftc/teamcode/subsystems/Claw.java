@@ -15,17 +15,17 @@ public class Claw {
   public static double clawOpenPos = 0.57;
   public static double clawClosePos = 0.4;
 
-  public static double upArmPlace = 0.69;
+  public static double upArmPlace = 0.63;
   public static double upArmWall = 0.46;
   public static double upArmBucket = 1;
   public static double upArmUnder = 0.82;
   public static double upArmTransfer = 0.16;
   public static double upArmInit = 0.82;
 
-  public static double downArmPlace = 0.2;
+  public static double downArmPlace = 0.22;
   public static double downArmWall = 0.9;
   public static double downArmBucket = 0.35;
-  public static double downArmUnder = 0.16;
+  public static double downArmUnder = 0.22;
   public static double downArmTransfer = 0.92;
   public static double downArmInit = 0.85;
 
