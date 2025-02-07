@@ -62,7 +62,6 @@ public class BaseBucketAuton {
 
   private int pathState = 0;
   private Timer pathTimer;
-  private Timer outtakeTimer;
 
   final Robot robot;
   final LinearOpMode opMode;
@@ -435,7 +434,6 @@ public class BaseBucketAuton {
         }
         if (robot.intake.validSampleIn(robot.getAllianceColor())) {
           robot.intake.update(-1, true, Intake.SLIDE_TRANSFER, robot.getAllianceColor());
-          outtakeTimer.resetTimer();
           Pose current = robot.follower.getPose();
           robot.follower.followPath(
               robot.follower.pathBuilder()
@@ -457,7 +455,6 @@ public class BaseBucketAuton {
       case 112:
         if (robot.intake.validSampleIn(robot.getAllianceColor())) {
           robot.intake.update(-1, true, Intake.SLIDE_TRANSFER, robot.getAllianceColor());
-          outtakeTimer.resetTimer();
           Pose current = robot.follower.getPose();
           robot.follower.followPath(
               robot.follower.pathBuilder()
@@ -468,7 +465,6 @@ public class BaseBucketAuton {
                   )
                   .setLinearHeadingInterpolation(current.getHeading(), placeBucketPose.getHeading())
                   .build());
-
           setPathState(12);
         }
         if (!robot.follower.isBusy()) {
@@ -480,8 +476,12 @@ public class BaseBucketAuton {
       // TRANSFER SUBMERSIBLE
 
       case 12:
-        if (outtakeTimer.getElapsedTimeSeconds() > 0.1) {
-          robot.intake.update(0, true, Intake.SLIDE_TRANSFER, robot.getAllianceColor());
+        if (pathTimer.getElapsedTimeSeconds() > 0.1) {
+          if (robot.intake.validSampleIn(robot.getAllianceColor())) {
+            robot.intake.update(0, true, Intake.SLIDE_TRANSFER, robot.getAllianceColor());
+          } else {
+            robot.intake.update(1, true, Intake.SLIDE_TRANSFER, robot.getAllianceColor());
+          }
         }
 
         if (pathTimer.getElapsedTimeSeconds() > 1) {
@@ -541,7 +541,6 @@ public class BaseBucketAuton {
   public void run() {
 
     pathTimer = new Timer();
-    outtakeTimer = new Timer();
     buildPaths();
     robot.initAuton();
 

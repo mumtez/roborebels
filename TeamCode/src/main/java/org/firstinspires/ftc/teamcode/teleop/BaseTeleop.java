@@ -8,13 +8,16 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.Robot;
-import org.firstinspires.ftc.teamcode.Robot.ModeState;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
-import org.firstinspires.ftc.teamcode.subsystems.Intake.SampleColor;
 import org.firstinspires.ftc.teamcode.subsystems.VerticalSlides;
 
 @Config
 public class BaseTeleop {
+
+  public enum ModeState {
+    SPEC_WALL, SPEC_PRE_CLIP, SPEC_CLIP, SPEC_POST_CLIP,
+    BUCKET_INTAKING, BUCKET_PRE_TRANSFER, BUCKET_TRANSFER, BUCKET_POST_TRANSFER, BUCKET_PLACE, BUCKET_POST_PLACE
+  }
 
   public static double HORIZONTAL_SPEED = 80;
 
@@ -237,7 +240,6 @@ public class BaseTeleop {
             robot.slides.setTarget(VerticalSlides.DEFAULT);
             //robot.intake.setHorizontalSlidePos(Intake.SLIDE_POST_TRANSFER);
             //robot.claw.setTransferClear();
-
 
           }
           if (currentGamepad2.square) {
