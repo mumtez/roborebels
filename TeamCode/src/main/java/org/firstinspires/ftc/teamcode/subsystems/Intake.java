@@ -14,6 +14,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.Servo.Direction;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
 import com.qualcomm.robotcore.hardware.SwitchableLight;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Robot.AllianceColor;
@@ -28,8 +29,6 @@ public class Intake {
   public double TESTHSlide = 0;
 
   public static double SLIDE_TRANSFER = 0.58;
-  public static double SLIDE_POST_TRANSFER = 0.67;
-
   public static double SLIDE_OUT = 0.96;
 
   public static double INTAKE_DOWN = 0.14;
@@ -45,6 +44,7 @@ public class Intake {
   public final ServoImplEx rotate, hSlide;
 
   public final NormalizedColorSensor colorSensor;
+  public final TouchSensor touchSensor;
   public final Servo rgb;
 
   private final ElapsedTime spitTimer = new ElapsedTime();
@@ -86,8 +86,14 @@ public class Intake {
       // Turn the light ON to observe objects that don't emit their own light
     }
 
+    touchSensor = hardwareMap.touchSensor.get("t");
+
     rgb = hardwareMap.servo.get("rgb");
     rgb.setPosition(0);
+  }
+
+  public boolean isSlideBack() {
+    return this.touchSensor.isPressed();
   }
 
   public void senseColor() {

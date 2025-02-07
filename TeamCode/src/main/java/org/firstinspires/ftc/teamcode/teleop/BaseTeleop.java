@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.Robot;
+import org.firstinspires.ftc.teamcode.subsystems.Claw;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.VerticalSlides;
 
@@ -32,6 +33,7 @@ public class BaseTeleop {
   final ElapsedTime stateTimer = new ElapsedTime();
 
   boolean intakeFlat = true;
+  boolean mustWait = false;
 
   Gamepad currentGamepad1 = new Gamepad();
   Gamepad currentGamepad2 = new Gamepad();
@@ -205,6 +207,10 @@ public class BaseTeleop {
         intakeControl();
 
         if (currentGamepad2.cross) {
+          // If the claw is not already set to transfer position, must do full wait cycle for transfer
+          mustWait =
+              (Math.abs(robot.claw.clawUpArm.getPosition() - Claw.upArmTransfer) > 0.01)
+                  && (Math.abs(robot.intake.hSlide.getPosition() - Intake.SLIDE_TRANSFER) < 0.05);
           state = ModeState.BUCKET_PRE_TRANSFER;
           robot.slides.setTarget(VerticalSlides.DEFAULT + 200);
           robot.intake.rotateFlat();
@@ -212,12 +218,13 @@ public class BaseTeleop {
           robot.intake.setHorizontalSlidePos(Intake.SLIDE_TRANSFER);
           robot.claw.setTransfer();
           robot.claw.clawOpen();
+
           stateTimer.reset();
         }
         break;
 
       case BUCKET_PRE_TRANSFER:
-        if (stateTimer.milliseconds() > 700) {
+        if (stateTimer.milliseconds() > 700 || (robot.intake.isSlideBack() && !mustWait)) {
           robot.slides.setTarget(VerticalSlides.TRANSFER);
           state = ModeState.BUCKET_TRANSFER;
           stateTimer.reset();
@@ -236,9 +243,6 @@ public class BaseTeleop {
         if (stateTimer.milliseconds() > 300) {
           if (robot.slides.getTarget() != VerticalSlides.DEFAULT) {
             robot.slides.setTarget(VerticalSlides.DEFAULT);
-            //robot.intake.setHorizontalSlidePos(Intake.SLIDE_POST_TRANSFER);
-            //robot.claw.setTransferClear();
-
           }
           if (currentGamepad2.square) {
             robot.claw.clawOpen();
@@ -310,6 +314,7 @@ public class BaseTeleop {
     telemetry.addData("Colors RED ", robot.intake.getColors().red);
     telemetry.addData("Colors BLUE ", robot.intake.getColors().blue);
     telemetry.addData("Colors GREEN ", robot.intake.getColors().green);
+    telemetry.addData("Slide Back?", robot.intake.isSlideBack());
     telemetry.addData("H Slide ", robot.intake.TESTHSlide);
 
     telemetry.update();
