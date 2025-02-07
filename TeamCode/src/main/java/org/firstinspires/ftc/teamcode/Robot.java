@@ -126,6 +126,11 @@ public class Robot {
 
   public void setAllianceColor(AllianceColor allianceColor) {
     this.allianceColor = allianceColor;
+    if (allianceColor == AllianceColor.RED) {
+      this.intake.rgb.setPosition(0.28);
+    } else if (allianceColor == AllianceColor.BLUE) {
+      this.intake.rgb.setPosition(0.63);
+    }
   }
 
   public AllianceColor getAllianceColor() {
