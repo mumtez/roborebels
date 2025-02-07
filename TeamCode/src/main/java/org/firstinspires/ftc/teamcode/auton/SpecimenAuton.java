@@ -24,6 +24,7 @@ public class SpecimenAuton extends LinearOpMode {
   public static double HSLIDE_3 = Intake.SLIDE_OUT;
 
   public static double PLACE_DELAY = 0.8;
+  public static double GRAB_DELAY = 1.5;
 
 
   // MAIN POINTS
@@ -152,39 +153,6 @@ public class SpecimenAuton extends LinearOpMode {
         .setLinearHeadingInterpolation(intakeThreePose.getHeading(), placeWallPose.getHeading())
         .build();
 
-    pickupFour = robot.follower.pathBuilder()
-        .addBezierCurve(
-            new Point(placeWallPose),
-            bucketIntakeSubControl,
-            new Point(intakeSubPose)
-        )
-        .setLinearHeadingInterpolation(placeWallPose.getHeading(), intakeSubPose.getHeading())
-        .build();
-
-    pickupSubMovementOne = robot.follower.pathBuilder()
-        .addBezierLine(
-            new Point(intakeSubPose),
-            new Point(intakeSubSecondaryPose)
-        )
-        .setLinearHeadingInterpolation(intakeSubPose.getHeading(), intakeSubSecondaryPose.getHeading())
-        .build();
-
-    pickupSubMovementTwo = robot.follower.pathBuilder()
-        .addBezierLine(
-            new Point(intakeSubSecondaryPose),
-            new Point(intakeSubPose)
-        )
-        .setLinearHeadingInterpolation(intakeSubSecondaryPose.getHeading(), intakeSubPose.getHeading())
-        .build();
-
-    placeFour = robot.follower.pathBuilder()
-        .addBezierCurve(
-            new Point(intakeSubPose),
-            bucketIntakeSubControl,
-            new Point(placeWallPose)
-        )
-        .setLinearHeadingInterpolation(intakeSubPose.getHeading(), placeWallPose.getHeading())
-        .build();
 
     end = robot.follower.pathBuilder()
         .addBezierCurve(
@@ -281,10 +249,15 @@ public class SpecimenAuton extends LinearOpMode {
       case 102:
         if (!robot.follower.isBusy()) {
           robot.claw.setPlace();
-          if (pathTimer.getElapsedTimeSeconds() > PLACE_DELAY / 4) {
+          if (pathTimer.getElapsedTimeSeconds() > PLACE_DELAY / 4) { // Timer might always be over by the time follower is not busy
             robot.follower.followPath(postPlaceBar);
+            setPathState(103);
           }
         }
+
+        break;
+
+      case 103:
         if (pathTimer.getElapsedTimeSeconds() > PLACE_DELAY) {
           robot.claw.clawOpen();
           setPathState(1);
@@ -318,7 +291,7 @@ public class SpecimenAuton extends LinearOpMode {
         if (!robot.follower.isBusy() && robot.slides.atTarget(30)) {
           robot.intake.update(-1, true, HSLIDE_1, robot.getAllianceColor());
         }
-        if (!(robot.intake.validSampleIn(robot.getAllianceColor()))) {
+        if (!(robot.intake.validSampleIn(robot.getAllianceColor())) ) {  //Also check timer if outtaking is stopping too early
           robot.follower.followPath(pickupTwo);
           robot.intake.update(0, true, Intake.SLIDE_TRANSFER, robot.getAllianceColor());
           setPathState(5);
@@ -341,12 +314,11 @@ public class SpecimenAuton extends LinearOpMode {
       // PLACE 2
       case 7:
         if (!robot.follower.isBusy() && robot.slides.atTarget(30)) {
-          place(pickupThree);
           robot.intake.update(-1, true, HSLIDE_2, robot.getAllianceColor());
         }
 
         if (!(robot.intake.validSampleIn(robot.getAllianceColor()))) {
-          robot.follower.followPath(pickupTwo);
+          robot.follower.followPath(pickupThree);
           robot.intake.update(0, true, Intake.SLIDE_TRANSFER, robot.getAllianceColor());
           setPathState(8);
         }
@@ -356,13 +328,13 @@ public class SpecimenAuton extends LinearOpMode {
 
       case 8:
         robot.slides.setTarget(VerticalSlides.PRE_TRANSFER);
-        if (robot.slides.atTarget(30) && pathTimer.getElapsedTimeSeconds() > 1) {
+        if (robot.slides.atTarget(30) && !robot.follower.isBusy()) {
           robot.intake.update(1, false, HSLIDE_3, robot.getAllianceColor());
         }
         if (!robot.follower.isBusy() && robot.intake.validSampleIn(robot.getAllianceColor())) {
           robot.intake.update(0, true, Intake.SLIDE_TRANSFER, robot.getAllianceColor());
           robot.follower.followPath(placeThree, true);
-          setPathState(9);
+          setPathState(10);
         }
         break;
 
@@ -370,6 +342,14 @@ public class SpecimenAuton extends LinearOpMode {
       case 10:
         if (!robot.follower.isBusy() && robot.slides.atTarget(30)) {
           robot.intake.update(-1, true, HSLIDE_3, robot.getAllianceColor());
+        }
+
+        if (!(robot.intake.validSampleIn(robot.getAllianceColor()))) {
+          robot.follower.followPath(grabOne);
+          robot.intake.update(0, true, Intake.SLIDE_TRANSFER, robot.getAllianceColor());
+          robot.claw.setWall();
+          robot.claw.clawOpen();
+          robot.slides.setTarget(VerticalSlides.SPECIMEN);
           setPathState(11);
         }
         break;
@@ -377,30 +357,17 @@ public class SpecimenAuton extends LinearOpMode {
       //GRAB ONE
       case 11:
         if (!robot.follower.isBusy()) {
-          robot.claw.setWall();
-          robot.claw.clawOpen();
-          robot.follower.followPath(grabOne);
-          setPathState(12);
-        }
-        break;
-
-      // PLACE ONE SETUP
-      case 12:
-        if (!robot.follower.isBusy()) {
           robot.claw.clawClose();
-          robot.claw.setUnder();
-          robot.follower.followPath(prePlaceBar);
-          setPathState(13);
+          if (pathTimer.getElapsedTimeSeconds() > GRAB_DELAY/4) {
+            robot.claw.setUnder();
+          }
+          if (pathTimer.getElapsedTimeSeconds() > GRAB_DELAY) {
+            robot.follower.followPath(placeBar);
+            setPathState(14);
+          }
         }
         break;
 
-      //PLACE ONE
-      case 13:
-        if (!robot.follower.isBusy()) {
-          robot.follower.followPath(placeBar);
-          setPathState(14);
-        }
-        break;
 
       //RELEASE CLAW
       case 14:
@@ -408,13 +375,13 @@ public class SpecimenAuton extends LinearOpMode {
           robot.claw.setPlace();
           robot.follower.followPath(postPlaceBar);
         }
-        if (pathTimer.getElapsedTimeSeconds() > PLACE_DELAY) {
+        if (pathTimer.getElapsedTimeSeconds() > PLACE_DELAY) {  //Probably increase place delay
           robot.claw.clawOpen();
           setPathState(15);
         }
         break;
 
-      //GRAB TWO
+
       case 15:
         if (!robot.follower.isBusy()) {
           robot.claw.setWall();
@@ -424,21 +391,17 @@ public class SpecimenAuton extends LinearOpMode {
         }
         break;
 
-      //PLACE TWO SETUP
+      //GRAB TWO
       case 16:
         if (!robot.follower.isBusy()) {
           robot.claw.clawClose();
-          robot.claw.setUnder();
-          robot.follower.followPath(prePlaceBar);
-          setPathState(17);
-        }
-        break;
-
-      //PLACE TWO
-      case 17:
-        if (!robot.follower.isBusy()) {
-          robot.follower.followPath(placeBar);
-          setPathState(18);
+          if (pathTimer.getElapsedTimeSeconds() > GRAB_DELAY/4) {
+            robot.claw.setUnder();
+          }
+          if (pathTimer.getElapsedTimeSeconds() > GRAB_DELAY) {
+            robot.follower.followPath(placeBar);
+            setPathState(18);
+          }
         }
         break;
 
@@ -458,7 +421,7 @@ public class SpecimenAuton extends LinearOpMode {
         if (!robot.follower.isBusy()) {
           robot.claw.setWall();
           robot.claw.clawOpen();
-          robot.follower.followPath(grabOne);
+          robot.follower.followPath(grabThree);
           setPathState(20);
         }
         break;
@@ -466,18 +429,16 @@ public class SpecimenAuton extends LinearOpMode {
       case 20:
         if (!robot.follower.isBusy()) {
           robot.claw.clawClose();
-          robot.claw.setUnder();
-          robot.follower.followPath(prePlaceBar);
-          setPathState(21);
+          if (pathTimer.getElapsedTimeSeconds() > GRAB_DELAY/4) {
+            robot.claw.setUnder();
+          }
+          if (pathTimer.getElapsedTimeSeconds() > GRAB_DELAY) {
+            robot.follower.followPath(placeBar);
+            setPathState(22);
+          }
         }
         break;
 
-      case 21:
-        if (!robot.follower.isBusy()) {
-          robot.follower.followPath(placeBar);
-          setPathState(22);
-        }
-        break;
 
       case 22:
         if (!robot.follower.isBusy()) {
@@ -486,13 +447,13 @@ public class SpecimenAuton extends LinearOpMode {
         }
         if (pathTimer.getElapsedTimeSeconds() > PLACE_DELAY) {
           robot.claw.clawOpen();
-          setPathState(99); //TODO: Will this try to go through the truss?
+          setPathState(99);
         }
         break;
 
       // LV1 ASCENT
       case 99:
-        if (!robot.follower.isBusy()) {
+        if (!robot.follower.isBusy()) {  //TODO: IDK what the point of this was it was just here
           robot.claw.setPlace();
           setPathState(15);
         }
