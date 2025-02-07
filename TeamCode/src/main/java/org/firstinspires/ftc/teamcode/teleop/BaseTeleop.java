@@ -26,7 +26,7 @@ public class BaseTeleop {
   final Telemetry telemetry;
 
   double horizontalPos = Intake.SLIDE_TRANSFER;
-  boolean manualOverride = false;
+  boolean hangOverride = false;
   boolean specimenMode = false;
   ModeState state = ModeState.BUCKET_INTAKING;
   final ElapsedTime stateTimer = new ElapsedTime();
@@ -77,11 +77,10 @@ public class BaseTeleop {
         robot.imu.resetYaw();
       }
 
-      // TODO: enable if desired
-      // Manual Override
-//      if (currentGamepad1.back && !previousGamepad1.back) {
-//        manualOverride = !manualOverride;
-//      }
+      // Hang Override
+      if (currentGamepad1.back && !previousGamepad1.back) {
+        hangOverride = !hangOverride;
+      }
 
       // Mode Switch
       if (currentGamepad2.back && !previousGamepad2.back) {
@@ -112,8 +111,8 @@ public class BaseTeleop {
       robot.bl.setPower(backLeftPower);
 
       // Manual Control
-      if (manualOverride) {
-        manualControls();
+      if (hangOverride) {
+        hangControls();
       } else {
         if (specimenMode) {
           specimenModeUpdate();
@@ -126,15 +125,14 @@ public class BaseTeleop {
     }
   }
 
-  // TODO: fill out if desired
-  public void manualControls() {
-    // V SLIDES
-    robot.slides.setPower(-currentGamepad2.left_stick_y);
+  public void hangControls() {
+    robot.slides.setPower(currentGamepad1.right_trigger - currentGamepad1.left_trigger);
 
-    // H SLIDES
-    horizontalPos -= currentGamepad2.right_stick_y / HORIZONTAL_SPEED;
-    horizontalPos = Range.clip(horizontalPos, Intake.SLIDE_TRANSFER, Intake.SLIDE_OUT);
-    robot.intake.setHorizontalSlidePos(horizontalPos);
+    robot.intake.setPower(0);
+    robot.intake.setHorizontalSlidePos(Intake.SLIDE_TRANSFER);
+    robot.intake.rotateFlat();
+
+    robot.claw.setInit();
 
 
   }
@@ -305,7 +303,7 @@ public class BaseTeleop {
 
   public void updateTelemetry() {
     telemetry.addData("MODE", specimenMode ? "SPECIMEN" : "BUCKET");
-    telemetry.addData("OVERRIDE", manualOverride);
+    telemetry.addData("OVERRIDE", hangOverride);
     telemetry.addData("STATE", state);
 
     telemetry.addData("Dist", robot.intake.getDist());

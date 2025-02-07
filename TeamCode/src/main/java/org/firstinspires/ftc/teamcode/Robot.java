@@ -1,8 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.acmerobotics.dashboard.config.Config;
 import com.pedropathing.follower.Follower;
-import com.pedropathing.localization.GoBildaPinpointDriver;
 import com.pedropathing.util.Constants;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
