@@ -4,15 +4,15 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.Robot.AllianceColor;
-import org.firstinspires.ftc.teamcode.auton.baseAutons.BaseBucketAuton;
+import org.firstinspires.ftc.teamcode.auton.baseAutons.BaseSpecAuton;
 
-@Autonomous(name = "RED BUCKET", group = "PEDRO")
-public class RedBucketAuton extends LinearOpMode {
+@Autonomous(name = "BLUE SPEC", group = "PEDRO")
+public class BlueSpecAuton extends LinearOpMode {
 
   @Override
   public void runOpMode() throws InterruptedException {
-    Robot robot = new Robot(this, AllianceColor.RED, true);
-    new BaseBucketAuton(this, robot).run();
+    Robot robot = new Robot(this, AllianceColor.BLUE, true);
+    new BaseSpecAuton(this, robot).run();
   }
 
 }

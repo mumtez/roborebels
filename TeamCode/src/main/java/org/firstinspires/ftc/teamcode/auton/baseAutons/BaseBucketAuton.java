@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.auton;
+package org.firstinspires.ftc.teamcode.auton.baseAutons;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.pedropathing.localization.Pose;
@@ -539,7 +539,6 @@ public class BaseBucketAuton {
   }
 
   public void run() {
-
     pathTimer = new Timer();
     buildPaths();
     robot.initAuton();
@@ -557,9 +556,9 @@ public class BaseBucketAuton {
       robot.follower.update();
       robot.slides.updatePIDControl();
       autonomousPathUpdate();
+      
       telemetry.addData("Path State", pathState);
       telemetry.addData("Position", robot.follower.getPose().toString());
-
       telemetry.update();
     }
   }

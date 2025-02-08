@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.Robot.AllianceColor;
+import org.firstinspires.ftc.teamcode.auton.baseAutons.BaseBucketAuton;
 
 @Autonomous(name = "BLUE BUCKET", group = "PEDRO")
 public class BlueBucketAuton extends LinearOpMode {
