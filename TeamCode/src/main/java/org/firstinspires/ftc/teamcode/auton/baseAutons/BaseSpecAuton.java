@@ -29,11 +29,11 @@ public class BaseSpecAuton {
 
   // MAIN POINTS
   public static double[] START = {9, 58, Math.toRadians(180)};
-  public static double[] INTAKE_ONE = {30, 22, Math.toRadians(320)};
+  public static double[] INTAKE_ONE = {28, 24, Math.toRadians(320)};
   public static double[] DROP_ONE = {24, 24, Math.toRadians(220)};
-  public static double[] INTAKE_TWO = {26, 17.5, Math.toRadians(330)};
-  public static double[] DROP_TWO = {23, 18, Math.toRadians(220)};
-  public static double[] INTAKE_THREE = {28, 14, Math.toRadians(300)};
+  public static double[] INTAKE_TWO = {23, 21, Math.toRadians(330)};
+  public static double[] DROP_TWO = {23, 22, Math.toRadians(180)};
+  public static double[] INTAKE_THREE = {31, 15, Math.toRadians(290)};
   public static double[] DROP_THREE = {24, 14, Math.toRadians(180)};
 
   public static double[] GRAB_WALL_PRE = {20, 34, Math.toRadians(180)};
@@ -201,7 +201,7 @@ public class BaseSpecAuton {
     placeBar1 = robot.follower.pathBuilder()
         .addBezierCurve(
             new Point(startPose),
-            new Point(15, 70),
+            new Point(10, 70),
             new Point(placeBarPose)
         )
         .setConstantHeadingInterpolation(preBarPose.getHeading())
@@ -210,8 +210,8 @@ public class BaseSpecAuton {
     placeBar2 = robot.follower.pathBuilder()
         .addBezierCurve(
             new Point(grabWallPose),
-            new Point(24, grabWallPose.getY()),
-            new Point(24, placeBarPose.getY() + 1.5),
+            new Point(15, grabWallPose.getY()),
+            new Point(15, placeBarPose.getY() + 1.5),
             new Point(placeBarPose.getX(), placeBarPose.getY() + 1.5)
         )
         .setConstantHeadingInterpolation(placeBarPose.getHeading())
@@ -220,8 +220,8 @@ public class BaseSpecAuton {
     placeBar3 = robot.follower.pathBuilder()
         .addBezierCurve(
             new Point(grabWallPose),
-            new Point(24, grabWallPose.getY()),
-            new Point(24, placeBarPose.getY() + 3),
+            new Point(15, grabWallPose.getY()),
+            new Point(15, placeBarPose.getY() + 3),
             new Point(placeBarPose.getX(), placeBarPose.getY() + 3)
         )
         .setConstantHeadingInterpolation(placeBarPose.getHeading())
@@ -230,8 +230,8 @@ public class BaseSpecAuton {
     placeBar4 = robot.follower.pathBuilder()
         .addBezierCurve(
             new Point(grabWallPose),
-            new Point(24, grabWallPose.getY()),
-            new Point(24, placeBarPose.getY() + 4.5),
+            new Point(15, grabWallPose.getY()),
+            new Point(15, placeBarPose.getY() + 4.5),
             new Point(placeBarPose.getX(), placeBarPose.getY() + 4.5)
         )
         .setConstantHeadingInterpolation(placeBarPose.getHeading())
@@ -352,14 +352,14 @@ public class BaseSpecAuton {
 
       // PLACE 2
       case 7:
-        if (!robot.follower.isBusy()) {
+        if (!robot.follower.isBusy() && pathTimer.getElapsedTimeSeconds() > 0.75) {
           robot.intake.update(-1, true, HSLIDE_2, robot.getAllianceColor());
           setPathState(71);
         }
         break;
 
       case 71:
-        if (pathTimer.getElapsedTimeSeconds() > OUTTAKE_TIME_SEC) {
+        if (!robot.follower.isBusy() && pathTimer.getElapsedTimeSeconds() > OUTTAKE_TIME_SEC) {
           robot.intake.update(0, true, Intake.SLIDE_TRANSFER, robot.getAllianceColor());
           setPathState(72);
         }

@@ -20,23 +20,25 @@ public class BaseBucketAuton {
   public static double HSLIDE_3 = Intake.SLIDE_OUT;
 
 
-  public static double INTAKE_1_DELAY = 1.0;
-  public static double INTAKE_2_DELAY = 1.0;
-  public static double INTAKE_3_DELAY = 1.0;
+  public static double INTAKE_1_DELAY = 0.5;
+  public static double INTAKE_2_DELAY = 0.5;
+  public static double INTAKE_3_DELAY = 0.5;
 
-  public static double SUB_TIMER = 0.2;
+  public static double SUB_TIMER = 0.1;
   public static double INTAKE_OVERIDE = 4;
 
+  public boolean pixelDetected = false;
+
   public static double TRANSFER_DELAY = 0.8;
-  public static double TRANSFER_DELAY_2 = TRANSFER_DELAY + 0.1;
+  public static double TRANSFER_DELAY_2 = TRANSFER_DELAY + 0.4;
 
   // MAIN POINTS
   public static double[] START = {9, 105, Math.toRadians(270)};
-  public static double[] PLACE_BUCKET = {25, 120, Math.toRadians(315)};
+  public static double[] PLACE_BUCKET = {23.5, 121, Math.toRadians(315)};
   public static double[] PLACE_BUCKET_TWO = {27, 122, Math.toRadians(315)};
 
   public static double[] INTAKE_ONE = {28, 118, Math.toRadians(0)};
-  public static double[] INTAKE_TWO = {30, 122.5, Math.toRadians(0)};
+  public static double[] INTAKE_TWO = {30, 123, Math.toRadians(0)};
   public static double[] INTAKE_THREE = {38, 120, Math.toRadians(50)};
   public static double[] INTAKE_SUB = {60, 98, Math.toRadians(270)};
   public static double[] INTAKE_SUB_SECONDARY = {63, 101, Math.toRadians(280)};
@@ -62,6 +64,8 @@ public class BaseBucketAuton {
 
   private int pathState = 0;
   private Timer pathTimer;
+  private Timer globalTimer;
+
 
   final Robot robot;
   final LinearOpMode opMode;
@@ -256,7 +260,7 @@ public class BaseBucketAuton {
 
       // MOVE TO INTAKE 1
       case 2:
-        if (pathTimer.getElapsedTimeSeconds() > INTAKE_1_DELAY) {
+        if (!robot.follower.isBusy()) {
           robot.intake.update(1, false, HSLIDE_1, robot.getAllianceColor());
         }
 
@@ -310,7 +314,7 @@ public class BaseBucketAuton {
 
       // INTAKE 2
       case 5:
-        if (!robot.follower.isBusy() && pathTimer.getElapsedTimeSeconds() > INTAKE_2_DELAY) {
+        if (!robot.follower.isBusy()) {
           robot.intake.update(1, false, HSLIDE_2, robot.getAllianceColor());
         }
 
@@ -367,7 +371,7 @@ public class BaseBucketAuton {
       // INTAKE 3
 
       case 8:
-        if (!robot.follower.isBusy() && pathTimer.getElapsedTimeSeconds() > INTAKE_3_DELAY) {
+        if (!robot.follower.isBusy()) {
           robot.intake.update(1, false, HSLIDE_3, robot.getAllianceColor());
         }
         if (!robot.follower.isBusy() && robot.intake.validSampleIn(robot.getAllianceColor())) {
@@ -453,6 +457,9 @@ public class BaseBucketAuton {
         break;
 
       case 112:
+        if (pathTimer.getElapsedTimeSeconds() > SUB_TIMER) {
+          robot.intake.update(1, false, Intake.SLIDE_OUT, robot.getAllianceColor());
+        }
         if (robot.intake.validSampleIn(robot.getAllianceColor())) {
           robot.intake.update(-1, true, Intake.SLIDE_TRANSFER, robot.getAllianceColor());
           Pose current = robot.follower.getPose();
@@ -514,6 +521,7 @@ public class BaseBucketAuton {
       case 13:
         if (!robot.follower.isBusy() && robot.slides.atTarget(30)) {
           place(end);
+          robot.claw.setWall();
           setPathState(14);
         }
         break;
@@ -521,7 +529,7 @@ public class BaseBucketAuton {
       // LV1 ASCENT
       case 14:
         if (!robot.follower.isBusy()) {
-          robot.claw.setPlace();
+//          robot.claw.setPlace();
           setPathState(15);
         }
     }
@@ -540,26 +548,37 @@ public class BaseBucketAuton {
 
   public void run() {
     pathTimer = new Timer();
+    globalTimer = new Timer();
     buildPaths();
     robot.initAuton();
 
     // INIT LOOP
     while (this.opMode.opModeInInit()) {
+      globalTimer.resetTimer();
       telemetry.addData("ALLIANCE", robot.getAllianceColor());
       telemetry.update();
     }
 
     // START
     robot.follower.setStartingPose(startPose);
+    globalTimer.resetTimer();
 
     while (this.opMode.opModeIsActive()) {
       robot.follower.update();
       robot.slides.updatePIDControl();
-      autonomousPathUpdate();
+      //autonomousPathUpdate();
       
       telemetry.addData("Path State", pathState);
       telemetry.addData("Position", robot.follower.getPose().toString());
       telemetry.update();
+
+      if (globalTimer.getElapsedTimeSeconds() > 29){
+        robot.claw.setWall();
+      } else {
+        autonomousPathUpdate();
+      }
     }
   }
+
+
 }

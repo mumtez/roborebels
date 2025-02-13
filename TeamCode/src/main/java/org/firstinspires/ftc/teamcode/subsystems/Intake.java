@@ -31,7 +31,7 @@ public class Intake {
   public static double SLIDE_TRANSFER = 0.58;
   public static double SLIDE_OUT = 0.96;
 
-  public static double INTAKE_DOWN = 0.14;
+  public static double INTAKE_DOWN = 0.16;
   public static double INTAKE_FLAT = 0.00;
 
   public static float COLOR_GAIN = 2;
