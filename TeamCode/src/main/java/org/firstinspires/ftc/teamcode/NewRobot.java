@@ -1,0 +1,141 @@
+package org.firstinspires.ftc.teamcode;
+
+import com.pedropathing.follower.Follower;
+import com.pedropathing.util.Constants;
+import com.qualcomm.hardware.lynx.LynxModule;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot.LogoFacingDirection;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot.UsbFacingDirection;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotor.RunMode;
+import com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior;
+import com.qualcomm.robotcore.hardware.DcMotorSimple.Direction;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.IMU;
+import java.util.List;
+import org.firstinspires.ftc.teamcode.subsystems.Claw;
+import org.firstinspires.ftc.teamcode.subsystems.Intake;
+import org.firstinspires.ftc.teamcode.subsystems.VerticalSlides;
+import pedroPathing.constants.FConstants;
+import pedroPathing.constants.LConstants;
+
+public class NewRobot {
+
+    public enum AllianceColor {
+        RED, BLUE
+    }
+
+    private final LinearOpMode opMode;
+
+    public Follower follower;
+    public DcMotor fr, fl, br, bl;
+    public IMU imu;
+
+    public final Claw claw;
+    public final Intake intake;
+    public final VerticalSlides slides;
+
+    public final DcMotor hang;
+
+    private AllianceColor allianceColor;  //0 red 1 blue
+
+    public NewRobot(LinearOpMode opMode) {
+        this(opMode, AllianceColor.RED);
+    }
+
+    public NewRobot(LinearOpMode opMode, AllianceColor allianceColor) {
+        this(opMode, allianceColor, true);
+    }
+
+    public NewRobot(LinearOpMode opMode, AllianceColor allianceColor, boolean auton) {
+        this.opMode = opMode;
+        this.allianceColor = allianceColor;
+        HardwareMap hardwareMap = opMode.hardwareMap;
+        Constants.setConstants(FConstants.class, LConstants.class);
+
+        // From https://gm0.org/en/latest/docs/software/tutorials/bulk-reads.html
+        List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
+        for (LynxModule hub : allHubs) {
+            hub.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
+        }
+
+        if (auton) {
+            // FOLLOWER (Pedro Pathing)
+            follower = new Follower(hardwareMap);
+        } else {
+            imu = hardwareMap.get(IMU.class, "imu");
+
+            // Adjust the orientation parameters to match the orientation of
+            // the rev hub on the robot
+            IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
+                    LogoFacingDirection.RIGHT,
+                    UsbFacingDirection.UP));
+            imu.initialize(parameters);
+            opMode.telemetry.addData("IMU Initialized", true);
+            opMode.telemetry.update();
+
+            fl = hardwareMap.dcMotor.get("fl");
+            fr = hardwareMap.dcMotor.get("fr");
+            bl = hardwareMap.dcMotor.get("bl");
+            br = hardwareMap.dcMotor.get("br");
+
+            fl.setDirection(Direction.REVERSE);
+            fr.setDirection(Direction.FORWARD);
+            bl.setDirection(Direction.REVERSE);
+            br.setDirection(Direction.FORWARD);
+
+            fl.setMode(RunMode.RUN_WITHOUT_ENCODER);
+            fr.setMode(RunMode.RUN_WITHOUT_ENCODER);
+            bl.setMode(RunMode.RUN_WITHOUT_ENCODER);
+            br.setMode(RunMode.RUN_WITHOUT_ENCODER);
+
+            fl.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
+            fr.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
+            bl.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
+            br.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
+        }
+
+        // CLAW / INTAKE
+        claw = new Claw(opMode);
+        intake = new Intake(opMode);
+        slides = new VerticalSlides(opMode);
+
+        // HANG
+        hang = hardwareMap.dcMotor.get("hang");
+        hang.setMode(RunMode.RUN_WITHOUT_ENCODER);
+        hang.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
+    }
+
+    public void initAuton() {
+        slides.setMode(RunMode.STOP_AND_RESET_ENCODER);
+
+        claw.clawClose();
+        claw.setInit();
+
+        this.intake.rotateFlat();
+        this.intake.setHorizontalSlidePos(Intake.SLIDE_TRANSFER);
+    }
+
+    public void setAllianceColor(AllianceColor allianceColor) {
+        this.allianceColor = allianceColor;
+        if (allianceColor == AllianceColor.RED) {
+            this.intake.rgb.setPosition(0.28);
+        } else if (allianceColor == AllianceColor.BLUE) {
+            this.intake.rgb.setPosition(0.63);
+        }
+    }
+
+    public AllianceColor getAllianceColor() {
+        return this.allianceColor;
+    }
+
+    public void waitTime(long ms) {
+        long startTime = System.currentTimeMillis();
+
+        while (this.opMode.opModeIsActive() && System.currentTimeMillis() - startTime < ms) {
+            follower.update();
+            slides.updatePIDControl();
+        }
+    }
+}

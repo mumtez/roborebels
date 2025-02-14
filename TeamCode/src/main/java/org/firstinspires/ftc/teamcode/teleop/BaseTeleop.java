@@ -291,13 +291,21 @@ public class BaseTeleop {
     horizontalPos = Range.clip(horizontalPos, Intake.SLIDE_TRANSFER, Intake.SLIDE_OUT);
 
     intakeFlat = !currentGamepad2.dpad_down && !(currentGamepad2.right_trigger > 0.1);
-
-    robot.intake.update(
-        currentGamepad2.right_trigger - currentGamepad2.left_trigger,
-        intakeFlat,
-        horizontalPos,
-        robot.getAllianceColor()
-    );
+    //TODO: REMOVE THIS IF ITS JUST FOR TESTING
+    if (!robot.intake.validSampleIn(robot.getAllianceColor())) {
+      robot.intake.update(
+              currentGamepad2.right_trigger - currentGamepad2.left_trigger,
+              intakeFlat,
+              horizontalPos,
+              robot.getAllianceColor()
+      );
+    }
+    else{
+      robot.intake.update(              0,
+              intakeFlat,
+              horizontalPos,
+              robot.getAllianceColor());
+    }
 
     if (robot.intake.validSampleIn(robot.getAllianceColor())) {
       opMode.gamepad1.rumble(300);

@@ -24,8 +24,8 @@ public class IntakeTesting extends LinearOpMode {
 
     // LOOP
     while (opModeIsActive()) {
-      robot.intake.setHorizontalSlidePos(hSlidePos);
-      robot.intake.rotate.setPosition(rotatePos);
+      //robot.intake.setHorizontalSlidePos(hSlidePos);
+      //robot.intake.rotate.setPosition(rotatePos);
       robot.intake.setPower(gamepad1.right_trigger - gamepad1.left_trigger);
 
     }
