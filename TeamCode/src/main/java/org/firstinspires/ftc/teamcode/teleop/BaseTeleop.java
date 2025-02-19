@@ -301,10 +301,7 @@ public class BaseTeleop {
       );
     }
     else{
-      robot.intake.update(              0,
-              intakeFlat,
-              horizontalPos,
-              robot.getAllianceColor());
+      robot.intake.update(0, intakeFlat, horizontalPos, robot.getAllianceColor());
     }
 
     if (robot.intake.validSampleIn(robot.getAllianceColor())) {
