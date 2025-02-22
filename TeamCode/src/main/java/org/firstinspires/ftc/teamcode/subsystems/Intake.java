@@ -28,8 +28,8 @@ public class Intake {
 
   public double TESTHSlide = 0;
 
-  public static double SLIDE_TRANSFER = 0.58;
-  public static double SLIDE_OUT = 0.96;
+  public static int SLIDE_TRANSFER = 0;
+  public static int SLIDE_OUT = 0;
 
   public static double INTAKE_DOWN = 0.16;
   public static double INTAKE_FLAT = 0.00;
@@ -108,9 +108,9 @@ public class Intake {
   }
 
   // TODO: dont cast, refactor to take int in setHSlidePos
-  public void setHorizontalSlidePos(double pos) {
+  public void setHorizontalSlidePos(int pos) {
     //this.hSlide.setPosition(pos);
-    horSlide.setTarget((int)pos);
+    horSlide.setTarget(pos);
   }
 
   public void setPower(double pow) {
@@ -137,7 +137,7 @@ public class Intake {
     }
   }
 
-  public void update(double power, boolean flat, double hSlidePos, AllianceColor allianceColor) {
+  public void update(double power, boolean flat, int hSlidePos, AllianceColor allianceColor) {
     this.senseDistance();
     this.senseColor();
 

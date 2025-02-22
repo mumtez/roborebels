@@ -22,120 +22,114 @@ import pedroPathing.constants.LConstants;
 
 public class NewRobot {
 
-    public enum AllianceColor {
-        RED, BLUE
+  public enum AllianceColor {
+    RED, BLUE
+  }
+
+  private final LinearOpMode opMode;
+
+  public Follower follower;
+  public DcMotor fr, fl, br, bl;
+  public IMU imu;
+
+  public final Claw claw;
+  public final Intake intake;
+  public final VerticalSlides slides;
+  
+  private AllianceColor allianceColor;  //0 red 1 blue
+
+  public NewRobot(LinearOpMode opMode) {
+    this(opMode, AllianceColor.RED);
+  }
+
+  public NewRobot(LinearOpMode opMode, AllianceColor allianceColor) {
+    this(opMode, allianceColor, true);
+  }
+
+  public NewRobot(LinearOpMode opMode, AllianceColor allianceColor, boolean auton) {
+    this.opMode = opMode;
+    this.allianceColor = allianceColor;
+    HardwareMap hardwareMap = opMode.hardwareMap;
+    Constants.setConstants(FConstants.class, LConstants.class);
+
+    // From https://gm0.org/en/latest/docs/software/tutorials/bulk-reads.html
+    List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
+    for (LynxModule hub : allHubs) {
+      hub.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
     }
 
-    private final LinearOpMode opMode;
+    if (auton) {
+      // FOLLOWER (Pedro Pathing)
+      follower = new Follower(hardwareMap);
+    } else {
+      imu = hardwareMap.get(IMU.class, "imu");
 
-    public Follower follower;
-    public DcMotor fr, fl, br, bl;
-    public IMU imu;
+      // Adjust the orientation parameters to match the orientation of
+      // the rev hub on the robot
+      IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
+          LogoFacingDirection.RIGHT,
+          UsbFacingDirection.UP));
+      imu.initialize(parameters);
+      opMode.telemetry.addData("IMU Initialized", true);
+      opMode.telemetry.update();
 
-    public final Claw claw;
-    public final Intake intake;
-    public final VerticalSlides slides;
+      fl = hardwareMap.dcMotor.get("fl");
+      fr = hardwareMap.dcMotor.get("fr");
+      bl = hardwareMap.dcMotor.get("bl");
+      br = hardwareMap.dcMotor.get("br");
 
-    public final DcMotor hang;
+      fl.setDirection(Direction.REVERSE);
+      fr.setDirection(Direction.FORWARD);
+      bl.setDirection(Direction.REVERSE);
+      br.setDirection(Direction.FORWARD);
 
-    private AllianceColor allianceColor;  //0 red 1 blue
+      fl.setMode(RunMode.RUN_WITHOUT_ENCODER);
+      fr.setMode(RunMode.RUN_WITHOUT_ENCODER);
+      bl.setMode(RunMode.RUN_WITHOUT_ENCODER);
+      br.setMode(RunMode.RUN_WITHOUT_ENCODER);
 
-    public NewRobot(LinearOpMode opMode) {
-        this(opMode, AllianceColor.RED);
+      fl.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
+      fr.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
+      bl.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
+      br.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
     }
 
-    public NewRobot(LinearOpMode opMode, AllianceColor allianceColor) {
-        this(opMode, allianceColor, true);
+    // CLAW / INTAKE
+    claw = new Claw(opMode);
+    intake = new Intake(opMode);
+    slides = new VerticalSlides(opMode);
+
+  }
+
+  public void initAuton() {
+    slides.setMode(RunMode.STOP_AND_RESET_ENCODER);
+
+    claw.clawClose();
+    claw.setInit();
+
+    this.intake.rotateFlat();
+    this.intake.setHorizontalSlidePos(Intake.SLIDE_TRANSFER);
+  }
+
+  public void setAllianceColor(AllianceColor allianceColor) {
+    this.allianceColor = allianceColor;
+    if (allianceColor == AllianceColor.RED) {
+      this.intake.rgb.setPosition(0.28);
+    } else if (allianceColor == AllianceColor.BLUE) {
+      this.intake.rgb.setPosition(0.63);
     }
+  }
 
-    public NewRobot(LinearOpMode opMode, AllianceColor allianceColor, boolean auton) {
-        this.opMode = opMode;
-        this.allianceColor = allianceColor;
-        HardwareMap hardwareMap = opMode.hardwareMap;
-        Constants.setConstants(FConstants.class, LConstants.class);
+  public AllianceColor getAllianceColor() {
+    return this.allianceColor;
+  }
 
-        // From https://gm0.org/en/latest/docs/software/tutorials/bulk-reads.html
-        List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
-        for (LynxModule hub : allHubs) {
-            hub.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
-        }
+  public void waitTime(long ms) {
+    long startTime = System.currentTimeMillis();
 
-        if (auton) {
-            // FOLLOWER (Pedro Pathing)
-            follower = new Follower(hardwareMap);
-        } else {
-            imu = hardwareMap.get(IMU.class, "imu");
-
-            // Adjust the orientation parameters to match the orientation of
-            // the rev hub on the robot
-            IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
-                    LogoFacingDirection.RIGHT,
-                    UsbFacingDirection.UP));
-            imu.initialize(parameters);
-            opMode.telemetry.addData("IMU Initialized", true);
-            opMode.telemetry.update();
-
-            fl = hardwareMap.dcMotor.get("fl");
-            fr = hardwareMap.dcMotor.get("fr");
-            bl = hardwareMap.dcMotor.get("bl");
-            br = hardwareMap.dcMotor.get("br");
-
-            fl.setDirection(Direction.REVERSE);
-            fr.setDirection(Direction.FORWARD);
-            bl.setDirection(Direction.REVERSE);
-            br.setDirection(Direction.FORWARD);
-
-            fl.setMode(RunMode.RUN_WITHOUT_ENCODER);
-            fr.setMode(RunMode.RUN_WITHOUT_ENCODER);
-            bl.setMode(RunMode.RUN_WITHOUT_ENCODER);
-            br.setMode(RunMode.RUN_WITHOUT_ENCODER);
-
-            fl.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
-            fr.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
-            bl.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
-            br.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
-        }
-
-        // CLAW / INTAKE
-        claw = new Claw(opMode);
-        intake = new Intake(opMode);
-        slides = new VerticalSlides(opMode);
-
-        // HANG
-        hang = hardwareMap.dcMotor.get("hang");
-        hang.setMode(RunMode.RUN_WITHOUT_ENCODER);
-        hang.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
+    while (this.opMode.opModeIsActive() && System.currentTimeMillis() - startTime < ms) {
+      follower.update();
+      slides.updatePIDControl();
     }
-
-    public void initAuton() {
-        slides.setMode(RunMode.STOP_AND_RESET_ENCODER);
-
-        claw.clawClose();
-        claw.setInit();
-
-        this.intake.rotateFlat();
-        this.intake.setHorizontalSlidePos(Intake.SLIDE_TRANSFER);
-    }
-
-    public void setAllianceColor(AllianceColor allianceColor) {
-        this.allianceColor = allianceColor;
-        if (allianceColor == AllianceColor.RED) {
-            this.intake.rgb.setPosition(0.28);
-        } else if (allianceColor == AllianceColor.BLUE) {
-            this.intake.rgb.setPosition(0.63);
-        }
-    }
-
-    public AllianceColor getAllianceColor() {
-        return this.allianceColor;
-    }
-
-    public void waitTime(long ms) {
-        long startTime = System.currentTimeMillis();
-
-        while (this.opMode.opModeIsActive() && System.currentTimeMillis() - startTime < ms) {
-            follower.update();
-            slides.updatePIDControl();
-        }
-    }
+  }
 }
