@@ -107,6 +107,7 @@ public class Intake {
     this.dist = ((RevColorSensorV3) this.colorSensor).getDistance(DistanceUnit.CM);
   }
 
+  // TODO: dont cast, refactor to take int in setHSlidePos
   public void setHorizontalSlidePos(double pos) {
     //this.hSlide.setPosition(pos);
     horSlide.setTarget((int)pos);

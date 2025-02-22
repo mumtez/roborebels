@@ -13,8 +13,11 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 @Config
 public class HorizontalSlides {
 
+    // TODO: 2000 is definitely too much
     public static int MAX_POS = 2000;  //TODO: Should probably tune this so we dont break the slides
 
+
+    // TODO: setup actual positions for horizontal slide (just out and in?)
     public static int TRANSFER = 430;
     public static int DEFAULT = 600;
     public static int UP = 2000;
@@ -70,18 +73,22 @@ public class HorizontalSlides {
 
     private void updatePosition() {
         int curPos = this.hSlide.getCurrentPosition();
+        //TODO: what is the offset for in the horizontal slides? if they overdrive u are cooked
         if (touch.isPressed()) {
             this.offset = curPos - VerticalSlides.TRANSFER;
         }
         this.position = curPos - this.offset;
     }
 
+    // TODO: anywhere you depend on hslide position you should be using this now, not getcurrent position
+    //  Also need to add pid/pos updates to your loops in teleop & auto
     public boolean atTarget(int threshold) {
         return Math.abs(this.position - this.targetPos) < threshold;
     }
 
     public void updatePIDControl() {
         this.updatePosition();
+        // TODO: should probably use touch sensor here instead of position < 10
         if (this.position < 10 && this.targetPos < 10) {
             this.setPower(0);
             return;
