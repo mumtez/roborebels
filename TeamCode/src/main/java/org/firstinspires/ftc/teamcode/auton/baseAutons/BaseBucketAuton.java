@@ -15,9 +15,9 @@ import org.firstinspires.ftc.teamcode.subsystems.VerticalSlides;
 @Config
 public class BaseBucketAuton {
 
-  public static double HSLIDE_1 = Intake.SLIDE_OUT;
-  public static double HSLIDE_2 = Intake.SLIDE_OUT;
-  public static double HSLIDE_3 = Intake.SLIDE_OUT;
+  public static int HSLIDE_1 = Intake.SLIDE_OUT;
+  public static int HSLIDE_2 = Intake.SLIDE_OUT;
+  public static int HSLIDE_3 = Intake.SLIDE_OUT;
 
 
   public static double INTAKE_1_DELAY = 0.5;
@@ -246,7 +246,7 @@ public class BaseBucketAuton {
         if (robot.slides.atTarget(30)) {
           robot.slides.setTarget(VerticalSlides.UP + 100);
           robot.claw.setBucket();
-          robot.intake.update(0, true, HSLIDE_1 / 2, robot.getAllianceColor());
+          robot.intake.update(0, true, HSLIDE_1, robot.getAllianceColor());
           setPathState(1);
         }
         break;
@@ -567,12 +567,12 @@ public class BaseBucketAuton {
       robot.follower.update();
       robot.slides.updatePIDControl();
       //autonomousPathUpdate();
-      
+
       telemetry.addData("Path State", pathState);
       telemetry.addData("Position", robot.follower.getPose().toString());
       telemetry.update();
 
-      if (globalTimer.getElapsedTimeSeconds() > 29){
+      if (globalTimer.getElapsedTimeSeconds() > 29) {
         robot.claw.setWall();
       } else {
         autonomousPathUpdate();

@@ -15,7 +15,7 @@ public class ClawTesting2 extends LinearOpMode {
 
   Robot robot;
   public static double INTAKE_ROT = Intake.INTAKE_FLAT;
-  public static double HSLIDE_POS = Intake.SLIDE_TRANSFER;
+  public static int HSLIDE_POS = Intake.SLIDE_TRANSFER;
   public static double CLAW_POS = Claw.clawOpenPos;
   public static double CLAW_UP_ARM_POS = Claw.upArmInit;
   public static double CLAW_DOWN_ARM_POS = Claw.downArmInit;

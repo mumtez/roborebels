@@ -26,7 +26,7 @@ public class BaseTeleop {
   final LinearOpMode opMode;
   final Telemetry telemetry;
 
-  double horizontalPos = Intake.SLIDE_TRANSFER;
+  int horizontalPos = Intake.SLIDE_TRANSFER;
   boolean hangOverride = false;
   boolean specimenMode = false;
   ModeState state = ModeState.BUCKET_INTAKING;
@@ -294,13 +294,12 @@ public class BaseTeleop {
     //TODO: REMOVE THIS IF ITS JUST FOR TESTING
     if (!robot.intake.validSampleIn(robot.getAllianceColor())) {
       robot.intake.update(
-              currentGamepad2.right_trigger - currentGamepad2.left_trigger,
-              intakeFlat,
-              horizontalPos,
-              robot.getAllianceColor()
+          currentGamepad2.right_trigger - currentGamepad2.left_trigger,
+          intakeFlat,
+          horizontalPos,
+          robot.getAllianceColor()
       );
-    }
-    else{
+    } else {
       robot.intake.update(0, intakeFlat, horizontalPos, robot.getAllianceColor());
     }
 

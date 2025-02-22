@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.subsystems.VerticalSlides;
 public class ClawTesting extends LinearOpMode {
 
   Robot robot;
-  public static double position = 0;
+  public static int position = 0;
 
   @Override
   public void runOpMode() throws InterruptedException {

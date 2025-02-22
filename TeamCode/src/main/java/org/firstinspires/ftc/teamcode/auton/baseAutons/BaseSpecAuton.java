@@ -18,9 +18,9 @@ public class BaseSpecAuton {
 
   public static double OUTTAKE_TIME_SEC = 0.7;
 
-  public static double HSLIDE_1 = Intake.SLIDE_OUT - 0.06;
-  public static double HSLIDE_2 = Intake.SLIDE_OUT - 0.06;
-  public static double HSLIDE_3 = Intake.SLIDE_OUT - 0.06;
+  public static int HSLIDE_1 = Intake.SLIDE_OUT - 0;
+  public static int HSLIDE_2 = Intake.SLIDE_OUT - 0;
+  public static int HSLIDE_3 = Intake.SLIDE_OUT - 0;
 
   public static double PLACE_DELAY = 0.05;
   public static double PLACE_DELAY2 = 0.3;
