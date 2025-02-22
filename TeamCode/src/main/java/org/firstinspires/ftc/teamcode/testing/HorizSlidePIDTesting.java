@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.NewRobot;
 @TeleOp(name = "HORIZ SLIDE PID TESTING", group = "TESTING")
 public class HorizSlidePIDTesting extends LinearOpMode {
 
-  public static int TARGET = 1000;
+  public static int TARGET = 0;
 
   @Override
   public void runOpMode() throws InterruptedException {
