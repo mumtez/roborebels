@@ -210,7 +210,7 @@ public class BaseTeleop {
           // If the claw is not already set to transfer position, must do full wait cycle for transfer
           mustWait =
               (Math.abs(robot.claw.clawUpArm.getPosition() - Claw.upArmTransfer) > 0.01)
-                  && (Math.abs(robot.intake.hSlide.getPosition() - Intake.SLIDE_TRANSFER) < 0.05);
+                  && (Math.abs(robot.intake.horSlide.hSlide.getCurrentPosition()) - Intake.SLIDE_TRANSFER) < 0.05;
           state = ModeState.BUCKET_PRE_TRANSFER;
           robot.slides.setTarget(VerticalSlides.DEFAULT + 200);
           robot.intake.rotateFlat();
