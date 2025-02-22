@@ -41,7 +41,9 @@ public class Intake {
   public static double DIST_THRESHOLD_CM = 2;
 
   private final DcMotor intake;
-  public final ServoImplEx rotate, hSlide;
+  public final ServoImplEx rotate;//, hSlide;
+
+  public final HorizontalSlides hSlide;
 
   public final NormalizedColorSensor colorSensor;
   public final TouchSensor touchSensor;
@@ -76,8 +78,9 @@ public class Intake {
     rotate = (ServoImplEx) hardwareMap.servo.get("flip");
     rotate.setDirection(Direction.REVERSE);
 
-    hSlide = (ServoImplEx) hardwareMap.servo.get("so");
-    hSlide.setDirection(Direction.FORWARD);
+    //hSlide = (ServoImplEx) hardwareMap.servo.get("so");
+    //hSlide.setDirection(Direction.FORWARD);
+    hSlide = new HorizontalSlides(opMode);
 
     colorSensor = hardwareMap.get(NormalizedColorSensor.class, "ins");
     colorSensor.setGain(COLOR_GAIN);
@@ -105,7 +108,8 @@ public class Intake {
   }
 
   public void setHorizontalSlidePos(double pos) {
-    this.hSlide.setPosition(pos);
+    //this.hSlide.setPosition(pos);
+    hSlide.setTarget((int)pos);
   }
 
   public void setPower(double pow) {

@@ -2,19 +2,18 @@ package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotor.RunMode;
 import com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior;
 import com.qualcomm.robotcore.hardware.DcMotorSimple.Direction;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.ServoImplEx;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Config
 public class HorizontalSlides {
+
+    public static int MAX_POS = 2000;  //TODO: Should probably tune this so we dont break the slides
 
     public static int TRANSFER = 430;
     public static int DEFAULT = 600;
@@ -32,30 +31,37 @@ public class HorizontalSlides {
     private double integralSum = 0;
     private int targetPos = DEFAULT;
     private int offset = 0;
-    public double position = 0;
+    public int position = 0;
 
-    public final ServoImplEx hSlide;
+    public final DcMotor hSlide;
 
-    AnalogInput analogInput;
+    public final TouchSensor touch;
 
     public HorizontalSlides(LinearOpMode opMode) {
         HardwareMap hardwareMap = opMode.hardwareMap;
 
-        hSlide = (ServoImplEx) hardwareMap.servo.get("so");
-        hSlide.setDirection(Servo.Direction.FORWARD);
-        analogInput = hardwareMap.get(AnalogInput.class, "myanaloginput");
+        hSlide = hardwareMap.dcMotor.get("lu");
 
+        hSlide.setDirection(Direction.FORWARD);
+        hSlide.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
+        hSlide.setMode(RunMode.RUN_WITHOUT_ENCODER);
+
+        touch = hardwareMap.touchSensor.get("t");
+    }
+
+    public void setMode(RunMode mode) {
+        hSlide.setMode(mode);
     }
 
     public void setPower(double pow) {
-        hSlide.setPosition(pow);
+        hSlide.setPower(pow);
     }
 
     public void setTarget(int targetPos) {
         timer.reset();
         lastError = 0;
         integralSum = 0;
-        this.targetPos = targetPos;
+        this.targetPos = Math.max(0, Math.min(MAX_POS, targetPos));
     }
 
     public int getTarget() {
@@ -63,8 +69,10 @@ public class HorizontalSlides {
     }
 
     private void updatePosition() {
-        double curPos = this.analogInput.getVoltage() / 3.3 * 360;  //Only change from Vert Slides?
-
+        int curPos = this.hSlide.getCurrentPosition();
+        if (touch.isPressed()) {
+            this.offset = curPos - VerticalSlides.TRANSFER;
+        }
         this.position = curPos - this.offset;
     }
 
