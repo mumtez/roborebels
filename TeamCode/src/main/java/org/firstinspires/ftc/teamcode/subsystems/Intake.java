@@ -17,7 +17,7 @@ import com.qualcomm.robotcore.hardware.SwitchableLight;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.teamcode.Robot.AllianceColor;
+import org.firstinspires.ftc.teamcode.NewRobot.AllianceColor;
 
 @Config
 public class Intake {
@@ -29,10 +29,10 @@ public class Intake {
   public double TESTHSlide = 0;
 
   public static int SLIDE_TRANSFER = 0;
-  public static int SLIDE_OUT = 0;
+  public static int SLIDE_OUT = 850;
 
-  public static double INTAKE_DOWN = 0.16;
-  public static double INTAKE_FLAT = 0.00;
+  public static double INTAKE_DOWN = 0.5;
+  public static double INTAKE_FLAT = 0.29;
 
   public static float COLOR_GAIN = 2;
   public static double RED_THRESHOLD = 0.02;

@@ -7,15 +7,15 @@ import com.qualcomm.robotcore.hardware.DcMotor.RunMode;
 import com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior;
 import com.qualcomm.robotcore.hardware.DcMotorSimple.Direction;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 
 @Config
 public class HorizontalSlides {
 
-  // TODO: 2000 is definitely too much
-  public static int MAX_POS = 2000;  //TODO: Should probably tune this so we dont break the slides
+  public static int MAX_POS = 900;  //TODO: Should probably tune this so we dont break the slides
 
+  public static double MAX_POW = 0.2;
 
   // TODO: setup actual positions for horizontal slide (just out and in?)
   public static int TRANSFER = 430;
@@ -24,16 +24,14 @@ public class HorizontalSlides {
   public static int SPECIMEN = 330;
   public static int PRE_TRANSFER = 900;
 
-  public static double kp = 0.01;
+  public static double kp = 0.006;
   public static double ki = 0;
-  public static double kd = 0.0001;
-  public static double KG = 0.07;
+  public static double kd = 0.0007;
 
   private final ElapsedTime timer = new ElapsedTime();
   private double lastError = 0;
   private double integralSum = 0;
   private int targetPos = DEFAULT;
-  private int offset = 0;
   public int position = 0;
 
   public final DcMotor hSlide;
@@ -70,7 +68,7 @@ public class HorizontalSlides {
   }
 
   private void updatePosition() {
-    int curPos = this.hSlide.getCurrentPosition();
+    this.position = this.hSlide.getCurrentPosition();
   }
 
   // TODO: anywhere you depend on hslide position you should be using this now, not getcurrent position
@@ -79,11 +77,11 @@ public class HorizontalSlides {
     return Math.abs(this.position - this.targetPos) < threshold;
   }
 
-  public void updatePIDControl() {
+  public double updatePIDControl() {
     this.updatePosition();
     if (this.position < 10 && this.targetPos < 10) {
       this.setPower(0);
-      return;
+      return 0;
     }
 
     double error = this.targetPos - this.position;
@@ -94,10 +92,13 @@ public class HorizontalSlides {
 
     lastError = error;
 
-    double pow = (error * kp) + (derivative * kd) + (integralSum * ki) + KG;
+    double pow = (error * kp) + (derivative * kd) + (integralSum * ki);
     timer.reset();
 
+    pow = Range.clip(pow, -MAX_POW, MAX_POW);
+
     this.setPower(pow);
+    return pow;
   }
 
 }

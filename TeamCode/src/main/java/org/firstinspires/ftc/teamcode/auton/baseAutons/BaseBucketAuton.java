@@ -8,7 +8,7 @@ import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor.RunMode;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.Robot;
+import org.firstinspires.ftc.teamcode.NewRobot;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.VerticalSlides;
 
@@ -67,11 +67,11 @@ public class BaseBucketAuton {
   private Timer globalTimer;
 
 
-  final Robot robot;
+  final NewRobot robot;
   final LinearOpMode opMode;
   final Telemetry telemetry;
 
-  public BaseBucketAuton(LinearOpMode opMode, Robot robot) {
+  public BaseBucketAuton(LinearOpMode opMode, NewRobot robot) {
     this.opMode = opMode;
     this.telemetry = opMode.telemetry;
     this.robot = robot;
@@ -195,7 +195,8 @@ public class BaseBucketAuton {
             new Point(intakeSubPose),
             new Point(intakeSubSecondaryPose)
         )
-        .setLinearHeadingInterpolation(intakeSubPose.getHeading(), intakeSubSecondaryPose.getHeading())
+        .setLinearHeadingInterpolation(intakeSubPose.getHeading(),
+            intakeSubSecondaryPose.getHeading())
         .build();
 
     pickupSubMovementTwo = robot.follower.pathBuilder()
@@ -203,7 +204,8 @@ public class BaseBucketAuton {
             new Point(intakeSubSecondaryPose),
             new Point(intakeSubPose)
         )
-        .setLinearHeadingInterpolation(intakeSubSecondaryPose.getHeading(), intakeSubPose.getHeading())
+        .setLinearHeadingInterpolation(intakeSubSecondaryPose.getHeading(),
+            intakeSubPose.getHeading())
         .build();
 
     placeFour = robot.follower.pathBuilder()
@@ -337,7 +339,8 @@ public class BaseBucketAuton {
         if (!robot.follower.isBusy() && pathTimer.getElapsedTimeSeconds() > TRANSFER_DELAY) {
           robot.slides.setTarget(VerticalSlides.TRANSFER);
         }
-        if (!robot.follower.isBusy() && pathTimer.getElapsedTimeSeconds() > TRANSFER_DELAY_2 && robot.slides.atTarget(
+        if (!robot.follower.isBusy() && pathTimer.getElapsedTimeSeconds() > TRANSFER_DELAY_2
+            && robot.slides.atTarget(
             30)) {
           robot.claw.clawClose();
           setPathState(61);
@@ -393,7 +396,8 @@ public class BaseBucketAuton {
         if (!robot.follower.isBusy() && pathTimer.getElapsedTimeSeconds() > TRANSFER_DELAY) {
           robot.slides.setTarget(VerticalSlides.TRANSFER);
         }
-        if (!robot.follower.isBusy() && pathTimer.getElapsedTimeSeconds() > TRANSFER_DELAY_2 && robot.slides.atTarget(
+        if (!robot.follower.isBusy() && pathTimer.getElapsedTimeSeconds() > TRANSFER_DELAY_2
+            && robot.slides.atTarget(
             30)) {
           robot.claw.clawClose();
           setPathState(91);

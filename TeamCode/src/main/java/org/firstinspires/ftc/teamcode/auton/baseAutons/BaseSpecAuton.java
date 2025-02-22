@@ -8,7 +8,7 @@ import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor.RunMode;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.Robot;
+import org.firstinspires.ftc.teamcode.NewRobot;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.VerticalSlides;
 
@@ -76,12 +76,12 @@ public class BaseSpecAuton {
   private int pathState = 0;
   private Timer pathTimer;
 
-  final Robot robot;
+  final NewRobot robot;
   final LinearOpMode opMode;
   final Telemetry telemetry;
 
 
-  public BaseSpecAuton(LinearOpMode opMode, Robot robot) {
+  public BaseSpecAuton(LinearOpMode opMode, NewRobot robot) {
     this.opMode = opMode;
     this.telemetry = opMode.telemetry;
     this.robot = robot;

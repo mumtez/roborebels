@@ -6,20 +6,20 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor.RunMode;
-import org.firstinspires.ftc.teamcode.Robot;
+import org.firstinspires.ftc.teamcode.NewRobot;
 import org.firstinspires.ftc.teamcode.subsystems.VerticalSlides;
 
 @Config
 @TeleOp(name = "Claw Test", group = "TESTING")
 public class ClawTesting extends LinearOpMode {
 
-  Robot robot;
+  NewRobot robot;
   public static int position = 0;
 
   @Override
   public void runOpMode() throws InterruptedException {
     telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-    robot = new Robot(this);
+    robot = new NewRobot(this);
 
     robot.slides.setMode(RunMode.STOP_AND_RESET_ENCODER);
     waitForStart();

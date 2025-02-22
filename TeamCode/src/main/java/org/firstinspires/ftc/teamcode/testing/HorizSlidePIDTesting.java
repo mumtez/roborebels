@@ -30,10 +30,12 @@ public class HorizSlidePIDTesting extends LinearOpMode {
         robot.intake.setHorizontalSlidePos(TARGET);
       }
 
-      robot.intake.horSlide.updatePIDControl();
+      double curPow = robot.intake.horSlide.updatePIDControl();
 
       telemetry.addData("TARGET", TARGET);
-      telemetry.addData("REFERENCE", robot.slides.position);
+      telemetry.addData("REFERENCE", robot.intake.horSlide.position);
+      telemetry.addData("error:", robot.intake.horSlide.position - TARGET);
+      telemetry.addData("cur pow", curPow);
       telemetry.update();
     }
 

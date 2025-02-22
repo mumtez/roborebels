@@ -4,37 +4,35 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.AnalogInput;
-
-import org.firstinspires.ftc.teamcode.Robot;
-import org.firstinspires.ftc.teamcode.subsystems.Intake;
+import org.firstinspires.ftc.teamcode.NewRobot;
 
 @Config
 @TeleOp(name = "Servo Encoder Test", group = "TESTING")
 public class ServoEncoderTesting extends LinearOpMode {
 
-    //get our analog input from the hardwareMap
-    AnalogInput analogInput;
+  //get our analog input from the hardwareMap
+  AnalogInput analogInput;
 
 
-    double position;
+  double position;
 
 
-    Robot robot;
+  NewRobot robot;
 
 
-    @Override
-    public void runOpMode() throws InterruptedException {
-        robot = new Robot(this);
-        analogInput = hardwareMap.get(AnalogInput.class, "myanaloginput");
+  @Override
+  public void runOpMode() throws InterruptedException {
+    robot = new NewRobot(this);
+    analogInput = hardwareMap.get(AnalogInput.class, "myanaloginput");
 
-        while (opModeIsActive()) {
+    while (opModeIsActive()) {
 
-            // get the voltage of our analog line
-            // divide by 3.3 (the max voltage) to get a value between 0 and 1
-            // multiply by 360 to convert it to 0 to 360 degrees
-            position = analogInput.getVoltage() / 3.3 * 360;
+      // get the voltage of our analog line
+      // divide by 3.3 (the max voltage) to get a value between 0 and 1
+      // multiply by 360 to convert it to 0 to 360 degrees
+      position = analogInput.getVoltage() / 3.3 * 360;
 
-            telemetry.addData("Position", position);
-        }
+      telemetry.addData("Position", position);
     }
+  }
 }
