@@ -8,7 +8,6 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.NewRobot;
-import org.firstinspires.ftc.teamcode.subsystems.Claw;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.VerticalSlides;
 
@@ -17,10 +16,10 @@ public class BaseTeleop {
 
   public enum ModeState {
     SPEC_WALL, SPEC_PRE_CLIP, SPEC_CLIP, SPEC_POST_CLIP,
-    BUCKET_INTAKING, BUCKET_PRE_TRANSFER, BUCKET_TRANSFER, BUCKET_POST_TRANSFER, BUCKET_PLACE, BUCKET_POST_PLACE
+    BUCKET_INTAKING, BUCKET_TRANSFER, BUCKET_POST_TRANSFER, BUCKET_PLACE, BUCKET_POST_PLACE
   }
 
-  public static double HORIZONTAL_SPEED = 80;
+  public static double HORIZONTAL_SPEED = 10;
 
   final NewRobot robot;
   final LinearOpMode opMode;
@@ -33,7 +32,6 @@ public class BaseTeleop {
   final ElapsedTime stateTimer = new ElapsedTime();
 
   boolean intakeFlat = true;
-  boolean mustWait = false;
 
   Gamepad currentGamepad1 = new Gamepad();
   Gamepad currentGamepad2 = new Gamepad();
@@ -65,8 +63,9 @@ public class BaseTeleop {
     }
 
     // --- START ---
-    robot.slides.setTarget(VerticalSlides.DEFAULT);
-    robot.claw.setTransferClear();
+    robot.slides.setTarget(VerticalSlides.TRANSFER);
+    robot.claw.setTransfer();
+    robot.claw.clawOpen();
     robot.intake.senseColor();
     robot.intake.senseDistance();
     stateTimer.reset();
@@ -131,10 +130,12 @@ public class BaseTeleop {
     robot.slides.setPower(currentGamepad1.right_trigger - currentGamepad1.left_trigger);
 
     robot.intake.setPower(0);
-    robot.intake.setHorizontalSlidePos(Intake.SLIDE_TRANSFER);
+    robot.intake.horSlide.setTarget(Intake.SLIDE_TRANSFER);
     robot.intake.rotateFlat();
 
     robot.claw.setInit();
+
+    robot.intake.horSlide.updatePIDControl();
 
 
   }
@@ -196,6 +197,7 @@ public class BaseTeleop {
         break;
     }
     robot.slides.updatePIDControl();
+    robot.intake.horSlide.updatePIDControl();
 
     // Independent Intake Control
     intakeControl();
@@ -207,44 +209,30 @@ public class BaseTeleop {
         intakeControl();
 
         if (currentGamepad2.cross) {
-          // If the claw is not already set to transfer position, must do full wait cycle for transfer
-          mustWait =
-              (Math.abs(robot.claw.clawUpArm.getPosition() - Claw.upArmTransfer) > 0.01)
-                  && (Math.abs(robot.intake.horSlide.hSlide.getCurrentPosition())
-                  - Intake.SLIDE_TRANSFER) < 0.05;
-          state = ModeState.BUCKET_PRE_TRANSFER;
-          robot.slides.setTarget(VerticalSlides.DEFAULT + 200);
-          robot.intake.rotateFlat();
-          horizontalPos = Intake.SLIDE_TRANSFER;
-          robot.intake.setHorizontalSlidePos(Intake.SLIDE_TRANSFER);
-          robot.claw.setTransfer();
-          robot.claw.clawOpen();
-
-          stateTimer.reset();
-        }
-        break;
-
-      case BUCKET_PRE_TRANSFER:
-        if (stateTimer.milliseconds() > 700 || (robot.intake.isSlideBack() && !mustWait)) {
           robot.slides.setTarget(VerticalSlides.TRANSFER);
+          robot.intake.rotateFlat();
+          robot.claw.clawOpen();
+          robot.claw.setTransfer();
+          horizontalPos = Intake.SLIDE_TRANSFER;
+          robot.intake.horSlide.setTarget(Intake.SLIDE_TRANSFER);
+
           state = ModeState.BUCKET_TRANSFER;
           stateTimer.reset();
         }
         break;
 
       case BUCKET_TRANSFER:
-        if (stateTimer.milliseconds() > 300) {
+        if (robot.intake.horSlide.atTarget(30) && robot.slides.atTarget(30)) {
           robot.claw.clawClose();
-          state = ModeState.BUCKET_POST_TRANSFER;
           stateTimer.reset();
+          state = ModeState.BUCKET_POST_TRANSFER;
         }
         break;
 
       case BUCKET_POST_TRANSFER:
         if (stateTimer.milliseconds() > 300) {
-          if (robot.slides.getTarget() != VerticalSlides.DEFAULT) {
-            robot.slides.setTarget(VerticalSlides.DEFAULT);
-          }
+          robot.claw.setTransferClear();
+
           if (currentGamepad2.square) {
             robot.claw.clawOpen();
             stateTimer.reset();
@@ -270,8 +258,8 @@ public class BaseTeleop {
 
       case BUCKET_POST_PLACE:
         if (stateTimer.milliseconds() > 500) {
-          robot.claw.setTransferClear();
-          robot.slides.setTarget(VerticalSlides.DEFAULT);
+          robot.claw.setTransfer();
+          robot.slides.setTarget(VerticalSlides.TRANSFER);
           state = ModeState.BUCKET_INTAKING;
           stateTimer.reset();
         }
@@ -281,28 +269,25 @@ public class BaseTeleop {
       default:
         state = ModeState.BUCKET_INTAKING;
         robot.claw.setTransferClear();
-        robot.slides.setTarget(VerticalSlides.DEFAULT);
+        robot.slides.setTarget(VerticalSlides.TRANSFER);
         break;
     }
     robot.slides.updatePIDControl();
+    robot.intake.horSlide.updatePIDControl();
   }
 
   public void intakeControl() {
-    horizontalPos -= currentGamepad2.right_stick_y / HORIZONTAL_SPEED;
+    horizontalPos += (int) (-currentGamepad2.right_stick_y * HORIZONTAL_SPEED);
     horizontalPos = Range.clip(horizontalPos, Intake.SLIDE_TRANSFER, Intake.SLIDE_OUT);
 
     intakeFlat = !currentGamepad2.dpad_down && !(currentGamepad2.right_trigger > 0.1);
-    //TODO: REMOVE THIS IF ITS JUST FOR TESTING
-    if (!robot.intake.validSampleIn(robot.getAllianceColor())) {
-      robot.intake.update(
-          currentGamepad2.right_trigger - currentGamepad2.left_trigger,
-          intakeFlat,
-          horizontalPos,
-          robot.getAllianceColor()
-      );
-    } else {
-      robot.intake.update(0, intakeFlat, horizontalPos, robot.getAllianceColor());
-    }
+
+    robot.intake.update(
+        currentGamepad2.right_trigger - currentGamepad2.left_trigger,
+        intakeFlat,
+        horizontalPos,
+        robot.getAllianceColor()
+    );
 
     if (robot.intake.validSampleIn(robot.getAllianceColor())) {
       opMode.gamepad1.rumble(300);
@@ -319,8 +304,7 @@ public class BaseTeleop {
     telemetry.addData("Colors RED ", robot.intake.getColors().red);
     telemetry.addData("Colors BLUE ", robot.intake.getColors().blue);
     telemetry.addData("Colors GREEN ", robot.intake.getColors().green);
-    telemetry.addData("Slide Back?", robot.intake.isSlideBack());
-    telemetry.addData("H Slide ", robot.intake.TESTHSlide);
+    telemetry.addData("H Slide ", robot.intake.horSlide.getTarget());
 
     telemetry.update();
   }

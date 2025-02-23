@@ -62,9 +62,6 @@ public class ClawTesting extends LinearOpMode {
       if (gamepad1.dpad_left) {
         robot.slides.setTarget(VerticalSlides.TRANSFER);
       }
-      if (gamepad1.dpad_right) {
-        robot.slides.setTarget(VerticalSlides.DEFAULT);
-      }
       if (gamepad1.dpad_up) {
         robot.slides.setTarget(VerticalSlides.UP);
       }
@@ -79,7 +76,7 @@ public class ClawTesting extends LinearOpMode {
       robot.intake.setPower(gamepad2.right_trigger - gamepad2.left_trigger);
 
       if (gamepad2.dpad_down) {
-        robot.intake.setHorizontalSlidePos(position);
+        robot.intake.horSlide.setTarget(position);
       }
 
       robot.slides.updatePIDControl();

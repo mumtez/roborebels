@@ -14,7 +14,6 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.Servo.Direction;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
 import com.qualcomm.robotcore.hardware.SwitchableLight;
-import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.NewRobot.AllianceColor;
@@ -25,8 +24,6 @@ public class Intake {
   public enum SampleColor {
     RED, BLUE, YELLOW, NONE
   }
-
-  public double TESTHSlide = 0;
 
   public static int SLIDE_TRANSFER = 0;
   public static int SLIDE_OUT = 850;
@@ -46,7 +43,6 @@ public class Intake {
   public final HorizontalSlides horSlide;
 
   public final NormalizedColorSensor colorSensor;
-  public final TouchSensor touchSensor;
   public final Servo rgb;
 
   private final ElapsedTime spitTimer = new ElapsedTime();
@@ -89,15 +85,10 @@ public class Intake {
       // Turn the light ON to observe objects that don't emit their own light
     }
 
-    touchSensor = hardwareMap.touchSensor.get("t");
-
     rgb = hardwareMap.servo.get("rgb");
     rgb.setPosition(0);
   }
 
-  public boolean isSlideBack() {
-    return this.touchSensor.isPressed();
-  }
 
   public void senseColor() {
     this.colors = colorSensor.getNormalizedColors();
@@ -105,12 +96,6 @@ public class Intake {
 
   public void senseDistance() {
     this.dist = ((RevColorSensorV3) this.colorSensor).getDistance(DistanceUnit.CM);
-  }
-
-  // TODO: dont cast, refactor to take int in setHSlidePos
-  public void setHorizontalSlidePos(int pos) {
-    //this.hSlide.setPosition(pos);
-    horSlide.setTarget(pos);
   }
 
   public void setPower(double pow) {
@@ -186,9 +171,7 @@ public class Intake {
       }
     }
 
-    this.setHorizontalSlidePos(hSlidePos);
-    TESTHSlide = hSlidePos;
-
+    this.horSlide.setTarget(hSlidePos);
   }
 
   public void spit() {

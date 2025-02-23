@@ -18,16 +18,17 @@ public class ClawTesting2 extends LinearOpMode {
   public static double CLAW_POS = Claw.clawOpenPos;
   public static double CLAW_UP_ARM_POS = Claw.upArmInit;
   public static double CLAW_DOWN_ARM_POS = Claw.downArmInit;
-  public static int VSLIDE_TARGET = VerticalSlides.DEFAULT;
+  public static int VSLIDE_TARGET = VerticalSlides.TRANSFER;
 
   @Override
   public void runOpMode() throws InterruptedException {
     robot = new NewRobot(this);
 
+    waitForStart();
     // LOOP
     while (opModeIsActive()) {
       robot.intake.setPower(gamepad2.right_trigger - gamepad2.left_trigger);
-      robot.intake.setHorizontalSlidePos(HSLIDE_POS);
+      robot.intake.horSlide.setTarget(HSLIDE_POS);
       robot.intake.rotate.setPosition(INTAKE_ROT);
 
       robot.claw.claw.setPosition(CLAW_POS);

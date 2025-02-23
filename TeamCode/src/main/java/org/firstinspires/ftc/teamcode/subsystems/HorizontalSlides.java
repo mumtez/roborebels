@@ -15,14 +15,9 @@ public class HorizontalSlides {
 
   public static int MAX_POS = 900;  //TODO: Should probably tune this so we dont break the slides
 
-  public static double MAX_POW = 0.2;
+  public static double MAX_POW = 1;
 
   // TODO: setup actual positions for horizontal slide (just out and in?)
-  public static int TRANSFER = 430;
-  public static int DEFAULT = 600;
-  public static int UP = 2000;
-  public static int SPECIMEN = 330;
-  public static int PRE_TRANSFER = 900;
 
   public static double kp = 0.006;
   public static double ki = 0;
@@ -31,7 +26,8 @@ public class HorizontalSlides {
   private final ElapsedTime timer = new ElapsedTime();
   private double lastError = 0;
   private double integralSum = 0;
-  private int targetPos = DEFAULT;
+  private int targetPos = 0;
+  private int lastTargetPos = 0;
   public int position = 0;
 
   public final DcMotor hSlide;
@@ -57,10 +53,13 @@ public class HorizontalSlides {
   }
 
   public void setTarget(int targetPos) {
-    timer.reset();
-    lastError = 0;
-    integralSum = 0;
-    this.targetPos = Math.max(0, Math.min(MAX_POS, targetPos));
+    if (targetPos != lastTargetPos) {
+      timer.reset();
+      lastError = 0;
+      integralSum = 0;
+      this.lastTargetPos = this.targetPos;
+      this.targetPos = Math.max(0, Math.min(MAX_POS, targetPos));
+    }
   }
 
   public int getTarget() {

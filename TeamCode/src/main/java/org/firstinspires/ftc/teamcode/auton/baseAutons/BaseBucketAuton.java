@@ -239,7 +239,7 @@ public class BaseBucketAuton {
       case 0:
         robot.follower.followPath(placePreLoad, 1, true);  //TODO: may need reduced power
         robot.slides.setMode(RunMode.RUN_WITHOUT_ENCODER);
-        robot.slides.setTarget(VerticalSlides.DEFAULT);
+        robot.slides.setTarget(VerticalSlides.TRANSFER);
         setPathState(101);
         break;
 
@@ -292,7 +292,7 @@ public class BaseBucketAuton {
 
       case 31:
         if (pathTimer.getElapsedTimeSeconds() > 0.5) {
-          robot.slides.setTarget(VerticalSlides.DEFAULT);
+          robot.slides.setTarget(VerticalSlides.TRANSFER);
           setPathState(32);
         }
         break;
@@ -349,7 +349,7 @@ public class BaseBucketAuton {
 
       case 61:
         if (pathTimer.getElapsedTimeSeconds() > 0.5) {
-          robot.slides.setTarget(VerticalSlides.DEFAULT);
+          robot.slides.setTarget(VerticalSlides.TRANSFER);
           setPathState(62);
         }
         break;
@@ -406,7 +406,7 @@ public class BaseBucketAuton {
 
       case 91:
         if (pathTimer.getElapsedTimeSeconds() > 0.5) {
-          robot.slides.setTarget(VerticalSlides.DEFAULT);
+          robot.slides.setTarget(VerticalSlides.TRANSFER);
           setPathState(92);
         }
         break;
@@ -506,7 +506,7 @@ public class BaseBucketAuton {
 
       case 121:
         if (pathTimer.getElapsedTimeSeconds() > 0.5) {
-          robot.slides.setTarget(VerticalSlides.DEFAULT);
+          robot.slides.setTarget(VerticalSlides.TRANSFER);
           setPathState(122);
         }
         break;
@@ -546,7 +546,7 @@ public class BaseBucketAuton {
     robot.waitTime(500);
 
     robot.follower.followPath(nextPath, true);
-    robot.slides.setTarget(VerticalSlides.PRE_TRANSFER);
+    robot.slides.setTarget(VerticalSlides.TRANSFER);
     robot.claw.setTransfer();
   }
 
