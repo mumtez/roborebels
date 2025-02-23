@@ -35,7 +35,7 @@ public class NewRobot {
   public final Claw claw;
   public final Intake intake;
   public final VerticalSlides slides;
-  
+
   private AllianceColor allianceColor;  //0 red 1 blue
 
   public NewRobot(LinearOpMode opMode) {
@@ -103,12 +103,13 @@ public class NewRobot {
 
   public void initAuton() {
     slides.setMode(RunMode.STOP_AND_RESET_ENCODER);
+    intake.horSlide.setMode(RunMode.STOP_AND_RESET_ENCODER);
 
     claw.clawClose();
     claw.setInit();
 
     this.intake.rotateFlat();
-    this.intake.setHorizontalSlidePos(Intake.SLIDE_TRANSFER);
+    this.intake.horSlide.setTarget(Intake.SLIDE_TRANSFER);
   }
 
   public void setAllianceColor(AllianceColor allianceColor) {

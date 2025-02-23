@@ -27,7 +27,7 @@ public class HorizSlidePIDTesting extends LinearOpMode {
 
     while (opModeIsActive()) {
       if (gamepad1.square) {
-        robot.intake.setHorizontalSlidePos(TARGET);
+        robot.intake.horSlide.setTarget(TARGET);
       }
 
       double curPow = robot.intake.horSlide.updatePIDControl();
