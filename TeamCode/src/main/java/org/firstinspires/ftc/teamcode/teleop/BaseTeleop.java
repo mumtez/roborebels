@@ -4,7 +4,6 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.NewRobot;
@@ -19,7 +18,7 @@ public class BaseTeleop {
     BUCKET_INTAKING, BUCKET_TRANSFER, BUCKET_POST_TRANSFER, BUCKET_PLACE, BUCKET_POST_PLACE
   }
 
-  public static double HORIZONTAL_SPEED = 10;
+  public static double HORIZONTAL_SPEED = 0.5;
 
   final NewRobot robot;
   final LinearOpMode opMode;
@@ -197,7 +196,6 @@ public class BaseTeleop {
         break;
     }
     robot.slides.updatePIDControl();
-    robot.intake.horSlide.updatePIDControl();
 
     // Independent Intake Control
     intakeControl();
@@ -213,8 +211,8 @@ public class BaseTeleop {
           robot.intake.rotateFlat();
           robot.claw.clawOpen();
           robot.claw.setTransfer();
-          horizontalPos = Intake.SLIDE_TRANSFER;
           robot.intake.horSlide.setTarget(Intake.SLIDE_TRANSFER);
+          robot.intake.horSlide.updatePIDControl();
 
           state = ModeState.BUCKET_TRANSFER;
           stateTimer.reset();
@@ -222,6 +220,7 @@ public class BaseTeleop {
         break;
 
       case BUCKET_TRANSFER:
+
         if (robot.intake.horSlide.atTarget(30) && robot.slides.atTarget(30)) {
           robot.claw.clawClose();
           stateTimer.reset();
@@ -273,13 +272,15 @@ public class BaseTeleop {
         break;
     }
     robot.slides.updatePIDControl();
-    robot.intake.horSlide.updatePIDControl();
   }
 
   public void intakeControl() {
-    horizontalPos += (int) (-currentGamepad2.right_stick_y * HORIZONTAL_SPEED);
-    horizontalPos = Range.clip(horizontalPos, Intake.SLIDE_TRANSFER, Intake.SLIDE_OUT);
 
+    if (robot.intake.horSlide.position > 600 || robot.intake.horSlide.position < 200) {
+      robot.intake.horSlide.setPower((-currentGamepad2.right_stick_y * HORIZONTAL_SPEED * 0.1));
+    } else {
+      robot.intake.horSlide.setPower((-currentGamepad2.right_stick_y * HORIZONTAL_SPEED));
+    }
     intakeFlat = !currentGamepad2.dpad_down && !(currentGamepad2.right_trigger > 0.1);
 
     robot.intake.update(
