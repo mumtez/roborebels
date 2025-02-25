@@ -19,6 +19,7 @@ public class BaseTeleop {
   }
 
   public static double HORIZONTAL_SPEED = 1;
+  public static double HORIZONTAL_MODIFIER = 0.6;
 
   final NewRobot robot;
   final LinearOpMode opMode;
@@ -281,11 +282,11 @@ public class BaseTeleop {
 
   public void intakeControl() {
 
-    if (robot.horSlide.position > 900 || robot.horSlide.position < 50) {
-      robot.horSlide.setPower((-currentGamepad2.right_stick_y * HORIZONTAL_SPEED * 0.6));
-    } else {
-      robot.horSlide.setPower((-currentGamepad2.right_stick_y * HORIZONTAL_SPEED));
+    double hSlidePow = -currentGamepad2.right_stick_y * HORIZONTAL_SPEED;
+    if ((hSlidePow < 0 && robot.horSlide.position < 50) || hSlidePow > 0 && robot.horSlide.position > 950) {
+      hSlidePow *= HORIZONTAL_MODIFIER;
     }
+    robot.horSlide.setPower(hSlidePow);
 
     intakeFlat = !currentGamepad2.dpad_down && !(currentGamepad2.right_trigger > 0.1);
 
