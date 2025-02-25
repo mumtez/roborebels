@@ -28,7 +28,7 @@ public class ClawTesting2 extends LinearOpMode {
     // LOOP
     while (opModeIsActive()) {
       robot.intake.setPower(gamepad2.right_trigger - gamepad2.left_trigger);
-      robot.intake.horSlide.setTarget(HSLIDE_POS);
+      robot.horSlide.setTarget(HSLIDE_POS);
       robot.intake.rotate.setPosition(INTAKE_ROT);
 
       robot.claw.claw.setPosition(CLAW_POS);

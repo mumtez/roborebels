@@ -76,7 +76,7 @@ public class ClawTesting extends LinearOpMode {
       robot.intake.setPower(gamepad2.right_trigger - gamepad2.left_trigger);
 
       if (gamepad2.dpad_down) {
-        robot.intake.horSlide.setTarget(position);
+        robot.horSlide.setTarget(position);
       }
 
       robot.slides.updatePIDControl();

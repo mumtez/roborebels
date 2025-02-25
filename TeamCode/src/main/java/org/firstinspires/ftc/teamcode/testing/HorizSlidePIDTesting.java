@@ -20,21 +20,21 @@ public class HorizSlidePIDTesting extends LinearOpMode {
     telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
     NewRobot robot = new NewRobot(this);
-    robot.intake.horSlide.setMode(RunMode.STOP_AND_RESET_ENCODER);
+    robot.horSlide.setMode(RunMode.STOP_AND_RESET_ENCODER);
 
     waitForStart();
-    robot.intake.horSlide.setMode(RunMode.RUN_WITHOUT_ENCODER);
+    robot.horSlide.setMode(RunMode.RUN_WITHOUT_ENCODER);
 
     while (opModeIsActive()) {
       if (gamepad1.square) {
-        robot.intake.horSlide.setTarget(TARGET);
+        robot.horSlide.setTarget(TARGET);
       }
 
-      double curPow = robot.intake.horSlide.updatePIDControl();
+      double curPow = robot.horSlide.updatePIDControl();
 
       telemetry.addData("TARGET", TARGET);
-      telemetry.addData("REFERENCE", robot.intake.horSlide.position);
-      telemetry.addData("error:", robot.intake.horSlide.position - TARGET);
+      telemetry.addData("REFERENCE", robot.horSlide.position);
+      telemetry.addData("error:", robot.horSlide.position - TARGET);
       telemetry.addData("cur pow", curPow);
       telemetry.update();
     }
