@@ -220,8 +220,9 @@ public class BaseTeleop {
         break;
 
       case BUCKET_TRANSFER:
-
+        robot.intake.horSlide.updatePIDControl();
         if (robot.intake.horSlide.atTarget(30) && robot.slides.atTarget(30)) {
+
           robot.claw.clawClose();
           stateTimer.reset();
           state = ModeState.BUCKET_POST_TRANSFER;
@@ -229,6 +230,7 @@ public class BaseTeleop {
         break;
 
       case BUCKET_POST_TRANSFER:
+        robot.intake.horSlide.updatePIDControl();
         if (stateTimer.milliseconds() > 300) {
           robot.claw.setTransferClear();
 
@@ -247,6 +249,7 @@ public class BaseTeleop {
         break;
 
       case BUCKET_PLACE:
+        robot.intake.horSlide.updatePIDControl();
         if (stateTimer.milliseconds() > 500 && currentGamepad2.square) {
           robot.claw.clawOpen();
           state = ModeState.BUCKET_POST_PLACE;
@@ -256,6 +259,7 @@ public class BaseTeleop {
         break;
 
       case BUCKET_POST_PLACE:
+        robot.intake.horSlide.updatePIDControl();
         if (stateTimer.milliseconds() > 500) {
           robot.claw.setTransfer();
           robot.slides.setTarget(VerticalSlides.TRANSFER);
@@ -281,6 +285,7 @@ public class BaseTeleop {
     } else {
       robot.intake.horSlide.setPower((-currentGamepad2.right_stick_y * HORIZONTAL_SPEED));
     }
+
     intakeFlat = !currentGamepad2.dpad_down && !(currentGamepad2.right_trigger > 0.1);
 
     robot.intake.update(
