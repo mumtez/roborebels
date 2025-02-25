@@ -212,7 +212,6 @@ public class BaseTeleop {
           robot.claw.clawOpen();
           robot.claw.setTransfer();
           robot.intake.horSlide.setTarget(Intake.SLIDE_TRANSFER);
-          robot.intake.horSlide.updatePIDControl();
 
           state = ModeState.BUCKET_TRANSFER;
           stateTimer.reset();
