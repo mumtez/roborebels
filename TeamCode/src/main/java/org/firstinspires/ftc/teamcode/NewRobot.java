@@ -15,6 +15,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import java.util.List;
 import org.firstinspires.ftc.teamcode.subsystems.Claw;
+import org.firstinspires.ftc.teamcode.subsystems.HorizontalSlides;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.VerticalSlides;
 import pedroPathing.constants.FConstants;
@@ -35,6 +36,7 @@ public class NewRobot {
   public final Claw claw;
   public final Intake intake;
   public final VerticalSlides slides;
+  public final HorizontalSlides horSlide;
 
   private AllianceColor allianceColor;  //0 red 1 blue
 
@@ -51,6 +53,8 @@ public class NewRobot {
     this.allianceColor = allianceColor;
     HardwareMap hardwareMap = opMode.hardwareMap;
     Constants.setConstants(FConstants.class, LConstants.class);
+
+    horSlide = new HorizontalSlides(opMode);
 
     // From https://gm0.org/en/latest/docs/software/tutorials/bulk-reads.html
     List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
@@ -103,13 +107,13 @@ public class NewRobot {
 
   public void initAuton() {
     slides.setMode(RunMode.STOP_AND_RESET_ENCODER);
-    intake.horSlide.setMode(RunMode.STOP_AND_RESET_ENCODER);
+    this.horSlide.setMode(RunMode.STOP_AND_RESET_ENCODER);
 
     claw.clawClose();
     claw.setInit();
 
     this.intake.rotateFlat();
-    this.intake.horSlide.setTarget(Intake.SLIDE_TRANSFER);
+    this.horSlide.setTarget(Intake.SLIDE_TRANSFER);
   }
 
   public void setAllianceColor(AllianceColor allianceColor) {

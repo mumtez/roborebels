@@ -40,8 +40,6 @@ public class Intake {
   private final DcMotor intake;
   public final ServoImplEx rotate;//, hSlide;
 
-  public final HorizontalSlides horSlide;
-
   public final NormalizedColorSensor colorSensor;
   public final Servo rgb;
 
@@ -76,7 +74,6 @@ public class Intake {
 
     //hSlide = (ServoImplEx) hardwareMap.servo.get("so");
     //hSlide.setDirection(Direction.FORWARD);
-    horSlide = new HorizontalSlides(opMode);
 
     colorSensor = hardwareMap.get(NormalizedColorSensor.class, "ins");
     colorSensor.setGain(COLOR_GAIN);
@@ -122,7 +119,7 @@ public class Intake {
     }
   }
 
-  public void update(double power, boolean flat, int hSlidePos, AllianceColor allianceColor) {
+  public void update(double power, boolean flat, AllianceColor allianceColor) {
     this.senseDistance();
     this.senseColor();
 
@@ -171,7 +168,6 @@ public class Intake {
       }
     }
 
-    this.horSlide.setTarget(hSlidePos);
   }
 
   public void spit() {

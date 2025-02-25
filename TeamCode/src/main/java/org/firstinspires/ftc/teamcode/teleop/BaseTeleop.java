@@ -129,12 +129,12 @@ public class BaseTeleop {
     robot.slides.setPower(currentGamepad1.right_trigger - currentGamepad1.left_trigger);
 
     robot.intake.setPower(0);
-    robot.intake.horSlide.setTarget(Intake.SLIDE_TRANSFER);
+    robot.horSlide.setTarget(Intake.SLIDE_TRANSFER);
     robot.intake.rotateFlat();
 
     robot.claw.setInit();
 
-    robot.intake.horSlide.updatePIDControl();
+    robot.horSlide.updatePIDControl();
 
 
   }
@@ -211,7 +211,7 @@ public class BaseTeleop {
           robot.intake.rotateFlat();
           robot.claw.clawOpen();
           robot.claw.setTransfer();
-          robot.intake.horSlide.setTarget(Intake.SLIDE_TRANSFER);
+          robot.horSlide.setTarget(Intake.SLIDE_TRANSFER);
 
           state = ModeState.BUCKET_TRANSFER;
           stateTimer.reset();
@@ -219,8 +219,8 @@ public class BaseTeleop {
         break;
 
       case BUCKET_TRANSFER:
-        robot.intake.horSlide.updatePIDControl();
-        if (robot.intake.horSlide.atTarget(30) && robot.slides.atTarget(30)) {
+        robot.horSlide.updatePIDControl();
+        if (robot.horSlide.atTarget(30) && robot.slides.atTarget(30)) {
 
           robot.claw.clawClose();
           stateTimer.reset();
@@ -229,7 +229,7 @@ public class BaseTeleop {
         break;
 
       case BUCKET_POST_TRANSFER:
-        robot.intake.horSlide.updatePIDControl();
+        robot.horSlide.updatePIDControl();
         if (stateTimer.milliseconds() > 300) {
           robot.claw.setTransferClear();
 
@@ -248,7 +248,7 @@ public class BaseTeleop {
         break;
 
       case BUCKET_PLACE:
-        robot.intake.horSlide.updatePIDControl();
+        robot.horSlide.updatePIDControl();
         if (stateTimer.milliseconds() > 500 && currentGamepad2.square) {
           robot.claw.clawOpen();
           state = ModeState.BUCKET_POST_PLACE;
@@ -258,7 +258,7 @@ public class BaseTeleop {
         break;
 
       case BUCKET_POST_PLACE:
-        robot.intake.horSlide.updatePIDControl();
+        robot.horSlide.updatePIDControl();
         if (stateTimer.milliseconds() > 500) {
           robot.claw.setTransfer();
           robot.slides.setTarget(VerticalSlides.TRANSFER);
@@ -279,10 +279,10 @@ public class BaseTeleop {
 
   public void intakeControl() {
 
-    if (robot.intake.horSlide.position > 600 || robot.intake.horSlide.position < 200) {
-      robot.intake.horSlide.setPower((-currentGamepad2.right_stick_y * HORIZONTAL_SPEED * 0.1));
+    if (robot.horSlide.position > 600 || robot.horSlide.position < 200) {
+      robot.horSlide.setPower((-currentGamepad2.right_stick_y * HORIZONTAL_SPEED * 0.1));
     } else {
-      robot.intake.horSlide.setPower((-currentGamepad2.right_stick_y * HORIZONTAL_SPEED));
+      robot.horSlide.setPower((-currentGamepad2.right_stick_y * HORIZONTAL_SPEED));
     }
 
     intakeFlat = !currentGamepad2.dpad_down && !(currentGamepad2.right_trigger > 0.1);
@@ -290,7 +290,6 @@ public class BaseTeleop {
     robot.intake.update(
         currentGamepad2.right_trigger - currentGamepad2.left_trigger,
         intakeFlat,
-        horizontalPos,
         robot.getAllianceColor()
     );
 
@@ -309,7 +308,7 @@ public class BaseTeleop {
     telemetry.addData("Colors RED ", robot.intake.getColors().red);
     telemetry.addData("Colors BLUE ", robot.intake.getColors().blue);
     telemetry.addData("Colors GREEN ", robot.intake.getColors().green);
-    telemetry.addData("H Slide ", robot.intake.horSlide.getTarget());
+    telemetry.addData("H Slide ", robot.horSlide.getTarget());
 
     telemetry.update();
   }
