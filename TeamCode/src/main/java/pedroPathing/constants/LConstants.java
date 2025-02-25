@@ -1,13 +1,7 @@
 package pedroPathing.constants;
 
 import com.pedropathing.localization.Encoder;
-import com.pedropathing.localization.GoBildaPinpointDriver;
-import com.pedropathing.localization.GoBildaPinpointDriver.EncoderDirection;
-import com.pedropathing.localization.constants.PinpointConstants;
 import com.pedropathing.localization.constants.ThreeWheelConstants;
-
-
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 public class LConstants {
 
@@ -90,9 +84,9 @@ public class LConstants {
     ThreeWheelConstants.strafeX = -2.5;
 
     //TODO: Check the names
-    ThreeWheelConstants.leftEncoder_HardwareMapName = "leftFront";
-    ThreeWheelConstants.rightEncoder_HardwareMapName = "rightRear";
-    ThreeWheelConstants.strafeEncoder_HardwareMapName = "rightFront";
+    ThreeWheelConstants.leftEncoder_HardwareMapName = "bl";
+    ThreeWheelConstants.rightEncoder_HardwareMapName = "fl";
+    ThreeWheelConstants.strafeEncoder_HardwareMapName = "fr";
 
     //TODO:Check these
     /*

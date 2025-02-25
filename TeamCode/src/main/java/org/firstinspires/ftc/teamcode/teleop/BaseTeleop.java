@@ -18,7 +18,7 @@ public class BaseTeleop {
     BUCKET_INTAKING, BUCKET_TRANSFER, BUCKET_POST_TRANSFER, BUCKET_PLACE, BUCKET_POST_PLACE
   }
 
-  public static double HORIZONTAL_SPEED = 0.5;
+  public static double HORIZONTAL_SPEED = 1;
 
   final NewRobot robot;
   final LinearOpMode opMode;
@@ -240,9 +240,11 @@ public class BaseTeleop {
           }
           if (currentGamepad2.triangle) {
             robot.slides.setTarget(VerticalSlides.UP);
-            robot.claw.setBucket();
-            state = ModeState.BUCKET_PLACE;
-            stateTimer.reset();
+            if (stateTimer.milliseconds() > 300) {
+              robot.claw.setBucket();
+              state = ModeState.BUCKET_PLACE;
+              stateTimer.reset();
+            }
           }
         }
         break;
@@ -279,8 +281,8 @@ public class BaseTeleop {
 
   public void intakeControl() {
 
-    if (robot.horSlide.position > 600 || robot.horSlide.position < 200) {
-      robot.horSlide.setPower((-currentGamepad2.right_stick_y * HORIZONTAL_SPEED * 0.1));
+    if (robot.horSlide.position > 900 || robot.horSlide.position < 50) {
+      robot.horSlide.setPower((-currentGamepad2.right_stick_y * HORIZONTAL_SPEED * 0.6));
     } else {
       robot.horSlide.setPower((-currentGamepad2.right_stick_y * HORIZONTAL_SPEED));
     }

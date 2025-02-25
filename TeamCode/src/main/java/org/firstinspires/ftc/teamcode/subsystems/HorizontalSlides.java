@@ -13,13 +13,13 @@ import com.qualcomm.robotcore.util.Range;
 @Config
 public class HorizontalSlides {
 
-  public static int MAX_POS = 900;  //TODO: Should probably tune this so we dont break the slides
+  public static int MAX_POS = 1050;  //TODO: Should probably tune this so we dont break the slides
 
   public static double MAX_POW = 1;
 
   // TODO: setup actual positions for horizontal slide (just out and in?)
 
-  public static double kp = 0.006;
+  public static double kp = 0.05;
   public static double ki = 0;
   public static double kd = 0.0007;
 
