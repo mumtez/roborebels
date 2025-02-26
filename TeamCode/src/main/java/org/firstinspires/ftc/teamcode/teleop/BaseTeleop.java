@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.teleop;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor.RunMode;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -53,6 +54,8 @@ public class BaseTeleop {
 
   public void run() {
     // --- INIT ---
+    robot.horSlide.setMode(RunMode.STOP_AND_RESET_ENCODER);
+    robot.horSlide.setMode(RunMode.RUN_WITHOUT_ENCODER);
 
     // --- INIT LOOP ---
     while (this.opMode.opModeInInit()) {
@@ -241,6 +244,7 @@ public class BaseTeleop {
           }
           if (currentGamepad2.triangle) {
             robot.slides.setTarget(VerticalSlides.UP);
+            stateTimer.reset();
             if (stateTimer.milliseconds() > 300) {
               robot.claw.setBucket();
               state = ModeState.BUCKET_PLACE;
@@ -283,11 +287,13 @@ public class BaseTeleop {
   public void intakeControl() {
 
     double hSlidePow = -currentGamepad2.right_stick_y * HORIZONTAL_SPEED;
-    if ((hSlidePow < 0 && robot.horSlide.position < 50) || hSlidePow > 0 && robot.horSlide.position > 950) {
-      hSlidePow *= HORIZONTAL_MODIFIER;
+    if ((hSlidePow < 0 && robot.horSlide.hSlide.getCurrentPosition() < 50)
+        || hSlidePow > 0 && robot.horSlide.hSlide.getCurrentPosition() > 950) {
+      //hSlidePow *= HORIZONTAL_MODIFIER;
+      robot.horSlide.setPower(hSlidePow * HORIZONTAL_MODIFIER);
+    } else {
+      robot.horSlide.setPower(hSlidePow);
     }
-    robot.horSlide.setPower(hSlidePow);
-
     intakeFlat = !currentGamepad2.dpad_down && !(currentGamepad2.right_trigger > 0.1);
 
     robot.intake.update(
@@ -307,11 +313,15 @@ public class BaseTeleop {
     telemetry.addData("OVERRIDE", hangOverride);
     telemetry.addData("STATE", state);
 
+    telemetry.addData("STATE Timer", stateTimer.milliseconds());
+    telemetry.addData("triangle", currentGamepad2.triangle);
+
     telemetry.addData("Dist", robot.intake.getDist());
     telemetry.addData("Colors RED ", robot.intake.getColors().red);
     telemetry.addData("Colors BLUE ", robot.intake.getColors().blue);
     telemetry.addData("Colors GREEN ", robot.intake.getColors().green);
-    telemetry.addData("H Slide ", robot.horSlide.getTarget());
+    telemetry.addData("H Slide Target", robot.horSlide.getTarget());
+    telemetry.addData("H Slide Pos", robot.horSlide.hSlide.getCurrentPosition());
 
     telemetry.update();
   }
