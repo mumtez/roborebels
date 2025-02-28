@@ -34,12 +34,6 @@ public class ColorSensorTesting extends LinearOpMode {
         robot.intake.setPower(gamepad1.right_trigger - gamepad1.left_trigger);
 
       }
-      /*
-      else if(Timer){
-
-      }
-
-       */
 
       robot.intake.senseColor(); // Important: only make 1 i2c call per loop
       NormalizedRGBA colors = robot.intake.getColors();

@@ -2,13 +2,12 @@ package org.firstinspires.ftc.teamcode.teleop;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor.RunMode;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.NewRobot;
-import org.firstinspires.ftc.teamcode.subsystems.Intake;
+import org.firstinspires.ftc.teamcode.subsystems.HorizontalSlides;
 import org.firstinspires.ftc.teamcode.subsystems.VerticalSlides;
 
 @Config
@@ -26,13 +25,10 @@ public class BaseTeleop {
   final LinearOpMode opMode;
   final Telemetry telemetry;
 
-  int horizontalPos = Intake.SLIDE_TRANSFER;
   boolean hangOverride = false;
   boolean specimenMode = false;
   ModeState state = ModeState.BUCKET_INTAKING;
   final ElapsedTime stateTimer = new ElapsedTime();
-  ElapsedTime transferTimer;
-
 
   boolean intakeFlat = true;
 
@@ -133,7 +129,7 @@ public class BaseTeleop {
     robot.slides.setPower(currentGamepad1.right_trigger - currentGamepad1.left_trigger);
 
     robot.intake.setPower(0);
-    robot.horSlide.setTarget(Intake.SLIDE_TRANSFER);
+    robot.horSlide.setTarget(HorizontalSlides.TRANSFER_POS);
     robot.intake.rotateFlat();
 
     robot.claw.setInit();
@@ -223,7 +219,7 @@ public class BaseTeleop {
           robot.intake.rotateFlat();
           robot.claw.clawOpen();
           robot.claw.setTransfer();
-          robot.horSlide.setTarget(Intake.SLIDE_TRANSFER);
+          robot.horSlide.setTarget(HorizontalSlides.TRANSFER_POS);
 
           state = ModeState.BUCKET_TRANSFER;
           stateTimer.reset();

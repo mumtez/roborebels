@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor.RunMode;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.NewRobot;
-import org.firstinspires.ftc.teamcode.subsystems.Intake;
+import org.firstinspires.ftc.teamcode.subsystems.HorizontalSlides;
 import org.firstinspires.ftc.teamcode.subsystems.VerticalSlides;
 
 // TODO tune
@@ -19,9 +19,9 @@ public class BaseSpecAuton {
 
   public static double OUTTAKE_TIME_SEC = 0.7;
 
-  public static int HSLIDE_1 = Intake.SLIDE_OUT - 0;
-  public static int HSLIDE_2 = Intake.SLIDE_OUT - 0;
-  public static int HSLIDE_3 = Intake.SLIDE_OUT - 0;
+  public static int HSLIDE_1 = HorizontalSlides.OUT_POS;
+  public static int HSLIDE_2 = HorizontalSlides.OUT_POS;
+  public static int HSLIDE_3 = HorizontalSlides.OUT_POS;
 
   public static double PLACE_DELAY = 0.05;
   public static double PLACE_DELAY2 = 0.3;
@@ -307,7 +307,7 @@ public class BaseSpecAuton {
 
         if (!robot.follower.isBusy() && robot.intake.validSampleIn(robot.getAllianceColor())) {
           robot.intake.update(0, true, robot.getAllianceColor());
-            robot.horSlide.setTarget(Intake.SLIDE_TRANSFER);
+            robot.horSlide.setTarget(HorizontalSlides.TRANSFER_POS);
           setPathState(3);
         }
         break;
@@ -331,7 +331,7 @@ public class BaseSpecAuton {
       case 41:
         if (pathTimer.getElapsedTimeSeconds() > OUTTAKE_TIME_SEC) {
           robot.intake.update(0, true, robot.getAllianceColor());
-            robot.horSlide.setTarget(Intake.SLIDE_TRANSFER);
+            robot.horSlide.setTarget(HorizontalSlides.TRANSFER_POS);
           setPathState(42);
         }
         break;
@@ -351,7 +351,7 @@ public class BaseSpecAuton {
         }
         if (!robot.follower.isBusy() && robot.intake.validSampleIn(robot.getAllianceColor())) {
           robot.intake.update(0, true, robot.getAllianceColor());
-            robot.horSlide.setTarget(Intake.SLIDE_TRANSFER);
+            robot.horSlide.setTarget(HorizontalSlides.TRANSFER_POS);
           robot.follower.followPath(dropTwo, true);
           setPathState(7);
         }
@@ -369,7 +369,7 @@ public class BaseSpecAuton {
       case 71:
         if (!robot.follower.isBusy() && pathTimer.getElapsedTimeSeconds() > OUTTAKE_TIME_SEC) {
           robot.intake.update(0, true, robot.getAllianceColor());
-            robot.horSlide.setTarget(Intake.SLIDE_TRANSFER);
+            robot.horSlide.setTarget(HorizontalSlides.TRANSFER_POS);
           setPathState(72);
         }
         break;
@@ -389,7 +389,7 @@ public class BaseSpecAuton {
         }
         if (!robot.follower.isBusy() && robot.intake.validSampleIn(robot.getAllianceColor())) {
           robot.intake.update(0, true, robot.getAllianceColor());
-            robot.horSlide.setTarget(Intake.SLIDE_TRANSFER);
+            robot.horSlide.setTarget(HorizontalSlides.TRANSFER_POS);
           setPathState(81);
         }
         break;
@@ -413,7 +413,7 @@ public class BaseSpecAuton {
       case 1001:
         if (pathTimer.getElapsedTimeSeconds() > OUTTAKE_TIME_SEC) {
           robot.intake.update(0, true, robot.getAllianceColor());
-            robot.horSlide.setTarget(Intake.SLIDE_TRANSFER);
+            robot.horSlide.setTarget(HorizontalSlides.TRANSFER_POS);
           robot.follower.followPath(grabOne, true);
           robot.claw.setWall();
           robot.claw.clawOpenWall();

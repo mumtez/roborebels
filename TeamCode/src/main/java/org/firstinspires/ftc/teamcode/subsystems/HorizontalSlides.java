@@ -13,11 +13,10 @@ import com.qualcomm.robotcore.util.Range;
 @Config
 public class HorizontalSlides {
 
-  public static int MAX_POS = 1050;  //TODO: Should probably tune this so we dont break the slides
+  public static int TRANSFER_POS = 0;
+  public static int OUT_POS = 1050;
 
-  public static double MAX_POW = 1;
-
-  // TODO: setup actual positions for horizontal slide (just out and in?)
+  public static double MAX_POW = 1.0;
 
   public static double kp = 0.05;
   public static double ki = 0;
@@ -41,7 +40,6 @@ public class HorizontalSlides {
     hSlide.setDirection(Direction.FORWARD);
     hSlide.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
     hSlide.setMode(RunMode.RUN_WITHOUT_ENCODER);
-
   }
 
   public void setMode(RunMode mode) {
@@ -58,7 +56,7 @@ public class HorizontalSlides {
       lastError = 0;
       integralSum = 0;
       this.lastTargetPos = this.targetPos;
-      this.targetPos = Math.max(0, Math.min(MAX_POS, targetPos));
+      this.targetPos = Range.clip(targetPos, TRANSFER_POS, OUT_POS);
     }
   }
 
@@ -70,8 +68,6 @@ public class HorizontalSlides {
     this.position = this.hSlide.getCurrentPosition();
   }
 
-  // TODO: anywhere you depend on hslide position you should be using this now, not getcurrent position
-  //  Also need to add pid/pos updates to your loops in teleop & auto
   public boolean atTarget(int threshold) {
     return Math.abs(this.position - this.targetPos) < threshold;
   }

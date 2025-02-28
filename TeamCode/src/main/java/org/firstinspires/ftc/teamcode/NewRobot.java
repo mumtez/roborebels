@@ -54,8 +54,6 @@ public class NewRobot {
     HardwareMap hardwareMap = opMode.hardwareMap;
     Constants.setConstants(FConstants.class, LConstants.class);
 
-    horSlide = new HorizontalSlides(opMode);
-
     // From https://gm0.org/en/latest/docs/software/tutorials/bulk-reads.html
     List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
     for (LynxModule hub : allHubs) {
@@ -66,16 +64,6 @@ public class NewRobot {
       // FOLLOWER (Pedro Pathing)
       follower = new Follower(hardwareMap);
     } else {
-      imu = hardwareMap.get(IMU.class, "imu");
-
-      // Adjust the orientation parameters to match the orientation of
-      // the rev hub on the robot
-      IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
-          LogoFacingDirection.RIGHT,
-          UsbFacingDirection.UP));
-      imu.initialize(parameters);
-      opMode.telemetry.addData("IMU Initialized", true);
-      opMode.telemetry.update();
 
       fl = hardwareMap.dcMotor.get("fl");
       fr = hardwareMap.dcMotor.get("fr");
@@ -98,11 +86,19 @@ public class NewRobot {
       br.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
     }
 
-    // CLAW / INTAKE
+    imu = hardwareMap.get(IMU.class, "imu");
+    IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
+        LogoFacingDirection.RIGHT,
+        UsbFacingDirection.UP));
+    imu.initialize(parameters);
+    opMode.telemetry.addData("IMU Initialized", true);
+    opMode.telemetry.update();
+
+    // CLAW / INTAKE / SLIDES
     claw = new Claw(opMode);
     intake = new Intake(opMode);
     slides = new VerticalSlides(opMode);
-
+    horSlide = new HorizontalSlides(opMode);
   }
 
   public void initAuton() {
@@ -113,7 +109,7 @@ public class NewRobot {
     claw.setInit();
 
     this.intake.rotateFlat();
-    this.horSlide.setTarget(Intake.SLIDE_TRANSFER);
+    this.horSlide.setTarget(HorizontalSlides.TRANSFER_POS);
   }
 
   public void setAllianceColor(AllianceColor allianceColor) {

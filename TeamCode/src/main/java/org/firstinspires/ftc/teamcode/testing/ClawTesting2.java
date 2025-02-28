@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.NewRobot;
 import org.firstinspires.ftc.teamcode.subsystems.Claw;
+import org.firstinspires.ftc.teamcode.subsystems.HorizontalSlides;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.VerticalSlides;
 
@@ -14,11 +15,10 @@ public class ClawTesting2 extends LinearOpMode {
 
   NewRobot robot;
   public static double INTAKE_ROT = Intake.INTAKE_FLAT;
-  public static int HSLIDE_POS = Intake.SLIDE_TRANSFER;
+  public static int HSLIDE_POS = HorizontalSlides.TRANSFER_POS;
   public static double CLAW_POS = Claw.clawOpenPos;
   public static double CLAW_UP_ARM_POS = Claw.upArmInit;
   public static double CLAW_DOWN_ARM_POS = Claw.downArmInit;
-  public static int VSLIDE_TARGET = VerticalSlides.TRANSFER;
 
   @Override
   public void runOpMode() throws InterruptedException {
@@ -34,7 +34,6 @@ public class ClawTesting2 extends LinearOpMode {
       robot.claw.claw.setPosition(CLAW_POS);
       robot.claw.clawUpArm.setPosition(CLAW_UP_ARM_POS);
       robot.claw.clawDownArm.setPosition(CLAW_DOWN_ARM_POS);
-
     }
   }
 }
