@@ -14,7 +14,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class VerticalSlides {
 
   public static int TRANSFER = 0;
-  public static int UP = 2000;
+  public static int UP = 2300;
   public static int SPECIMEN = 330;
 
   public static double kp = 0.01;
@@ -80,6 +80,10 @@ public class VerticalSlides {
 
   public boolean atTarget(int threshold) {
     return Math.abs(this.position - this.targetPos) < threshold;
+  }
+
+  public boolean atSetTarget(int threshold, int pos) {
+    return Math.abs(this.position - pos) < threshold;
   }
 
   public void updatePIDControl() {

@@ -15,7 +15,7 @@ import org.firstinspires.ftc.teamcode.subsystems.VerticalSlides;
 public class BaseTeleop {
 
   public enum ModeState {
-    SPEC_WALL, SPEC_PRE_CLIP, SPEC_CLIP, SPEC_POST_CLIP,
+    SPEC_WALL, SPEC_PRE_CLIP, SPEC_CLIP, SPEC_POST_CLIP, SPEC_CLIP_TWO,
     BUCKET_INTAKING, BUCKET_TRANSFER, BUCKET_POST_TRANSFER, BUCKET_PLACE, BUCKET_POST_PLACE
   }
 
@@ -31,6 +31,8 @@ public class BaseTeleop {
   boolean specimenMode = false;
   ModeState state = ModeState.BUCKET_INTAKING;
   final ElapsedTime stateTimer = new ElapsedTime();
+  ElapsedTime transferTimer;
+
 
   boolean intakeFlat = true;
 
@@ -54,8 +56,6 @@ public class BaseTeleop {
 
   public void run() {
     // --- INIT ---
-    robot.horSlide.setMode(RunMode.STOP_AND_RESET_ENCODER);
-    robot.horSlide.setMode(RunMode.RUN_WITHOUT_ENCODER);
 
     // --- INIT LOOP ---
     while (this.opMode.opModeInInit()) {
@@ -163,12 +163,20 @@ public class BaseTeleop {
       // TRIANGLE --> CLIP | SQUARE --> WALL
       case SPEC_PRE_CLIP:
         if (currentGamepad2.triangle) {
-          robot.claw.setPlace();
-          state = ModeState.SPEC_CLIP;
+          robot.claw.setPlaceOne();
+          state = ModeState.SPEC_CLIP_TWO;
+
         }
         if (currentGamepad2.square) {
           robot.claw.setWall();
           state = ModeState.SPEC_WALL;
+        }
+        break;
+
+      case SPEC_CLIP_TWO:
+        if (stateTimer.milliseconds() > 200){
+          robot.claw.setPlaceTwo();
+          state = ModeState.SPEC_CLIP;
         }
         break;
 
@@ -196,7 +204,7 @@ public class BaseTeleop {
       default:
         state = ModeState.SPEC_WALL;
         robot.claw.setWall();
-        robot.slides.setTarget(VerticalSlides.SPECIMEN);
+        //robot.slides.setTarget(VerticalSlides.SPECIMEN);
         break;
     }
     robot.slides.updatePIDControl();
@@ -242,15 +250,17 @@ public class BaseTeleop {
             stateTimer.reset();
             state = ModeState.BUCKET_INTAKING;
           }
-          if (currentGamepad2.triangle) {
+          if (currentGamepad2.triangle ) {     //maybe add && !previousGamepad2.triangle?
             robot.slides.setTarget(VerticalSlides.UP);
-            stateTimer.reset();
-            if (stateTimer.milliseconds() > 300) {
-              robot.claw.setBucket();
-              state = ModeState.BUCKET_PLACE;
-              stateTimer.reset();
-            }
           }
+          if (robot.slides.atSetTarget(200, VerticalSlides.UP)) {
+            robot.claw.setBucket();
+            state = ModeState.BUCKET_PLACE;
+            stateTimer.reset();
+          }
+
+
+
         }
         break;
 
@@ -287,8 +297,8 @@ public class BaseTeleop {
   public void intakeControl() {
 
     double hSlidePow = -currentGamepad2.right_stick_y * HORIZONTAL_SPEED;
-    if ((hSlidePow < 0 && robot.horSlide.hSlide.getCurrentPosition() < 50)
-        || hSlidePow > 0 && robot.horSlide.hSlide.getCurrentPosition() > 950) {
+    if ((hSlidePow < 0 && robot.horSlide.position < 50)
+        || hSlidePow > 0 && robot.horSlide.position > 950) {
       //hSlidePow *= HORIZONTAL_MODIFIER;
       robot.horSlide.setPower(hSlidePow * HORIZONTAL_MODIFIER);
     } else {
@@ -321,7 +331,11 @@ public class BaseTeleop {
     telemetry.addData("Colors BLUE ", robot.intake.getColors().blue);
     telemetry.addData("Colors GREEN ", robot.intake.getColors().green);
     telemetry.addData("H Slide Target", robot.horSlide.getTarget());
-    telemetry.addData("H Slide Pos", robot.horSlide.hSlide.getCurrentPosition());
+    telemetry.addData("H Slide Encoder Pos", robot.horSlide.hSlide.getCurrentPosition());
+    telemetry.addData("H Slide PID Pos", robot.horSlide.position);
+    telemetry.addData("V Slide Pos", robot.slides.position);
+
+
 
     telemetry.update();
   }

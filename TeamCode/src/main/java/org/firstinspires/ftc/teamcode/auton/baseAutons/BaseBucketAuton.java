@@ -1,4 +1,4 @@
-/*
+
 package org.firstinspires.ftc.teamcode.auton.baseAutons;
 
 import com.acmerobotics.dashboard.config.Config;
@@ -249,7 +249,8 @@ public class BaseBucketAuton {
         if (robot.slides.atTarget(30)) {
           robot.slides.setTarget(VerticalSlides.UP + 100);
           robot.claw.setBucket();
-          robot.intake.update(0, true, HSLIDE_1, robot.getAllianceColor());
+          robot.intake.update(0, true, robot.getAllianceColor());
+          robot.horSlide.setTarget(HSLIDE_1);
           setPathState(1);
         }
         break;
@@ -264,17 +265,20 @@ public class BaseBucketAuton {
       // MOVE TO INTAKE 1
       case 2:
         if (!robot.follower.isBusy()) {
-          robot.intake.update(1, false, HSLIDE_1, robot.getAllianceColor());
+          robot.intake.update(1, false, robot.getAllianceColor());
+          robot.horSlide.setTarget(HSLIDE_1);
         }
 
         if (robot.intake.validSampleIn(robot.getAllianceColor())) {
-          robot.intake.update(0, true, Intake.SLIDE_TRANSFER, robot.getAllianceColor());
+          robot.intake.update(0, true, robot.getAllianceColor());
+          robot.horSlide.setTarget(Intake.SLIDE_TRANSFER);
           robot.follower.followPath(placeOne, true);
           setPathState(3);
         }
 
         if (pathTimer.getElapsedTimeSeconds() > INTAKE_OVERIDE) {
-          robot.intake.update(-1, true, HSLIDE_1, robot.getAllianceColor());
+          robot.intake.update(-1, true, robot.getAllianceColor());
+          robot.horSlide.setTarget(HSLIDE_1);
           robot.follower.followPath(failedOne);
           setPathState(5);
         }
@@ -302,7 +306,8 @@ public class BaseBucketAuton {
         if (robot.slides.atTarget(30)) {
           robot.slides.setTarget(VerticalSlides.UP + 100);
           robot.claw.setBucket();
-          robot.intake.update(0, true, HSLIDE_2 / 2, robot.getAllianceColor());
+          robot.intake.update(0, true, robot.getAllianceColor());
+            robot.horSlide.setTarget(HSLIDE_2 / 2);
           setPathState(4);
         }
         break;
@@ -318,17 +323,20 @@ public class BaseBucketAuton {
       // INTAKE 2
       case 5:
         if (!robot.follower.isBusy()) {
-          robot.intake.update(1, false, HSLIDE_2, robot.getAllianceColor());
+          robot.intake.update(1, false, robot.getAllianceColor());
+          robot.horSlide.setTarget(HSLIDE_2);
         }
 
         if (!robot.follower.isBusy() && robot.intake.validSampleIn(robot.getAllianceColor())) {
-          robot.intake.update(0, true, Intake.SLIDE_TRANSFER, robot.getAllianceColor());
+          robot.intake.update(0, true, robot.getAllianceColor());
+          robot.horSlide.setTarget(Intake.SLIDE_TRANSFER);
           robot.follower.followPath(placeTwo, true);
           setPathState(6);
         }
 
         if (pathTimer.getElapsedTimeSeconds() > INTAKE_OVERIDE) {
-          robot.intake.update(-1, true, HSLIDE_2, robot.getAllianceColor());
+          robot.intake.update(-1, true, robot.getAllianceColor());
+          robot.horSlide.setTarget(HSLIDE_2);
           robot.follower.followPath(failedTwo);
           setPathState(8);
 
@@ -359,7 +367,8 @@ public class BaseBucketAuton {
         if (robot.slides.atTarget(30)) {
           robot.slides.setTarget(VerticalSlides.UP + 100);
           robot.claw.setBucket();
-          robot.intake.update(0, true, HSLIDE_3 / 2, robot.getAllianceColor());
+          robot.intake.update(0, true, robot.getAllianceColor());
+          robot.horSlide.setTarget(HSLIDE_3 / 2);
           setPathState(7);
         }
         break;
@@ -376,16 +385,19 @@ public class BaseBucketAuton {
 
       case 8:
         if (!robot.follower.isBusy()) {
-          robot.intake.update(1, false, HSLIDE_3, robot.getAllianceColor());
+          robot.intake.update(1, false, robot.getAllianceColor());
+          robot.horSlide.setTarget(HSLIDE_3);
         }
         if (!robot.follower.isBusy() && robot.intake.validSampleIn(robot.getAllianceColor())) {
-          robot.intake.update(0, true, Intake.SLIDE_TRANSFER, robot.getAllianceColor());
+          robot.intake.update(0, true, robot.getAllianceColor());
+            robot.horSlide.setTarget(Intake.SLIDE_TRANSFER);
           robot.follower.followPath(placeThree, true);
           setPathState(9);
         }
 
         if (pathTimer.getElapsedTimeSeconds() > INTAKE_OVERIDE) {
-          robot.intake.update(-1, true, HSLIDE_3, robot.getAllianceColor());
+          robot.intake.update(-1, true, robot.getAllianceColor());
+            robot.horSlide.setTarget(HSLIDE_3);
           robot.follower.followPath(failedThree);
           setPathState(11);
 
@@ -430,19 +442,23 @@ public class BaseBucketAuton {
 
       // INTAKE SUBMERSIBLE
       case 11:
-        robot.intake.update(0, true, Intake.SLIDE_TRANSFER, robot.getAllianceColor());
+        robot.intake.update(0, true, robot.getAllianceColor());
+          robot.horSlide.setTarget(Intake.SLIDE_TRANSFER);
         if (!robot.follower.isBusy()) {
-          robot.intake.update(1, true, Intake.SLIDE_OUT, robot.getAllianceColor());
+          robot.intake.update(1, true, robot.getAllianceColor());
+            robot.horSlide.setTarget(Intake.SLIDE_OUT);
           setPathState(111);
         }
         break;
 
       case 111:
         if (pathTimer.getElapsedTimeSeconds() > SUB_TIMER) {
-          robot.intake.update(1, false, Intake.SLIDE_OUT, robot.getAllianceColor());
+          robot.intake.update(1, false, robot.getAllianceColor());
+            robot.horSlide.setTarget(Intake.SLIDE_OUT);
         }
         if (robot.intake.validSampleIn(robot.getAllianceColor())) {
-          robot.intake.update(-1, true, Intake.SLIDE_TRANSFER, robot.getAllianceColor());
+          robot.intake.update(-1, true, robot.getAllianceColor());
+            robot.horSlide.setTarget(Intake.SLIDE_TRANSFER);
           Pose current = robot.follower.getPose();
           robot.follower.followPath(
               robot.follower.pathBuilder()
@@ -463,10 +479,12 @@ public class BaseBucketAuton {
 
       case 112:
         if (pathTimer.getElapsedTimeSeconds() > SUB_TIMER) {
-          robot.intake.update(1, false, Intake.SLIDE_OUT, robot.getAllianceColor());
+          robot.intake.update(1, false, robot.getAllianceColor());
+            robot.horSlide.setTarget(Intake.SLIDE_OUT);
         }
         if (robot.intake.validSampleIn(robot.getAllianceColor())) {
-          robot.intake.update(-1, true, Intake.SLIDE_TRANSFER, robot.getAllianceColor());
+          robot.intake.update(-1, true, robot.getAllianceColor());
+            robot.horSlide.setTarget(Intake.SLIDE_TRANSFER);
           Pose current = robot.follower.getPose();
           robot.follower.followPath(
               robot.follower.pathBuilder()
@@ -490,9 +508,11 @@ public class BaseBucketAuton {
       case 12:
         if (pathTimer.getElapsedTimeSeconds() > 0.1) {
           if (robot.intake.validSampleIn(robot.getAllianceColor())) {
-            robot.intake.update(0, true, Intake.SLIDE_TRANSFER, robot.getAllianceColor());
+            robot.intake.update(0, true, robot.getAllianceColor());
+              robot.horSlide.setTarget(Intake.SLIDE_TRANSFER);
           } else {
-            robot.intake.update(1, true, Intake.SLIDE_TRANSFER, robot.getAllianceColor());
+            robot.intake.update(1, true, robot.getAllianceColor());
+              robot.horSlide.setTarget(Intake.SLIDE_TRANSFER);
           }
         }
 
@@ -571,6 +591,7 @@ public class BaseBucketAuton {
     while (this.opMode.opModeIsActive()) {
       robot.follower.update();
       robot.slides.updatePIDControl();
+      robot.horSlide.updatePIDControl(); //TODO: hopefully in the right spot
       //autonomousPathUpdate();
 
       telemetry.addData("Path State", pathState);
@@ -588,4 +609,4 @@ public class BaseBucketAuton {
 
 }
 
- */
+
