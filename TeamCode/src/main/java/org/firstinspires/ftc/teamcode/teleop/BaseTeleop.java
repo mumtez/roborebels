@@ -278,13 +278,19 @@ public class BaseTeleop {
   public void intakeControl() {
 
     double hSlidePow = -currentGamepad2.right_stick_y * HORIZONTAL_SPEED;
-    if ((hSlidePow < 0 && robot.horSlide.position < 50)
-        || hSlidePow > 0 && robot.horSlide.position > 750) {
+
+    if (((hSlidePow < 0.05 && robot.horSlide.position < 50)
+        || hSlidePow > 0.05 && robot.horSlide.position > 750)) {
       //hSlidePow *= HORIZONTAL_MODIFIER;
       robot.horSlide.setPower(hSlidePow * HORIZONTAL_MODIFIER);
-    } else {
+      robot.horSlide.setTarget(robot.horSlide.hSlide.getCurrentPosition());
+    } else if (Math.abs(hSlidePow) > 0.05) {
       robot.horSlide.setPower(hSlidePow);
+    } else {
+      // User is NOT controlling the motor, enable PID to hold position
+      robot.horSlide.updatePIDControl();
     }
+
     intakeFlat = !currentGamepad2.dpad_down && !(currentGamepad2.right_trigger > 0.1);
 
     robot.intake.update(

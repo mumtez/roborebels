@@ -64,7 +64,7 @@ public class HorizontalSlides {
     return this.targetPos;
   }
 
-  private void updatePosition() {
+  public void updatePosition() {
     this.position = this.hSlide.getCurrentPosition();
   }
 
