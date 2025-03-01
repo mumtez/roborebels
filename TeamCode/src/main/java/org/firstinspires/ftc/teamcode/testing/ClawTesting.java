@@ -39,10 +39,6 @@ public class ClawTesting extends LinearOpMode {
         robot.claw.setPlace();
       }
 
-      if (gamepad1.square) {
-        robot.claw.setUnder();
-      }
-
       if (gamepad1.cross) {
         robot.claw.setBucket();
       }
