@@ -41,7 +41,10 @@ public class Claw {
 
   public static double downArmPostTransfer = 0;
 
-  public final ServoImplEx claw, clawUpArm, clawDownArm;
+  public static double wristDefault = 0;
+  public static double wristPlace = 0;
+
+  public final ServoImplEx claw, clawUpArm, clawDownArm, wrist;
   // TODO: add color/touch/limit sensor (states?)
 
   private boolean clawClosed = false;
@@ -52,6 +55,8 @@ public class Claw {
     claw = (ServoImplEx) hardwareMap.servo.get("c");
     clawUpArm = (ServoImplEx) hardwareMap.servo.get("cu");
     clawDownArm = (ServoImplEx) hardwareMap.servo.get("cd");
+    wrist = (ServoImplEx) hardwareMap.servo.get("wrist");
+
   }
 
   public void clawClose() {
@@ -72,21 +77,14 @@ public class Claw {
   public void setPlace() {
     clawDownArm.setPosition(downArmPlace);
     clawUpArm.setPosition(upArmPlace);
+    wrist.setPosition(wristPlace);
   }
 
-  public void setPlaceOne() {
-    clawDownArm.setPosition(downArmPlace1);
-    clawUpArm.setPosition(upArmPlace1);
-  }
-
-  public void setPlaceTwo() {
-    clawDownArm.setPosition(downArmPlace2);
-    clawUpArm.setPosition(upArmPlace2);
-  }
 
   public void setTransfer() {
     clawDownArm.setPosition(downArmTransfer);
     clawUpArm.setPosition(upArmTransfer);
+    wrist.setPosition(wristDefault);
   }
 
   public void setTransferClear() {
@@ -97,6 +95,7 @@ public class Claw {
   public void setWall() {
     clawDownArm.setPosition(downArmWall);
     clawUpArm.setPosition(upArmWall);
+    wrist.setPosition(wristDefault);
   }
 
   public void setBucket() {
@@ -104,10 +103,6 @@ public class Claw {
     clawUpArm.setPosition(upArmBucket);
   }
 
-  public void setUnder() {
-    clawDownArm.setPosition(downArmUnder);
-    clawUpArm.setPosition(upArmUnder);
-  }
 
   public void setInit() {
     clawDownArm.setPosition(downArmInit);

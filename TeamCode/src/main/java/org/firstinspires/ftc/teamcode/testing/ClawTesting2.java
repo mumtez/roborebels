@@ -7,7 +7,6 @@ import org.firstinspires.ftc.teamcode.NewRobot;
 import org.firstinspires.ftc.teamcode.subsystems.Claw;
 import org.firstinspires.ftc.teamcode.subsystems.HorizontalSlides;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
-import org.firstinspires.ftc.teamcode.subsystems.VerticalSlides;
 
 @Config
 @TeleOp(name = "Claw Test 2.0", group = "TESTING")
@@ -20,6 +19,8 @@ public class ClawTesting2 extends LinearOpMode {
   public static double CLAW_UP_ARM_POS = Claw.upArmInit;
   public static double CLAW_DOWN_ARM_POS = Claw.downArmInit;
 
+  public static double WRIST_POS = Claw.wristDefault;
+
   @Override
   public void runOpMode() throws InterruptedException {
     robot = new NewRobot(this);
@@ -30,6 +31,7 @@ public class ClawTesting2 extends LinearOpMode {
       robot.intake.setPower(gamepad2.right_trigger - gamepad2.left_trigger);
       robot.horSlide.setTarget(HSLIDE_POS);
       robot.intake.rotate.setPosition(INTAKE_ROT);
+      robot.claw.wrist.setPosition(WRIST_POS);
 
       robot.claw.claw.setPosition(CLAW_POS);
       robot.claw.clawUpArm.setPosition(CLAW_UP_ARM_POS);

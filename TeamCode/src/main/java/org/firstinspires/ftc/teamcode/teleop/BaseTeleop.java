@@ -149,9 +149,9 @@ public class BaseTeleop {
           stateTimer.reset();
         }
 
-        // If claw closed for 500ms, move to pre-clip
+        // If claw closed for 500ms, move to placement pos
         if (stateTimer.milliseconds() > 500) {
-          robot.claw.setUnder();
+          robot.claw.setPlace();
           state = ModeState.SPEC_PRE_CLIP;
         }
         break;
@@ -159,9 +159,7 @@ public class BaseTeleop {
       // TRIANGLE --> CLIP | SQUARE --> WALL
       case SPEC_PRE_CLIP:
         if (currentGamepad2.triangle) {
-          robot.claw.setPlaceOne();
-          state = ModeState.SPEC_CLIP_TWO;
-
+          state = ModeState.SPEC_CLIP;
         }
         if (currentGamepad2.square) {
           robot.claw.setWall();
@@ -169,19 +167,8 @@ public class BaseTeleop {
         }
         break;
 
-      case SPEC_CLIP_TWO:
-        if (stateTimer.milliseconds() > 200){
-          robot.claw.setPlaceTwo();
-          state = ModeState.SPEC_CLIP;
-        }
-        break;
-
       // CIRCLE --> PRE-CLIP | SQUARE --> OPEN CLAW
       case SPEC_CLIP:
-        if (currentGamepad2.circle) {
-          robot.claw.setUnder();
-          state = ModeState.SPEC_PRE_CLIP;
-        }
         if (currentGamepad2.square) {
           robot.claw.clawOpen();
           state = ModeState.SPEC_POST_CLIP;
@@ -200,7 +187,6 @@ public class BaseTeleop {
       default:
         state = ModeState.SPEC_WALL;
         robot.claw.setWall();
-        //robot.slides.setTarget(VerticalSlides.SPECIMEN);
         break;
     }
     robot.slides.updatePIDControl();
@@ -246,7 +232,7 @@ public class BaseTeleop {
             stateTimer.reset();
             state = ModeState.BUCKET_INTAKING;
           }
-          if (currentGamepad2.triangle ) {     //maybe add && !previousGamepad2.triangle?
+          if (currentGamepad2.triangle) {     //maybe add && !previousGamepad2.triangle?
             robot.slides.setTarget(VerticalSlides.UP);
           }
           if (robot.slides.atSetTarget(200, VerticalSlides.UP)) {
@@ -254,7 +240,6 @@ public class BaseTeleop {
             state = ModeState.BUCKET_PLACE;
             stateTimer.reset();
           }
-
 
 
         }
@@ -294,7 +279,7 @@ public class BaseTeleop {
 
     double hSlidePow = -currentGamepad2.right_stick_y * HORIZONTAL_SPEED;
     if ((hSlidePow < 0 && robot.horSlide.position < 50)
-        || hSlidePow > 0 && robot.horSlide.position > 950) {
+        || hSlidePow > 0 && robot.horSlide.position > 750) {
       //hSlidePow *= HORIZONTAL_MODIFIER;
       robot.horSlide.setPower(hSlidePow * HORIZONTAL_MODIFIER);
     } else {
@@ -330,8 +315,6 @@ public class BaseTeleop {
     telemetry.addData("H Slide Encoder Pos", robot.horSlide.hSlide.getCurrentPosition());
     telemetry.addData("H Slide PID Pos", robot.horSlide.position);
     telemetry.addData("V Slide Pos", robot.slides.position);
-
-
 
     telemetry.update();
   }
