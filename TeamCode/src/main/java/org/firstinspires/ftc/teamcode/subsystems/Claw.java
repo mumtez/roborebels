@@ -16,28 +16,22 @@ public class Claw {
 
   public static double upArmPlace = 0.7;
 
-  public static double upArmPlace1 = 0.75;
-  public static double upArmPlace2 = 0.65;  //maybe 85
-
 
   public static double upArmWall = 0.13;
   public static double upArmBucket = .4;
-  public static double upArmUnder = 0.6;
+
   public static double upArmTransfer = 0.88;
-  public static double upArmInit = 0.82;
+  public static double upArmInit = 0.88;
   public static double upArmPostTransfer = 0.88;
 //0.9
 
   public static double downArmPlace = 0.60;
-  public static double downArmPlace1 = 0.9;
-  public static double downArmPlace2 = 0.60;
 
 
   public static double downArmWall = 0.85;
   public static double downArmBucket = 0.8;
-  public static double downArmUnder = 0.4;
   public static double downArmTransfer = 0;
-  public static double downArmInit = 0.85;
+  public static double downArmInit = 0.0;
 
   public static double downArmPostTransfer = 0;
 
@@ -72,6 +66,7 @@ public class Claw {
   public void clawOpenWall() {
     this.clawClosed = false;
     claw.setPosition(clawWallOpenPos);
+    wrist.setPosition(wristDefault);
   }
 
   public void setPlace() {
@@ -90,6 +85,7 @@ public class Claw {
   public void setTransferClear() {
     clawDownArm.setPosition(downArmPostTransfer);
     clawUpArm.setPosition(upArmPostTransfer);
+    wrist.setPosition(wristDefault);
   }
 
   public void setWall() {
@@ -101,12 +97,14 @@ public class Claw {
   public void setBucket() {
     clawDownArm.setPosition(downArmBucket);
     clawUpArm.setPosition(upArmBucket);
+    wrist.setPosition(wristDefault);
   }
 
 
   public void setInit() {
     clawDownArm.setPosition(downArmInit);
     clawUpArm.setPosition(upArmInit);
+    wrist.setPosition(wristDefault);
   }
 
   public boolean isClawClosed() {
