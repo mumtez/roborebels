@@ -35,8 +35,8 @@ public class Claw {
 
   public static double downArmPostTransfer = 0;
 
-  public static double wristDefault = 0;
-  public static double wristPlace = 0;
+  public static double wristDefault = 0.88;
+  public static double wristPlace = 0.33;
 
   public final ServoImplEx claw, clawUpArm, clawDownArm, wrist;
   // TODO: add color/touch/limit sensor (states?)
