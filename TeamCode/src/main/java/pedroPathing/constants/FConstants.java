@@ -19,28 +19,28 @@ public class FConstants {
     FollowerConstants.rightFrontMotorDirection = DcMotorSimple.Direction.FORWARD;
     FollowerConstants.rightRearMotorDirection = DcMotorSimple.Direction.FORWARD;
 
-    FollowerConstants.mass = 14.2;
+    FollowerConstants.mass = 15.2;
 
-    FollowerConstants.xMovement = 76.6679;
-    FollowerConstants.yMovement = 59.2125;
+    FollowerConstants.xMovement = 80.60488553;
+    FollowerConstants.yMovement = 62.66679621;
 
-    FollowerConstants.forwardZeroPowerAcceleration = -28.4394;
-    FollowerConstants.lateralZeroPowerAcceleration = -64.5772;
+    FollowerConstants.forwardZeroPowerAcceleration = -33.59430605;
+    FollowerConstants.lateralZeroPowerAcceleration = -79.55918221;
 
-    FollowerConstants.translationalPIDFCoefficients.setCoefficients(0.028, 0, 0.0005, 0.0001);
+    FollowerConstants.translationalPIDFCoefficients.setCoefficients(.1, 0, .01, 0);
     FollowerConstants.useSecondaryTranslationalPID = false;
     FollowerConstants.secondaryTranslationalPIDFCoefficients.setCoefficients(0.1, 0, 0.01, 0);
 
-    FollowerConstants.headingPIDFCoefficients.setCoefficients(2, 0, 0.15, 0);
+    FollowerConstants.headingPIDFCoefficients.setCoefficients(2, 0, 0.1, 0);
     FollowerConstants.useSecondaryHeadingPID = false;
     FollowerConstants.secondaryHeadingPIDFCoefficients.setCoefficients(2, 0, 0.1, 0);
 
-    FollowerConstants.drivePIDFCoefficients.setCoefficients(0.008, 0, 0.0001, 0.6, 0);
+    FollowerConstants.drivePIDFCoefficients.setCoefficients(0.015, 0, 0.0001, 0.6, 0);
     FollowerConstants.useSecondaryDrivePID = false;
-    FollowerConstants.secondaryDrivePIDFCoefficients.setCoefficients(0.1, 0, 0, 0.6, 0);
+    FollowerConstants.secondaryDrivePIDFCoefficients.setCoefficients(0.00, 0, 0, 0.6, 0);
 
     FollowerConstants.zeroPowerAccelerationMultiplier = 4;
-    FollowerConstants.centripetalScaling = 0.0003;
+    FollowerConstants.centripetalScaling = 0.0004;
 
     FollowerConstants.pathEndTimeoutConstraint = 500;
     FollowerConstants.pathEndTValueConstraint = 0.995;
