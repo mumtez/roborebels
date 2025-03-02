@@ -7,9 +7,9 @@ public class LConstants {
 
   static {
 
-    ThreeWheelConstants.forwardTicksToInches = .001989436789;
-    ThreeWheelConstants.strafeTicksToInches = .001989436789;
-    ThreeWheelConstants.turnTicksToInches = .001989436789;
+    ThreeWheelConstants.forwardTicksToInches = 0.002010224152; // 0.0020124626327022157 0.002006875944816942 0.002011333879639193
+    ThreeWheelConstants.strafeTicksToInches = 0.002007984783; // 0.002004745501020975 0.0020117399715245893 0.0020074688777171343
+    ThreeWheelConstants.turnTicksToInches = 0.001959233;
 
     //TODO: Measure the pods (Robot Grid: https://pedropathing.com/localization/setup.html#robot-coordinate-grid)
     ThreeWheelConstants.leftY = 7.5;
@@ -28,8 +28,8 @@ public class LConstants {
     If the x value stays relatively constant when the robot drives forward, that means that one of the parallel pods (left and right) need to be reversed.
     If the y value ticks down when the robot strafe left, reverse the direction of the strafe pod.
      */
-    ThreeWheelConstants.leftEncoderDirection = Encoder.REVERSE;
-    ThreeWheelConstants.rightEncoderDirection = Encoder.REVERSE;
+    ThreeWheelConstants.leftEncoderDirection = Encoder.FORWARD;
+    ThreeWheelConstants.rightEncoderDirection = Encoder.FORWARD;
     ThreeWheelConstants.strafeEncoderDirection = Encoder.FORWARD;
   }
 }
