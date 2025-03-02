@@ -14,13 +14,17 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class VerticalSlides {
 
   public static int TRANSFER = 0;
+
+  public static int BAR = 200;
+
   public static int UP = 2300;
-  public static int SPECIMEN = 330;
+
 
   public static double kp = 0.01;
   public static double ki = 0;
   public static double kd = 0.0001;
   public static double KG = 0.07;
+
 
   private final ElapsedTime timer = new ElapsedTime();
   private double lastError = 0;

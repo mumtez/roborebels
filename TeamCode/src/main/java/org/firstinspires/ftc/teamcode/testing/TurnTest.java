@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.testing;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.pedropathing.localization.Pose;
 import com.pedropathing.pathgen.PathChain;
 import com.pedropathing.pathgen.Point;
@@ -18,6 +20,7 @@ public class TurnTest extends LinearOpMode {
 
   @Override
   public void runOpMode() throws InterruptedException {
+    telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
     NewRobot robot = new NewRobot(this, AllianceColor.RED, true);
 
     Point fixedPoint = new Point(0, 0);
@@ -33,14 +36,18 @@ public class TurnTest extends LinearOpMode {
                 fixedPoint
             )
             .setConstantHeadingInterpolation(Math.toRadians(HEADING_DEG))
+            .setPathEndTimeoutConstraint(3000)
             .build();
 
         robot.follower.followPath(path, HOLD_END);
+        int x = 0;
         while (opModeIsActive() && robot.follower.isBusy()) {
           robot.follower.update();
           telemetry.addData("x", robot.follower.getPose().getX());
           telemetry.addData("y", robot.follower.getPose().getY());
           telemetry.addData("heading", robot.follower.getPose().getHeading());
+          telemetry.addData("heading offset", robot.follower.getHeadingOffset());
+          telemetry.addData("TURNING ITERATIONS", x++);
           telemetry.update();
         }
       }
