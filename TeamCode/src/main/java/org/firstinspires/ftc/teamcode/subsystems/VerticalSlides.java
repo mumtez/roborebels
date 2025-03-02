@@ -63,6 +63,7 @@ public class VerticalSlides {
     timer.reset();
     lastError = 0;
     integralSum = 0;
+
     this.targetPos = targetPos;
   }
 

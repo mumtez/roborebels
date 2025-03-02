@@ -14,19 +14,20 @@ import com.qualcomm.robotcore.util.Range;
 public class HorizontalSlides {
 
   public static int TRANSFER_POS = 0;
-  public static int OUT_POS = 800;
+  public static int OUT_POS = 700;
 
   public static double MAX_POW = 1.0;
 
-  public static double kp = 0.05;
+  public static double kf = 0.07;
+  public static double kp = 0.0029;
   public static double ki = 0;
-  public static double kd = 0.0007;
+  public static double kd = 0.00006;
 
   private final ElapsedTime timer = new ElapsedTime();
   private double lastError = 0;
   private double integralSum = 0;
   private int targetPos = 0;
-  private int lastTargetPos = 0;
+
   public int position = 0;
 
   public final DcMotor hSlide;
@@ -51,13 +52,10 @@ public class HorizontalSlides {
   }
 
   public void setTarget(int targetPos) {
-    if (targetPos != lastTargetPos) {
-      timer.reset();
-      lastError = 0;
-      integralSum = 0;
-      this.lastTargetPos = this.targetPos;
-      this.targetPos = Range.clip(targetPos, TRANSFER_POS, OUT_POS);
-    }
+    timer.reset();
+    lastError = 0;
+    integralSum = 0;
+    this.targetPos = Range.clip(targetPos, TRANSFER_POS, OUT_POS);
   }
 
   public int getTarget() {
@@ -72,8 +70,8 @@ public class HorizontalSlides {
     return Math.abs(this.position - this.targetPos) < threshold;
   }
 
+  // ALWAYS CALL UPDATE POSITION FIRST
   public double updatePIDControl() {
-    this.updatePosition();
     if (this.position < 10 && this.targetPos < 10) {
       this.setPower(0);
       return 0;
@@ -87,11 +85,10 @@ public class HorizontalSlides {
 
     lastError = error;
 
-    double pow = (error * kp) + (derivative * kd) + (integralSum * ki);
+    double pow = (error * kp) + (derivative * kd) + (integralSum * ki) + Math.signum(error) * kf;
     timer.reset();
 
     pow = Range.clip(pow, -MAX_POW, MAX_POW);
-
     this.setPower(pow);
     return pow;
   }

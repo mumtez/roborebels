@@ -1,4 +1,3 @@
-
 package org.firstinspires.ftc.teamcode.auton.baseAutons;
 
 import com.acmerobotics.dashboard.config.Config;
@@ -11,7 +10,6 @@ import com.qualcomm.robotcore.hardware.DcMotor.RunMode;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.NewRobot;
 import org.firstinspires.ftc.teamcode.subsystems.HorizontalSlides;
-import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.VerticalSlides;
 
 @Config
@@ -301,7 +299,7 @@ public class BaseBucketAuton {
           robot.slides.setTarget(VerticalSlides.UP + 100);
           robot.claw.setBucket();
           robot.intake.update(0, true, robot.getAllianceColor());
-            robot.horSlide.setTarget(HSLIDE_2 / 2);
+          robot.horSlide.setTarget(HSLIDE_2 / 2);
           setPathState(4);
         }
         break;
@@ -384,14 +382,14 @@ public class BaseBucketAuton {
         }
         if (!robot.follower.isBusy() && robot.intake.validSampleIn(robot.getAllianceColor())) {
           robot.intake.update(0, true, robot.getAllianceColor());
-            robot.horSlide.setTarget(HorizontalSlides.TRANSFER_POS);
+          robot.horSlide.setTarget(HorizontalSlides.TRANSFER_POS);
           robot.follower.followPath(placeThree, true);
           setPathState(9);
         }
 
         if (pathTimer.getElapsedTimeSeconds() > INTAKE_OVERIDE) {
           robot.intake.update(-1, true, robot.getAllianceColor());
-            robot.horSlide.setTarget(HSLIDE_3);
+          robot.horSlide.setTarget(HSLIDE_3);
           robot.follower.followPath(failedThree);
           setPathState(11);
 
@@ -437,10 +435,10 @@ public class BaseBucketAuton {
       // INTAKE SUBMERSIBLE
       case 11:
         robot.intake.update(0, true, robot.getAllianceColor());
-          robot.horSlide.setTarget(HorizontalSlides.TRANSFER_POS);
+        robot.horSlide.setTarget(HorizontalSlides.TRANSFER_POS);
         if (!robot.follower.isBusy()) {
           robot.intake.update(1, true, robot.getAllianceColor());
-            robot.horSlide.setTarget(HorizontalSlides.OUT_POS);
+          robot.horSlide.setTarget(HorizontalSlides.OUT_POS);
           setPathState(111);
         }
         break;
@@ -448,11 +446,11 @@ public class BaseBucketAuton {
       case 111:
         if (pathTimer.getElapsedTimeSeconds() > SUB_TIMER) {
           robot.intake.update(1, false, robot.getAllianceColor());
-            robot.horSlide.setTarget(HorizontalSlides.OUT_POS);
+          robot.horSlide.setTarget(HorizontalSlides.OUT_POS);
         }
         if (robot.intake.validSampleIn(robot.getAllianceColor())) {
           robot.intake.update(-1, true, robot.getAllianceColor());
-            robot.horSlide.setTarget(HorizontalSlides.TRANSFER_POS);
+          robot.horSlide.setTarget(HorizontalSlides.TRANSFER_POS);
           Pose current = robot.follower.getPose();
           robot.follower.followPath(
               robot.follower.pathBuilder()
@@ -474,11 +472,11 @@ public class BaseBucketAuton {
       case 112:
         if (pathTimer.getElapsedTimeSeconds() > SUB_TIMER) {
           robot.intake.update(1, false, robot.getAllianceColor());
-            robot.horSlide.setTarget(HorizontalSlides.OUT_POS);
+          robot.horSlide.setTarget(HorizontalSlides.OUT_POS);
         }
         if (robot.intake.validSampleIn(robot.getAllianceColor())) {
           robot.intake.update(-1, true, robot.getAllianceColor());
-            robot.horSlide.setTarget(HorizontalSlides.TRANSFER_POS);
+          robot.horSlide.setTarget(HorizontalSlides.TRANSFER_POS);
           Pose current = robot.follower.getPose();
           robot.follower.followPath(
               robot.follower.pathBuilder()
@@ -503,10 +501,10 @@ public class BaseBucketAuton {
         if (pathTimer.getElapsedTimeSeconds() > 0.1) {
           if (robot.intake.validSampleIn(robot.getAllianceColor())) {
             robot.intake.update(0, true, robot.getAllianceColor());
-              robot.horSlide.setTarget(HorizontalSlides.TRANSFER_POS);
+            robot.horSlide.setTarget(HorizontalSlides.TRANSFER_POS);
           } else {
             robot.intake.update(1, true, robot.getAllianceColor());
-              robot.horSlide.setTarget(HorizontalSlides.TRANSFER_POS);
+            robot.horSlide.setTarget(HorizontalSlides.TRANSFER_POS);
           }
         }
 

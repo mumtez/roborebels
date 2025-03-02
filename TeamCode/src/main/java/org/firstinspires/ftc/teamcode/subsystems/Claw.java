@@ -82,12 +82,6 @@ public class Claw {
     wrist.setPosition(wristDefault);
   }
 
-  public void setTransferClear() {
-    clawDownArm.setPosition(downArmPostTransfer);
-    clawUpArm.setPosition(upArmPostTransfer);
-    wrist.setPosition(wristDefault);
-  }
-
   public void setWall() {
     clawDownArm.setPosition(downArmWall);
     clawUpArm.setPosition(upArmWall);

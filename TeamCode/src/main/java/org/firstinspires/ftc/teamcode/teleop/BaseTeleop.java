@@ -18,8 +18,7 @@ public class BaseTeleop {
     BUCKET_INTAKING, BUCKET_TRANSFER, BUCKET_POST_TRANSFER, BUCKET_PLACE, BUCKET_POST_PLACE
   }
 
-  public static double HORIZONTAL_SPEED = 1;
-  public static double HORIZONTAL_MODIFIER = 0.6;
+  public static double HORIZONTAL_MODIFIER = 0.1;
 
   final NewRobot robot;
   final LinearOpMode opMode;
@@ -73,6 +72,8 @@ public class BaseTeleop {
     while (opMode.opModeIsActive()) {
       updateGamepads();
 
+      robot.horSlide.updatePosition();
+
       if (currentGamepad1.left_bumper && !previousGamepad1.left_bumper) {
         robot.imu.resetYaw();
       }
@@ -80,6 +81,7 @@ public class BaseTeleop {
       // Hang Override
       if (currentGamepad1.back && !previousGamepad1.back) {
         hangOverride = !hangOverride;
+        robot.horSlide.setTarget(HorizontalSlides.TRANSFER_POS);
       }
 
       // Mode Switch
@@ -129,14 +131,11 @@ public class BaseTeleop {
     robot.slides.setPower(currentGamepad1.right_trigger - currentGamepad1.left_trigger);
 
     robot.intake.setPower(0);
-    robot.horSlide.setTarget(HorizontalSlides.TRANSFER_POS);
     robot.intake.rotateFlat();
 
     robot.claw.setInit();
 
     robot.horSlide.updatePIDControl();
-
-
   }
 
   public void specimenModeUpdate() {
@@ -214,7 +213,7 @@ public class BaseTeleop {
 
       case BUCKET_TRANSFER:
         robot.horSlide.updatePIDControl();
-        if (robot.horSlide.atTarget(30) && robot.slides.atTarget(30)) {
+        if (robot.horSlide.atTarget(15) && robot.slides.atTarget(30)) {
 
           robot.claw.clawClose();
           stateTimer.reset();
@@ -225,23 +224,22 @@ public class BaseTeleop {
       case BUCKET_POST_TRANSFER:
         robot.horSlide.updatePIDControl();
         if (stateTimer.milliseconds() > 300) {
-          robot.claw.setTransferClear();
-
           if (currentGamepad2.square) {
             robot.claw.clawOpen();
             stateTimer.reset();
             state = ModeState.BUCKET_INTAKING;
           }
-          if (currentGamepad2.triangle) {     //maybe add && !previousGamepad2.triangle?
+          if (currentGamepad2.triangle) {
             robot.slides.setTarget(VerticalSlides.UP);
           }
-          if (robot.slides.atSetTarget(200, VerticalSlides.UP)) {
+          // TODO: add option for lower bucket
+
+          // TODO TUNE THRESHOLD FOR OPTIMAL ARM TURN
+          if (robot.slides.atSetTarget(600, VerticalSlides.UP)) {
             robot.claw.setBucket();
             state = ModeState.BUCKET_PLACE;
             stateTimer.reset();
           }
-
-
         }
         break;
 
@@ -268,7 +266,7 @@ public class BaseTeleop {
       // Prev state spec mode --> move to INTAKING
       default:
         state = ModeState.BUCKET_INTAKING;
-        robot.claw.setTransferClear();
+        robot.claw.setTransfer();
         robot.slides.setTarget(VerticalSlides.TRANSFER);
         break;
     }
@@ -277,15 +275,15 @@ public class BaseTeleop {
 
   public void intakeControl() {
 
-    double hSlidePow = -currentGamepad2.right_stick_y * HORIZONTAL_SPEED;
+    double hSlidePow = -currentGamepad2.right_stick_y;
 
-    if (((hSlidePow < 0.05 && robot.horSlide.position < 50)
-        || hSlidePow > 0.05 && robot.horSlide.position > 750)) {
-      //hSlidePow *= HORIZONTAL_MODIFIER;
+    if ((hSlidePow < 0.05 && robot.horSlide.position < 100)
+        || (hSlidePow > 0.05 && robot.horSlide.position > HorizontalSlides.OUT_POS - 100)) {
       robot.horSlide.setPower(hSlidePow * HORIZONTAL_MODIFIER);
-      robot.horSlide.setTarget(robot.horSlide.hSlide.getCurrentPosition());
+      robot.horSlide.setTarget(robot.horSlide.position);
     } else if (Math.abs(hSlidePow) > 0.05) {
       robot.horSlide.setPower(hSlidePow);
+      robot.horSlide.setTarget(robot.horSlide.position);
     } else {
       // User is NOT controlling the motor, enable PID to hold position
       robot.horSlide.updatePIDControl();
@@ -311,17 +309,6 @@ public class BaseTeleop {
     telemetry.addData("STATE", state);
 
     telemetry.addData("STATE Timer", stateTimer.milliseconds());
-    telemetry.addData("triangle", currentGamepad2.triangle);
-
-    telemetry.addData("Dist", robot.intake.getDist());
-    telemetry.addData("Colors RED ", robot.intake.getColors().red);
-    telemetry.addData("Colors BLUE ", robot.intake.getColors().blue);
-    telemetry.addData("Colors GREEN ", robot.intake.getColors().green);
-    telemetry.addData("H Slide Target", robot.horSlide.getTarget());
-    telemetry.addData("H Slide Encoder Pos", robot.horSlide.hSlide.getCurrentPosition());
-    telemetry.addData("H Slide PID Pos", robot.horSlide.position);
-    telemetry.addData("V Slide Pos", robot.slides.position);
-
     telemetry.update();
   }
 }
