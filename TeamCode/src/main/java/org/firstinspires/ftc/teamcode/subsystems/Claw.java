@@ -10,11 +10,11 @@ import com.qualcomm.robotcore.hardware.ServoImplEx;
 @Config
 public class Claw {
 
-  public static double clawWallOpenPos = 0.5;
+  public static double clawWallOpenPos = 0.45;
   public static double clawOpenPos = 0.5;
   public static double clawClosePos = 0.6;
 
-  public static double upArmPlace = 0.7;
+  public static double upArmPlace = 0.88;
 
 
   public static double upArmWall = 0.13;
@@ -22,10 +22,9 @@ public class Claw {
 
   public static double upArmTransfer = 0.88;
   public static double upArmInit = 0.88;
-  public static double upArmPostTransfer = 0.88;
 //0.9
 
-  public static double downArmPlace = 0.60;
+  public static double downArmPlace = 0.47;
 
 
   public static double downArmWall = 0.85;

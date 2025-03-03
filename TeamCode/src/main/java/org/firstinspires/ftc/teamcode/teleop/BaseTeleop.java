@@ -227,7 +227,7 @@ public class BaseTeleop {
 
       case BUCKET_POST_TRANSFER:
         robot.horSlide.updatePIDControl();
-        if (stateTimer.milliseconds() > 300) {
+        if (stateTimer.milliseconds() > 50) {
           if (currentGamepad2.square) {
             robot.claw.clawOpen();
             stateTimer.reset();
@@ -239,7 +239,7 @@ public class BaseTeleop {
           // TODO: add option for lower bucket
 
           // TODO TUNE THRESHOLD FOR OPTIMAL ARM TURN
-          if (robot.slides.atSetTarget(600, VerticalSlides.UP)) {
+          if (robot.slides.atSetTarget(100, VerticalSlides.UP - 600)) {
             robot.claw.setBucket();
             state = ModeState.BUCKET_PLACE;
             stateTimer.reset();

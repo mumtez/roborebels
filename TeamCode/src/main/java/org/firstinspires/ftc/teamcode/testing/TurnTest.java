@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.NewRobot.AllianceColor;
 public class TurnTest extends LinearOpMode {
 
   public static int HEADING_DEG = 180;
-  public static boolean HOLD_END = false;
+  public static boolean HOLD_END = true;
 
   @Override
   public void runOpMode() throws InterruptedException {
