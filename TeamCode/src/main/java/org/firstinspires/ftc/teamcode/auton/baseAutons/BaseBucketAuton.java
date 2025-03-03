@@ -37,6 +37,10 @@ public class BaseBucketAuton {
   public static double[] INTAKE_SUB_SECONDARY = {63, 101, Math.toRadians(280)};
   public static double[] END = {60, 98, Math.toRadians(90)};
 
+  public static double TURN_ONE = 0;
+  public static double TURN_TWO = 45;
+  public static double TURN_THREE = 90;
+
   // CONTROL POINTS
   public static double[] START_BUCKET_CONTROL = {35, 105};
   public static double[] BUCKET_INTAKE_SUB_CONTROL = {54, 126};
@@ -249,7 +253,8 @@ public class BaseBucketAuton {
 
       case 1:
         if (!robot.follower.isBusy() && robot.slides.atTarget(30)) {
-          place(pickupOne);
+          //place(pickupOne);
+          placeTurn(TURN_ONE,true);
           setPathState(2);
         }
         break;
@@ -264,7 +269,9 @@ public class BaseBucketAuton {
         if (robot.intake.validSampleIn(robot.getAllianceColor())) {
           robot.intake.update(0, true, robot.getAllianceColor());
           robot.horSlide.setTarget(HorizontalSlides.TRANSFER_POS);
-          robot.follower.followPath(placeOne, true);
+
+          //robot.follower.followPath(placeOne, true);
+          robot.follower.turn(TURN_ONE, false);
           setPathState(3);
         }
 
@@ -307,7 +314,8 @@ public class BaseBucketAuton {
       // SCORE 1
       case 4:
         if (!robot.follower.isBusy() && robot.slides.atTarget(30)) {
-          place(pickupTwo);
+          //place(pickupTwo);
+          placeTurn(TURN_TWO, true);
           setPathState(5);
         }
         break;
@@ -322,7 +330,8 @@ public class BaseBucketAuton {
         if (!robot.follower.isBusy() && robot.intake.validSampleIn(robot.getAllianceColor())) {
           robot.intake.update(0, true, robot.getAllianceColor());
           robot.horSlide.setTarget(HorizontalSlides.TRANSFER_POS);
-          robot.follower.followPath(placeTwo, true);
+          //robot.follower.followPath(placeTwo, true);
+          robot.follower.turn(TURN_TWO, false);
           setPathState(6);
         }
 
@@ -368,7 +377,8 @@ public class BaseBucketAuton {
       // SCORE 2
       case 7:
         if (!robot.follower.isBusy() && robot.slides.atTarget(30)) {
-          place(pickupThree);
+          //place(pickupThree);
+          placeTurn(TURN_THREE, true);
           setPathState(8);
         }
         break;
@@ -383,7 +393,8 @@ public class BaseBucketAuton {
         if (!robot.follower.isBusy() && robot.intake.validSampleIn(robot.getAllianceColor())) {
           robot.intake.update(0, true, robot.getAllianceColor());
           robot.horSlide.setTarget(HorizontalSlides.TRANSFER_POS);
-          robot.follower.followPath(placeThree, true);
+          //robot.follower.followPath(placeThree, true);
+          robot.follower.turn(TURN_THREE, false);
           setPathState(9);
         }
 
@@ -559,6 +570,16 @@ public class BaseBucketAuton {
     robot.waitTime(500);
 
     robot.follower.followPath(nextPath, true);
+    robot.slides.setTarget(VerticalSlides.TRANSFER);
+    robot.claw.setTransfer();
+  }
+
+  private void placeTurn(double degrees, boolean left) {
+    robot.waitTime(500);
+    robot.claw.clawOpen();
+    robot.waitTime(500);
+
+    robot.follower.turn(Math.toRadians(degrees), left);
     robot.slides.setTarget(VerticalSlides.TRANSFER);
     robot.claw.setTransfer();
   }
