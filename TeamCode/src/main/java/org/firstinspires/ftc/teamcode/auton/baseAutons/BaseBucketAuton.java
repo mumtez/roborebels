@@ -37,7 +37,7 @@ public class BaseBucketAuton {
   public static double[] INTAKE_SUB_SECONDARY = {63, 101, Math.toRadians(280)};
   public static double[] END = {60, 98, Math.toRadians(90)};
 
-  public static double TURN_ONE = 0;
+  public static double TURN_ONE = 15;
   public static double TURN_TWO = 45;
   public static double TURN_THREE = 90;
 
@@ -243,6 +243,7 @@ public class BaseBucketAuton {
       // SCORE PRELOAD
       case 101:
         if (robot.slides.atTarget(30)) {
+          robot.claw.clawClose();
           robot.slides.setTarget(VerticalSlides.UP + 100);
           robot.claw.setBucket();
           robot.intake.update(0, true, robot.getAllianceColor());
@@ -254,7 +255,7 @@ public class BaseBucketAuton {
       case 1:
         if (!robot.follower.isBusy() && robot.slides.atTarget(30)) {
           //place(pickupOne);
-          placeTurn(TURN_ONE,true);
+          placeTurn(TURN_ONE, true);
           setPathState(2);
         }
         break;
@@ -269,8 +270,6 @@ public class BaseBucketAuton {
         if (robot.intake.validSampleIn(robot.getAllianceColor())) {
           robot.intake.update(0, true, robot.getAllianceColor());
           robot.horSlide.setTarget(HorizontalSlides.TRANSFER_POS);
-
-          //robot.follower.followPath(placeOne, true);
           robot.follower.turn(TURN_ONE, false);
           setPathState(3);
         }
