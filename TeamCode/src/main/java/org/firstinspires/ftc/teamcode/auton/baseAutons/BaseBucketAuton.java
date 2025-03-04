@@ -525,7 +525,7 @@ public class BaseBucketAuton {
       robot.follower.update();
       robot.slides.updatePIDControl();
       robot.horSlide.updatePosition();
-      robot.horSlide.updatePIDControl(); //TODO: hopefully in the right spot
+      robot.horSlide.updatePIDControl();
 
       telemetry.addData("Path State", pathState);
       telemetry.addData("Position", robot.follower.getPose().toString());
