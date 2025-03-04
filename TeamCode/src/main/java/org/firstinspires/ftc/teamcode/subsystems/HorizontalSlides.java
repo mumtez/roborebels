@@ -66,6 +66,10 @@ public class HorizontalSlides {
     this.position = this.hSlide.getCurrentPosition();
   }
 
+  public boolean atTarget() {
+    return atTarget(20);
+  }
+
   public boolean atTarget(int threshold) {
     return Math.abs(this.position - this.targetPos) < threshold;
   }

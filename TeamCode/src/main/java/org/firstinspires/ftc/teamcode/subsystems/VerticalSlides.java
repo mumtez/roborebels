@@ -83,6 +83,10 @@ public class VerticalSlides {
     this.position = curPos - this.offset;
   }
 
+  public boolean atTarget() {
+    return atTarget(30);
+  }
+
   public boolean atTarget(int threshold) {
     return Math.abs(this.position - this.targetPos) < threshold;
   }

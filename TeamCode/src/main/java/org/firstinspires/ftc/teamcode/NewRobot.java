@@ -52,7 +52,6 @@ public class NewRobot {
     this.opMode = opMode;
     this.allianceColor = allianceColor;
     HardwareMap hardwareMap = opMode.hardwareMap;
-    Constants.setConstants(FConstants.class, LConstants.class);
 
     // From https://gm0.org/en/latest/docs/software/tutorials/bulk-reads.html
     List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
@@ -62,7 +61,7 @@ public class NewRobot {
 
     if (auton) {
       // FOLLOWER (Pedro Pathing)
-      follower = new Follower(hardwareMap);
+      follower = new Follower(hardwareMap, FConstants.class, LConstants.class);
     } else {
 
       fl = hardwareMap.dcMotor.get("fl");
