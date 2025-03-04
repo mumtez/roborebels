@@ -14,11 +14,9 @@ public class ClawTesting2 extends LinearOpMode {
 
   NewRobot robot;
   public static double INTAKE_ROT = Intake.INTAKE_FLAT;
-  public static int HSLIDE_POS = HorizontalSlides.TRANSFER_POS;
   public static double CLAW_POS = Claw.clawOpenPos;
   public static double CLAW_UP_ARM_POS = Claw.upArmInit;
   public static double CLAW_DOWN_ARM_POS = Claw.downArmInit;
-
   public static double WRIST_POS = Claw.wristDefault;
 
   @Override
@@ -29,10 +27,9 @@ public class ClawTesting2 extends LinearOpMode {
     // LOOP
     while (opModeIsActive()) {
       robot.intake.setPower(gamepad2.right_trigger - gamepad2.left_trigger);
-      robot.horSlide.setTarget(HSLIDE_POS);
       robot.intake.rotate.setPosition(INTAKE_ROT);
-      robot.claw.wrist.setPosition(WRIST_POS);
 
+      robot.claw.wrist.setPosition(WRIST_POS);
       robot.claw.claw.setPosition(CLAW_POS);
       robot.claw.clawUpArm.setPosition(CLAW_UP_ARM_POS);
       robot.claw.clawDownArm.setPosition(CLAW_DOWN_ARM_POS);
