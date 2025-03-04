@@ -217,8 +217,7 @@ public class BaseTeleop {
 
       case BUCKET_TRANSFER:
         robot.horSlide.updatePIDControl();
-        if (robot.horSlide.atTarget(15) && robot.slides.atTarget(30)) {
-
+        if (robot.horSlide.atTarget() && robot.slides.atTarget()) {
           robot.claw.clawClose();
           stateTimer.reset();
           state = ModeState.BUCKET_POST_TRANSFER;
@@ -233,16 +232,23 @@ public class BaseTeleop {
             stateTimer.reset();
             state = ModeState.BUCKET_INTAKING;
           }
-          if (currentGamepad2.triangle) {
+
+          if (currentGamepad2.triangle && !previousGamepad2.triangle) {
             robot.slides.setTarget(VerticalSlides.UP);
           }
-          // TODO: add option for lower bucket
+          if (currentGamepad2.circle && !previousGamepad2.circle) {
+            robot.slides.setTarget(VerticalSlides.LOWER_BUCKET);
+          }
 
-          // TODO TUNE THRESHOLD FOR OPTIMAL ARM TURN
-          if (robot.slides.atSetTarget(100, VerticalSlides.UP - 600)) {
-            robot.claw.setBucket();
-            state = ModeState.BUCKET_PLACE;
-            stateTimer.reset();
+          // If the vert slides are moving to either bucket height
+          int slideTarget = robot.slides.getTarget();
+          if (slideTarget == VerticalSlides.UP || slideTarget == VerticalSlides.LOWER_BUCKET) {
+            // TODO TUNE THRESHOLD FOR OPTIMAL ARM TURN
+            if (robot.slides.atSetTarget(100, slideTarget - 600)) {
+              robot.claw.setBucket();
+              state = ModeState.BUCKET_PLACE;
+              stateTimer.reset();
+            }
           }
         }
         break;
@@ -281,7 +287,7 @@ public class BaseTeleop {
 
     double hSlidePow = -currentGamepad2.right_stick_y;
 
-    if ((hSlidePow < 0.05 && robot.horSlide.position < 100)
+    if ((hSlidePow < -0.05 && robot.horSlide.position < 100)
         || (hSlidePow > 0.05 && robot.horSlide.position > HorizontalSlides.OUT_POS - 100)) {
       robot.horSlide.setPower(hSlidePow * HORIZONTAL_MODIFIER);
       robot.horSlide.setTarget(robot.horSlide.position);

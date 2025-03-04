@@ -18,7 +18,7 @@ public class VerticalSlides {
   public static int BAR = 400;
 
   public static int UP = 2300;
-
+  public static int LOWER_BUCKET = 750;
 
   public static double kp = 0.01;
   public static double ki = 0;
