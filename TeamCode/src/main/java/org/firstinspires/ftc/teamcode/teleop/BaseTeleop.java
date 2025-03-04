@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.subsystems.VerticalSlides;
 public class BaseTeleop {
 
   public enum ModeState {
-    SPEC_WALL, SPEC_PRE_CLIP, SPEC_CLIP, SPEC_POST_CLIP, SPEC_CLIP_TWO,
+    SPEC_WALL, SPEC_PRE_CLIP, SPEC_CLIP, SPEC_POST_CLIP,
     BUCKET_INTAKING, BUCKET_TRANSFER, BUCKET_POST_TRANSFER, BUCKET_PLACE, BUCKET_POST_PLACE
   }
 
@@ -158,6 +158,7 @@ public class BaseTeleop {
 
       // TRIANGLE --> CLIP | SQUARE --> WALL
       case SPEC_PRE_CLIP:
+        // TODO: if can't do drive-in clip, this needs to move the arm
         if (currentGamepad2.triangle) {
           state = ModeState.SPEC_CLIP;
         }
@@ -255,6 +256,7 @@ public class BaseTeleop {
 
       case BUCKET_PLACE:
         robot.horSlide.updatePIDControl();
+        //TODO: timer needed here?
         if (stateTimer.milliseconds() > 500 && currentGamepad2.square) {
           robot.claw.clawOpen();
           state = ModeState.BUCKET_POST_PLACE;
@@ -307,6 +309,8 @@ public class BaseTeleop {
         robot.getAllianceColor()
     );
 
+    // TODO: possibly causing a lot of cycle delay? maybe theres a better way to do this instead
+    //  of sending call for effect every loop
     if (robot.intake.validSampleIn(robot.getAllianceColor())) {
       opMode.gamepad1.rumble(300);
       opMode.gamepad2.rumble(300);
@@ -317,7 +321,6 @@ public class BaseTeleop {
     telemetry.addData("MODE", specimenMode ? "SPECIMEN" : "BUCKET");
     telemetry.addData("OVERRIDE", hangOverride);
     telemetry.addData("STATE", state);
-
     telemetry.addData("STATE Timer", stateTimer.milliseconds());
     telemetry.update();
   }
