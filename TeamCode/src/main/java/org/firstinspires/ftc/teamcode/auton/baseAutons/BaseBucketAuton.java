@@ -237,6 +237,7 @@ public class BaseBucketAuton {
         robot.follower.followPath(placePreLoad, 1, true);  //TODO: may need reduced power
         robot.slides.setMode(RunMode.RUN_WITHOUT_ENCODER);
         robot.slides.setTarget(VerticalSlides.UP);
+        robot.horSlide.setTarget(HSLIDE_1/2); // first raise
         robot.claw.setBucket();
         setPathState(101);
         break;
@@ -244,21 +245,14 @@ public class BaseBucketAuton {
       // SCORE PRELOAD
       case 101:
         if (!robot.follower.isBusy() && robot.slides.atTarget(30)) {
-          placeTurn(TURN_ONE, true);
-          robot.horSlide.setTarget(HSLIDE_1);
-          robot.intake.update(0, true, robot.getAllianceColor());
-          setPathState(1);
-        }
-        break;
-
-      case 1:
-        if (!robot.follower.isBusy() && robot.slides.atTarget(30)) {
-          robot.intake.update(1, false, robot.getAllianceColor());
+          placeTurn(TURN_ONE, true); // place preload turn to first pickup
+          robot.intake.update(1,false, robot.getAllianceColor());
+          robot.horSlide.setTarget(HSLIDE_1);// after turn put intake down spin and extend
           setPathState(2);
         }
         break;
 
-      // MOVE TO INTAKE 1
+      // Check if 1 intaken
       case 2:
 
         if (robot.intake.validSampleIn(robot.getAllianceColor())) {
@@ -270,7 +264,7 @@ public class BaseBucketAuton {
 
         if (pathTimer.getElapsedTimeSeconds() > INTAKE_OVERIDE) { // if it misses first pickup
           robot.intake.update(-1, true, robot.getAllianceColor());
-          robot.horSlide.setTarget(HSLIDE_1-400);
+          robot.horSlide.setTarget(HSLIDE_1/2);
           robot.follower.turnDegrees(TURN_TWO-TURN_ONE, true);
           robot.intake.update(1, false, robot.getAllianceColor());
           robot.horSlide.setTarget(HSLIDE_1);
@@ -281,7 +275,7 @@ public class BaseBucketAuton {
       // TRANSFER INTAKE 1
       case 3:
 
-        if (!robot.follower.isBusy() && robot.horSlide.atTarget(30)) {
+        if (robot.horSlide.atTarget(30)) {
           robot.claw.clawClose();
           setPathState(32);
         }
@@ -300,6 +294,7 @@ public class BaseBucketAuton {
       // SCORE 1
       case 4:
         if (!robot.follower.isBusy() && robot.slides.atTarget(30)) {
+          robot.horSlide.setTarget(HSLIDE_2/2);
           placeTurn(TURN_TWO, true);
           setPathState(5);
         }
@@ -312,7 +307,7 @@ public class BaseBucketAuton {
           robot.horSlide.setTarget(HSLIDE_2);
         }
 
-        if (!robot.follower.isBusy() && robot.intake.validSampleIn(robot.getAllianceColor())) {
+        if (robot.intake.validSampleIn(robot.getAllianceColor())) {
           robot.intake.update(0, true, robot.getAllianceColor());
           robot.horSlide.setTarget(HorizontalSlides.TRANSFER_POS);
           robot.follower.turn(TURN_TWO, false);
@@ -333,7 +328,7 @@ public class BaseBucketAuton {
       // TRANSFER 2
       case 6:
 
-        if (!robot.follower.isBusy() && robot.horSlide.atTarget(30)) {
+        if (robot.horSlide.atTarget(30)) {
           robot.claw.clawClose();
           setPathState(62);
         }
@@ -343,9 +338,9 @@ public class BaseBucketAuton {
       case 62:
         if (robot.slides.atTarget(30)) {
           robot.slides.setTarget(VerticalSlides.UP + 100);
+          robot.horSlide.setTarget(HSLIDE_3 / 2);
           robot.claw.setBucket();
           robot.intake.update(0, true, robot.getAllianceColor());
-          robot.horSlide.setTarget(HSLIDE_3 / 2);
           setPathState(7);
         }
         break;
@@ -383,7 +378,7 @@ public class BaseBucketAuton {
 
       // TRANSFER 3
       case 9:
-        if (!robot.follower.isBusy() && robot.horSlide.atTarget(30)) {
+        if (robot.horSlide.atTarget(30)) {
           robot.claw.clawClose();
           setPathState(92);
         }
@@ -480,21 +475,12 @@ public class BaseBucketAuton {
           }
         }
 
-        if (pathTimer.getElapsedTimeSeconds() > 1) {
-          robot.slides.setTarget(VerticalSlides.TRANSFER);
-        }
-        if (pathTimer.getElapsedTimeSeconds() > 1.01 && robot.slides.atTarget(30)) {
+        if (pathTimer.getElapsedTimeSeconds() > 1.01 && robot.horSlide.atTarget(30)) {
           robot.claw.clawClose();
-          setPathState(121);
-        }
-        break;
-
-      case 121:
-        if (pathTimer.getElapsedTimeSeconds() > 0.5) {
-          robot.slides.setTarget(VerticalSlides.TRANSFER);
           setPathState(122);
         }
         break;
+
 
       case 122:
         // TODO: if final move is too fast for slides to go up, should instead make it slightly slower bc raising
@@ -510,7 +496,7 @@ public class BaseBucketAuton {
       case 13:
         if (!robot.follower.isBusy() && robot.slides.atTarget(30)) {
           place(end);
-          robot.claw.setWall();
+          robot.claw.setTransfer();
           setPathState(14);
         }
         break;
