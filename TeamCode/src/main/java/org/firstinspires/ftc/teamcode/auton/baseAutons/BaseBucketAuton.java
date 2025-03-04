@@ -20,7 +20,7 @@ public class BaseBucketAuton {
   public static int HSLIDE_3 = HorizontalSlides.OUT_POS;
 
   public static double SUB_TIMER = 0.1;
-  public static double INTAKE_OVERIDE = 4;
+  public static double INTAKE_OVERRIDE = 4;
 
   public static double TRANSFER_DELAY = 0.8;
   public static double TRANSFER_DELAY_2 = TRANSFER_DELAY + 0.4;
@@ -240,6 +240,7 @@ public class BaseBucketAuton {
 
       // Check if 1 intaken
       case 2:
+        robot.intake.update(1, false, robot.getAllianceColor());
 
         if (robot.intake.validSampleIn(robot.getAllianceColor())) {
           telemetry.addData("correct color in", 1);
@@ -249,7 +250,7 @@ public class BaseBucketAuton {
           setPathState(3);
         }
 
-        if (pathTimer.getElapsedTimeSeconds() > INTAKE_OVERIDE) { // if it misses first pickup
+        if (pathTimer.getElapsedTimeSeconds() > INTAKE_OVERRIDE) { // if it misses first pickup
           robot.intake.update(-1, true, robot.getAllianceColor());
           robot.horSlide.setTarget(HSLIDE_1 / 2);
           robot.follower.turnDegrees(TURN_TWO - TURN_ONE, true);
@@ -300,20 +301,18 @@ public class BaseBucketAuton {
           setPathState(6);
         }
 
-        if (pathTimer.getElapsedTimeSeconds() > INTAKE_OVERIDE) { // if it fails second
+        if (pathTimer.getElapsedTimeSeconds() > INTAKE_OVERRIDE) { // if it fails second
           robot.intake.update(-1, true, robot.getAllianceColor());
           robot.horSlide.setTarget(HSLIDE_1 - 400);
           robot.follower.turnDegrees(TURN_THREE - TURN_TWO, true);
           robot.intake.update(1, false, robot.getAllianceColor());
           robot.horSlide.setTarget(HSLIDE_1);
           setPathState(8);
-
         }
         break;
 
       // TRANSFER 2
       case 6:
-
         if (robot.horSlide.atTarget()) {
           robot.claw.clawClose();
           setPathState(62);
@@ -321,6 +320,7 @@ public class BaseBucketAuton {
         break;
 
       case 62:
+        // TODO: need a wait 50 ms probably for transfer?
         if (robot.slides.atTarget(100)) {
           robot.slides.setTarget(VerticalSlides.UP + 100);
           robot.horSlide.setTarget(HSLIDE_3 / 2);
@@ -352,7 +352,7 @@ public class BaseBucketAuton {
           setPathState(9);
         }
 
-        if (pathTimer.getElapsedTimeSeconds() > INTAKE_OVERIDE) { // if it fails 3rd
+        if (pathTimer.getElapsedTimeSeconds() > INTAKE_OVERRIDE) { // if it fails 3rd
           robot.intake.update(-1, true, robot.getAllianceColor());
           robot.horSlide.setTarget(HorizontalSlides.TRANSFER_POS);
           robot.follower.followPath(failedThree);
