@@ -28,7 +28,7 @@ public class BaseBucketAuton {
   // MAIN POINTS
 
   public static double[] START = {9, 105, 270};
-  public static double[] PLACE_BUCKET = {23.5, 121, 315};
+  public static double[] PLACE_BUCKET = {17, 130, 315};
   public static double[] PLACE_BUCKET_TWO = {27, 122, 315};
 
   public static double[] INTAKE_ONE = {28, 118, 0};
@@ -38,7 +38,7 @@ public class BaseBucketAuton {
   public static double[] INTAKE_SUB_SECONDARY = {63, 101, 280};
   public static double[] END = {60, 98, 90};
 
-  public static double TURN_ONE = 15;
+  public static double TURN_ONE = 35;
   public static double TURN_TWO = 45;
   public static double TURN_THREE = 90;
 
@@ -94,7 +94,8 @@ public class BaseBucketAuton {
             pointFromArr(PLACE_BUCKET),
             pointFromArr(INTAKE_ONE)
         )
-        .setLinearHeadingInterpolation(Math.toRadians(PLACE_BUCKET[2]), Math.toRadians(INTAKE_ONE[2]))
+        .setLinearHeadingInterpolation(Math.toRadians(PLACE_BUCKET[2]),
+            Math.toRadians(INTAKE_ONE[2]))
         .build();
 
     failedOne = robot.follower.pathBuilder()
@@ -110,7 +111,8 @@ public class BaseBucketAuton {
             pointFromArr(INTAKE_TWO),
             pointFromArr(PLACE_BUCKET)
         )
-        .setLinearHeadingInterpolation(Math.toRadians(INTAKE_TWO[2]), Math.toRadians(PLACE_BUCKET[2]))
+        .setLinearHeadingInterpolation(Math.toRadians(INTAKE_TWO[2]),
+            Math.toRadians(PLACE_BUCKET[2]))
         .build();
 
     pickupTwo = robot.follower.pathBuilder()
@@ -118,7 +120,8 @@ public class BaseBucketAuton {
             pointFromArr(PLACE_BUCKET),
             pointFromArr(INTAKE_TWO)
         )
-        .setLinearHeadingInterpolation(Math.toRadians(PLACE_BUCKET[2]), Math.toRadians(INTAKE_TWO[2]))
+        .setLinearHeadingInterpolation(Math.toRadians(PLACE_BUCKET[2]),
+            Math.toRadians(INTAKE_TWO[2]))
         .build();
 
     failedTwo = robot.follower.pathBuilder()
@@ -126,7 +129,8 @@ public class BaseBucketAuton {
             pointFromArr(INTAKE_TWO),
             pointFromArr(INTAKE_THREE)
         )
-        .setLinearHeadingInterpolation(Math.toRadians(INTAKE_TWO[2]), Math.toRadians(INTAKE_THREE[2]))
+        .setLinearHeadingInterpolation(Math.toRadians(INTAKE_TWO[2]),
+            Math.toRadians(INTAKE_THREE[2]))
         .build();
 
     placeTwo = robot.follower.pathBuilder()
@@ -134,7 +138,8 @@ public class BaseBucketAuton {
             pointFromArr(INTAKE_TWO),
             pointFromArr(PLACE_BUCKET_TWO)
         )
-        .setLinearHeadingInterpolation(Math.toRadians(INTAKE_TWO[2]), Math.toRadians(PLACE_BUCKET_TWO[2]))
+        .setLinearHeadingInterpolation(Math.toRadians(INTAKE_TWO[2]),
+            Math.toRadians(PLACE_BUCKET_TWO[2]))
         .build();
 
     pickupThree = robot.follower.pathBuilder()
@@ -142,7 +147,8 @@ public class BaseBucketAuton {
             pointFromArr(PLACE_BUCKET_TWO),
             pointFromArr(INTAKE_THREE)
         )
-        .setLinearHeadingInterpolation(Math.toRadians(PLACE_BUCKET_TWO[2]), Math.toRadians(INTAKE_THREE[2]))
+        .setLinearHeadingInterpolation(Math.toRadians(PLACE_BUCKET_TWO[2]),
+            Math.toRadians(INTAKE_THREE[2]))
         .build();
 
     failedThree = robot.follower.pathBuilder()
@@ -150,7 +156,8 @@ public class BaseBucketAuton {
             pointFromArr(INTAKE_THREE),
             pointFromArr(INTAKE_SUB)
         )
-        .setLinearHeadingInterpolation(Math.toRadians(INTAKE_THREE[2]), Math.toRadians(INTAKE_SUB[2]))
+        .setLinearHeadingInterpolation(Math.toRadians(INTAKE_THREE[2]),
+            Math.toRadians(INTAKE_SUB[2]))
         .build();
 
     placeThree = robot.follower.pathBuilder()
@@ -158,7 +165,8 @@ public class BaseBucketAuton {
             pointFromArr(INTAKE_THREE),
             pointFromArr(PLACE_BUCKET_TWO)
         )
-        .setLinearHeadingInterpolation(Math.toRadians(INTAKE_THREE[2]), Math.toRadians(PLACE_BUCKET_TWO[2]))
+        .setLinearHeadingInterpolation(Math.toRadians(INTAKE_THREE[2]),
+            Math.toRadians(PLACE_BUCKET_TWO[2]))
         .build();
 
     // TODO: should pickup movements back and forth from the sub be TANGENTIAL heading for speed?
@@ -168,7 +176,8 @@ public class BaseBucketAuton {
             pointFromArr(BUCKET_INTAKE_SUB_CONTROL),
             pointFromArr(INTAKE_SUB)
         )
-        .setLinearHeadingInterpolation(Math.toRadians(PLACE_BUCKET_TWO[2]), Math.toRadians(INTAKE_SUB[2]))
+        .setLinearHeadingInterpolation(Math.toRadians(PLACE_BUCKET_TWO[2]),
+            Math.toRadians(INTAKE_SUB[2]))
         .build();
 
     pickupSubMovementOne = robot.follower.pathBuilder()
@@ -176,7 +185,8 @@ public class BaseBucketAuton {
             pointFromArr(INTAKE_SUB),
             pointFromArr(INTAKE_SUB_SECONDARY)
         )
-        .setLinearHeadingInterpolation(Math.toRadians(INTAKE_SUB[2]), Math.toRadians(INTAKE_SUB_SECONDARY[2]))
+        .setLinearHeadingInterpolation(Math.toRadians(INTAKE_SUB[2]),
+            Math.toRadians(INTAKE_SUB_SECONDARY[2]))
         .build();
 
     pickupSubMovementTwo = robot.follower.pathBuilder()
@@ -184,7 +194,8 @@ public class BaseBucketAuton {
             pointFromArr(INTAKE_SUB_SECONDARY),
             pointFromArr(INTAKE_SUB)
         )
-        .setLinearHeadingInterpolation(Math.toRadians(INTAKE_SUB_SECONDARY[2]), Math.toRadians(INTAKE_SUB[2]))
+        .setLinearHeadingInterpolation(Math.toRadians(INTAKE_SUB_SECONDARY[2]),
+            Math.toRadians(INTAKE_SUB[2]))
         .build();
 
     // TODO: could maybe also be tangential?
@@ -210,15 +221,16 @@ public class BaseBucketAuton {
       case 0:
         robot.follower.followPath(placePreLoad, 1, true);  //TODO: may need reduced power
         robot.slides.setMode(RunMode.RUN_WITHOUT_ENCODER);
+        robot.horSlide.setMode(RunMode.RUN_WITHOUT_ENCODER);
         robot.slides.setTarget(VerticalSlides.UP);
-        robot.horSlide.setTarget(HSLIDE_1 / 2); // first raise
+        robot.horSlide.setTarget(HSLIDE_1 / 3); // first raise
         robot.claw.setBucket();
         setPathState(101);
         break;
 
       // SCORE PRELOAD
       case 101:
-        if (!robot.follower.isBusy() && robot.slides.atTarget()) {
+        if (!robot.follower.isTurning() && robot.slides.atTarget(100)) {
           placeTurn(TURN_ONE, true); // place preload turn to first pickup
           robot.intake.update(1, false, robot.getAllianceColor());
           robot.horSlide.setTarget(HSLIDE_1);// after turn put intake down spin and extend
@@ -230,9 +242,10 @@ public class BaseBucketAuton {
       case 2:
 
         if (robot.intake.validSampleIn(robot.getAllianceColor())) {
+          telemetry.addData("correct color in", 1);
           robot.intake.update(0, true, robot.getAllianceColor());
           robot.horSlide.setTarget(HorizontalSlides.TRANSFER_POS);
-          robot.follower.turn(TURN_ONE, false);
+          robot.follower.turnToDegrees(315);
           setPathState(3);
         }
 
@@ -249,7 +262,7 @@ public class BaseBucketAuton {
       // TRANSFER INTAKE 1
       case 3:
 
-        if (robot.horSlide.atTarget()) {
+        if (robot.horSlide.atTarget() && !robot.follower.isTurning()) {
           robot.claw.clawClose();
           setPathState(32);
         }
@@ -308,7 +321,7 @@ public class BaseBucketAuton {
         break;
 
       case 62:
-        if (robot.slides.atTarget()) {
+        if (robot.slides.atTarget(100)) {
           robot.slides.setTarget(VerticalSlides.UP + 100);
           robot.horSlide.setTarget(HSLIDE_3 / 2);
           robot.claw.setBucket();
@@ -328,11 +341,11 @@ public class BaseBucketAuton {
       // INTAKE 3
 
       case 8:
-        if (!robot.follower.isBusy()) {
+        if (!robot.follower.isTurning()) {
           robot.intake.update(1, false, robot.getAllianceColor());
           robot.horSlide.setTarget(HSLIDE_3);
         }
-        if (!robot.follower.isBusy() && robot.intake.validSampleIn(robot.getAllianceColor())) {
+        if (!robot.follower.isTurning() && robot.intake.validSampleIn(robot.getAllianceColor())) {
           robot.intake.update(0, true, robot.getAllianceColor());
           robot.horSlide.setTarget(HorizontalSlides.TRANSFER_POS);
           robot.follower.turn(TURN_THREE, false);
@@ -397,7 +410,8 @@ public class BaseBucketAuton {
                       pointFromArr(BUCKET_INTAKE_SUB_CONTROL),
                       pointFromArr(PLACE_BUCKET)
                   )
-                  .setLinearHeadingInterpolation(current.getHeading(), Math.toRadians(PLACE_BUCKET[2]))
+                  .setLinearHeadingInterpolation(current.getHeading(),
+                      Math.toRadians(PLACE_BUCKET[2]))
                   .build());
           setPathState(12);
         }
@@ -423,7 +437,8 @@ public class BaseBucketAuton {
                       pointFromArr(BUCKET_INTAKE_SUB_CONTROL),
                       pointFromArr(PLACE_BUCKET)
                   )
-                  .setLinearHeadingInterpolation(current.getHeading(), Math.toRadians(PLACE_BUCKET[2]))
+                  .setLinearHeadingInterpolation(current.getHeading(),
+                      Math.toRadians(PLACE_BUCKET[2]))
                   .build());
           setPathState(12);
         }
@@ -455,7 +470,7 @@ public class BaseBucketAuton {
       case 122:
         // TODO: if final move is too fast for slides to go up, should instead make it slightly slower bc raising
         //  slides after move takes more time than slowing the move and raising simul
-        if (!robot.follower.isBusy() && robot.slides.atTarget()) {
+        if (!robot.follower.isBusy() && robot.slides.atTarget(80)) {
           robot.slides.setTarget(VerticalSlides.UP);
           robot.claw.setBucket();
           setPathState(13);
@@ -495,9 +510,9 @@ public class BaseBucketAuton {
 
   // TODO: optimize wait times here
   private void placeTurn(double degrees, boolean left) {
-    robot.waitTime(500);
+
     robot.claw.clawOpen();
-    robot.waitTime(500);
+    robot.waitTime(300);
 
     robot.follower.turn(Math.toRadians(degrees), left);
     robot.slides.setTarget(VerticalSlides.TRANSFER);
@@ -529,6 +544,9 @@ public class BaseBucketAuton {
 
       telemetry.addData("Path State", pathState);
       telemetry.addData("Position", robot.follower.getPose().toString());
+      telemetry.addData("horslide pos", robot.horSlide.position);
+      telemetry.addData("horslide target", robot.horSlide.getTarget());
+
       telemetry.update();
 
       if (globalTimer.getElapsedTimeSeconds() > 29) {

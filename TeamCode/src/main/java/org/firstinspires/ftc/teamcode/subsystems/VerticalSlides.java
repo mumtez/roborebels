@@ -15,7 +15,7 @@ public class VerticalSlides {
 
   public static int TRANSFER = 0;
 
-  public static int BAR = 400;
+  public static int BAR_PLACE = 220;
 
   public static int UP = 2300;
   public static int LOWER_BUCKET = 750;

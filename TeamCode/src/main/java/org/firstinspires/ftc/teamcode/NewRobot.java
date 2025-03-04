@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.pedropathing.follower.Follower;
-import com.pedropathing.util.Constants;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot.LogoFacingDirection;
@@ -101,13 +100,12 @@ public class NewRobot {
 
   public void initAuton() {
     slides.setMode(RunMode.STOP_AND_RESET_ENCODER);
-    this.horSlide.setMode(RunMode.STOP_AND_RESET_ENCODER);
+    horSlide.setMode(RunMode.STOP_AND_RESET_ENCODER);
 
     claw.clawClose();
     claw.setInit();
 
     this.intake.rotateFlat();
-    this.horSlide.setTarget(HorizontalSlides.TRANSFER_POS);
   }
 
   public void setAllianceColor(AllianceColor allianceColor) {
