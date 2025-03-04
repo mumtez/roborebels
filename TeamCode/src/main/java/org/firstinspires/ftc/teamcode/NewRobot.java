@@ -59,31 +59,30 @@ public class NewRobot {
       hub.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
     }
 
-    if (auton) {
-      // FOLLOWER (Pedro Pathing)
-      follower = new Follower(hardwareMap, FConstants.class, LConstants.class);
-    } else {
+//    if (auton) {
+    // FOLLOWER (Pedro Pathing)
+    follower = new Follower(hardwareMap, FConstants.class, LConstants.class);
+//    } else {
+    fl = hardwareMap.dcMotor.get("fl");
+    fr = hardwareMap.dcMotor.get("fr");
+    bl = hardwareMap.dcMotor.get("bl");
+    br = hardwareMap.dcMotor.get("br");
 
-      fl = hardwareMap.dcMotor.get("fl");
-      fr = hardwareMap.dcMotor.get("fr");
-      bl = hardwareMap.dcMotor.get("bl");
-      br = hardwareMap.dcMotor.get("br");
+    fl.setDirection(Direction.REVERSE);
+    fr.setDirection(Direction.FORWARD);
+    bl.setDirection(Direction.REVERSE);
+    br.setDirection(Direction.FORWARD);
 
-      fl.setDirection(Direction.REVERSE);
-      fr.setDirection(Direction.FORWARD);
-      bl.setDirection(Direction.REVERSE);
-      br.setDirection(Direction.FORWARD);
+    fl.setMode(RunMode.RUN_WITHOUT_ENCODER);
+    fr.setMode(RunMode.RUN_WITHOUT_ENCODER);
+    bl.setMode(RunMode.RUN_WITHOUT_ENCODER);
+    br.setMode(RunMode.RUN_WITHOUT_ENCODER);
 
-      fl.setMode(RunMode.RUN_WITHOUT_ENCODER);
-      fr.setMode(RunMode.RUN_WITHOUT_ENCODER);
-      bl.setMode(RunMode.RUN_WITHOUT_ENCODER);
-      br.setMode(RunMode.RUN_WITHOUT_ENCODER);
-
-      fl.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
-      fr.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
-      bl.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
-      br.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
-    }
+    fl.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
+    fr.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
+    bl.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
+    br.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
+//    }
 
     imu = hardwareMap.get(IMU.class, "imu");
     IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
