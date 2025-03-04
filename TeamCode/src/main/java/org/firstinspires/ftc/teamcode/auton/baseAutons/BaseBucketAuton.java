@@ -26,16 +26,17 @@ public class BaseBucketAuton {
   public static double TRANSFER_DELAY_2 = TRANSFER_DELAY + 0.4;
 
   // MAIN POINTS
-  public static double[] START = {9, 105, Math.toRadians(270)};
-  public static double[] PLACE_BUCKET = {23.5, 121, Math.toRadians(315)};
-  public static double[] PLACE_BUCKET_TWO = {27, 122, Math.toRadians(315)};
 
-  public static double[] INTAKE_ONE = {28, 118, Math.toRadians(0)};
-  public static double[] INTAKE_TWO = {30, 123, Math.toRadians(0)};
-  public static double[] INTAKE_THREE = {38, 120, Math.toRadians(50)};
-  public static double[] INTAKE_SUB = {60, 98, Math.toRadians(270)};
-  public static double[] INTAKE_SUB_SECONDARY = {63, 101, Math.toRadians(280)};
-  public static double[] END = {60, 98, Math.toRadians(90)};
+  public static double[] START = {9, 105, 270};
+  public static double[] PLACE_BUCKET = {23.5, 121, 315};
+  public static double[] PLACE_BUCKET_TWO = {27, 122, 315};
+
+  public static double[] INTAKE_ONE = {28, 118, 0};
+  public static double[] INTAKE_TWO = {30, 123, 0};
+  public static double[] INTAKE_THREE = {38, 120, 50};
+  public static double[] INTAKE_SUB = {60, 98, 270};
+  public static double[] INTAKE_SUB_SECONDARY = {63, 101, 280};
+  public static double[] END = {60, 98, 90};
 
   public static double TURN_ONE = 15;
   public static double TURN_TWO = 45;
@@ -45,10 +46,6 @@ public class BaseBucketAuton {
   public static double[] START_BUCKET_CONTROL = {35, 105};
   public static double[] BUCKET_INTAKE_SUB_CONTROL = {54, 126};
 
-  private Pose startPose, placeBucketPose, placeBucketPoseTwo, intakeOnePose, intakeTwoPose, intakeThreePose, intakeSubPose,
-      intakeSubSecondaryPose, endPose;
-  private Point startBucketControl, bucketIntakeSubControl;
-
   PathChain placePreLoad,
       pickupOne, placeOne,
       pickupTwo, placeTwo,
@@ -56,7 +53,6 @@ public class BaseBucketAuton {
       pickupThree, placeThree,
       pickupFour,
       pickupSubMovementOne, pickupSubMovementTwo,
-      placeFour,
       end;
 
   private int pathState = 0;
@@ -74,153 +70,131 @@ public class BaseBucketAuton {
     this.robot = robot;
   }
 
+  public Point pointFromArr(double[] arr) {
+    return new Point(arr[0], arr[1]);
+  }
+
   public Pose poseFromArr(double[] arr) {
-    return new Pose(arr[0], arr[1], arr[2]);
+    return new Pose(arr[0], arr[1], Math.toRadians(arr[2]));
   }
 
   public void buildPaths() {
-    // POSE SETUP
-    startPose = poseFromArr(START);
-    placeBucketPose = poseFromArr(PLACE_BUCKET);
-    placeBucketPoseTwo = poseFromArr(PLACE_BUCKET_TWO);
-
-    intakeOnePose = poseFromArr(INTAKE_ONE);
-    intakeTwoPose = poseFromArr(INTAKE_TWO);
-    intakeThreePose = poseFromArr(INTAKE_THREE);
-    intakeSubPose = poseFromArr(INTAKE_SUB);
-    intakeSubSecondaryPose = poseFromArr(INTAKE_SUB_SECONDARY);
-    endPose = poseFromArr(END);
-
-    // CONTROL POINT SETUP
-    startBucketControl = new Point(START_BUCKET_CONTROL[0], START_BUCKET_CONTROL[1]);
-    bucketIntakeSubControl = new Point(BUCKET_INTAKE_SUB_CONTROL[0], BUCKET_INTAKE_SUB_CONTROL[1]);
-
-    // PATH CHAIN SETUP
 
     placePreLoad = robot.follower.pathBuilder()
         .addBezierCurve(
-            new Point(startPose),
-            startBucketControl,
-            new Point(placeBucketPose)
+            pointFromArr(START),
+            pointFromArr(START_BUCKET_CONTROL),
+            pointFromArr(PLACE_BUCKET)
         )
-        .setLinearHeadingInterpolation(startPose.getHeading(), placeBucketPose.getHeading())
+        .setLinearHeadingInterpolation(Math.toRadians(START[2]), Math.toRadians(PLACE_BUCKET[2]))
         .build();
 
     pickupOne = robot.follower.pathBuilder()
         .addBezierLine(
-            new Point(placeBucketPose),
-            new Point(intakeOnePose)
+            pointFromArr(PLACE_BUCKET),
+            pointFromArr(INTAKE_ONE)
         )
-        .setLinearHeadingInterpolation(placeBucketPose.getHeading(), intakeOnePose.getHeading())
+        .setLinearHeadingInterpolation(Math.toRadians(PLACE_BUCKET[2]), Math.toRadians(INTAKE_ONE[2]))
         .build();
 
     failedOne = robot.follower.pathBuilder()
         .addBezierLine(
-            new Point(intakeOnePose),
-            new Point(intakeTwoPose)
+            pointFromArr(INTAKE_ONE),
+            pointFromArr(INTAKE_TWO)
         )
-        .setLinearHeadingInterpolation(intakeOnePose.getHeading(), intakeTwoPose.getHeading())
+        .setLinearHeadingInterpolation(Math.toRadians(INTAKE_ONE[2]), Math.toRadians(INTAKE_TWO[2]))
         .build();
 
     placeOne = robot.follower.pathBuilder()
         .addBezierLine(
-            new Point(intakeOnePose),
-            new Point(placeBucketPose)
+            pointFromArr(INTAKE_TWO),
+            pointFromArr(PLACE_BUCKET)
         )
-        .setLinearHeadingInterpolation(intakeOnePose.getHeading(), placeBucketPose.getHeading())
+        .setLinearHeadingInterpolation(Math.toRadians(INTAKE_TWO[2]), Math.toRadians(PLACE_BUCKET[2]))
         .build();
 
     pickupTwo = robot.follower.pathBuilder()
         .addBezierLine(
-            new Point(placeBucketPose),
-            new Point(intakeTwoPose)
+            pointFromArr(PLACE_BUCKET),
+            pointFromArr(INTAKE_TWO)
         )
-        .setLinearHeadingInterpolation(placeBucketPose.getHeading(), intakeTwoPose.getHeading())
+        .setLinearHeadingInterpolation(Math.toRadians(PLACE_BUCKET[2]), Math.toRadians(INTAKE_TWO[2]))
         .build();
 
     failedTwo = robot.follower.pathBuilder()
         .addBezierLine(
-            new Point(intakeTwoPose),
-            new Point(intakeThreePose)
+            pointFromArr(INTAKE_TWO),
+            pointFromArr(INTAKE_THREE)
         )
-        .setLinearHeadingInterpolation(intakeTwoPose.getHeading(), intakeThreePose.getHeading())
+        .setLinearHeadingInterpolation(Math.toRadians(INTAKE_TWO[2]), Math.toRadians(INTAKE_THREE[2]))
         .build();
 
     placeTwo = robot.follower.pathBuilder()
         .addBezierLine(
-            new Point(intakeTwoPose),
-            new Point(placeBucketPoseTwo)
+            pointFromArr(INTAKE_TWO),
+            pointFromArr(PLACE_BUCKET_TWO)
         )
-        .setLinearHeadingInterpolation(intakeTwoPose.getHeading(), placeBucketPose.getHeading())
+        .setLinearHeadingInterpolation(Math.toRadians(INTAKE_TWO[2]), Math.toRadians(PLACE_BUCKET_TWO[2]))
         .build();
 
     pickupThree = robot.follower.pathBuilder()
         .addBezierLine(
-            new Point(placeBucketPoseTwo),
-            new Point(intakeThreePose)
+            pointFromArr(PLACE_BUCKET_TWO),
+            pointFromArr(INTAKE_THREE)
         )
-        .setLinearHeadingInterpolation(placeBucketPose.getHeading(), intakeThreePose.getHeading())
+        .setLinearHeadingInterpolation(Math.toRadians(PLACE_BUCKET_TWO[2]), Math.toRadians(INTAKE_THREE[2]))
         .build();
 
     failedThree = robot.follower.pathBuilder()
         .addBezierLine(
-            new Point(intakeThreePose),
-            new Point(intakeSubPose)
+            pointFromArr(INTAKE_THREE),
+            pointFromArr(INTAKE_SUB)
         )
-        .setLinearHeadingInterpolation(intakeThreePose.getHeading(), intakeSubPose.getHeading())
+        .setLinearHeadingInterpolation(Math.toRadians(INTAKE_THREE[2]), Math.toRadians(INTAKE_SUB[2]))
         .build();
 
     placeThree = robot.follower.pathBuilder()
         .addBezierLine(
-            new Point(intakeThreePose),
-            new Point(placeBucketPoseTwo)
+            pointFromArr(INTAKE_THREE),
+            pointFromArr(PLACE_BUCKET_TWO)
         )
-        .setLinearHeadingInterpolation(intakeThreePose.getHeading(), placeBucketPose.getHeading())
+        .setLinearHeadingInterpolation(Math.toRadians(INTAKE_THREE[2]), Math.toRadians(PLACE_BUCKET_TWO[2]))
         .build();
 
+    // TODO: should pickup movements back and forth from the sub be TANGENTIAL heading for speed?
     pickupFour = robot.follower.pathBuilder()
         .addBezierCurve(
-            new Point(placeBucketPoseTwo),
-            bucketIntakeSubControl,
-            new Point(intakeSubPose)
+            pointFromArr(PLACE_BUCKET_TWO),
+            pointFromArr(BUCKET_INTAKE_SUB_CONTROL),
+            pointFromArr(INTAKE_SUB)
         )
-        .setLinearHeadingInterpolation(placeBucketPose.getHeading(), intakeSubPose.getHeading())
+        .setLinearHeadingInterpolation(Math.toRadians(PLACE_BUCKET_TWO[2]), Math.toRadians(INTAKE_SUB[2]))
         .build();
 
     pickupSubMovementOne = robot.follower.pathBuilder()
         .addBezierLine(
-            new Point(intakeSubPose),
-            new Point(intakeSubSecondaryPose)
+            pointFromArr(INTAKE_SUB),
+            pointFromArr(INTAKE_SUB_SECONDARY)
         )
-        .setLinearHeadingInterpolation(intakeSubPose.getHeading(),
-            intakeSubSecondaryPose.getHeading())
+        .setLinearHeadingInterpolation(Math.toRadians(INTAKE_SUB[2]), Math.toRadians(INTAKE_SUB_SECONDARY[2]))
         .build();
 
     pickupSubMovementTwo = robot.follower.pathBuilder()
         .addBezierLine(
-            new Point(intakeSubSecondaryPose),
-            new Point(intakeSubPose)
+            pointFromArr(INTAKE_SUB_SECONDARY),
+            pointFromArr(INTAKE_SUB)
         )
-        .setLinearHeadingInterpolation(intakeSubSecondaryPose.getHeading(),
-            intakeSubPose.getHeading())
+        .setLinearHeadingInterpolation(Math.toRadians(INTAKE_SUB_SECONDARY[2]), Math.toRadians(INTAKE_SUB[2]))
         .build();
 
-    placeFour = robot.follower.pathBuilder()
-        .addBezierCurve(
-            new Point(intakeSubPose),
-            bucketIntakeSubControl,
-            new Point(placeBucketPose)
-        )
-        .setLinearHeadingInterpolation(intakeSubPose.getHeading(), placeBucketPose.getHeading())
-        .build();
-
+    // TODO: could maybe also be tangential?
     end = robot.follower.pathBuilder()
         .addBezierCurve(
-            new Point(placeBucketPose),
-            bucketIntakeSubControl,
-            new Point(endPose)
+            pointFromArr(PLACE_BUCKET),
+            pointFromArr(BUCKET_INTAKE_SUB_CONTROL),
+            pointFromArr(END)
         )
-        .setLinearHeadingInterpolation(placeBucketPose.getHeading(), endPose.getHeading())
+        .setLinearHeadingInterpolation(Math.toRadians(PLACE_BUCKET[2]), Math.toRadians(END[2]))
         .build();
   }
 
@@ -420,10 +394,10 @@ public class BaseBucketAuton {
               robot.follower.pathBuilder()
                   .addBezierCurve(
                       new Point(current),
-                      bucketIntakeSubControl,
-                      new Point(placeBucketPose)
+                      pointFromArr(BUCKET_INTAKE_SUB_CONTROL),
+                      pointFromArr(PLACE_BUCKET)
                   )
-                  .setLinearHeadingInterpolation(current.getHeading(), placeBucketPose.getHeading())
+                  .setLinearHeadingInterpolation(current.getHeading(), Math.toRadians(PLACE_BUCKET[2]))
                   .build());
           setPathState(12);
         }
@@ -446,10 +420,10 @@ public class BaseBucketAuton {
               robot.follower.pathBuilder()
                   .addBezierCurve(
                       new Point(current),
-                      bucketIntakeSubControl,
-                      new Point(placeBucketPose)
+                      pointFromArr(BUCKET_INTAKE_SUB_CONTROL),
+                      pointFromArr(PLACE_BUCKET)
                   )
-                  .setLinearHeadingInterpolation(current.getHeading(), placeBucketPose.getHeading())
+                  .setLinearHeadingInterpolation(current.getHeading(), Math.toRadians(PLACE_BUCKET[2]))
                   .build());
           setPathState(12);
         }
@@ -503,10 +477,12 @@ public class BaseBucketAuton {
 //          robot.claw.setPlace();
           setPathState(15);
         }
+        break;
     }
 
   }
 
+  // TODO: optimize wait times here
   private void place(PathChain nextPath) {
     robot.waitTime(500);
     robot.claw.clawOpen();
@@ -517,6 +493,7 @@ public class BaseBucketAuton {
     robot.claw.setTransfer();
   }
 
+  // TODO: optimize wait times here
   private void placeTurn(double degrees, boolean left) {
     robot.waitTime(500);
     robot.claw.clawOpen();
@@ -541,12 +518,13 @@ public class BaseBucketAuton {
     }
 
     // START
-    robot.follower.setStartingPose(startPose);
+    robot.follower.setStartingPose(poseFromArr(START));
     globalTimer.resetTimer();
 
     while (this.opMode.opModeIsActive()) {
       robot.follower.update();
       robot.slides.updatePIDControl();
+      robot.horSlide.updatePosition();
       robot.horSlide.updatePIDControl(); //TODO: hopefully in the right spot
 
       telemetry.addData("Path State", pathState);
@@ -554,7 +532,7 @@ public class BaseBucketAuton {
       telemetry.update();
 
       if (globalTimer.getElapsedTimeSeconds() > 29) {
-        robot.claw.setWall();
+        robot.claw.setTransfer();
       } else {
         autonomousPathUpdate();
       }
