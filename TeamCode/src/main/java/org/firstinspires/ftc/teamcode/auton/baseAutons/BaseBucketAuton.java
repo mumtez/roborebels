@@ -236,36 +236,30 @@ public class BaseBucketAuton {
       case 0:
         robot.follower.followPath(placePreLoad, 1, true);  //TODO: may need reduced power
         robot.slides.setMode(RunMode.RUN_WITHOUT_ENCODER);
-        robot.slides.setTarget(VerticalSlides.TRANSFER);
+        robot.slides.setTarget(VerticalSlides.UP);
+        robot.claw.setBucket();
         setPathState(101);
         break;
 
       // SCORE PRELOAD
       case 101:
-        if (robot.slides.atTarget(30)) {
-          robot.claw.clawClose();
-          robot.slides.setTarget(VerticalSlides.UP + 100);
-          robot.claw.setBucket();
-          robot.intake.update(0, true, robot.getAllianceColor());
+        if (!robot.follower.isBusy() && robot.slides.atTarget(30)) {
+          placeTurn(TURN_ONE, true);
           robot.horSlide.setTarget(HSLIDE_1);
+          robot.intake.update(0, true, robot.getAllianceColor());
           setPathState(1);
         }
         break;
 
       case 1:
         if (!robot.follower.isBusy() && robot.slides.atTarget(30)) {
-          //place(pickupOne);
-          placeTurn(TURN_ONE, true);
+          robot.intake.update(1, false, robot.getAllianceColor());
           setPathState(2);
         }
         break;
 
       // MOVE TO INTAKE 1
       case 2:
-        if (!robot.follower.isBusy()) {
-          robot.intake.update(1, false, robot.getAllianceColor());
-          robot.horSlide.setTarget(HSLIDE_1);
-        }
 
         if (robot.intake.validSampleIn(robot.getAllianceColor())) {
           robot.intake.update(0, true, robot.getAllianceColor());
@@ -274,46 +268,38 @@ public class BaseBucketAuton {
           setPathState(3);
         }
 
-        if (pathTimer.getElapsedTimeSeconds() > INTAKE_OVERIDE) {
+        if (pathTimer.getElapsedTimeSeconds() > INTAKE_OVERIDE) { // if it misses first pickup
           robot.intake.update(-1, true, robot.getAllianceColor());
+          robot.horSlide.setTarget(HSLIDE_1-400);
+          robot.follower.turnDegrees(TURN_TWO-TURN_ONE, true);
+          robot.intake.update(1, false, robot.getAllianceColor());
           robot.horSlide.setTarget(HSLIDE_1);
-          robot.follower.followPath(failedOne);
           setPathState(5);
         }
         break;
 
       // TRANSFER INTAKE 1
       case 3:
-        if (pathTimer.getElapsedTimeSeconds() > TRANSFER_DELAY) {
-          robot.slides.setTarget(VerticalSlides.TRANSFER);
-        }
-        if (pathTimer.getElapsedTimeSeconds() > TRANSFER_DELAY_2 && robot.slides.atTarget(30)) {
-          robot.claw.clawClose();
-          setPathState(31);
-        }
-        break;
 
-      case 31:
-        if (pathTimer.getElapsedTimeSeconds() > 0.5) {
-          robot.slides.setTarget(VerticalSlides.TRANSFER);
+        if (!robot.follower.isBusy() && robot.horSlide.atTarget(30)) {
+          robot.claw.clawClose();
           setPathState(32);
         }
         break;
 
+
       case 32:
-        if (robot.slides.atTarget(30)) {
           robot.slides.setTarget(VerticalSlides.UP + 100);
           robot.claw.setBucket();
           robot.intake.update(0, true, robot.getAllianceColor());
           robot.horSlide.setTarget(HSLIDE_2 / 2);
           setPathState(4);
-        }
+
         break;
 
       // SCORE 1
       case 4:
         if (!robot.follower.isBusy() && robot.slides.atTarget(30)) {
-          //place(pickupTwo);
           placeTurn(TURN_TWO, true);
           setPathState(5);
         }
@@ -329,15 +315,16 @@ public class BaseBucketAuton {
         if (!robot.follower.isBusy() && robot.intake.validSampleIn(robot.getAllianceColor())) {
           robot.intake.update(0, true, robot.getAllianceColor());
           robot.horSlide.setTarget(HorizontalSlides.TRANSFER_POS);
-          //robot.follower.followPath(placeTwo, true);
           robot.follower.turn(TURN_TWO, false);
           setPathState(6);
         }
 
-        if (pathTimer.getElapsedTimeSeconds() > INTAKE_OVERIDE) {
+        if (pathTimer.getElapsedTimeSeconds() > INTAKE_OVERIDE) { // if it fails second
           robot.intake.update(-1, true, robot.getAllianceColor());
-          robot.horSlide.setTarget(HSLIDE_2);
-          robot.follower.followPath(failedTwo);
+          robot.horSlide.setTarget(HSLIDE_1-400);
+          robot.follower.turnDegrees(TURN_THREE-TURN_TWO, true);
+          robot.intake.update(1, false, robot.getAllianceColor());
+          robot.horSlide.setTarget(HSLIDE_1);
           setPathState(8);
 
         }
@@ -345,23 +332,13 @@ public class BaseBucketAuton {
 
       // TRANSFER 2
       case 6:
-        if (!robot.follower.isBusy() && pathTimer.getElapsedTimeSeconds() > TRANSFER_DELAY) {
-          robot.slides.setTarget(VerticalSlides.TRANSFER);
-        }
-        if (!robot.follower.isBusy() && pathTimer.getElapsedTimeSeconds() > TRANSFER_DELAY_2
-            && robot.slides.atTarget(
-            30)) {
-          robot.claw.clawClose();
-          setPathState(61);
-        }
-        break;
 
-      case 61:
-        if (pathTimer.getElapsedTimeSeconds() > 0.5) {
-          robot.slides.setTarget(VerticalSlides.TRANSFER);
+        if (!robot.follower.isBusy() && robot.horSlide.atTarget(30)) {
+          robot.claw.clawClose();
           setPathState(62);
         }
         break;
+
 
       case 62:
         if (robot.slides.atTarget(30)) {
@@ -376,7 +353,6 @@ public class BaseBucketAuton {
       // SCORE 2
       case 7:
         if (!robot.follower.isBusy() && robot.slides.atTarget(30)) {
-          //place(pickupThree);
           placeTurn(TURN_THREE, true);
           setPathState(8);
         }
@@ -392,14 +368,13 @@ public class BaseBucketAuton {
         if (!robot.follower.isBusy() && robot.intake.validSampleIn(robot.getAllianceColor())) {
           robot.intake.update(0, true, robot.getAllianceColor());
           robot.horSlide.setTarget(HorizontalSlides.TRANSFER_POS);
-          //robot.follower.followPath(placeThree, true);
           robot.follower.turn(TURN_THREE, false);
           setPathState(9);
         }
 
-        if (pathTimer.getElapsedTimeSeconds() > INTAKE_OVERIDE) {
+        if (pathTimer.getElapsedTimeSeconds() > INTAKE_OVERIDE) { // if it fails 3rd
           robot.intake.update(-1, true, robot.getAllianceColor());
-          robot.horSlide.setTarget(HSLIDE_3);
+          robot.horSlide.setTarget(HorizontalSlides.TRANSFER_POS);
           robot.follower.followPath(failedThree);
           setPathState(11);
 
@@ -408,30 +383,17 @@ public class BaseBucketAuton {
 
       // TRANSFER 3
       case 9:
-        if (!robot.follower.isBusy() && pathTimer.getElapsedTimeSeconds() > TRANSFER_DELAY) {
-          robot.slides.setTarget(VerticalSlides.TRANSFER);
-        }
-        if (!robot.follower.isBusy() && pathTimer.getElapsedTimeSeconds() > TRANSFER_DELAY_2
-            && robot.slides.atTarget(
-            30)) {
+        if (!robot.follower.isBusy() && robot.horSlide.atTarget(30)) {
           robot.claw.clawClose();
-          setPathState(91);
-        }
-        break;
-
-      case 91:
-        if (pathTimer.getElapsedTimeSeconds() > 0.5) {
-          robot.slides.setTarget(VerticalSlides.TRANSFER);
           setPathState(92);
         }
         break;
 
+
       case 92:
-        if (robot.slides.atTarget(30)) {
           robot.slides.setTarget(VerticalSlides.UP + 100);
           robot.claw.setBucket();
           setPathState(10);
-        }
         break;
 
       // SCORE 3
@@ -448,7 +410,7 @@ public class BaseBucketAuton {
         robot.horSlide.setTarget(HorizontalSlides.TRANSFER_POS);
         if (!robot.follower.isBusy()) {
           robot.intake.update(1, true, robot.getAllianceColor());
-          robot.horSlide.setTarget(HorizontalSlides.OUT_POS);
+          robot.horSlide.setTarget(HorizontalSlides.OUT_POS/2);
           setPathState(111);
         }
         break;
@@ -604,7 +566,6 @@ public class BaseBucketAuton {
       robot.follower.update();
       robot.slides.updatePIDControl();
       robot.horSlide.updatePIDControl(); //TODO: hopefully in the right spot
-      //autonomousPathUpdate();
 
       telemetry.addData("Path State", pathState);
       telemetry.addData("Position", robot.follower.getPose().toString());
