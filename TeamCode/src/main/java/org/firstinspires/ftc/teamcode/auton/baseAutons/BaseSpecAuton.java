@@ -164,6 +164,7 @@ public class BaseSpecAuton {
     robot.claw.clawClose();
     robot.waitTime(50);
     robot.slides.setTarget(VerticalSlides.BAR_PLACE);
+    robot.waitTime(200);
     robot.claw.setPlaceAuto();
 
     robot.follower.followPath(place);
@@ -178,8 +179,9 @@ public class BaseSpecAuton {
     robot.waitTime(300);
     robot.claw.clawOpenWall();
     robot.waitTime(100);
-
     robot.claw.setWallAuto();
+    robot.waitTime(100);
+
     robot.follower.followPath(postPlace);
   }
 
@@ -192,13 +194,16 @@ public class BaseSpecAuton {
         setPathState(2000);
         break;
       case 2000:
-        robot.follower.followPath(pushOne);
-        setPathState(3000);
+        if (!robot.follower.isBusy()) {
+          robot.follower.followPath(pushOne);
+          setPathState(3000);
+        }
         break;
 
       case 3000:
         if (!robot.follower.isBusy()) {
           robot.follower.followPath(pickupFirst);
+          setPathState(4000);
         }
         break;
 
