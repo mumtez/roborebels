@@ -525,7 +525,6 @@ public class BaseBucketAuton {
       // LV1 ASCENT
       case 14:
         if (!robot.follower.isBusy()) {
-//          robot.claw.setPlace();
           setPathState(15);
         }
         break;
