@@ -176,7 +176,13 @@ public class BaseSpecAuton {
     }
 
     robot.slides.setTarget(VerticalSlides.TRANSFER);
-    robot.waitTime(300);
+
+    while ((opMode.opModeIsActive() || !robot.slides.atTarget())) {
+      robot.follower.update();
+      robot.slides.updatePIDControl();
+      robot.horSlide.updatePosition();
+      robot.horSlide.updatePIDControl();
+    }
     robot.claw.clawOpenWall();
     robot.waitTime(100);
     robot.claw.setWallAuto();
