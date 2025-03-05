@@ -102,6 +102,9 @@ public class NewRobot {
     slides.setMode(RunMode.STOP_AND_RESET_ENCODER);
     horSlide.setMode(RunMode.STOP_AND_RESET_ENCODER);
 
+    horSlide.setTarget(HorizontalSlides.TRANSFER_POS);
+    slides.setTarget(VerticalSlides.TRANSFER);
+
     claw.clawClose();
     claw.setInit();
 
@@ -127,6 +130,8 @@ public class NewRobot {
     while (this.opMode.opModeIsActive() && System.currentTimeMillis() - startTime < ms) {
       follower.update();
       slides.updatePIDControl();
+      horSlide.updatePosition();
+      horSlide.updatePIDControl();
     }
   }
 }

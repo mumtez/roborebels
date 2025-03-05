@@ -27,6 +27,7 @@ public class HorizontalSlides {
   private double lastError = 0;
   private double integralSum = 0;
   private int targetPos = 0;
+  private int lastTargetPos = 0;
 
   public int position = 0;
 
@@ -52,10 +53,13 @@ public class HorizontalSlides {
   }
 
   public void setTarget(int targetPos) {
-    timer.reset();
-    lastError = 0;
-    integralSum = 0;
-    this.targetPos = Range.clip(targetPos, TRANSFER_POS, OUT_POS);
+    if (targetPos != lastTargetPos) {
+      timer.reset();
+      lastError = 0;
+      integralSum = 0;
+      this.lastTargetPos = this.targetPos;
+      this.targetPos = Range.clip(targetPos, TRANSFER_POS, OUT_POS);
+    }
   }
 
   public int getTarget() {

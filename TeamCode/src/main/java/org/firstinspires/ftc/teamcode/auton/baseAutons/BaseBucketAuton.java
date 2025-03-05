@@ -15,6 +15,8 @@ import org.firstinspires.ftc.teamcode.subsystems.VerticalSlides;
 @Config
 public class BaseBucketAuton {
 
+  public static int MOVE_ARM_HEIGHT_OFFSET = 600;
+
   public static int HSLIDE_1 = HorizontalSlides.OUT_POS;
   public static int HSLIDE_2 = HorizontalSlides.OUT_POS;
   public static int HSLIDE_3 = HorizontalSlides.OUT_POS;
@@ -29,31 +31,27 @@ public class BaseBucketAuton {
 
   public static double[] START = {9, 105, 270};
   public static double[] PLACE_BUCKET = {17, 125, 315};
-  public static double[] PLACE_BUCKET_TWO = {27, 122, 315};
+  public static double[] INTAKE_ONE = {19, 125, 355};
 
-  public static double[] INTAKE_ONE = {28, 118, 0};
-  public static double[] INTAKE_TWO = {30, 123, 0};
+  public static double INTAKE_TWO_HEADING = 55;
+
   public static double[] INTAKE_THREE = {38, 120, 50};
   public static double[] INTAKE_SUB = {60, 98, 270};
   public static double[] INTAKE_SUB_SECONDARY = {63, 101, 280};
   public static double[] END = {60, 98, 90};
 
-  public static double TURN_ONE = 40;
-  public static double TURN_TWO = 45;
-  public static double TURN_THREE = 90;
 
   // CONTROL POINTS
   public static double[] START_BUCKET_CONTROL = {35, 105};
   public static double[] BUCKET_INTAKE_SUB_CONTROL = {54, 126};
 
   PathChain placePreLoad,
-      pickupOne, placeOne, placeOneAfter, placeOneAfterAfter,
-      pickupTwo, placeTwo,
-      failedOne, failedTwo, failedThree,
-      pickupThree, placeThree,
-      pickupFour,
+      intakeOne, placeOne,
+      intakeThree, placeThree,
+      failIntakeThree,
+      intakeFour,
       pickupSubMovementOne, pickupSubMovementTwo,
-      end;
+      park;
 
   private int pathState = 0;
   private Timer pathTimer;
@@ -78,6 +76,12 @@ public class BaseBucketAuton {
     return new Pose(arr[0], arr[1], Math.toRadians(arr[2]));
   }
 
+  public void setPathState(int pState) {
+    pathState = pState;
+    pathTimer.resetTimer();
+  }
+
+
   public void buildPaths() {
 
     placePreLoad = robot.follower.pathBuilder()
@@ -89,113 +93,56 @@ public class BaseBucketAuton {
         .setLinearHeadingInterpolation(Math.toRadians(START[2]), Math.toRadians(PLACE_BUCKET[2]))
         .build();
 
-    pickupOne = robot.follower.pathBuilder()
+    intakeOne = robot.follower.pathBuilder()
         .addBezierLine(
             pointFromArr(PLACE_BUCKET),
             pointFromArr(INTAKE_ONE)
         )
-        .setLinearHeadingInterpolation(Math.toRadians(PLACE_BUCKET[2]),
-            Math.toRadians(INTAKE_ONE[2]))
-        .build();
-
-    failedOne = robot.follower.pathBuilder()
-        .addBezierLine(
-            pointFromArr(INTAKE_ONE),
-            pointFromArr(INTAKE_TWO)
-        )
-        .setLinearHeadingInterpolation(Math.toRadians(INTAKE_ONE[2]), Math.toRadians(INTAKE_TWO[2]))
+        .setLinearHeadingInterpolation(Math.toRadians(PLACE_BUCKET[2]), Math.toRadians(INTAKE_ONE[2]))
         .build();
 
     placeOne = robot.follower.pathBuilder()
         .addBezierLine(
-            pointFromArr(INTAKE_TWO),
+            pointFromArr(INTAKE_ONE),
             pointFromArr(PLACE_BUCKET)
         )
-        .setLinearHeadingInterpolation(Math.toRadians(INTAKE_TWO[2]),
-            Math.toRadians(PLACE_BUCKET[2]))
+        .setLinearHeadingInterpolation(Math.toRadians(INTAKE_ONE[2]), Math.toRadians(PLACE_BUCKET[2]))
         .build();
 
-    placeOneAfter = robot.follower.pathBuilder()
-        .addBezierLine(
-            pointFromArr(new double[]{PLACE_BUCKET[0], PLACE_BUCKET[1]}),
-            pointFromArr(new double[]{PLACE_BUCKET[0] + 2, PLACE_BUCKET[1]})
-        )
-        .setLinearHeadingInterpolation(Math.toRadians(PLACE_BUCKET[2]),
-            Math.toRadians(PLACE_BUCKET[2] + TURN_ONE))
-        .build();
-
-    placeOneAfterAfter = robot.follower.pathBuilder()
-        .addBezierLine(
-            pointFromArr(new double[]{PLACE_BUCKET[0] + 2, PLACE_BUCKET[1]}),
-            pointFromArr(new double[]{PLACE_BUCKET[0], PLACE_BUCKET[1]})
-        )
-        .setLinearHeadingInterpolation(Math.toRadians(PLACE_BUCKET[2] + TURN_ONE),
-            Math.toRadians(PLACE_BUCKET[2]))
-        .build();
-
-    pickupTwo = robot.follower.pathBuilder()
+    intakeThree = robot.follower.pathBuilder()
         .addBezierLine(
             pointFromArr(PLACE_BUCKET),
-            pointFromArr(INTAKE_TWO)
-        )
-        .setLinearHeadingInterpolation(Math.toRadians(PLACE_BUCKET[2]),
-            Math.toRadians(INTAKE_TWO[2]))
-        .build();
-
-    failedTwo = robot.follower.pathBuilder()
-        .addBezierLine(
-            pointFromArr(INTAKE_TWO),
             pointFromArr(INTAKE_THREE)
         )
-        .setLinearHeadingInterpolation(Math.toRadians(INTAKE_TWO[2]),
-            Math.toRadians(INTAKE_THREE[2]))
-        .build();
-
-    placeTwo = robot.follower.pathBuilder()
-        .addBezierLine(
-            pointFromArr(INTAKE_TWO),
-            pointFromArr(PLACE_BUCKET_TWO)
-        )
-        .setLinearHeadingInterpolation(Math.toRadians(INTAKE_TWO[2]),
-            Math.toRadians(PLACE_BUCKET_TWO[2]))
-        .build();
-
-    pickupThree = robot.follower.pathBuilder()
-        .addBezierLine(
-            pointFromArr(PLACE_BUCKET_TWO),
-            pointFromArr(INTAKE_THREE)
-        )
-        .setLinearHeadingInterpolation(Math.toRadians(PLACE_BUCKET_TWO[2]),
-            Math.toRadians(INTAKE_THREE[2]))
-        .build();
-
-    failedThree = robot.follower.pathBuilder()
-        .addBezierLine(
-            pointFromArr(INTAKE_THREE),
-            pointFromArr(INTAKE_SUB)
-        )
-        .setLinearHeadingInterpolation(Math.toRadians(INTAKE_THREE[2]),
-            Math.toRadians(INTAKE_SUB[2]))
+        .setLinearHeadingInterpolation(Math.toRadians(PLACE_BUCKET[2]), Math.toRadians(INTAKE_THREE[2]))
         .build();
 
     placeThree = robot.follower.pathBuilder()
         .addBezierLine(
             pointFromArr(INTAKE_THREE),
-            pointFromArr(PLACE_BUCKET_TWO)
+            pointFromArr(PLACE_BUCKET)
         )
-        .setLinearHeadingInterpolation(Math.toRadians(INTAKE_THREE[2]),
-            Math.toRadians(PLACE_BUCKET_TWO[2]))
+        .setLinearHeadingInterpolation(Math.toRadians(INTAKE_THREE[2]), Math.toRadians(PLACE_BUCKET[2]))
         .build();
 
-    // TODO: should pickup movements back and forth from the sub be TANGENTIAL heading for speed?
-    pickupFour = robot.follower.pathBuilder()
+    failIntakeThree = robot.follower.pathBuilder()
         .addBezierCurve(
-            pointFromArr(PLACE_BUCKET_TWO),
+            pointFromArr(INTAKE_THREE),
             pointFromArr(BUCKET_INTAKE_SUB_CONTROL),
             pointFromArr(INTAKE_SUB)
         )
-        .setLinearHeadingInterpolation(Math.toRadians(PLACE_BUCKET_TWO[2]),
-            Math.toRadians(INTAKE_SUB[2]))
+        .setLinearHeadingInterpolation(Math.toRadians(INTAKE_THREE[2]), Math.toRadians(INTAKE_SUB[2]))
+        .build();
+
+    // TODO: ALL OF SUB MOVEMENT / INTAKE
+    // TODO: should pickup movements back and forth from the sub be TANGENTIAL heading for speed?
+    intakeFour = robot.follower.pathBuilder()
+        .addBezierCurve(
+            pointFromArr(PLACE_BUCKET),
+            pointFromArr(BUCKET_INTAKE_SUB_CONTROL),
+            pointFromArr(INTAKE_SUB)
+        )
+        .setLinearHeadingInterpolation(Math.toRadians(PLACE_BUCKET[2]), Math.toRadians(INTAKE_SUB[2]))
         .build();
 
     pickupSubMovementOne = robot.follower.pathBuilder()
@@ -217,7 +164,7 @@ public class BaseBucketAuton {
         .build();
 
     // TODO: could maybe also be tangential?
-    end = robot.follower.pathBuilder()
+    park = robot.follower.pathBuilder()
         .addBezierCurve(
             pointFromArr(PLACE_BUCKET),
             pointFromArr(BUCKET_INTAKE_SUB_CONTROL),
@@ -227,153 +174,168 @@ public class BaseBucketAuton {
         .build();
   }
 
-  public void setPathState(int pState) {
-    pathState = pState;
-    pathTimer.resetTimer();
-  }
-
   public void autonomousPathUpdate() {
     switch (pathState) {
 
       // MOVE TO SCORE PRELOAD
       case 0:
-        robot.follower.followPath(placePreLoad, 1, true);  //TODO: may need reduced power
-        robot.slides.setMode(RunMode.RUN_WITHOUT_ENCODER);
-        robot.horSlide.setMode(RunMode.RUN_WITHOUT_ENCODER);
+        robot.follower.followPath(placePreLoad, true);  //TODO: may not need hold end
+
         robot.slides.setTarget(VerticalSlides.UP);
-        robot.horSlide.setTarget(HSLIDE_1 / 3); // first raise
+        robot.horSlide.setTarget(HSLIDE_1 / 3);
+
         robot.claw.setBucket();
         setPathState(101);
         break;
 
       // SCORE PRELOAD
       case 101:
-        if (!robot.follower.isTurning() && robot.slides.atTarget(100)) {
-          placeTurn(TURN_ONE, true); // place preload turn to first pickup
+        if (!robot.follower.isBusy() && robot.slides.atTarget(100)) {
+          place(intakeOne);
+
           robot.intake.update(1, false, robot.getAllianceColor());
-          robot.follower.followPath(placeOneAfter);
+
+          robot.follower.followPath(intakeOne);
           setPathState(2);
         }
         break;
 
       // Check if 1 intaken
       case 2:
-        if (!robot.follower.isBusy() && !robot.intake.validSampleIn(robot.getAllianceColor()) && !(
-            pathTimer.getElapsedTimeSeconds() > INTAKE_OVERRIDE)) {
-          robot.intake.update(1, false, robot.getAllianceColor());
+        robot.intake.update(1, false, robot.getAllianceColor());
+
+        boolean validCollected = robot.intake.validSampleIn(robot.getAllianceColor());
+
+        if (!robot.follower.isBusy() && !validCollected) {
           robot.horSlide.setTarget(HSLIDE_1);// after turn put intake down spin and extend
         }
 
-        if (robot.intake.validSampleIn(robot.getAllianceColor())) {
-          telemetry.addData("correct color in", 1);
+        if (validCollected) {
           robot.intake.update(0, true, robot.getAllianceColor());
           robot.horSlide.setTarget(HorizontalSlides.TRANSFER_POS);
-          //robot.follower.turnToDegrees(315);
-          robot.follower.followPath(placeOneAfterAfter);
 
-          //robot.follower.turnDegrees(-TURN_ONE, true);
+          robot.follower.followPath(placeOne);
           setPathState(3);
         }
 
         if (pathTimer.getElapsedTimeSeconds() > INTAKE_OVERRIDE) { // if it misses first pickup
           robot.intake.update(-1, true, robot.getAllianceColor());
           robot.horSlide.setTarget(HSLIDE_1 / 2);
-          robot.follower.turnDegrees(TURN_TWO - TURN_ONE, true);
-          robot.intake.update(1, false, robot.getAllianceColor());
-          robot.horSlide.setTarget(HSLIDE_1);
-          setPathState(5);
+
+          robot.follower.followPath(placeOne);
+          setPathState(201);
+        }
+        break;
+
+      // FAILED FIRST PICKUP --> PICKUP SECOND
+      case 201:
+        if (!robot.follower.isBusy()) {
+          robot.follower.turnToDegrees(INTAKE_TWO_HEADING);
+          setPathState(5); //TODO: test
         }
         break;
 
       // TRANSFER INTAKE 1
       case 3:
+        if (robot.horSlide.atTarget()) {
+          setPathState(31);
+        }
+        break;
 
-        if (robot.horSlide.atTarget(10) && pathTimer.getElapsedTimeSeconds() > 1) {
+      case 31:
+        if (pathTimer.getElapsedTime() > 50) {
           robot.claw.clawClose();
           setPathState(32);
         }
         break;
 
       case 32:
-        if (pathTimer.getElapsedTimeSeconds() > .5) {
-          robot.slides.setTarget(VerticalSlides.UP + 100);
-
-          robot.intake.update(0, true, robot.getAllianceColor());
+        if (pathTimer.getElapsedTime() > 50) {
+          robot.slides.setTarget(VerticalSlides.UP);
           robot.horSlide.setTarget(HSLIDE_2 / 2);
+          setPathState(33);
+        }
+        break;
 
-          if (robot.slides.atTarget(30)) {
-            robot.claw.setBucket();
-            setPathState(4);
-          }
-
+      case 33:
+        // TODO: possible optimization: move arm earlier (needs tuning)
+        if (robot.slides.atTarget(MOVE_ARM_HEIGHT_OFFSET)) {
+          robot.claw.setBucket();
+          setPathState(4);
         }
         break;
 
       // SCORE 1
       case 4:
-        if (!robot.follower.isTurning() && robot.slides.atTarget()) {
-          robot.horSlide.setTarget(HSLIDE_2 / 2);
-          placeTurn(TURN_TWO, true);
+        if (robot.slides.atTarget()) {
+          placeTurn(INTAKE_TWO_HEADING);
           setPathState(5);
         }
         break;
 
       // INTAKE 2
       case 5:
-        if (!robot.intake.validSampleIn(robot.getAllianceColor()) && !(
-            pathTimer.getElapsedTimeSeconds() > INTAKE_OVERRIDE)) {
-          robot.horSlide.setTarget(HSLIDE_2);
-          robot.intake.update(1, false, robot.getAllianceColor());
-        }
-
-        if (!robot.follower.isTurning()) {
+        if (!robot.follower.isBusy()) {
           robot.intake.update(1, false, robot.getAllianceColor());
           robot.horSlide.setTarget(HSLIDE_2);
         }
 
-        if (robot.intake.validSampleIn(robot.getAllianceColor())) {
+        if (!robot.follower.isBusy() && robot.intake.validSampleIn(robot.getAllianceColor())) {
           robot.intake.update(0, true, robot.getAllianceColor());
           robot.horSlide.setTarget(HorizontalSlides.TRANSFER_POS);
-          robot.follower.turnDegrees(TURN_TWO, false);
+          robot.follower.turnToDegrees(PLACE_BUCKET[2]);
           setPathState(6);
         }
 
         if (pathTimer.getElapsedTimeSeconds() > INTAKE_OVERRIDE) { // if it fails second
           robot.intake.update(-1, true, robot.getAllianceColor());
-          robot.horSlide.setTarget(HSLIDE_1 - 400);
-          robot.follower.turnDegrees(TURN_THREE - TURN_TWO, true);
-          robot.intake.update(1, false, robot.getAllianceColor());
-          robot.horSlide.setTarget(HSLIDE_1);
+          robot.horSlide.setTarget(HSLIDE_2 / 2);
+          robot.follower.turnToDegrees(PLACE_BUCKET[2]);
+          setPathState(52);
+        }
+        break;
+
+      case 52:
+        if (!robot.follower.isBusy()) {
+          robot.follower.followPath(intakeThree);
           setPathState(8);
         }
         break;
 
       // TRANSFER 2
       case 6:
-        if (robot.horSlide.atTarget(10) && pathTimer.getElapsedTimeSeconds() > 1) {
+        if (robot.horSlide.atTarget()) {
+          setPathState(61);
+        }
+        break;
+
+      case 61:
+        if (pathTimer.getElapsedTime() > 50) {
           robot.claw.clawClose();
           setPathState(62);
         }
         break;
 
       case 62:
-        // TODO: need a wait 50 ms probably for transfer?
-        if (robot.slides.atTarget(100)) {
-          robot.slides.setTarget(VerticalSlides.UP + 100);
+        if (pathTimer.getElapsedTime() > 50) {
+          robot.slides.setTarget(VerticalSlides.UP);
           robot.horSlide.setTarget(HSLIDE_3 / 2);
-          if (robot.slides.atTarget(50)) {
-            robot.claw.setBucket();
-            setPathState(7);
-          }
-          robot.intake.update(0, true, robot.getAllianceColor());
+          setPathState(63);
+        }
+        break;
 
+      case 63:
+        // TODO: possible optimization: move arm earlier (needs tuning)
+        if (robot.slides.atTarget(MOVE_ARM_HEIGHT_OFFSET)) {
+          robot.claw.setBucket();
+          setPathState(7);
         }
         break;
 
       // SCORE 2
       case 7:
-        if (!robot.follower.isTurning() && robot.slides.atTarget()) {
-          placeTurn(TURN_THREE, true);
+        if (robot.slides.atTarget()) {
+          place(intakeThree);
           setPathState(8);
         }
         break;
@@ -383,47 +345,62 @@ public class BaseBucketAuton {
       case 8:
         robot.intake.update(1, false, robot.getAllianceColor());
 
-        if (!robot.follower.isTurning()) {
-          robot.intake.update(1, false, robot.getAllianceColor());
-          robot.horSlide.setTarget(HSLIDE_3);
+        validCollected = robot.intake.validSampleIn(robot.getAllianceColor());
+
+        if (!robot.follower.isBusy() && !validCollected) {
+          robot.horSlide.setTarget(HSLIDE_3); // after turn put intake down spin and extend
         }
-        if (!robot.follower.isTurning() && robot.intake.validSampleIn(robot.getAllianceColor())) {
+
+        if (validCollected) {
           robot.intake.update(0, true, robot.getAllianceColor());
           robot.horSlide.setTarget(HorizontalSlides.TRANSFER_POS);
-          robot.follower.turnDegrees(TURN_THREE, false);
+
+          robot.follower.followPath(placeThree);
           setPathState(9);
         }
 
-        if (pathTimer.getElapsedTimeSeconds() > INTAKE_OVERRIDE) { // if it fails 3rd
+        if (pathTimer.getElapsedTimeSeconds() > INTAKE_OVERRIDE) { // if it misses first pickup
           robot.intake.update(-1, true, robot.getAllianceColor());
           robot.horSlide.setTarget(HorizontalSlides.TRANSFER_POS);
-          robot.follower.followPath(failedThree);
-          setPathState(11);
 
+          robot.follower.followPath(failIntakeThree);
+          setPathState(11);
         }
         break;
 
       // TRANSFER 3
       case 9:
-        if (robot.horSlide.atTarget(10) && pathTimer.getElapsedTimeSeconds() > 1) {
+        if (robot.horSlide.atTarget()) {
+          setPathState(91);
+        }
+        break;
+
+      case 91:
+        if (pathTimer.getElapsedTime() > 50) {
           robot.claw.clawClose();
           setPathState(92);
         }
         break;
 
       case 92:
-        robot.slides.setTarget(VerticalSlides.UP + 100);
-        if (robot.slides.atTarget(50)) {
+        if (pathTimer.getElapsedTime() > 50) {
+          robot.slides.setTarget(VerticalSlides.UP);
+          robot.horSlide.setTarget(HorizontalSlides.TRANSFER_POS);
+          setPathState(93);
+        }
+        break;
+
+      case 93:
+        // TODO: possible optimization: move arm earlier (needs tuning)
+        if (robot.slides.atTarget(MOVE_ARM_HEIGHT_OFFSET)) {
           robot.claw.setBucket();
           setPathState(10);
         }
-
         break;
 
-      // SCORE 3
       case 10:
-        if (!robot.follower.isBusy() && robot.slides.atTarget()) {
-          place(pickupFour);
+        if (robot.slides.atTarget()) {
+          place(intakeFour);
           setPathState(11);
         }
         break;
@@ -527,7 +504,7 @@ public class BaseBucketAuton {
       // SCORE SUB
       case 13:
         if (!robot.follower.isBusy() && robot.slides.atTarget()) {
-          place(end);
+          place(park);
           robot.claw.setTransfer();
           setPathState(14);
         }
@@ -548,22 +525,24 @@ public class BaseBucketAuton {
   private void place(PathChain nextPath) {
     robot.waitTime(600);
     robot.claw.clawOpen();
-    robot.waitTime(500);
+    robot.waitTime(400);
 
-    robot.follower.followPath(nextPath, true);
-    robot.slides.setTarget(VerticalSlides.TRANSFER);
+    robot.follower.followPath(nextPath);
     robot.claw.setTransfer();
+    // TODO may need wait here for consistency (100ms?)
+    robot.slides.setTarget(VerticalSlides.TRANSFER);
   }
 
   // TODO: optimize wait times here
-  private void placeTurn(double degrees, boolean left) {
-    robot.waitTime(600);
+  private void placeTurn(double degrees) {
+    robot.waitTime(600); // wait for bot to steady
     robot.claw.clawOpen();
-    robot.waitTime(300);
+    robot.waitTime(400); // wait for block to drop
 
-    robot.follower.turn(Math.toRadians(degrees), left);
-    robot.slides.setTarget(VerticalSlides.TRANSFER);
+    robot.follower.turnToDegrees(degrees);
     robot.claw.setTransfer();
+    // TODO may need wait here for consistency (100ms?)
+    robot.slides.setTarget(VerticalSlides.TRANSFER);
   }
 
   public void run() {
@@ -580,6 +559,9 @@ public class BaseBucketAuton {
     }
 
     // START
+    robot.slides.setMode(RunMode.RUN_WITHOUT_ENCODER);
+    robot.horSlide.setMode(RunMode.RUN_WITHOUT_ENCODER);
+
     robot.follower.setStartingPose(poseFromArr(START));
     globalTimer.resetTimer();
 
@@ -591,8 +573,6 @@ public class BaseBucketAuton {
 
       telemetry.addData("Path State", pathState);
       telemetry.addData("Position", robot.follower.getPose().toString());
-      telemetry.addData("horslide pos", robot.horSlide.position);
-      telemetry.addData("horslide target", robot.horSlide.getTarget());
 
       telemetry.update();
 

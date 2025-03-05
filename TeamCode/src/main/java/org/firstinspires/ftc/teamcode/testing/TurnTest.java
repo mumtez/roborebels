@@ -77,7 +77,7 @@ public class TurnTest extends LinearOpMode {
         curHeading = robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
       } else {
         robot.follower.update();
-        curHeading = robot.follower.getHeadingOffset();
+        curHeading = robot.follower.getHeadingOffset(); // TODO: could be wrong
       }
       double headingError = TARGET_DEGREES - curHeading;
 
