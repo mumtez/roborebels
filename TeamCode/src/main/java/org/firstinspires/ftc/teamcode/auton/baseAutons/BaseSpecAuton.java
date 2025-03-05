@@ -168,7 +168,7 @@ public class BaseSpecAuton {
     robot.claw.setPlaceAuto();
 
     robot.follower.followPath(place);
-    while (robot.follower.isBusy() && (opMode.opModeIsActive() || !robot.slides.atTarget())) {
+    while (opMode.opModeIsActive() && (robot.follower.isBusy() || !robot.slides.atTarget())) {
       robot.follower.update();
       robot.slides.updatePIDControl();
       robot.horSlide.updatePosition();
@@ -177,7 +177,7 @@ public class BaseSpecAuton {
 
     robot.slides.setTarget(VerticalSlides.TRANSFER);
 
-    while ((opMode.opModeIsActive() || !robot.slides.atTarget())) {
+    while (opMode.opModeIsActive() && !robot.slides.atTarget()) {
       robot.follower.update();
       robot.slides.updatePIDControl();
       robot.horSlide.updatePosition();
