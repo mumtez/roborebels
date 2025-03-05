@@ -54,6 +54,7 @@ public class BaseBucketAuton {
       park;
 
   private int pathState = 0;
+
   private Timer pathTimer;
   private Timer globalTimer;
 
@@ -175,6 +176,8 @@ public class BaseBucketAuton {
   }
 
   public void autonomousPathUpdate() {
+    boolean validCollected;
+
     switch (pathState) {
 
       // MOVE TO SCORE PRELOAD
@@ -204,7 +207,7 @@ public class BaseBucketAuton {
       case 2:
         robot.intake.update(1, false, robot.getAllianceColor());
 
-        boolean validCollected = robot.intake.validSampleIn(robot.getAllianceColor());
+        validCollected = robot.intake.validSampleIn(robot.getAllianceColor());
 
         if (!robot.follower.isBusy() && !validCollected) {
           robot.horSlide.setTarget(HSLIDE_1);// after turn put intake down spin and extend
@@ -275,12 +278,15 @@ public class BaseBucketAuton {
 
       // INTAKE 2
       case 5:
-        if (!robot.follower.isBusy()) {
-          robot.intake.update(1, false, robot.getAllianceColor());
+        robot.intake.update(1, false, robot.getAllianceColor());
+
+        validCollected = robot.intake.validSampleIn(robot.getAllianceColor());
+
+        if (!robot.follower.isBusy() && !validCollected) {
           robot.horSlide.setTarget(HSLIDE_2);
         }
 
-        if (!robot.follower.isBusy() && robot.intake.validSampleIn(robot.getAllianceColor())) {
+        if (!robot.follower.isBusy() && validCollected) {
           robot.intake.update(0, true, robot.getAllianceColor());
           robot.horSlide.setTarget(HorizontalSlides.TRANSFER_POS);
           robot.follower.turnToDegrees(PLACE_BUCKET[2]);
@@ -351,7 +357,7 @@ public class BaseBucketAuton {
           robot.horSlide.setTarget(HSLIDE_3); // after turn put intake down spin and extend
         }
 
-        if (validCollected) {
+        if (!robot.follower.isBusy() && validCollected) {
           robot.intake.update(0, true, robot.getAllianceColor());
           robot.horSlide.setTarget(HorizontalSlides.TRANSFER_POS);
 
@@ -584,7 +590,4 @@ public class BaseBucketAuton {
     }
   }
 
-
 }
-
-
