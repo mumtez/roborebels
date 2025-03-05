@@ -30,12 +30,12 @@ public class BaseBucketAuton {
   // MAIN POINTS
 
   public static double[] START = {9, 105, 270};
-  public static double[] PLACE_BUCKET = {17, 125, 315};
-  public static double[] INTAKE_ONE = {19, 125, 355};
+  public static double[] PLACE_BUCKET = {17, 127, 315};
+  public static double[] INTAKE_ONE = {19, 127, 355};
 
   public static double INTAKE_TWO_HEADING = 55;
 
-  public static double[] INTAKE_THREE = {38, 120, 50};
+  public static double[] INTAKE_THREE = {38, 120, 90};
   public static double[] INTAKE_SUB = {60, 98, 270};
   public static double[] INTAKE_SUB_SECONDARY = {63, 101, 280};
   public static double[] END = {60, 98, 90};
@@ -99,7 +99,8 @@ public class BaseBucketAuton {
             pointFromArr(PLACE_BUCKET),
             pointFromArr(INTAKE_ONE)
         )
-        .setLinearHeadingInterpolation(Math.toRadians(PLACE_BUCKET[2]), Math.toRadians(INTAKE_ONE[2]))
+        .setLinearHeadingInterpolation(Math.toRadians(PLACE_BUCKET[2]),
+            Math.toRadians(INTAKE_ONE[2]))
         .build();
 
     placeOne = robot.follower.pathBuilder()
@@ -107,7 +108,8 @@ public class BaseBucketAuton {
             pointFromArr(INTAKE_ONE),
             pointFromArr(PLACE_BUCKET)
         )
-        .setLinearHeadingInterpolation(Math.toRadians(INTAKE_ONE[2]), Math.toRadians(PLACE_BUCKET[2]))
+        .setLinearHeadingInterpolation(Math.toRadians(INTAKE_ONE[2]),
+            Math.toRadians(PLACE_BUCKET[2]))
         .build();
 
     intakeThree = robot.follower.pathBuilder()
@@ -115,7 +117,8 @@ public class BaseBucketAuton {
             pointFromArr(PLACE_BUCKET),
             pointFromArr(INTAKE_THREE)
         )
-        .setLinearHeadingInterpolation(Math.toRadians(PLACE_BUCKET[2]), Math.toRadians(INTAKE_THREE[2]))
+        .setLinearHeadingInterpolation(Math.toRadians(PLACE_BUCKET[2]),
+            Math.toRadians(INTAKE_THREE[2]))
         .build();
 
     placeThree = robot.follower.pathBuilder()
@@ -123,7 +126,8 @@ public class BaseBucketAuton {
             pointFromArr(INTAKE_THREE),
             pointFromArr(PLACE_BUCKET)
         )
-        .setLinearHeadingInterpolation(Math.toRadians(INTAKE_THREE[2]), Math.toRadians(PLACE_BUCKET[2]))
+        .setLinearHeadingInterpolation(Math.toRadians(INTAKE_THREE[2]),
+            Math.toRadians(PLACE_BUCKET[2]))
         .build();
 
     failIntakeThree = robot.follower.pathBuilder()
@@ -132,7 +136,8 @@ public class BaseBucketAuton {
             pointFromArr(BUCKET_INTAKE_SUB_CONTROL),
             pointFromArr(INTAKE_SUB)
         )
-        .setLinearHeadingInterpolation(Math.toRadians(INTAKE_THREE[2]), Math.toRadians(INTAKE_SUB[2]))
+        .setLinearHeadingInterpolation(Math.toRadians(INTAKE_THREE[2]),
+            Math.toRadians(INTAKE_SUB[2]))
         .build();
 
     // TODO: ALL OF SUB MOVEMENT / INTAKE
@@ -143,7 +148,8 @@ public class BaseBucketAuton {
             pointFromArr(BUCKET_INTAKE_SUB_CONTROL),
             pointFromArr(INTAKE_SUB)
         )
-        .setLinearHeadingInterpolation(Math.toRadians(PLACE_BUCKET[2]), Math.toRadians(INTAKE_SUB[2]))
+        .setLinearHeadingInterpolation(Math.toRadians(PLACE_BUCKET[2]),
+            Math.toRadians(INTAKE_SUB[2]))
         .build();
 
     pickupSubMovementOne = robot.follower.pathBuilder()
