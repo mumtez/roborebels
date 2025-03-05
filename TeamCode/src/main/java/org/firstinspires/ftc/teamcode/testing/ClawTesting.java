@@ -59,7 +59,7 @@ public class ClawTesting extends LinearOpMode {
         robot.slides.setTarget(VerticalSlides.TRANSFER);
       }
       if (gamepad1.dpad_up) {
-        robot.slides.setTarget(VerticalSlides.UP);
+        robot.slides.setTarget(VerticalSlides.UPAUTO);
       }
 
       if (gamepad2.square) {
