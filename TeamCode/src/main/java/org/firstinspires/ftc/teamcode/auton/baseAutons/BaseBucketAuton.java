@@ -509,7 +509,13 @@ public class BaseBucketAuton {
 
       case 12: // check hgere
         if (pathTimer.getElapsedTimeSeconds() > SUB_TIMER) {
-          robot.intake.update(1, true, robot.getAllianceColor());
+          if (robot.intake.validSampleIn(robot.getAllianceColor())) {
+            robot.intake.update(0, true, robot.getAllianceColor());
+            robot.horSlide.setTarget(HorizontalSlides.TRANSFER_POS);
+          } else {
+            robot.intake.update(1, true, robot.getAllianceColor());
+            robot.horSlide.setTarget(HorizontalSlides.TRANSFER_POS);
+          }
         }
         if (robot.horSlide.atTarget()) {
           setPathState(124);
