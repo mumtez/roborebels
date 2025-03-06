@@ -158,7 +158,7 @@ public class BaseSpecAuton {
   }
 
   public void pickupPlace(PathChain place, PathChain postPlace) {
-    robot.waitTime(100);
+    robot.waitTime(1000);
     robot.claw.clawClose();
     robot.waitTime(50);
     robot.slides.setTarget(VerticalSlides.BAR_PLACE);
