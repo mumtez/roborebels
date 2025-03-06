@@ -15,14 +15,14 @@ public class VerticalSlides {
 
   public static int TRANSFER = 0;
 
-  public static int BAR_PLACE = 220;
+  public static int BAR_PLACE = 110;
 
   // TODO: tune
-  public static int UPAUTO = 2200;
+  public static int UP_AUTO = 1100;
 
-  public static int UP = 2300;
+  public static int UP = 1150;
 
-  public static int LOWER_BUCKET = 750;
+  public static int LOWER_BUCKET = 325;
 
   public static double kp = 0.01;
   public static double ki = 0;
@@ -99,11 +99,11 @@ public class VerticalSlides {
     return Math.abs(this.position - pos) < threshold;
   }
 
-  public void updatePIDControl() {
+  public double updatePIDControl() {
     this.updatePosition();
     if (this.position < 10 && this.targetPos < 10) {
       this.setPower(0);
-      return;
+      return 0;
     }
 
     double error = this.targetPos - this.position;
@@ -118,6 +118,7 @@ public class VerticalSlides {
     timer.reset();
 
     this.setPower(pow);
+    return pow;
   }
 
 }

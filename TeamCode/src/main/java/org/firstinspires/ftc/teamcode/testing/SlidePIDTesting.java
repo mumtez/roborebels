@@ -7,12 +7,13 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor.RunMode;
 import org.firstinspires.ftc.teamcode.NewRobot;
+import org.firstinspires.ftc.teamcode.subsystems.VerticalSlides;
 
 @Config
 @TeleOp(name = "SLIDE PID TESTING", group = "TESTING")
 public class SlidePIDTesting extends LinearOpMode {
 
-  public static int TARGET = 1000;
+  public static int TARGET = VerticalSlides.UP;
 
   @Override
   public void runOpMode() throws InterruptedException {
@@ -30,10 +31,11 @@ public class SlidePIDTesting extends LinearOpMode {
         robot.slides.setTarget(TARGET);
       }
 
-      robot.slides.updatePIDControl();
+      double pow = robot.slides.updatePIDControl();
 
       telemetry.addData("TARGET", TARGET);
       telemetry.addData("REFERENCE", robot.slides.position);
+      telemetry.addData("POWER", pow);
       telemetry.update();
     }
 
