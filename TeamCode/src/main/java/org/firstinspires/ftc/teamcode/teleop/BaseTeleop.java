@@ -151,7 +151,6 @@ public class BaseTeleop {
         // If claw closed for 500ms, move to placement pos
         if (stateTimer.milliseconds() > 500) {
           robot.claw.setPlace();
-          robot.slides.setTarget(VerticalSlides.TRANSFER);
           state = ModeState.SPEC_PRE_CLIP;
         }
         break;
@@ -163,7 +162,6 @@ public class BaseTeleop {
           state = ModeState.SPEC_CLIP;
         }
         if (currentGamepad2.square) {
-          robot.slides.setTarget(VerticalSlides.TRANSFER);
           robot.claw.setWall();
           state = ModeState.SPEC_WALL;
         }
@@ -171,6 +169,7 @@ public class BaseTeleop {
 
       // CIRCLE --> PRE-CLIP | SQUARE --> OPEN CLAW
       case SPEC_CLIP:
+        robot.slides.setTarget(VerticalSlides.BAR_PLACE);
         if (currentGamepad2.square) {
           robot.claw.clawOpen();
           state = ModeState.SPEC_POST_CLIP;
@@ -179,9 +178,11 @@ public class BaseTeleop {
         break;
 
       case SPEC_POST_CLIP:
-        if (stateTimer.milliseconds() > 500) {
+        if (stateTimer.milliseconds() > 100) {
           robot.slides.setTarget(VerticalSlides.TRANSFER);
-          robot.claw.setWall();
+          if (robot.slides.atTarget()){
+            robot.claw.setWall();
+          }
           state = ModeState.SPEC_WALL;
         }
         break;

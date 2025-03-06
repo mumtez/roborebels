@@ -40,7 +40,7 @@ public class BaseSpecAuton {
   public static double[] CONTROL_PICKUP = {32, 30};
 
 
-  private int pathState = 0;
+  private int pathState = 1000;
   private Timer pathTimer;
 
   final NewRobot robot;
@@ -49,10 +49,7 @@ public class BaseSpecAuton {
 
   PathChain placePreLoad,
       driveOne, pushOne,
-      driveTwo, pushTwo,
-      driveThree, pushThree,
-      pickupFirst, pickup, place,
-      park;
+      pickupFirst, pickup, place;
 
 
   public BaseSpecAuton(LinearOpMode opMode, NewRobot robot) {
@@ -79,8 +76,9 @@ public class BaseSpecAuton {
         .setLinearHeadingInterpolation(Math.toRadians(START[2]), Math.toRadians(PLACE_SPEC[2]))
         .build();
     driveOne = robot.follower.pathBuilder()
-        .addBezierLine(
+        .addBezierCurve(
             pointFromArr(PLACE_SPEC),
+                pointFromArr(CONTROL_DRIVE_ONE),
             pointFromArr(DRIVE_ONE)
         )
         .setLinearHeadingInterpolation(Math.toRadians(PLACE_SPEC[2]),
