@@ -35,7 +35,7 @@ public class Intake {
   public static double DIST_THRESHOLD_CM = 2;
 
   private final DcMotor intake;
-  public final ServoImplEx rotate;//, hSlide;
+  public final ServoImplEx rotate;
 
   public final NormalizedColorSensor colorSensor;
   public final Servo rgb;
@@ -68,10 +68,7 @@ public class Intake {
 
     rotate = (ServoImplEx) hardwareMap.servo.get("flip");
     rotate.setDirection(Direction.REVERSE);
-
-    //hSlide = (ServoImplEx) hardwareMap.servo.get("so");
-    //hSlide.setDirection(Direction.FORWARD);
-
+ 
     colorSensor = hardwareMap.get(NormalizedColorSensor.class, "ins");
     colorSensor.setGain(COLOR_GAIN);
     if (colorSensor instanceof SwitchableLight) {
@@ -82,7 +79,6 @@ public class Intake {
     rgb = hardwareMap.servo.get("rgb");
     rgb.setPosition(0);
   }
-
 
   public void senseColor() {
     this.colors = colorSensor.getNormalizedColors();
@@ -102,10 +98,6 @@ public class Intake {
 
   public void rotateDown() {
     this.rotate.setPosition(INTAKE_DOWN);
-  }
-
-  public SampleColor getSampleColor() {
-    return sampleColor;
   }
 
   public boolean validSampleIn(AllianceColor allianceColor) {
@@ -146,6 +138,7 @@ public class Intake {
             manualControl(power, flat);
           }
           break;
+
         case BLUE:
           this.rgb.setPosition(0.63);
           if (allianceColor == AllianceColor.RED) {
@@ -154,10 +147,12 @@ public class Intake {
             manualControl(power, flat);
           }
           break;
+
         case YELLOW:
           this.rgb.setPosition(0.388);
           manualControl(power, flat);
           break;
+
         case NONE:
           this.rgb.setPosition(0);
           manualControl(power, flat);

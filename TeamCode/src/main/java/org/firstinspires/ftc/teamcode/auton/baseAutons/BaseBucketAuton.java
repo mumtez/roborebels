@@ -24,20 +24,12 @@ public class BaseBucketAuton {
   public static double SUB_TIMER = 0.1;
   public static double INTAKE_OVERRIDE = 4;
 
-  public static double TRANSFER_DELAY = 0.8;
-  public static double TRANSFER_DELAY_2 = TRANSFER_DELAY + 0.4;
-
   // MAIN POINTS
 
   public static double[] START = {9, 105, 270};
   public static double[] PLACE_BUCKET = {16, 128, 315};
   public static double[] INTAKE_ONE = {19, 125, 355};
-
   public static double[] INTAKE_TWO = {19, 129, 360};
-
-
-  public static double INTAKE_TWO_HEADING = 55;
-
   public static double[] INTAKE_THREE = {28, 125, 50};
   public static double[] INTAKE_SUB = {65, 97, 270};
   public static double[] INTAKE_SUB_SECONDARY = {65, 103, 270};
@@ -97,6 +89,7 @@ public class BaseBucketAuton {
             pointFromArr(PLACE_BUCKET)
         )
         .setLinearHeadingInterpolation(Math.toRadians(START[2]), Math.toRadians(PLACE_BUCKET[2]))
+        .setPathEndTimeoutConstraint(500) // TODO: tune lower?
         .build();
 
     intakeOne = robot.follower.pathBuilder()
@@ -205,8 +198,8 @@ public class BaseBucketAuton {
   }
 
   public void autonomousPathUpdate() {
-    boolean validCollected = false;
-    boolean validCollected2 = false;
+    boolean validCollected;
+    boolean validCollected2;
 
     switch (pathState) {
 
@@ -511,7 +504,7 @@ public class BaseBucketAuton {
         if (pathTimer.getElapsedTimeSeconds() > SUB_TIMER) {
           if (robot.intake.validSampleIn(robot.getAllianceColor())) {
             robot.intake.update(0, true, robot.getAllianceColor());
-            if (robot.horSlide.atTarget() ) {
+            if (robot.horSlide.atTarget()) {
               setPathState(124);
             }
           } else {
@@ -523,15 +516,13 @@ public class BaseBucketAuton {
 
       case 124:
         if (pathTimer.getElapsedTime() > 50) {
-          robot.intake.update(0,false,robot.getAllianceColor());
+          robot.intake.update(0, false, robot.getAllianceColor());
           robot.claw.clawClose();
           setPathState(122);
         }
         break;
 
       case 122:
-        // TODO: if final move is too fast for slides to go up, should instead make it slightly slower bc raising
-        //  slides after move takes more time than slowing the move and raising simul
         if (pathTimer.getElapsedTime() > 50) {
           robot.slides.setTarget(VerticalSlides.UPAUTO);
           setPathState(123);
