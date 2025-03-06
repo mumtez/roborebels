@@ -511,15 +511,14 @@ public class BaseBucketAuton {
         if (pathTimer.getElapsedTimeSeconds() > SUB_TIMER) {
           if (robot.intake.validSampleIn(robot.getAllianceColor())) {
             robot.intake.update(0, true, robot.getAllianceColor());
-            robot.horSlide.setTarget(HorizontalSlides.TRANSFER_POS);
+            if (robot.horSlide.atTarget() ) {
+              setPathState(124);
+            }
           } else {
             robot.intake.update(1, true, robot.getAllianceColor());
-            robot.horSlide.setTarget(HorizontalSlides.TRANSFER_POS);
           }
         }
-        if (robot.horSlide.atTarget()) {
-          setPathState(124);
-        }
+
         break;
 
       case 124:
