@@ -25,8 +25,8 @@ public class Intake {
     RED, BLUE, YELLOW, NONE
   }
 
-  public static double INTAKE_DOWN = 0.5;
-  public static double INTAKE_FLAT = 0.29;
+  public static double INTAKE_DOWN = 0.42;
+  public static double INTAKE_FLAT = 0.18;
 
   public static float COLOR_GAIN = 2;
   public static double RED_THRESHOLD = 0.02;
@@ -68,7 +68,7 @@ public class Intake {
 
     rotate = (ServoImplEx) hardwareMap.servo.get("flip");
     rotate.setDirection(Direction.REVERSE);
- 
+
     colorSensor = hardwareMap.get(NormalizedColorSensor.class, "ins");
     colorSensor.setGain(COLOR_GAIN);
     if (colorSensor instanceof SwitchableLight) {

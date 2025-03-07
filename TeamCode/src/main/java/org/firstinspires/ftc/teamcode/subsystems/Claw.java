@@ -28,11 +28,8 @@ public class Claw {
   public static double upArmTransfer = 0.19;
   public static double upArmInit = 0.19;
 
-  public static double upArmUnderTele = 0.26;
 
-//0.9
-
-  public static double downArmPlaceTeleOP = 0.73;
+  public static double downArmPlaceTeleOP = 0.71;
 
   public static double downArmPlaceAuto = 0.98;
 
@@ -40,15 +37,15 @@ public class Claw {
   public static double downArmWallTeleOP = 0.99;
 
   public static double downArmWallAuto = 0.48;
+
+  public static double downArmSpecInit = 0.7;
   public static double downArmBucket = 0.95;
   public static double downArmTransfer = 0.12;
   public static double downArmInit = 0.12;
 
-  public static double downArmUnderTele = 0.73;
 
-
-  public static double wristDefault = 0.88;
-  public static double wristPlace = 0.88;
+  public static double wristDefault = 0.89;
+  public static double wristPlace = 0.89;
 
   public static double wristPlaceAuto = 0.33;
 
@@ -99,6 +96,12 @@ public class Claw {
     clawDownArm.setPosition(downArmWallAuto);
     clawUpArm.setPosition(upArmWallAuto);
     wrist.setPosition(wristDefault);
+  }
+
+  public void setInitSpec() {
+    clawDownArm.setPosition(downArmSpecInit);
+    clawUpArm.setPosition(upArmWallAuto);
+    wrist.setPosition(wristPlaceAuto);
   }
 
 

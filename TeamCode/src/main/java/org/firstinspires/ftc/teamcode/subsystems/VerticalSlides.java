@@ -15,7 +15,7 @@ public class VerticalSlides {
 
   public static int TRANSFER = 0;
 
-  public static int BAR_PLACE = 110;
+  public static int BAR_PLACE = 450;
 
   // TODO: tune
   public static int UP_AUTO = 1100;
@@ -47,8 +47,8 @@ public class VerticalSlides {
 
     slideLeft = hardwareMap.dcMotor.get("lu");
     slideRight = hardwareMap.dcMotor.get("ru");
-    slideLeft.setDirection(Direction.FORWARD);
-    slideRight.setDirection(Direction.REVERSE);
+    slideLeft.setDirection(Direction.REVERSE);
+    slideRight.setDirection(Direction.FORWARD);
     slideLeft.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
     slideRight.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
     slideLeft.setMode(RunMode.RUN_WITHOUT_ENCODER);
