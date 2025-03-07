@@ -223,7 +223,7 @@ public class BaseBucketAuton {
 
           robot.intake.update(1, false, robot.getAllianceColor());
 
-          robot.follower.followPath(intakeOne);
+          robot.follower.followPath(intakeOne);  //TODO: doesn't place already do this?
           setPathState(2);
         }
         break;
@@ -440,10 +440,10 @@ public class BaseBucketAuton {
       // INTAKE SUBMERSIBLE
       case 11:
         robot.intake.update(0, true, robot.getAllianceColor());
-        robot.horSlide.setTarget(HorizontalSlides.TRANSFER_POS);
+        robot.horSlide.setTarget(HorizontalSlides.OUT_POS / 2);
+
         if (!robot.follower.isBusy()) {
           robot.intake.update(1, true, robot.getAllianceColor());
-          robot.horSlide.setTarget(HorizontalSlides.OUT_POS / 2);
           setPathState(111);
         }
         break;
@@ -541,11 +541,122 @@ public class BaseBucketAuton {
       // SCORE SUB
       case 13:
         if (!robot.follower.isBusy() && robot.slides.atTarget()) {
+          place(intakeFour);
+          robot.claw.setTransfer();
+          setPathState(211);
+        }
+        break;
+
+      // INTAKE SUBMERSIBLE
+      case 211:
+        robot.intake.update(0, true, robot.getAllianceColor());
+        robot.horSlide.setTarget(HorizontalSlides.OUT_POS / 2);
+
+        if (!robot.follower.isBusy()) {
+          robot.intake.update(1, true, robot.getAllianceColor());
+          setPathState(2111);
+        }
+        break;
+
+      case 2111:
+        if (pathTimer.getElapsedTimeSeconds() > SUB_TIMER) {
+          robot.intake.update(1, false, robot.getAllianceColor());
+          robot.horSlide.setTarget(HorizontalSlides.OUT_POS);
+        }
+        if (robot.intake.validSampleIn(robot.getAllianceColor())) {
+          robot.intake.update(-1, true, robot.getAllianceColor());
+          robot.horSlide.setTarget(HorizontalSlides.TRANSFER_POS);
+          Pose current = robot.follower.getPose();
+          robot.follower.followPath(
+                  robot.follower.pathBuilder()
+                          .addBezierCurve(
+                                  new Point(current),
+                                  pointFromArr(BUCKET_INTAKE_SUB_CONTROL),
+                                  pointFromArr(PLACE_BUCKET)
+                          )
+                          .setLinearHeadingInterpolation(current.getHeading(),
+                                  Math.toRadians(PLACE_BUCKET[2]))
+                          .build());
+          setPathState(212);
+        }
+        if (!robot.follower.isBusy() && robot.horSlide.atTarget()) {
+          robot.follower.followPath(pickupSubMovementOne, true);
+          setPathState(2112);
+        }
+        break;
+
+      case 2112:
+        if (pathTimer.getElapsedTimeSeconds() > SUB_TIMER) {
+          robot.intake.update(1, false, robot.getAllianceColor());
+          robot.horSlide.setTarget(HorizontalSlides.OUT_POS);
+        }
+        if (robot.intake.validSampleIn(robot.getAllianceColor())) {
+          robot.intake.update(-1, true, robot.getAllianceColor());
+          robot.horSlide.setTarget(HorizontalSlides.TRANSFER_POS);
+          Pose current = robot.follower.getPose();
+          robot.follower.followPath(
+                  robot.follower.pathBuilder()
+                          .addBezierCurve(
+                                  new Point(current),
+                                  pointFromArr(BUCKET_INTAKE_SUB_CONTROL),
+                                  pointFromArr(PLACE_BUCKET)
+                          )
+                          .setLinearHeadingInterpolation(current.getHeading(),
+                                  Math.toRadians(PLACE_BUCKET[2]))
+                          .build(), true);
+          setPathState(212);
+        }
+        if (!robot.follower.isBusy()) {
+          robot.follower.followPath(pickupSubMovementTwo, true);
+          setPathState(2111);
+        }
+        break;
+
+      case 212: // check hgere
+        if (pathTimer.getElapsedTimeSeconds() > SUB_TIMER) {
+          if (robot.intake.validSampleIn(robot.getAllianceColor())) {
+            robot.intake.update(0, true, robot.getAllianceColor());
+            if (robot.horSlide.atTarget()) {
+              setPathState(2124);
+            }
+          } else {
+            robot.intake.update(1, true, robot.getAllianceColor());
+          }
+        }
+
+        break;
+
+      case 2124:
+        if (pathTimer.getElapsedTime() > 50) {
+          robot.claw.clawClose();
+          setPathState(2122);
+        }
+        break;
+
+      case 2122:
+        if (pathTimer.getElapsedTime() > 50) {
+          robot.slides.setTarget(VerticalSlides.UP_AUTO);
+          setPathState(2123);
+        }
+
+        break;
+
+      case 2123:
+        if (robot.slides.atTarget(80)) {
+          robot.claw.setBucket();
+          setPathState(213);
+        }
+        break;
+
+      // SCORE SUB
+      case 213:
+        if (!robot.follower.isBusy() && robot.slides.atTarget()) {
           place(park);
           robot.claw.setTransfer();
           setPathState(14);
         }
         break;
+
 
       // LV1 ASCENT
       case 14:

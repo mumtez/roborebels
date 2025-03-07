@@ -16,9 +16,9 @@ import org.firstinspires.ftc.teamcode.subsystems.VerticalSlides;
 public class BaseSpecAuton {
 
   public static double[] START = {10, 63, 180};
-  public static double[] PLACE_SPEC = {34, 67, 180};
+  public static double[] PLACE_SPEC = {36, 67, 180};
 
-  public static double[] PLACE_SPEC_FIRST = {28, 69, 180};
+  public static double[] PLACE_SPEC_FIRST = {32, 69, 180};
 
   public static double[] DRIVE_ONE = {53, 34, 180};
 
@@ -26,11 +26,11 @@ public class BaseSpecAuton {
   public static double[] PUSH_ONE = {25, 22, 180};
 
   public static double[] CONTROL_PUSH_ONE = {61, 25};
-  public static double[] DRIVE_TWO = {50, 23, 180};
+  public static double[] DRIVE_TWO = {50, 26, 180};
 
-  public static double[] PUSH_TWO = {25, 23, 180};
+  public static double[] PUSH_TWO = {25, 16, 180};
 
-  public static double[] CONTROL_PUSH_TWO = {61, 10};
+  public static double[] CONTROL_PUSH_TWO = {61, 8};
 
 
   public static double[] DRIVE_THREE = {50, 13, 180};
@@ -187,7 +187,7 @@ public class BaseSpecAuton {
       case 1000:
         robot.horSlide.setTarget(HorizontalSlides.TRANSFER_POS);
         robot.slides.setTarget(VerticalSlides.TRANSFER);
-        robot.intake.update(0, false, robot.getAllianceColor());
+        robot.intake.update(-1, false, robot.getAllianceColor());
 
         robot.slides.setTarget(VerticalSlides.BAR_PLACE);
         robot.claw.setPlaceAuto();
