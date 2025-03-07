@@ -469,7 +469,7 @@ public class BaseBucketAuton {
                   .build());
           setPathState(12);
         }
-        if (!robot.follower.isBusy()) {
+        if (!robot.follower.isBusy() && robot.horSlide.atTarget()) {
           robot.follower.followPath(pickupSubMovementOne, true);
           setPathState(112);
         }
@@ -493,7 +493,7 @@ public class BaseBucketAuton {
                   )
                   .setLinearHeadingInterpolation(current.getHeading(),
                       Math.toRadians(PLACE_BUCKET[2]))
-                  .build());
+                  .build(), true);
           setPathState(12);
         }
         if (!robot.follower.isBusy()) {
@@ -559,7 +559,7 @@ public class BaseBucketAuton {
 
   // TODO: optimize wait times here
   private void place(PathChain nextPath) {
-    robot.waitTime(230);
+    robot.waitTime(300);
     robot.claw.clawOpen();
     robot.waitTime(40);
 
