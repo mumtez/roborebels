@@ -157,7 +157,6 @@ public class BaseTeleop {
 
       // TRIANGLE --> CLIP | SQUARE --> WALL
       case SPEC_PRE_CLIP:
-        // TODO: if can't do drive-in clip, this needs to move the arm
         if (currentGamepad2.triangle) {
           robot.slides.setTarget(VerticalSlides.BAR_PLACE);
           state = ModeState.SPEC_CLIP;
@@ -170,7 +169,7 @@ public class BaseTeleop {
 
       // CIRCLE --> PRE-CLIP | SQUARE --> OPEN CLAW
       case SPEC_CLIP:
-        if (currentGamepad2.square) {
+        if (robot.slides.atTarget()) {
           robot.claw.clawOpen();
           state = ModeState.SPEC_POST_CLIP;
           stateTimer.reset();
@@ -178,7 +177,7 @@ public class BaseTeleop {
         break;
 
       case SPEC_POST_CLIP:
-        if (stateTimer.milliseconds() > 100) {
+        if (stateTimer.milliseconds() > 75) {
           robot.slides.setTarget(VerticalSlides.TRANSFER);
           robot.claw.setWall();
           state = ModeState.SPEC_WALL;
