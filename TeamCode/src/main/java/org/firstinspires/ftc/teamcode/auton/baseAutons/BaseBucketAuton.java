@@ -247,8 +247,7 @@ public class BaseBucketAuton {
 
         if (pathTimer.getElapsedTimeSeconds() > INTAKE_OVERRIDE) { // if it misses first pickup
           robot.intake.update(-1, true, robot.getAllianceColor());
-          robot.horSlide.setTarget(HSLIDE_1);
-
+          robot.horSlide.setTarget(HSLIDE_2);
           robot.follower.followPath(placeOne);
           setPathState(201);
         }

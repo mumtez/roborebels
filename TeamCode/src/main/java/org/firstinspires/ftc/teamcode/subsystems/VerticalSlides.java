@@ -23,9 +23,9 @@ public class VerticalSlides {
   public static int BAR_PLACE_UNDER = 200;
 
   // TODO: tune
-  public static int UP_AUTO = 1300;
+  public static int UP_AUTO = 1350;
 
-  public static int UP = 1350;
+  public static int UP = 1500;
 
   public static int LOWER_BUCKET = 800;
 
