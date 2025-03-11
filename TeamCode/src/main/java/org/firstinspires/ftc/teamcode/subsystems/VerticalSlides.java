@@ -15,19 +15,19 @@ public class VerticalSlides {
 
   public static int TRANSFER = 0;
 
-  public static int BAR_PLACE_AUTO = 650; // this is for auto
+  public static int BAR_PLACE_AUTO = 500; // this is for auto
 
-  public static int BAR_PLACE_TELEOP = 1300; // this is for teleop
+  public static int BAR_PLACE_TELEOP = 500; // this is for teleop
 
 
-  public static int BAR_PLACE_UNDER = 600;
+  public static int BAR_PLACE_UNDER = 200;
 
   // TODO: tune
-  public static int UP_AUTO = 1800;
+  public static int UP_AUTO = 1300;
 
-  public static int UP = 2000;
+  public static int UP = 1350;
 
-  public static int LOWER_BUCKET = 1000;
+  public static int LOWER_BUCKET = 800;
 
   public static double kp = 0.01;
   public static double ki = 0;

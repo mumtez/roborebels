@@ -219,7 +219,10 @@ public class BaseTeleop {
         break;
 
       case BUCKET_TRANSFER:
-        if (stateTimer.seconds() > 0.05) {
+        if (stateTimer.seconds() > 0.1 && stateTimer.seconds() < 0.3) {
+          robot.intake.update(1, true, robot.getAllianceColor());
+        }
+        if (stateTimer.seconds() > 0.3) {
           robot.intake.update(0, true, robot.getAllianceColor());
         }
 
@@ -275,9 +278,7 @@ public class BaseTeleop {
         robot.horSlide.updatePIDControl();
         if (stateTimer.milliseconds() > 500) {
           robot.claw.setTransfer();
-          if (stateTimer.milliseconds() > 750) {
-            robot.slides.setTarget(VerticalSlides.TRANSFER);
-          }
+          robot.slides.setTarget(VerticalSlides.TRANSFER);
           state = ModeState.BUCKET_INTAKING;
           stateTimer.reset();
         }
