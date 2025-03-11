@@ -159,12 +159,12 @@ public class BaseTeleop {
       // TRIANGLE --> CLIP | SQUARE --> WALL
       case SPEC_PRE_CLIP:
         if (currentGamepad2.triangle) {
-          robot.slides.setTarget(VerticalSlides.BAR_PLACE);
+          robot.slides.setTarget(VerticalSlides.BAR_PLACE_TELEOP);
           state = ModeState.SPEC_CLIP;
         }
         if (currentGamepad2.square) {
           robot.claw.setWall();
-          state = ModeState.SPEC_WALL;
+          state = ModeState.SPEC_CLIP;
         }
         break;
 

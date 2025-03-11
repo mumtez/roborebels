@@ -156,7 +156,7 @@ public class BaseSpecAuton {
     robot.waitTime(100);
     robot.claw.clawClose();
     robot.waitTime(50);
-    robot.slides.setTarget(VerticalSlides.BAR_PLACE);
+    robot.slides.setTarget(VerticalSlides.BAR_PLACE_AUTO);
     robot.claw.setPlaceAuto();
 
     robot.follower.followPath(place);
@@ -187,9 +187,9 @@ public class BaseSpecAuton {
       case 1000:
         robot.horSlide.setTarget(HorizontalSlides.TRANSFER_POS);
         robot.slides.setTarget(VerticalSlides.TRANSFER);
-        robot.intake.update(-1, false, robot.getAllianceColor());
+        robot.intake.update(0, false, robot.getAllianceColor());
 
-        robot.slides.setTarget(VerticalSlides.BAR_PLACE);
+        robot.slides.setTarget(VerticalSlides.BAR_PLACE_AUTO);
         robot.claw.setPlaceAuto();
 
         robot.follower.followPath(placePreLoad);
