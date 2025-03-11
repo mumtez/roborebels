@@ -18,7 +18,7 @@ public class BaseTeleop {
     BUCKET_INTAKING, BUCKET_TRANSFER, BUCKET_POST_TRANSFER, BUCKET_PLACE, BUCKET_POST_PLACE
   }
 
-  public static double HORIZONTAL_MODIFIER = 0.1;
+  public static double HORIZONTAL_MODIFIER = 0.075;
 
   final NewRobot robot;
   final LinearOpMode opMode;
@@ -208,6 +208,9 @@ public class BaseTeleop {
           robot.intake.rotateFlat();
           robot.claw.clawOpen();
           robot.claw.setTransfer();
+
+          robot.intake.update(-1, true, robot.getAllianceColor());
+
           robot.horSlide.setTarget(HorizontalSlides.TRANSFER_POS);
 
           state = ModeState.BUCKET_TRANSFER;
@@ -216,6 +219,10 @@ public class BaseTeleop {
         break;
 
       case BUCKET_TRANSFER:
+        if (stateTimer.seconds() > 0.05) {
+          robot.intake.update(0, true, robot.getAllianceColor());
+        }
+
         robot.horSlide.updatePIDControl();
         if (robot.horSlide.atTarget() && robot.slides.atTarget()) {
           robot.claw.clawClose();
@@ -268,7 +275,9 @@ public class BaseTeleop {
         robot.horSlide.updatePIDControl();
         if (stateTimer.milliseconds() > 500) {
           robot.claw.setTransfer();
-          robot.slides.setTarget(VerticalSlides.TRANSFER);
+          if (stateTimer.milliseconds() > 750) {
+            robot.slides.setTarget(VerticalSlides.TRANSFER);
+          }
           state = ModeState.BUCKET_INTAKING;
           stateTimer.reset();
         }
