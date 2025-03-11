@@ -17,8 +17,8 @@ public class BaseBucketAuton {
 
   public static int MOVE_ARM_HEIGHT_OFFSET = 400;
 
-  public static int HSLIDE_1 = HorizontalSlides.OUT_POS / 2;
-  public static int HSLIDE_2 = HorizontalSlides.OUT_POS / 2;
+  public static int HSLIDE_1 = HorizontalSlides.OUT_POS / 4;
+  public static int HSLIDE_2 = HorizontalSlides.OUT_POS / 3;
   public static int HSLIDE_3 = HorizontalSlides.OUT_POS / 3;
 
   public static double SUB_TIMER = 0.05;
@@ -28,7 +28,7 @@ public class BaseBucketAuton {
 
   public static double[] START = {9, 105, 270};
   public static double[] PLACE_BUCKET = {16, 128, 315};
-  public static double[] INTAKE_ONE = {19, 125, 355};
+  public static double[] INTAKE_ONE = {19, 124.5, 360};
   public static double[] INTAKE_TWO = {19, 129, 360};
   public static double[] INTAKE_THREE = {28, 125, 50};
   public static double[] INTAKE_SUB = {65, 97, 270};
@@ -162,8 +162,7 @@ public class BaseBucketAuton {
             pointFromArr(BUCKET_INTAKE_SUB_CONTROL),
             pointFromArr(INTAKE_SUB)
         )
-        .setLinearHeadingInterpolation(Math.toRadians(PLACE_BUCKET[2]),
-            Math.toRadians(INTAKE_SUB[2]))
+        .setTangentHeadingInterpolation()
         .build();
 
     pickupSubMovementOne = robot.follower.pathBuilder()
@@ -391,7 +390,7 @@ public class BaseBucketAuton {
           setPathState(9);
         }
 
-        if (pathTimer.getElapsedTimeSeconds() > INTAKE_OVERRIDE) { // if it misses first pickup
+        if (pathTimer.getElapsedTimeSeconds() > INTAKE_OVERRIDE) { // if it misses pickup
           robot.intake.update(-1, true, robot.getAllianceColor());
           robot.horSlide.setTarget(HorizontalSlides.TRANSFER_POS);
 
@@ -439,7 +438,6 @@ public class BaseBucketAuton {
 
       // INTAKE SUBMERSIBLE
       case 11:
-        robot.intake.update(0, true, robot.getAllianceColor());
         robot.horSlide.setTarget(HorizontalSlides.OUT_POS / 2);
 
         if (!robot.follower.isBusy()) {
@@ -568,15 +566,15 @@ public class BaseBucketAuton {
           robot.horSlide.setTarget(HorizontalSlides.TRANSFER_POS);
           Pose current = robot.follower.getPose();
           robot.follower.followPath(
-                  robot.follower.pathBuilder()
-                          .addBezierCurve(
-                                  new Point(current),
-                                  pointFromArr(BUCKET_INTAKE_SUB_CONTROL),
-                                  pointFromArr(PLACE_BUCKET)
-                          )
-                          .setLinearHeadingInterpolation(current.getHeading(),
-                                  Math.toRadians(PLACE_BUCKET[2]))
-                          .build());
+              robot.follower.pathBuilder()
+                  .addBezierCurve(
+                      new Point(current),
+                      pointFromArr(BUCKET_INTAKE_SUB_CONTROL),
+                      pointFromArr(PLACE_BUCKET)
+                  )
+                  .setLinearHeadingInterpolation(current.getHeading(),
+                      Math.toRadians(PLACE_BUCKET[2]))
+                  .build());
           setPathState(212);
         }
         if (!robot.follower.isBusy() && robot.horSlide.atTarget()) {
@@ -595,15 +593,15 @@ public class BaseBucketAuton {
           robot.horSlide.setTarget(HorizontalSlides.TRANSFER_POS);
           Pose current = robot.follower.getPose();
           robot.follower.followPath(
-                  robot.follower.pathBuilder()
-                          .addBezierCurve(
-                                  new Point(current),
-                                  pointFromArr(BUCKET_INTAKE_SUB_CONTROL),
-                                  pointFromArr(PLACE_BUCKET)
-                          )
-                          .setLinearHeadingInterpolation(current.getHeading(),
-                                  Math.toRadians(PLACE_BUCKET[2]))
-                          .build(), true);
+              robot.follower.pathBuilder()
+                  .addBezierCurve(
+                      new Point(current),
+                      pointFromArr(BUCKET_INTAKE_SUB_CONTROL),
+                      pointFromArr(PLACE_BUCKET)
+                  )
+                  .setLinearHeadingInterpolation(current.getHeading(),
+                      Math.toRadians(PLACE_BUCKET[2]))
+                  .build(), true);
           setPathState(212);
         }
         if (!robot.follower.isBusy()) {
@@ -627,14 +625,14 @@ public class BaseBucketAuton {
         break;
 
       case 2124:
-        if (pathTimer.getElapsedTime() > 50) {
+        if (pathTimer.getElapsedTime() > 75) {
           robot.claw.clawClose();
           setPathState(2122);
         }
         break;
 
       case 2122:
-        if (pathTimer.getElapsedTime() > 50) {
+        if (pathTimer.getElapsedTime() > 75) {
           robot.slides.setTarget(VerticalSlides.UP_AUTO);
           setPathState(2123);
         }
@@ -656,7 +654,6 @@ public class BaseBucketAuton {
           setPathState(14);
         }
         break;
-
 
       // LV1 ASCENT
       case 14:

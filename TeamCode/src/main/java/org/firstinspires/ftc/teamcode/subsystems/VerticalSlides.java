@@ -15,14 +15,16 @@ public class VerticalSlides {
 
   public static int TRANSFER = 0;
 
-  public static int BAR_PLACE = 450;
+  public static int BAR_PLACE = 650;
+
+  public static int BAR_PLACE_UNDER = 600;
 
   // TODO: tune
-  public static int UP_AUTO = 1100;
+  public static int UP_AUTO = 1800;
 
-  public static int UP = 1150;
+  public static int UP = 2000;
 
-  public static int LOWER_BUCKET = 325;
+  public static int LOWER_BUCKET = 1000;
 
   public static double kp = 0.01;
   public static double ki = 0;

@@ -151,6 +151,7 @@ public class BaseTeleop {
         // If claw closed for 500ms, move to placement pos
         if (stateTimer.milliseconds() > 500) {
           robot.claw.setPlace();
+          robot.slides.setTarget(VerticalSlides.BAR_PLACE_UNDER);
           state = ModeState.SPEC_PRE_CLIP;
         }
         break;
