@@ -14,7 +14,7 @@ public class Claw {
   public static double clawOpenPos = 0.5;
   public static double clawClosePos = 0.62;
 
-  public static double upArmPlaceTeleOP = 0.55;
+  public static double upArmPlaceTeleOP = .5;
 
   public static double upArmPlaceAuto = 0.7;
 
@@ -25,7 +25,7 @@ public class Claw {
   public static double upArmInit = 0.19;
 
 
-  public static double downArmPlaceTeleOP = 0.45;
+  public static double downArmPlaceTeleOP = .98;
 
   public static double downArmPlaceAuto = 0.98;
 
