@@ -28,6 +28,9 @@ public class BaseBucketAuton {
 
   public static double[] START = {9, 105, 270};
   public static double[] PLACE_BUCKET = {16, 128, 315};
+
+  public static double[] PLACE_BUCKET_FINAL = {16, 129, 315};
+
   public static double[] INTAKE_ONE = {19, 124.5, 360};
   public static double[] INTAKE_TWO = {19, 129, 360};
   public static double[] INTAKE_THREE = {28, 125, 50};
@@ -466,6 +469,7 @@ public class BaseBucketAuton {
                   .build());
           setPathState(12);
         }
+
         if (!robot.follower.isBusy() && robot.horSlide.atTarget()) {
           robot.follower.followPath(pickupSubMovementOne, true);
           setPathState(112);
@@ -493,6 +497,7 @@ public class BaseBucketAuton {
                   .build(), true);
           setPathState(12);
         }
+
         if (!robot.follower.isBusy()) {
           robot.follower.followPath(pickupSubMovementTwo, true);
           setPathState(111);
@@ -569,10 +574,10 @@ public class BaseBucketAuton {
                   .addBezierCurve(
                       new Point(current),
                       pointFromArr(BUCKET_INTAKE_SUB_CONTROL),
-                      pointFromArr(PLACE_BUCKET)
+                      pointFromArr(PLACE_BUCKET_FINAL)
                   )
                   .setLinearHeadingInterpolation(current.getHeading(),
-                      Math.toRadians(PLACE_BUCKET[2]))
+                      Math.toRadians(PLACE_BUCKET_FINAL[2]))
                   .build());
           setPathState(212);
         }
@@ -596,10 +601,10 @@ public class BaseBucketAuton {
                   .addBezierCurve(
                       new Point(current),
                       pointFromArr(BUCKET_INTAKE_SUB_CONTROL),
-                      pointFromArr(PLACE_BUCKET)
+                      pointFromArr(PLACE_BUCKET_FINAL)
                   )
                   .setLinearHeadingInterpolation(current.getHeading(),
-                      Math.toRadians(PLACE_BUCKET[2]))
+                      Math.toRadians(PLACE_BUCKET_FINAL[2]))
                   .build(), true);
           setPathState(212);
         }

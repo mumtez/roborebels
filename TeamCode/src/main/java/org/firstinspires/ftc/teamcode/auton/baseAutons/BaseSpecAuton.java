@@ -177,7 +177,9 @@ public class BaseSpecAuton {
     }
 
     robot.claw.clawOpenWall();
+    robot.waitTime(100);
     robot.claw.setWall();
+    robot.waitTime(100);
 
     robot.follower.followPath(postPlace);
   }

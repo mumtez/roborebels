@@ -145,6 +145,7 @@ public class BaseTeleop {
           robot.claw.clawClose();
         } else {
           robot.claw.setWall();
+          robot.claw.clawOpenWall();
           stateTimer.reset();
         }
 
@@ -227,7 +228,7 @@ public class BaseTeleop {
         }
 
         robot.horSlide.updatePIDControl();
-        if (robot.horSlide.atTarget() && robot.slides.atTarget()) {
+        if (robot.horSlide.atTarget() && robot.slides.atTarget() && stateTimer.seconds() > 0.32) {
           robot.claw.clawClose();
           stateTimer.reset();
           state = ModeState.BUCKET_POST_TRANSFER;

@@ -12,6 +12,9 @@ public class Claw {
 
   // might be updated
   public static double clawOpenPos = 0.5;
+
+  public static double clawOpenWallPos = 0.45;
+
   public static double clawClosePos = 0.62;
 
   public static double upArmPlaceTeleOP = .5;
@@ -65,6 +68,11 @@ public class Claw {
   public void clawOpen() {
     this.clawClosed = false;
     claw.setPosition(clawOpenPos);
+  }
+
+  public void clawOpenWall() {
+    this.clawClosed = false;
+    claw.setPosition(clawOpenWallPos);
   }
 
 
