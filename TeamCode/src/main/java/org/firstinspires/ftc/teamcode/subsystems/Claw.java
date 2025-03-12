@@ -11,16 +11,12 @@ import com.qualcomm.robotcore.hardware.ServoImplEx;
 public class Claw {
 
   // might be updated
-  public static double clawWallOpenPos = 0.48;
   public static double clawOpenPos = 0.5;
   public static double clawClosePos = 0.62;
 
   public static double upArmPlaceTeleOP = 0.55;
 
   public static double upArmPlaceAuto = 0.7;
-
-
-  public static double upArmWallTeleOP = .92;
 
   public static double upArmWallAuto = 0.17;
   public static double upArmBucket = .65;
@@ -32,9 +28,6 @@ public class Claw {
   public static double downArmPlaceTeleOP = 0.45;
 
   public static double downArmPlaceAuto = 0.98;
-
-
-  public static double downArmWallTeleOP = 0.99;
 
   public static double downArmWallAuto = 0.48;
 
@@ -74,13 +67,8 @@ public class Claw {
     claw.setPosition(clawOpenPos);
   }
 
-  public void clawOpenWall() {
-    this.clawClosed = false;
-    claw.setPosition(clawWallOpenPos);
-    wrist.setPosition(wristDefault);
-  }
 
-  public void setPlace() {
+  public void setPlace() { // needs to be tuned
     clawDownArm.setPosition(downArmPlaceTeleOP);
     clawUpArm.setPosition(upArmPlaceTeleOP);
     wrist.setPosition(wristPlace);
@@ -92,7 +80,7 @@ public class Claw {
     wrist.setPosition(wristPlaceAuto);
   }
 
-  public void setWallAuto() {
+  public void setWall() {
     clawDownArm.setPosition(downArmWallAuto);
     clawUpArm.setPosition(upArmWallAuto);
     wrist.setPosition(wristDefault);
@@ -111,11 +99,6 @@ public class Claw {
     wrist.setPosition(wristDefault);
   }
 
-  public void setWall() {
-    clawDownArm.setPosition(downArmWallTeleOP);
-    clawUpArm.setPosition(upArmWallTeleOP);
-    wrist.setPosition(wristDefault);
-  }
 
   public void setBucket() {
     clawDownArm.setPosition(downArmBucket);

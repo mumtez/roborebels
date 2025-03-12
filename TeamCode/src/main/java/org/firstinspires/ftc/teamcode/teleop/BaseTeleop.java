@@ -144,7 +144,7 @@ public class BaseTeleop {
         if (currentGamepad2.right_bumper) {
           robot.claw.clawClose();
         } else {
-          robot.claw.clawOpenWall();
+          robot.claw.setWall();
           stateTimer.reset();
         }
 

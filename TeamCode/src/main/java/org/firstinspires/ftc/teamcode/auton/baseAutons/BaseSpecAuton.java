@@ -177,7 +177,7 @@ public class BaseSpecAuton {
     }
 
     robot.claw.clawOpenWall();
-    robot.claw.setWallAuto();
+    robot.claw.setWall();
 
     robot.follower.followPath(postPlace);
   }
@@ -211,7 +211,7 @@ public class BaseSpecAuton {
 
         robot.claw.clawOpenWall();
         robot.waitTime(100);
-        robot.claw.setWallAuto();
+        robot.claw.setWall();
         robot.waitTime(100);
 
         robot.follower.followPath(driveOne);
