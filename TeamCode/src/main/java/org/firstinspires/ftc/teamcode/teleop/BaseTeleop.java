@@ -74,6 +74,9 @@ public class BaseTeleop {
       updateGamepads();
 
       robot.horSlide.updatePosition();
+      //robot.slides.updatePIDControl();
+
+
 
       if (currentGamepad1.left_bumper && !previousGamepad1.left_bumper) {
         robot.imu.resetYaw();
@@ -278,12 +281,10 @@ public class BaseTeleop {
 
       case BUCKET_POST_PLACE:
         robot.horSlide.updatePIDControl();
-        if (stateTimer.milliseconds() > 500) {
           robot.claw.setTransfer();
           robot.slides.setTarget(VerticalSlides.TRANSFER);
           state = ModeState.BUCKET_INTAKING;
           stateTimer.reset();
-        }
         break;
 
       // Prev state spec mode --> move to INTAKING
@@ -346,7 +347,7 @@ public class BaseTeleop {
   public void updateTelemetry() {
     telemetry.addData("MODE", specimenMode ? "SPECIMEN" : "BUCKET");
     telemetry.addData("OVERRIDE", hangOverride);
-    telemetry.addData("Green sensed", robot.intake.getColors().green);
+    telemetry.addData("Vert Slides target", robot.slides.getTarget());
 
     telemetry.addData("STATE", state);
     telemetry.addData("STATE Timer", stateTimer.milliseconds());
