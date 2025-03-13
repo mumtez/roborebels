@@ -37,7 +37,7 @@ public class NewRobot {
   public final VerticalSlides slides;
   public final HorizontalSlides horSlide;
 
-  private AllianceColor allianceColor;  //0 red 1 blue
+  private final AllianceColor allianceColor;  //0 red 1 blue
 
   public NewRobot(LinearOpMode opMode) {
     this(opMode, AllianceColor.RED);

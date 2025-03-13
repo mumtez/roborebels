@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple.Direction;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 
 @Config
 public class VerticalSlides {
@@ -39,6 +40,9 @@ public class VerticalSlides {
   private double lastError = 0;
   private double integralSum = 0;
   private int targetPos = TRANSFER;
+  private int lastTargetPos = TRANSFER;
+
+
   private int offset = 0;
   public int position = 0;
 
@@ -73,11 +77,15 @@ public class VerticalSlides {
   }
 
   public void setTarget(int targetPos) {
-    timer.reset();
-    lastError = 0;
-    integralSum = 0;
-
-    this.targetPos = targetPos;
+    if (targetPos != lastTargetPos) {
+      timer.reset();
+      lastError = 0;
+      integralSum = 0;
+      this.lastTargetPos = this.targetPos;
+      // TODO: may need to change max here to a static MAX_EXTENSION to allow higher slide movement than UP,
+      //  if needed for teleop
+      this.targetPos = Range.clip(targetPos, TRANSFER, UP);
+    }
   }
 
   public int getTarget() {

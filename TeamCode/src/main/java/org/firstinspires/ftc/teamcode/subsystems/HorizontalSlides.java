@@ -26,8 +26,8 @@ public class HorizontalSlides {
   private final ElapsedTime timer = new ElapsedTime();
   private double lastError = 0;
   private double integralSum = 0;
-  private int targetPos = 0;
-  private int lastTargetPos = 0;
+  private int targetPos = TRANSFER_POS;
+  private int lastTargetPos = TRANSFER_POS;
 
   public int position = 0;
 
