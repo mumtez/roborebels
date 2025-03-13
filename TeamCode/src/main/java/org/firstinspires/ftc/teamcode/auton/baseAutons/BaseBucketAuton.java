@@ -286,7 +286,7 @@ public class BaseBucketAuton {
 
       // SCORE 1
       case 4:
-        if (robot.slides.atTarget()) {
+        if (!robot.follower.isBusy() && robot.slides.atTarget()) {
           place(intakeTwo);
           setPathState(5);
         }
@@ -356,7 +356,7 @@ public class BaseBucketAuton {
 
       // SCORE 2
       case 7:
-        if (robot.slides.atTarget()) {
+        if (!robot.follower.isBusy() && robot.slides.atTarget()) {
           place(intakeThree);
           setPathState(8);
         }
@@ -421,7 +421,7 @@ public class BaseBucketAuton {
         break;
 
       case 10:
-        if (robot.slides.atTarget()) {
+        if (!robot.follower.isBusy() && robot.slides.atTarget()) {
           place(bucketToSub);
           setPathState(1100);
         }
@@ -471,7 +471,7 @@ public class BaseBucketAuton {
     robot.intake.update(1, false, robot.getAllianceColor());
 
     boolean driveForward = true;
-    while (!robot.intake.validSampleIn(robot.getAllianceColor())) {
+    while (opMode.opModeIsActive() && !robot.intake.validSampleIn(robot.getAllianceColor())) {
       robot.updateAutoControls();
       robot.intake.update(1, false, robot.getAllianceColor());
 
@@ -485,12 +485,12 @@ public class BaseBucketAuton {
 
     // OUTTAKE
     subTimer.reset();
-    while (subTimer.milliseconds() < OUT_IN_MS) {
+    while (opMode.opModeIsActive() && subTimer.milliseconds() < OUT_IN_MS) {
       robot.updateAutoControls();
     }
     // RE-INTAKE
     subTimer.reset();
-    while (!robot.intake.validSampleIn(robot.getAllianceColor())) {
+    while (opMode.opModeIsActive() && !robot.intake.validSampleIn(robot.getAllianceColor())) {
       robot.updateAutoControls();
       robot.intake.update(1, true, robot.getAllianceColor());
       // TODO: some kind of reset here if no sample detected after re-intake
@@ -513,32 +513,32 @@ public class BaseBucketAuton {
             .build()
         , true);
 
-    while (!robot.horSlide.atTarget()) {
+    while (opMode.opModeIsActive() && !robot.horSlide.atTarget()) {
       robot.updateAutoControls();
     }
 
     // Let h slide settle for transfer
     subTimer.reset();
-    while (subTimer.milliseconds() < 75) {
+    while (opMode.opModeIsActive() && subTimer.milliseconds() < 75) {
       robot.updateAutoControls();
     }
 
     // Close claw
     robot.claw.clawClose();
     subTimer.reset();
-    while (subTimer.milliseconds() < 75) {
+    while (opMode.opModeIsActive() && subTimer.milliseconds() < 75) {
       robot.updateAutoControls();
     }
 
     // Raise Slides + Rotate Arm
     robot.slides.setTarget(VerticalSlides.UP_AUTO);
-    while (!robot.slides.atTarget(MOVE_ARM_HEIGHT_OFFSET)) {
+    while (opMode.opModeIsActive() && !robot.slides.atTarget(MOVE_ARM_HEIGHT_OFFSET)) {
       robot.updateAutoControls();
     }
     robot.claw.setBucket();
 
     // wait for path and slide move end
-    while (!robot.slides.atTarget() && robot.follower.isBusy()) {
+    while (opMode.opModeIsActive() && !robot.slides.atTarget() && robot.follower.isBusy()) {
       robot.updateAutoControls();
     }
   }
