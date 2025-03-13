@@ -281,10 +281,12 @@ public class BaseTeleop {
 
       case BUCKET_POST_PLACE:
         robot.horSlide.updatePIDControl();
+        if (stateTimer.milliseconds() > 500) {
           robot.claw.setTransfer();
           robot.slides.setTarget(VerticalSlides.TRANSFER);
           state = ModeState.BUCKET_INTAKING;
           stateTimer.reset();
+        }
         break;
 
       // Prev state spec mode --> move to INTAKING

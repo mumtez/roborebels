@@ -81,10 +81,8 @@ public class VerticalSlides {
       timer.reset();
       lastError = 0;
       integralSum = 0;
+      this.targetPos = targetPos;
       this.lastTargetPos = this.targetPos;
-      // TODO: may need to change max here to a static MAX_EXTENSION to allow higher slide movement than UP,
-      //  if needed for teleop
-      this.targetPos = Range.clip(targetPos, TRANSFER, UP);
     }
   }
 
