@@ -35,11 +35,11 @@ public class BaseBucketAuton {
   public static double[] INTAKE_ONE = {19, 124.5, 360};
   public static double[] INTAKE_TWO = {19, 129, 360};
   public static double[] INTAKE_THREE = {28, 125, 50};
-  public static double[] INTAKE_SUB = {65, 97, 270};
-  public static double[] INTAKE_SUB_SECONDARY = {65, 103, 270};
+  public static double[] INTAKE_SUB = {64, 103, 270};
+  public static double[] INTAKE_SUB_SECONDARY = {64, 97, 270};
 
   // CONTROL POINTS
-  public static double[] BUCKET_INTAKE_SUB_CONTROL = {64, 136};
+  public static double[] BUCKET_INTAKE_SUB_CONTROL = {64, 128};
 
   PathChain placePreLoad,
       intakeOne, placeOne,
@@ -47,7 +47,7 @@ public class BaseBucketAuton {
       intakeThree, placeThree,
       failIntakeThree,
       bucketToSub,
-      pickupSubMovementOne, pickupSubMovementTwo,
+      subPickupForward, subPickupBackward,
       park;
 
   private int pathState = 0;
@@ -163,11 +163,11 @@ public class BaseBucketAuton {
         )
         .setTangentHeadingInterpolation()
         // TODO: tune when in path this is called (range 0.0 -> 1.0)
-        // TODO: tune so that hor slide is out minimum distance required to start intaking
-        .addParametricCallback(SUB_SLIDE_EXTEND_T, () -> robot.horSlide.setTarget(HorizontalSlides.OUT_POS / 2))
+        .addParametricCallback(SUB_SLIDE_EXTEND_T, () -> robot.horSlide.setTarget(HorizontalSlides.OUT_POS))
+        .addParametricCallback(1.0, () -> robot.intake.update(-1, true, robot.getAllianceColor()))
         .build();
 
-    pickupSubMovementOne = robot.follower.pathBuilder()
+    subPickupForward = robot.follower.pathBuilder()
         .addBezierLine(
             pointFromArr(INTAKE_SUB),
             pointFromArr(INTAKE_SUB_SECONDARY)
@@ -175,7 +175,7 @@ public class BaseBucketAuton {
         .setLinearHeadingInterpolation(Math.toRadians(INTAKE_SUB[2]), Math.toRadians(INTAKE_SUB_SECONDARY[2]))
         .build();
 
-    pickupSubMovementTwo = robot.follower.pathBuilder()
+    subPickupBackward = robot.follower.pathBuilder()
         .addBezierLine(
             pointFromArr(INTAKE_SUB_SECONDARY),
             pointFromArr(INTAKE_SUB)
@@ -430,7 +430,7 @@ public class BaseBucketAuton {
 
       case 1100:
         if (!robot.follower.isBusy()) {
-          cycleSub();
+          cycleSub(subPickupForward, subPickupBackward);
           place(bucketToSub);
           setPathState(1200);
         }
@@ -438,7 +438,8 @@ public class BaseBucketAuton {
 
       case 1200:
         if (!robot.follower.isBusy()) {
-          cycleSub();
+          // TODO: make this use a slightly different pair of paths (change heading slightly or smth?)
+          cycleSub(subPickupForward, subPickupBackward);
           place(park);
           setPathState(1300);
         }
@@ -467,18 +468,17 @@ public class BaseBucketAuton {
     robot.slides.setTarget(VerticalSlides.TRANSFER);
   }
 
-  private void cycleSub() {
+  private void cycleSub(PathChain forwardPath, PathChain backPath) {
     robot.intake.update(1, false, robot.getAllianceColor());
-    robot.horSlide.setTarget(HorizontalSlides.OUT_POS);
 
-    boolean driveForward = false;
+    boolean driveForward = true;
     while (!robot.intake.validSampleIn(robot.getAllianceColor())) {
       robot.updateAutoControls();
       robot.intake.update(1, false, robot.getAllianceColor());
 
       // move between the two positions
       if (!robot.follower.isBusy()) {
-        robot.follower.followPath(driveForward ? pickupSubMovementOne : pickupSubMovementTwo, true);
+        robot.follower.followPath(driveForward ? forwardPath : backPath, true);
         driveForward = !driveForward;
       }
     }
