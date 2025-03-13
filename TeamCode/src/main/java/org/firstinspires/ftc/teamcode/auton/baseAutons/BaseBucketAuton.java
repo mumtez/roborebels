@@ -53,7 +53,6 @@ public class BaseBucketAuton {
   private int pathState = 0;
 
   private final Timer pathTimer = new Timer();
-  private final Timer globalTimer = new Timer();
   private final ElapsedTime subTimer = new ElapsedTime();
 
   final NewRobot robot;
@@ -203,6 +202,7 @@ public class BaseBucketAuton {
         robot.horSlide.setTarget(HSLIDE_1);
         setPathState(100);
         break;
+
       case 100:
         if (robot.slides.atTarget()) {
           robot.claw.setBucket();
@@ -234,14 +234,14 @@ public class BaseBucketAuton {
           robot.intake.update(0, true, robot.getAllianceColor());
           robot.horSlide.setTarget(HorizontalSlides.TRANSFER_POS);
 
-          robot.follower.followPath(placeOne);
+          robot.follower.followPath(placeOne, true);
           setPathState(3);
         }
 
         if (pathTimer.getElapsedTimeSeconds() > INTAKE_OVERRIDE) { // if it misses first pickup
           robot.intake.update(-1, true, robot.getAllianceColor());
           robot.horSlide.setTarget(HSLIDE_2);
-          robot.follower.followPath(placeOne);
+          robot.follower.followPath(placeOne, true);
           setPathState(201);
         }
         break;
@@ -312,7 +312,7 @@ public class BaseBucketAuton {
         if (pathTimer.getElapsedTimeSeconds() > INTAKE_OVERRIDE) { // if it fails second
           robot.intake.update(-1, true, robot.getAllianceColor());
           robot.horSlide.setTarget(HSLIDE_2);
-          robot.follower.followPath(placeTwo);
+          robot.follower.followPath(placeTwo, true);
           setPathState(52);
         }
         break;
@@ -377,7 +377,7 @@ public class BaseBucketAuton {
           robot.intake.update(0, true, robot.getAllianceColor());
           robot.horSlide.setTarget(HorizontalSlides.TRANSFER_POS);
 
-          robot.follower.followPath(placeThree);
+          robot.follower.followPath(placeThree, true);
           setPathState(9);
         }
 
@@ -555,24 +555,16 @@ public class BaseBucketAuton {
     }
 
     // START
-    globalTimer.resetTimer();
     robot.follower.setStartingPose(poseFromArr(START));
     robot.slides.setMode(RunMode.RUN_WITHOUT_ENCODER);
     robot.horSlide.setMode(RunMode.RUN_WITHOUT_ENCODER);
 
     while (this.opMode.opModeIsActive()) {
       robot.updateAutoControls();
+      autonomousPathUpdate();
 
       telemetry.addData("Path State", pathState);
-      telemetry.addData("Position", robot.follower.getPose().toString());
       telemetry.update();
-
-      // TODO: now unneeded if have other opmode to fix?
-      if (globalTimer.getElapsedTimeSeconds() > 29) {
-        robot.claw.setTransfer();
-      } else {
-        autonomousPathUpdate();
-      }
     }
   }
 
