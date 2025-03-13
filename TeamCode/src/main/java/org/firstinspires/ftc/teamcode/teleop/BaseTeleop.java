@@ -19,6 +19,7 @@ public class BaseTeleop {
   }
 
   public static double HORIZONTAL_MODIFIER = 0.075;
+  public static double HOR_SLOW = 0.85;
 
   final NewRobot robot;
   final LinearOpMode opMode;
@@ -304,7 +305,7 @@ public class BaseTeleop {
       robot.horSlide.setPower(hSlidePow * HORIZONTAL_MODIFIER);
       robot.horSlide.setTarget(robot.horSlide.position);
     } else if (Math.abs(hSlidePow) > 0.05) {
-      robot.horSlide.setPower(hSlidePow);
+      robot.horSlide.setPower(hSlidePow * HOR_SLOW);
       robot.horSlide.setTarget(robot.horSlide.position);
     } else {
       // User is NOT controlling the motor, enable PID to hold position
@@ -313,11 +314,26 @@ public class BaseTeleop {
 
     intakeFlat = !currentGamepad2.dpad_down && !(currentGamepad2.right_trigger > 0.1);
 
-    robot.intake.update(
-        currentGamepad2.right_trigger - currentGamepad2.left_trigger,
-        intakeFlat,
-        robot.getAllianceColor()
-    );
+    if (currentGamepad2.right_trigger > 0 || currentGamepad2.left_trigger > 0) {
+      robot.intake.update(
+              currentGamepad2.right_trigger - currentGamepad2.left_trigger,
+              intakeFlat,
+              robot.getAllianceColor()
+      );
+    }
+    else if (currentGamepad2.right_bumper){
+      robot.intake.halfUpdate(
+              1,
+              robot.getAllianceColor()
+      );
+    }
+    else{
+      robot.intake.update(
+              0,
+              intakeFlat,
+              robot.getAllianceColor()
+      );
+    }
 
     // TODO: possibly causing a lot of cycle delay? maybe theres a better way to do this instead
     //  of sending call for effect every loop
@@ -330,6 +346,8 @@ public class BaseTeleop {
   public void updateTelemetry() {
     telemetry.addData("MODE", specimenMode ? "SPECIMEN" : "BUCKET");
     telemetry.addData("OVERRIDE", hangOverride);
+    telemetry.addData("Green sensed", robot.intake.getColors().green);
+
     telemetry.addData("STATE", state);
     telemetry.addData("STATE Timer", stateTimer.milliseconds());
     telemetry.update();

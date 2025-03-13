@@ -26,12 +26,15 @@ public class Intake {
   }
 
   public static double INTAKE_DOWN = 0.42;
+  public static double INTAKE_HALF = 0.36;
   public static double INTAKE_FLAT = 0.18;
 
   public static float COLOR_GAIN = 2;
   public static double RED_THRESHOLD = 0.02;
   public static double BLUE_THRESHOLD = 0.02;
   public static double COLOR_THRESHOLD = 0.01;
+  public static double GREEN_THRESHOLD = 0.025;
+
   public static double DIST_THRESHOLD_CM = 2;
 
   private final DcMotor intake;
@@ -114,13 +117,20 @@ public class Intake {
 
     // Update sample color
     if (this.dist < DIST_THRESHOLD_CM) {
-      this.sampleColor = SampleColor.YELLOW;
-
-      if (this.colors.red >= Intake.RED_THRESHOLD && this.colors.blue < Intake.COLOR_THRESHOLD) {
-        this.sampleColor = SampleColor.RED;
-      } else if (this.colors.blue >= Intake.BLUE_THRESHOLD && this.colors.red < Intake.COLOR_THRESHOLD) {
-        this.sampleColor = SampleColor.BLUE;
+      if (this.colors.green >= Intake.GREEN_THRESHOLD) {
+        this.sampleColor = SampleColor.YELLOW;
       }
+      else {
+        if (this.colors.red >= Intake.RED_THRESHOLD && this.colors.blue < Intake.COLOR_THRESHOLD && this.colors.green < Intake.GREEN_THRESHOLD) {
+          this.sampleColor = SampleColor.RED;
+        } else if (this.colors.blue >= Intake.BLUE_THRESHOLD && this.colors.red < Intake.COLOR_THRESHOLD && this.colors.green < Intake.GREEN_THRESHOLD) {
+          this.sampleColor = SampleColor.BLUE;
+        }
+        else{
+          this.sampleColor = SampleColor.YELLOW;
+        }
+      }
+
     } else {
       this.sampleColor = SampleColor.NONE;
     }
@@ -160,6 +170,69 @@ public class Intake {
     }
 
   }
+
+
+  public void halfUpdate(double power, AllianceColor allianceColor) {
+    this.senseDistance();
+    this.senseColor();
+
+    // Update sample color
+    if (this.dist < DIST_THRESHOLD_CM) {
+      if (this.colors.green >= Intake.GREEN_THRESHOLD) {
+        this.sampleColor = SampleColor.YELLOW;
+      }
+      else {
+        if (this.colors.red >= Intake.RED_THRESHOLD && this.colors.blue < Intake.COLOR_THRESHOLD) {
+          this.sampleColor = SampleColor.RED;
+        } else if (this.colors.blue >= Intake.BLUE_THRESHOLD && this.colors.red < Intake.COLOR_THRESHOLD) {
+          this.sampleColor = SampleColor.BLUE;
+        }
+      }
+
+    } else {
+      this.sampleColor = SampleColor.NONE;
+    }
+
+    // If spitting, finish spit (400ms)
+    if (this.spitTimer.milliseconds() > 400) {
+      // actions based on collected sample color
+      switch (this.sampleColor) {
+        case RED:
+          this.rgb.setPosition(0.28);
+          if (allianceColor == AllianceColor.BLUE) {
+            spit();
+          } else {
+            this.rotate.setPosition(INTAKE_HALF);
+            this.intake.setPower(power);
+          }
+          break;
+
+        case BLUE:
+          this.rgb.setPosition(0.63);
+          if (allianceColor == AllianceColor.RED) {
+            spit();
+          } else {
+            this.intake.setPower(power);
+            this.rotate.setPosition(INTAKE_HALF);
+          }
+          break;
+
+        case YELLOW:
+          this.rgb.setPosition(0.388);
+          this.intake.setPower(power);
+          this.rotate.setPosition(INTAKE_HALF);
+          break;
+
+        case NONE:
+          this.rgb.setPosition(0);
+          this.intake.setPower(power);
+          this.rotate.setPosition(INTAKE_HALF);
+          break;
+      }
+    }
+
+  }
+
 
   public void spit() {
     this.rotateFlat();
