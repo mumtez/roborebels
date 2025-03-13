@@ -52,9 +52,9 @@ public class BaseBucketAuton {
 
   private int pathState = 0;
 
-  private Timer pathTimer;
+  private final Timer pathTimer = new Timer();
+  private final Timer globalTimer = new Timer();
   private final ElapsedTime subTimer = new ElapsedTime();
-
 
   final NewRobot robot;
   final LinearOpMode opMode;
@@ -96,8 +96,7 @@ public class BaseBucketAuton {
             pointFromArr(PLACE_BUCKET),
             pointFromArr(INTAKE_ONE)
         )
-        .setLinearHeadingInterpolation(Math.toRadians(PLACE_BUCKET[2]),
-            Math.toRadians(INTAKE_ONE[2]))
+        .setLinearHeadingInterpolation(Math.toRadians(PLACE_BUCKET[2]), Math.toRadians(INTAKE_ONE[2]))
         .build();
 
     placeOne = robot.follower.pathBuilder()
@@ -105,8 +104,7 @@ public class BaseBucketAuton {
             pointFromArr(INTAKE_ONE),
             pointFromArr(PLACE_BUCKET)
         )
-        .setLinearHeadingInterpolation(Math.toRadians(INTAKE_ONE[2]),
-            Math.toRadians(PLACE_BUCKET[2]))
+        .setLinearHeadingInterpolation(Math.toRadians(INTAKE_ONE[2]), Math.toRadians(PLACE_BUCKET[2]))
         .build();
 
     intakeTwo = robot.follower.pathBuilder()
@@ -114,8 +112,7 @@ public class BaseBucketAuton {
             pointFromArr(PLACE_BUCKET),
             pointFromArr(INTAKE_TWO)
         )
-        .setLinearHeadingInterpolation(Math.toRadians(PLACE_BUCKET[2]),
-            Math.toRadians(INTAKE_TWO[2]))
+        .setLinearHeadingInterpolation(Math.toRadians(PLACE_BUCKET[2]), Math.toRadians(INTAKE_TWO[2]))
         .build();
 
     placeTwo = robot.follower.pathBuilder()
@@ -123,8 +120,7 @@ public class BaseBucketAuton {
             pointFromArr(INTAKE_TWO),
             pointFromArr(PLACE_BUCKET)
         )
-        .setLinearHeadingInterpolation(Math.toRadians(INTAKE_TWO[2]),
-            Math.toRadians(PLACE_BUCKET[2]))
+        .setLinearHeadingInterpolation(Math.toRadians(INTAKE_TWO[2]), Math.toRadians(PLACE_BUCKET[2]))
         .build();
 
     intakeThree = robot.follower.pathBuilder()
@@ -132,8 +128,7 @@ public class BaseBucketAuton {
             pointFromArr(PLACE_BUCKET),
             pointFromArr(INTAKE_THREE)
         )
-        .setLinearHeadingInterpolation(Math.toRadians(PLACE_BUCKET[2]),
-            Math.toRadians(INTAKE_THREE[2]))
+        .setLinearHeadingInterpolation(Math.toRadians(PLACE_BUCKET[2]), Math.toRadians(INTAKE_THREE[2]))
         .build();
 
     placeThree = robot.follower.pathBuilder()
@@ -141,8 +136,7 @@ public class BaseBucketAuton {
             pointFromArr(INTAKE_THREE),
             pointFromArr(PLACE_BUCKET)
         )
-        .setLinearHeadingInterpolation(Math.toRadians(INTAKE_THREE[2]),
-            Math.toRadians(PLACE_BUCKET[2]))
+        .setLinearHeadingInterpolation(Math.toRadians(INTAKE_THREE[2]), Math.toRadians(PLACE_BUCKET[2]))
         .build();
 
     failIntakeThree = robot.follower.pathBuilder()
@@ -154,7 +148,6 @@ public class BaseBucketAuton {
         .setLinearHeadingInterpolation(Math.toRadians(INTAKE_THREE[2]), Math.toRadians(INTAKE_SUB[2]))
         .build();
 
-    // TODO: REDO ALL OF SUB MOVEMENT / INTAKE
     bucketToSub = robot.follower.pathBuilder()
         .addBezierCurve(
             pointFromArr(PLACE_BUCKET),
@@ -165,6 +158,7 @@ public class BaseBucketAuton {
         // TODO: tune when in path this is called (range 0.0 -> 1.0)
         .addParametricCallback(SUB_SLIDE_EXTEND_T, () -> robot.horSlide.setTarget(HorizontalSlides.OUT_POS))
         .addParametricCallback(1.0, () -> robot.intake.update(-1, true, robot.getAllianceColor()))
+        .setPathEndTimeoutConstraint(400)
         .build();
 
     subPickupForward = robot.follower.pathBuilder()
@@ -173,6 +167,8 @@ public class BaseBucketAuton {
             pointFromArr(INTAKE_SUB_SECONDARY)
         )
         .setLinearHeadingInterpolation(Math.toRadians(INTAKE_SUB[2]), Math.toRadians(INTAKE_SUB_SECONDARY[2]))
+        .setPathEndTimeoutConstraint(250)
+        .setZeroPowerAccelerationMultiplier(5)
         .build();
 
     subPickupBackward = robot.follower.pathBuilder()
@@ -181,6 +177,8 @@ public class BaseBucketAuton {
             pointFromArr(INTAKE_SUB)
         )
         .setLinearHeadingInterpolation(Math.toRadians(INTAKE_SUB_SECONDARY[2]), Math.toRadians(INTAKE_SUB[2]))
+        .setPathEndTimeoutConstraint(250)
+        .setZeroPowerAccelerationMultiplier(5)
         .build();
 
     park = robot.follower.pathBuilder()
@@ -191,6 +189,7 @@ public class BaseBucketAuton {
         )
         .setTangentHeadingInterpolation()
         .addParametricCallback(SUB_SLIDE_EXTEND_T, () -> robot.horSlide.setTarget(HorizontalSlides.OUT_POS))
+        .setZeroPowerAccelerationMultiplier(5)
         .build();
   }
 
@@ -546,8 +545,6 @@ public class BaseBucketAuton {
 
 
   public void run() {
-    pathTimer = new Timer();
-    Timer globalTimer = new Timer();
     buildPaths();
     robot.initAuton();
 

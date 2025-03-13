@@ -71,7 +71,7 @@ public class BaseSpecAuton {
   }
 
   public void buildPaths() {
-    // TODO
+    // TODO maybe tangential for speed?
     placePreLoad = robot.follower.pathBuilder()
         .addBezierLine(
             pointFromArr(START),
@@ -87,6 +87,7 @@ public class BaseSpecAuton {
             pointFromArr(DRIVE_ONE)
         )
         .setLinearHeadingInterpolation(Math.toRadians(PLACE_SPEC[2]), Math.toRadians(DRIVE_ONE[2]))
+        .setPathEndTimeoutConstraint(0)
 
         .addBezierCurve(
             pointFromArr(DRIVE_ONE),
@@ -94,12 +95,14 @@ public class BaseSpecAuton {
             pointFromArr(PUSH_ONE)
         )
         .setLinearHeadingInterpolation(Math.toRadians(DRIVE_ONE[2]), Math.toRadians(PUSH_ONE[2]))
+        .setPathEndTimeoutConstraint(0)
 
         .addBezierLine(
             pointFromArr(PUSH_ONE),
             pointFromArr(DRIVE_TWO)
         )
         .setLinearHeadingInterpolation(Math.toRadians(PUSH_ONE[2]), Math.toRadians(DRIVE_TWO[2]))
+        .setPathEndTimeoutConstraint(0)
 
         .addBezierCurve(
             pointFromArr(DRIVE_TWO),
@@ -107,12 +110,14 @@ public class BaseSpecAuton {
             pointFromArr(PUSH_TWO)
         )
         .setLinearHeadingInterpolation(Math.toRadians(DRIVE_TWO[2]), Math.toRadians(PUSH_TWO[2]))
+        .setPathEndTimeoutConstraint(0)
 
         .addBezierLine(
             pointFromArr(PUSH_TWO),
             pointFromArr(DRIVE_THREE)
         )
         .setLinearHeadingInterpolation(Math.toRadians(PUSH_TWO[2]), Math.toRadians(DRIVE_THREE[2]))
+        .setPathEndTimeoutConstraint(0)
 
         .addBezierCurve(
             pointFromArr(DRIVE_THREE),
@@ -121,12 +126,14 @@ public class BaseSpecAuton {
         )
         .setLinearHeadingInterpolation(Math.toRadians(DRIVE_THREE[2]), Math.toRadians(PUSH_THREE[2]))
         .setPathEndTimeoutConstraint(0)
+
         .addBezierCurve(
             pointFromArr(PUSH_THREE),
             pointFromArr(CONTROL_PICKUP),
             pointFromArr(PICKUP)
         )
         .setLinearHeadingInterpolation(Math.toRadians(PUSH_THREE[2]), Math.toRadians(PICKUP[2]))
+        .setZeroPowerAccelerationMultiplier(5) // TODO: test if this improves push speed?
         .build();
 
     // TODO: possible using tangential would be faster for these (add 2 control points in line with the pickup/place pts
