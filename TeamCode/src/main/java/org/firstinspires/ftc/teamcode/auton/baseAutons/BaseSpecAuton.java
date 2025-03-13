@@ -53,7 +53,7 @@ public class BaseSpecAuton {
 
   PathChain placePreLoad,
       driveOne,
-      pickupFirst, pickup, place;
+      pickup, place;
 
 
   public BaseSpecAuton(LinearOpMode opMode, NewRobot robot) {
@@ -144,7 +144,6 @@ public class BaseSpecAuton {
         )
         .setLinearHeadingInterpolation(Math.toRadians(PLACE_SPEC[2]), Math.toRadians(PICKUP[2]))
         .build();
-
   }
 
   public void setPathState(int pState) {
@@ -161,24 +160,21 @@ public class BaseSpecAuton {
 
     robot.follower.followPath(place);
     while (opMode.opModeIsActive() && (robot.follower.isBusy() || !robot.slides.atTarget())) {
-      robot.follower.update();
-      robot.slides.updatePIDControl();
-      robot.horSlide.updatePosition();
-      robot.horSlide.updatePIDControl();
+      robot.updateAutoControls();
     }
 
     robot.slides.setTarget(VerticalSlides.TRANSFER);
 
     while (opMode.opModeIsActive() && !robot.slides.atTarget()) {
-      robot.follower.update();
-      robot.slides.updatePIDControl();
-      robot.horSlide.updatePosition();
-      robot.horSlide.updatePIDControl();
+      robot.updateAutoControls();
     }
 
+    // TODO: added waitTimes here are (100+100)*4 ms
     robot.claw.clawOpenWall();
+    // TODO: you only wait 50ms for the claw to close, does it need 100 to open?
     robot.waitTime(100);
     robot.claw.setWall();
+    // TODO: maybe remove this one? can alternatively use a parametric callback on the path to do this arm movement while moving
     robot.waitTime(100);
 
     robot.follower.followPath(postPlace);
@@ -196,19 +192,13 @@ public class BaseSpecAuton {
 
         robot.follower.followPath(placePreLoad);
         while (opMode.opModeIsActive() && (robot.follower.isBusy() || !robot.slides.atTarget())) {
-          robot.follower.update();
-          robot.slides.updatePIDControl();
-          robot.horSlide.updatePosition();
-          robot.horSlide.updatePIDControl();
+          robot.updateAutoControls();
         }
 
         robot.slides.setTarget(VerticalSlides.TRANSFER);
 
         while (opMode.opModeIsActive() && !robot.slides.atTarget()) {
-          robot.follower.update();
-          robot.slides.updatePIDControl();
-          robot.horSlide.updatePosition();
-          robot.horSlide.updatePIDControl();
+          robot.updateAutoControls();
         }
 
         robot.claw.clawOpenWall();
@@ -225,8 +215,6 @@ public class BaseSpecAuton {
           pickupPlace(place, pickup);
         }
         break;
-
-      // TODO
     }
   }
 
@@ -247,10 +235,7 @@ public class BaseSpecAuton {
     robot.horSlide.setMode(RunMode.RUN_WITHOUT_ENCODER);
 
     while (this.opMode.opModeIsActive()) {
-      robot.follower.update();
-      robot.slides.updatePIDControl();
-      robot.horSlide.updatePosition();
-      robot.horSlide.updatePIDControl();
+      robot.updateAutoControls();
 
       autonomousPathUpdate();
 

@@ -121,14 +121,18 @@ public class NewRobot {
     return this.allianceColor;
   }
 
+  public void updateAutoControls() {
+    follower.update();
+    slides.updatePIDControl();
+    horSlide.updatePosition();
+    horSlide.updatePIDControl();
+  }
+
   public void waitTime(long ms) {
     long startTime = System.currentTimeMillis();
 
     while (this.opMode.opModeIsActive() && System.currentTimeMillis() - startTime < ms) {
-      follower.update();
-      slides.updatePIDControl();
-      horSlide.updatePosition();
-      horSlide.updatePIDControl();
+      updateAutoControls();
     }
   }
 }
