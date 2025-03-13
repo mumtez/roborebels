@@ -58,7 +58,7 @@ public class HorizontalSlides {
       lastError = 0;
       integralSum = 0;
       this.lastTargetPos = this.targetPos;
-      this.targetPos = Range.clip(targetPos, TRANSFER_POS, OUT_POS);
+      this.targetPos = targetPos;
     }
   }
 

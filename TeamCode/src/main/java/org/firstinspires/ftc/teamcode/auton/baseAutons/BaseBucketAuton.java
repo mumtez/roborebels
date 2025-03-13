@@ -501,6 +501,7 @@ public class BaseBucketAuton {
 
     // RETRACT H SLIDE, START FOLLOWING PATH TO BUCKET
     robot.horSlide.setTarget(HorizontalSlides.TRANSFER_POS);
+    robot.updateAutoControls();
 
     Pose curPose = robot.follower.getPose();
     robot.follower.followPath(
