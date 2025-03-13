@@ -197,7 +197,7 @@ public class BaseBucketAuton {
 
       // MOVE TO SCORE PRELOAD
       case 0:
-        robot.follower.followPath(placePreLoad, true);  //TODO: may not need hold end
+        robot.follower.followPath(placePreLoad, true);
         robot.slides.setTarget(VerticalSlides.UP_AUTO);
         robot.horSlide.setTarget(HSLIDE_1);
         setPathState(100);
@@ -474,6 +474,7 @@ public class BaseBucketAuton {
     while (opMode.opModeIsActive() && !robot.intake.validSampleIn(robot.getAllianceColor())) {
       robot.updateAutoControls();
       robot.intake.update(1, false, robot.getAllianceColor());
+      robot.slides.setTarget(VerticalSlides.TRANSFER);
 
       // move between the two positions
       if (!robot.follower.isBusy()) {
@@ -481,11 +482,11 @@ public class BaseBucketAuton {
         driveForward = !driveForward;
       }
     }
-    robot.intake.update(-1, true, robot.getAllianceColor());
 
     // OUTTAKE
     subTimer.reset();
     while (opMode.opModeIsActive() && subTimer.milliseconds() < OUT_IN_MS) {
+      robot.intake.update(-1, true, robot.getAllianceColor());
       robot.updateAutoControls();
     }
     // RE-INTAKE
