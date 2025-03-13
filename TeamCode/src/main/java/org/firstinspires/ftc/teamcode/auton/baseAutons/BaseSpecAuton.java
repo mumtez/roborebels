@@ -161,7 +161,6 @@ public class BaseSpecAuton {
   }
 
   public void pickupPlace(PathChain place, PathChain postPlace) {
-    robot.waitTime(100);
     robot.claw.clawClose();
     robot.waitTime(50);
     robot.slides.setTarget(VerticalSlides.BAR_PLACE_AUTO);
@@ -212,7 +211,6 @@ public class BaseSpecAuton {
         robot.claw.clawOpenWall();
         robot.waitTime(100);
         robot.claw.setWall();
-        robot.waitTime(100);
 
         robot.follower.followPath(driveOne);
         setPathState(2000);
