@@ -44,10 +44,6 @@ public class NewRobot {
   }
 
   public NewRobot(LinearOpMode opMode, AllianceColor allianceColor) {
-    this(opMode, allianceColor, true);
-  }
-
-  public NewRobot(LinearOpMode opMode, AllianceColor allianceColor, boolean auton) {
     this.opMode = opMode;
     this.allianceColor = allianceColor;
     HardwareMap hardwareMap = opMode.hardwareMap;
@@ -58,10 +54,8 @@ public class NewRobot {
       hub.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
     }
 
-//    if (auton) {
-    // FOLLOWER (Pedro Pathing)
     follower = new Follower(hardwareMap, FConstants.class, LConstants.class);
-//    } else {
+
     fl = hardwareMap.dcMotor.get("fl");
     fr = hardwareMap.dcMotor.get("fr");
     bl = hardwareMap.dcMotor.get("bl");
@@ -81,7 +75,6 @@ public class NewRobot {
     fr.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
     bl.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
     br.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
-//    }
 
     imu = hardwareMap.get(IMU.class, "imu");
     IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
@@ -122,15 +115,6 @@ public class NewRobot {
     claw.setInitSpec();
 
     this.intake.rotateFlat();
-  }
-
-  public void setAllianceColor(AllianceColor allianceColor) {
-    this.allianceColor = allianceColor;
-    if (allianceColor == AllianceColor.RED) {
-      this.intake.rgb.setPosition(0.28);
-    } else if (allianceColor == AllianceColor.BLUE) {
-      this.intake.rgb.setPosition(0.63);
-    }
   }
 
   public AllianceColor getAllianceColor() {

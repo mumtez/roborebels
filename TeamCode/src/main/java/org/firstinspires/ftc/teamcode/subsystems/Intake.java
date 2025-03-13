@@ -118,8 +118,7 @@ public class Intake {
 
       if (this.colors.red >= Intake.RED_THRESHOLD && this.colors.blue < Intake.COLOR_THRESHOLD) {
         this.sampleColor = SampleColor.RED;
-      } else if (this.colors.blue >= Intake.BLUE_THRESHOLD
-          && this.colors.red < Intake.COLOR_THRESHOLD) {
+      } else if (this.colors.blue >= Intake.BLUE_THRESHOLD && this.colors.red < Intake.COLOR_THRESHOLD) {
         this.sampleColor = SampleColor.BLUE;
       }
     } else {

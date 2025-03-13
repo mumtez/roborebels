@@ -16,7 +16,7 @@ public class SensorTest extends LinearOpMode {
   public void runOpMode() throws InterruptedException {
     telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-    NewRobot robot = new NewRobot(this, AllianceColor.RED, true);
+    NewRobot robot = new NewRobot(this, AllianceColor.RED);
     robot.follower.setStartingPose(new Pose(0, 0, 0));
 
     waitForStart();
@@ -50,7 +50,6 @@ public class SensorTest extends LinearOpMode {
       telemetry.addData("X", pose.getX());
       telemetry.addData("Y", pose.getY());
       telemetry.addData("Heading", pose.getHeading());
-
 
       telemetry.update();
     }

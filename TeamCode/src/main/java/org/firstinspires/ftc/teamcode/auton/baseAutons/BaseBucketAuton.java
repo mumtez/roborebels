@@ -157,8 +157,7 @@ public class BaseBucketAuton {
             Math.toRadians(INTAKE_SUB[2]))
         .build();
 
-    // TODO: ALL OF SUB MOVEMENT / INTAKE
-    // TODO: should pickup movements back and forth from the sub be TANGENTIAL heading for speed?
+    // TODO: REDO ALL OF SUB MOVEMENT / INTAKE
     intakeFour = robot.follower.pathBuilder()
         .addBezierCurve(
             pointFromArr(PLACE_BUCKET),
@@ -173,8 +172,7 @@ public class BaseBucketAuton {
             pointFromArr(INTAKE_SUB),
             pointFromArr(INTAKE_SUB_SECONDARY)
         )
-        .setLinearHeadingInterpolation(Math.toRadians(INTAKE_SUB[2]),
-            Math.toRadians(INTAKE_SUB_SECONDARY[2]))
+        .setLinearHeadingInterpolation(Math.toRadians(INTAKE_SUB[2]), Math.toRadians(INTAKE_SUB_SECONDARY[2]))
         .build();
 
     pickupSubMovementTwo = robot.follower.pathBuilder()
@@ -182,8 +180,7 @@ public class BaseBucketAuton {
             pointFromArr(INTAKE_SUB_SECONDARY),
             pointFromArr(INTAKE_SUB)
         )
-        .setLinearHeadingInterpolation(Math.toRadians(INTAKE_SUB_SECONDARY[2]),
-            Math.toRadians(INTAKE_SUB[2]))
+        .setLinearHeadingInterpolation(Math.toRadians(INTAKE_SUB_SECONDARY[2]), Math.toRadians(INTAKE_SUB[2]))
         .build();
 
     // TODO: could maybe also be tangential?
@@ -492,8 +489,7 @@ public class BaseBucketAuton {
                       pointFromArr(BUCKET_INTAKE_SUB_CONTROL),
                       pointFromArr(PLACE_BUCKET)
                   )
-                  .setLinearHeadingInterpolation(current.getHeading(),
-                      Math.toRadians(PLACE_BUCKET[2]))
+                  .setLinearHeadingInterpolation(current.getHeading(), Math.toRadians(PLACE_BUCKET[2]))
                   .build(), true);
           setPathState(12);
         }
@@ -560,6 +556,7 @@ public class BaseBucketAuton {
         }
         break;
 
+      // TODO: REWRITE
       case 2111:
         if (pathTimer.getElapsedTimeSeconds() > SUB_TIMER) {
           robot.intake.update(1, false, robot.getAllianceColor());

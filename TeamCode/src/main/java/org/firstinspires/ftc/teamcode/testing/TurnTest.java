@@ -31,7 +31,7 @@ public class TurnTest extends LinearOpMode {
   public void runOpMode() throws InterruptedException {
     telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-    robot = new NewRobot(this, AllianceColor.BLUE, true);
+    robot = new NewRobot(this, AllianceColor.BLUE);
 
     waitForStart();
     robot.follower.setStartingPose(new Pose(0, 0, 0));

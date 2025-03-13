@@ -11,7 +11,7 @@ public class BlueBucketAuton extends LinearOpMode {
 
   @Override
   public void runOpMode() throws InterruptedException {
-    NewRobot robot = new NewRobot(this, AllianceColor.BLUE, true);
+    NewRobot robot = new NewRobot(this, AllianceColor.BLUE);
     new BaseBucketAuton(this, robot).run();
   }
 }

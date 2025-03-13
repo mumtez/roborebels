@@ -21,7 +21,7 @@ public class HorizSlidePIDTesting extends LinearOpMode {
     // use dashboard telemetry
     telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-    NewRobot robot = new NewRobot(this, AllianceColor.RED, false);
+    NewRobot robot = new NewRobot(this, AllianceColor.RED);
     robot.horSlide.setMode(RunMode.STOP_AND_RESET_ENCODER);
 
     waitForStart();

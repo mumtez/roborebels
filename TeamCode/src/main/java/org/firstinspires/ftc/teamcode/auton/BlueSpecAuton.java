@@ -11,7 +11,7 @@ public class BlueSpecAuton extends LinearOpMode {
 
   @Override
   public void runOpMode() throws InterruptedException {
-    NewRobot robot = new NewRobot(this, AllianceColor.BLUE, true);
+    NewRobot robot = new NewRobot(this, AllianceColor.BLUE);
     new BaseSpecAuton(this, robot).run();
   }
 }
