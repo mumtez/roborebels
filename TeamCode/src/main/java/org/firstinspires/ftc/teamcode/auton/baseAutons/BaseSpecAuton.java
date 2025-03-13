@@ -181,10 +181,9 @@ public class BaseSpecAuton {
     // TODO: added waitTimes here are (100+100)*4 ms
     robot.claw.clawOpenWall();
     // TODO: you only wait 50ms for the claw to close, does it need 100 to open?
-    robot.waitTime(100);
+    robot.waitTime(50);
     robot.claw.setWall();
     // TODO: maybe remove this one? can alternatively use a parametric callback on the path to do this arm movement while moving
-    robot.waitTime(100);
 
     robot.follower.followPath(postPlace);
   }
