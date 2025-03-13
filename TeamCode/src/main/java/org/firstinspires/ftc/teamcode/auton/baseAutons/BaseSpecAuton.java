@@ -129,6 +129,8 @@ public class BaseSpecAuton {
         .setLinearHeadingInterpolation(Math.toRadians(PUSH_THREE[2]), Math.toRadians(PICKUP[2]))
         .build();
 
+    // TODO: possible using tangential would be faster for these (add 2 control points in line with the pickup/place pts
+    //  to maintain correct heading
     place = robot.follower.pathBuilder()
         .addBezierLine(
             pointFromArr(PICKUP),
