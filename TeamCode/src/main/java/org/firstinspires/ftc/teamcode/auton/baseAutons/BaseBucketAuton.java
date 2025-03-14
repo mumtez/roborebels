@@ -24,7 +24,7 @@ public class BaseBucketAuton {
 
   public static double INTAKE_OVERRIDE = 4;
 
-  public static double SUB_SLIDE_EXTEND_T = 0.8;
+  public static double SUB_SLIDE_EXTEND_T = 0.78;
   public static double OUT_IN_MS = 100;
 
   // MAIN POINTS
@@ -36,8 +36,8 @@ public class BaseBucketAuton {
   public static double[] INTAKE_TWO = {19, 129, 360};
   public static double[] INTAKE_THREE = {28, 125, 50};
   public static double[] INTAKE_SUB = {64, 103, 270};
-  public static double[] INTAKE_SUB_SECONDARY = {64, 97, 270};
-
+  public static double[] INTAKE_SUB_PRIME = {64, 97, 270};
+  public static double[] INTAKE_SUB_2_PRIME = {64, 97, 260};
   // CONTROL POINTS
   public static double[] BUCKET_INTAKE_SUB_CONTROL = {64, 128};
 
@@ -48,6 +48,7 @@ public class BaseBucketAuton {
       failIntakeThree,
       bucketToSub,
       subPickupForward, subPickupBackward,
+      subPickupForward2, subPickupBackward2,
       park;
 
   private int pathState = 0;
@@ -154,7 +155,6 @@ public class BaseBucketAuton {
             pointFromArr(INTAKE_SUB)
         )
         .setTangentHeadingInterpolation()
-        // TODO: tune when in path this is called (range 0.0 -> 1.0)
         .addParametricCallback(SUB_SLIDE_EXTEND_T, () -> robot.horSlide.setTarget(HorizontalSlides.OUT_POS))
         .addParametricCallback(1.0, () -> robot.intake.update(-1, true, robot.getAllianceColor()))
         .setPathEndTimeoutConstraint(400)
@@ -163,20 +163,40 @@ public class BaseBucketAuton {
     subPickupForward = robot.follower.pathBuilder()
         .addBezierLine(
             pointFromArr(INTAKE_SUB),
-            pointFromArr(INTAKE_SUB_SECONDARY)
+            pointFromArr(INTAKE_SUB_PRIME)
         )
-        .setLinearHeadingInterpolation(Math.toRadians(INTAKE_SUB[2]), Math.toRadians(INTAKE_SUB_SECONDARY[2]))
-        .setPathEndTimeoutConstraint(250)
+        .setLinearHeadingInterpolation(Math.toRadians(INTAKE_SUB[2]), Math.toRadians(INTAKE_SUB_PRIME[2]))
+        .setPathEndTimeoutConstraint(200)
         .setZeroPowerAccelerationMultiplier(5)
         .build();
 
     subPickupBackward = robot.follower.pathBuilder()
         .addBezierLine(
-            pointFromArr(INTAKE_SUB_SECONDARY),
+            pointFromArr(INTAKE_SUB_PRIME),
             pointFromArr(INTAKE_SUB)
         )
-        .setLinearHeadingInterpolation(Math.toRadians(INTAKE_SUB_SECONDARY[2]), Math.toRadians(INTAKE_SUB[2]))
-        .setPathEndTimeoutConstraint(250)
+        .setLinearHeadingInterpolation(Math.toRadians(INTAKE_SUB_PRIME[2]), Math.toRadians(INTAKE_SUB[2]))
+        .setPathEndTimeoutConstraint(200)
+        .setZeroPowerAccelerationMultiplier(5)
+        .build();
+
+    subPickupForward2 = robot.follower.pathBuilder()
+        .addBezierLine(
+            pointFromArr(INTAKE_SUB),
+            pointFromArr(INTAKE_SUB_2_PRIME)
+        )
+        .setLinearHeadingInterpolation(Math.toRadians(INTAKE_SUB[2]), Math.toRadians(INTAKE_SUB_2_PRIME[2]))
+        .setPathEndTimeoutConstraint(200)
+        .setZeroPowerAccelerationMultiplier(5)
+        .build();
+
+    subPickupBackward2 = robot.follower.pathBuilder()
+        .addBezierLine(
+            pointFromArr(INTAKE_SUB_2_PRIME),
+            pointFromArr(INTAKE_SUB)
+        )
+        .setLinearHeadingInterpolation(Math.toRadians(INTAKE_SUB_2_PRIME[2]), Math.toRadians(INTAKE_SUB[2]))
+        .setPathEndTimeoutConstraint(200)
         .setZeroPowerAccelerationMultiplier(5)
         .build();
 
@@ -469,12 +489,14 @@ public class BaseBucketAuton {
 
   private void cycleSub(PathChain forwardPath, PathChain backPath) {
     robot.intake.update(1, false, robot.getAllianceColor());
+    robot.slides.setTarget(VerticalSlides.TRANSFER);
+    robot.claw.setTransfer();
+    robot.claw.clawOpen();
 
     boolean driveForward = true;
     while (opMode.opModeIsActive() && !robot.intake.validSampleIn(robot.getAllianceColor())) {
       robot.updateAutoControls();
       robot.intake.update(1, false, robot.getAllianceColor());
-      robot.slides.setTarget(VerticalSlides.TRANSFER);
 
       // move between the two positions
       if (!robot.follower.isBusy()) {
@@ -494,9 +516,6 @@ public class BaseBucketAuton {
     while (opMode.opModeIsActive() && !robot.intake.validSampleIn(robot.getAllianceColor())) {
       robot.updateAutoControls();
       robot.intake.update(1, true, robot.getAllianceColor());
-      // TODO: some kind of reset here if no sample detected after re-intake
-      //if (subTimer.milliseconds() > 1000)
-      // ...
     }
 
     // RETRACT H SLIDE, START FOLLOWING PATH TO BUCKET
