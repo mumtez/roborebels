@@ -6,12 +6,12 @@ import org.firstinspires.ftc.teamcode.NewRobot;
 import org.firstinspires.ftc.teamcode.NewRobot.AllianceColor;
 import org.firstinspires.ftc.teamcode.auton.baseAutons.BaseSpecAuton;
 
-@Autonomous(name = "RED SPEC", group = "PEDRO")
-public class RedSpecAuton extends LinearOpMode {
+@Autonomous(name = "SPECIMEN", group = "PEDRO")
+public class SpecAuton extends LinearOpMode {
 
   @Override
   public void runOpMode() throws InterruptedException {
-    NewRobot robot = new NewRobot(this, AllianceColor.RED);
+    NewRobot robot = new NewRobot(this, AllianceColor.BLUE);
     new BaseSpecAuton(this, robot).run();
   }
 }
