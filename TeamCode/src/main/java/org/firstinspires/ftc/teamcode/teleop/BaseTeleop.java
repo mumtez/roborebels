@@ -74,9 +74,6 @@ public class BaseTeleop {
       updateGamepads();
 
       robot.horSlide.updatePosition();
-      //robot.slides.updatePIDControl();
-
-
 
       if (currentGamepad1.left_bumper && !previousGamepad1.left_bumper) {
         robot.imu.resetYaw();
@@ -271,7 +268,7 @@ public class BaseTeleop {
       case BUCKET_PLACE:
         robot.horSlide.updatePIDControl();
         //TODO: timer needed here?
-        if (stateTimer.milliseconds() > 500 && currentGamepad2.square) {
+        if (stateTimer.milliseconds() > 400 && currentGamepad2.square) {
           robot.claw.clawOpen();
           state = ModeState.BUCKET_POST_PLACE;
           stateTimer.reset();
@@ -319,22 +316,20 @@ public class BaseTeleop {
 
     if (currentGamepad2.right_trigger > 0 || currentGamepad2.left_trigger > 0) {
       robot.intake.update(
-              currentGamepad2.right_trigger - currentGamepad2.left_trigger,
-              intakeFlat,
-              robot.getAllianceColor()
+          currentGamepad2.right_trigger - currentGamepad2.left_trigger,
+          intakeFlat,
+          robot.getAllianceColor()
       );
-    }
-    else if (currentGamepad2.right_bumper){
+    } else if (currentGamepad2.right_bumper) {
       robot.intake.halfUpdate(
-              1,
-              robot.getAllianceColor()
+          1,
+          robot.getAllianceColor()
       );
-    }
-    else{
+    } else {
       robot.intake.update(
-              0,
-              intakeFlat,
-              robot.getAllianceColor()
+          0,
+          intakeFlat,
+          robot.getAllianceColor()
       );
     }
 
@@ -349,7 +344,6 @@ public class BaseTeleop {
   public void updateTelemetry() {
     telemetry.addData("MODE", specimenMode ? "SPECIMEN" : "BUCKET");
     telemetry.addData("OVERRIDE", hangOverride);
-    telemetry.addData("Vert Slides target", robot.slides.getTarget());
 
     telemetry.addData("STATE", state);
     telemetry.addData("STATE Timer", stateTimer.milliseconds());

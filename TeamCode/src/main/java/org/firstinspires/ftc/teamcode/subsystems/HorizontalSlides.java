@@ -27,8 +27,6 @@ public class HorizontalSlides {
   private double lastError = 0;
   private double integralSum = 0;
   private int targetPos = TRANSFER_POS;
-  private int lastTargetPos = TRANSFER_POS;
-
   public int position = 0;
 
   public final DcMotor hSlide;
@@ -52,13 +50,12 @@ public class HorizontalSlides {
     hSlide.setPower(pow);
   }
 
-  public void setTarget(int targetPos) {
-    if (targetPos != lastTargetPos) {
+  public void setTarget(int target) {
+    if (target != this.targetPos) {
       timer.reset();
       lastError = 0;
       integralSum = 0;
-      this.lastTargetPos = this.targetPos;
-      this.targetPos = targetPos;
+      this.targetPos = target;
     }
   }
 

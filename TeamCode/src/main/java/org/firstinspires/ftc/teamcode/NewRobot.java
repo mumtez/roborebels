@@ -131,7 +131,7 @@ public class NewRobot {
   public void waitTime(long ms) {
     long startTime = System.currentTimeMillis();
 
-    while (this.opMode.opModeIsActive() && System.currentTimeMillis() - startTime < ms) {
+    while (this.opMode.opModeIsActive() && (System.currentTimeMillis() - startTime) < ms) {
       updateAutoControls();
     }
   }

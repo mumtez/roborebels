@@ -9,7 +9,6 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple.Direction;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
 
 @Config
 public class VerticalSlides {
@@ -24,7 +23,7 @@ public class VerticalSlides {
   public static int BAR_PLACE_UNDER = 300;
 
   // TODO: tune
-  public static int UP_AUTO = 1350;
+  public static int UP_AUTO = 1450;
 
   public static int UP = 1500;
 
@@ -40,7 +39,6 @@ public class VerticalSlides {
   private double lastError = 0;
   private double integralSum = 0;
   private int targetPos = TRANSFER;
-  private int lastTargetPos = TRANSFER;
 
 
   private int offset = 0;
@@ -76,13 +74,12 @@ public class VerticalSlides {
     slideLeft.setPower(pow);
   }
 
-  public void setTarget(int targetPos) {
-    if (targetPos != lastTargetPos) {
+  public void setTarget(int target) {
+    if (target != this.targetPos) {
       timer.reset();
       lastError = 0;
       integralSum = 0;
-      this.targetPos = targetPos;
-      this.lastTargetPos = this.targetPos;
+      this.targetPos = target;
     }
   }
 
