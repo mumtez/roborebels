@@ -50,7 +50,6 @@ public class BaseBucketAuton {
       intakeOne, placeOne,
       intakeTwo, placeTwo,
       intakeThree, placeThree,
-      failIntakeThree,
       bucketToSub,
       subPickupForward, subPickupBackward,
       bucketToSub2,
@@ -145,15 +144,6 @@ public class BaseBucketAuton {
             pointFromArr(PLACE_BUCKET)
         )
         .setLinearHeadingInterpolation(Math.toRadians(INTAKE_THREE[2]), Math.toRadians(PLACE_BUCKET[2]))
-        .build();
-
-    failIntakeThree = robot.follower.pathBuilder()
-        .addBezierCurve(
-            pointFromArr(INTAKE_THREE),
-            pointFromArr(BUCKET_INTAKE_SUB_CONTROL),
-            pointFromArr(INTAKE_SUB)
-        )
-        .setLinearHeadingInterpolation(Math.toRadians(INTAKE_THREE[2]), Math.toRadians(INTAKE_SUB[2]))
         .build();
 
     bucketToSub = robot.follower.pathBuilder()
@@ -425,8 +415,16 @@ public class BaseBucketAuton {
           robot.intake.update(-1, true, robot.getAllianceColor());
           robot.horSlide.setTarget(HorizontalSlides.TRANSFER_POS);
 
-          robot.follower.followPath(failIntakeThree, true);
-          setPathState(11);
+          robot.follower.followPath(placeThree, true);
+          setPathState(81);
+        }
+        break;
+
+      case 81:
+        if (!robot.follower.isBusy()) {
+          robot.intake.update(0, true, robot.getAllianceColor());
+          robot.follower.followPath(bucketToSub);
+          setPathState(1100);
         }
         break;
 
