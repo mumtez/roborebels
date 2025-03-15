@@ -18,6 +18,7 @@ public class BaseTeleop {
     BUCKET_INTAKING, BUCKET_TRANSFER, BUCKET_POST_TRANSFER, BUCKET_PLACE, BUCKET_POST_PLACE
   }
 
+  public static double OUTTAKE_SPEED_MODIFIER = 0.6; // TODO: make sure can't get stuck at low battery
   public static double HORIZONTAL_MODIFIER = 0.075;
   public static double HOR_SLOW = 0.85;
 
@@ -62,6 +63,7 @@ public class BaseTeleop {
     }
 
     // --- START ---
+    robot.intake.sweepOut(false);
     robot.slides.setTarget(VerticalSlides.TRANSFER);
     robot.claw.setTransfer();
     robot.claw.clawOpen();
@@ -316,7 +318,7 @@ public class BaseTeleop {
 
     if (currentGamepad2.right_trigger > 0 || currentGamepad2.left_trigger > 0) {
       robot.intake.update(
-          currentGamepad2.right_trigger - currentGamepad2.left_trigger,
+          currentGamepad2.right_trigger - currentGamepad2.left_trigger * OUTTAKE_SPEED_MODIFIER,
           intakeFlat,
           robot.getAllianceColor()
       );

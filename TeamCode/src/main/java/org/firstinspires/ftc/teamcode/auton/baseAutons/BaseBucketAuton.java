@@ -490,7 +490,6 @@ public class BaseBucketAuton {
   private void place(PathChain nextPath, int initialDelay, int delay) {
     subTimer.reset();
     while (opMode.opModeIsActive() && subTimer.milliseconds() < initialDelay) {
-      System.out.println("INITAL WAIT " + subTimer.milliseconds());
       robot.updateAutoControls();
     }
 
@@ -498,7 +497,6 @@ public class BaseBucketAuton {
 
     subTimer.reset();
     while (opMode.opModeIsActive() && subTimer.milliseconds() < delay) {
-      System.out.println("SECONDARY WAIT " + subTimer.milliseconds());
       robot.updateAutoControls();
     }
 
@@ -519,8 +517,8 @@ public class BaseBucketAuton {
       robot.updateAutoControls();
       if (subTimer.milliseconds() < 2000) {
         robot.intake.update(1, false, robot.getAllianceColor());
-      } else if (subTimer.milliseconds() < 2250) {
-        robot.intake.update(-.4, false, robot.getAllianceColor());
+      } else if (subTimer.milliseconds() < 2100) {
+        robot.intake.update(-.6, false, robot.getAllianceColor());
       } else {
         subTimer.reset();
       }

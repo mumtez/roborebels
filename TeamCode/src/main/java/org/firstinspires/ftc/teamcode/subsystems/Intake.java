@@ -25,6 +25,9 @@ public class Intake {
     RED, BLUE, YELLOW, NONE
   }
 
+  public static double SWEEP_OUT = 0.5;
+  public static double SWEEP_IN = 0.5;
+
   public static double INTAKE_DOWN = 0.42;
   public static double INTAKE_HALF = 0.36;
   public static double INTAKE_FLAT = 0.18;
@@ -39,6 +42,7 @@ public class Intake {
 
   private final DcMotor intake;
   public final ServoImplEx rotate;
+  public final ServoImplEx sweep;
 
   public final NormalizedColorSensor colorSensor;
   public final Servo rgb;
@@ -72,6 +76,9 @@ public class Intake {
     rotate = (ServoImplEx) hardwareMap.servo.get("flip");
     rotate.setDirection(Direction.REVERSE);
 
+    sweep = (ServoImplEx) hardwareMap.servo.get("sweep");
+    sweep.setDirection(Direction.FORWARD);
+
     colorSensor = hardwareMap.get(NormalizedColorSensor.class, "ins");
     colorSensor.setGain(COLOR_GAIN);
     if (colorSensor instanceof SwitchableLight) {
@@ -81,6 +88,10 @@ public class Intake {
 
     rgb = hardwareMap.servo.get("rgb");
     rgb.setPosition(0);
+  }
+
+  public void sweepOut(boolean out) {
+    this.sweep.setPosition(out ? SWEEP_OUT : SWEEP_IN);
   }
 
   public void senseColor() {
@@ -119,14 +130,14 @@ public class Intake {
     if (this.dist < DIST_THRESHOLD_CM) {
       if (this.colors.green >= Intake.GREEN_THRESHOLD) {
         this.sampleColor = SampleColor.YELLOW;
-      }
-      else {
-        if (this.colors.red >= Intake.RED_THRESHOLD && this.colors.blue < Intake.COLOR_THRESHOLD && this.colors.green < Intake.GREEN_THRESHOLD) {
+      } else {
+        if (this.colors.red >= Intake.RED_THRESHOLD && this.colors.blue < Intake.COLOR_THRESHOLD
+            && this.colors.green < Intake.GREEN_THRESHOLD) {
           this.sampleColor = SampleColor.RED;
-        } else if (this.colors.blue >= Intake.BLUE_THRESHOLD && this.colors.red < Intake.COLOR_THRESHOLD && this.colors.green < Intake.GREEN_THRESHOLD) {
+        } else if (this.colors.blue >= Intake.BLUE_THRESHOLD && this.colors.red < Intake.COLOR_THRESHOLD
+            && this.colors.green < Intake.GREEN_THRESHOLD) {
           this.sampleColor = SampleColor.BLUE;
-        }
-        else{
+        } else {
           this.sampleColor = SampleColor.YELLOW;
         }
       }
@@ -180,8 +191,7 @@ public class Intake {
     if (this.dist < DIST_THRESHOLD_CM) {
       if (this.colors.green >= Intake.GREEN_THRESHOLD) {
         this.sampleColor = SampleColor.YELLOW;
-      }
-      else {
+      } else {
         if (this.colors.red >= Intake.RED_THRESHOLD && this.colors.blue < Intake.COLOR_THRESHOLD) {
           this.sampleColor = SampleColor.RED;
         } else if (this.colors.blue >= Intake.BLUE_THRESHOLD && this.colors.red < Intake.COLOR_THRESHOLD) {
