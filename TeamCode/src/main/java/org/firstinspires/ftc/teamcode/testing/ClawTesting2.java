@@ -18,6 +18,8 @@ public class ClawTesting2 extends LinearOpMode {
   public static double CLAW_UP_ARM_POS = Claw.upArmInit;
   public static double CLAW_DOWN_ARM_POS = Claw.downArmInit;
   public static double WRIST_POS = Claw.wristDefault;
+  public static double SWEEP_POS = Intake.SWEEP_IN;
+
 
   public static int SLIDE_POS = VerticalSlides.TRANSFER;
 
@@ -37,6 +39,10 @@ public class ClawTesting2 extends LinearOpMode {
       robot.claw.claw.setPosition(CLAW_POS);
       robot.claw.clawUpArm.setPosition(CLAW_UP_ARM_POS);
       robot.claw.clawDownArm.setPosition(CLAW_DOWN_ARM_POS);
+
+      robot.intake.sweep.setPosition(SWEEP_POS);
+
+      //robot.intake.sweepOut(gamepad2.circle);
     }
   }
 }
