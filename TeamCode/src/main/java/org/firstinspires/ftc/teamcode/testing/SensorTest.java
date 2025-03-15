@@ -35,13 +35,22 @@ public class SensorTest extends LinearOpMode {
       telemetry.addLine();
       telemetry.addLine("=== SENSORS ===");
       telemetry.addData("V SLIDE MAG LIM", robot.slides.magLim.isPressed());
-      robot.intake.senseColor();
+      double intakePow = gamepad1.right_trigger - gamepad1.left_trigger;
       robot.intake.senseDistance();
+      robot.intake.senseColor();
+      robot.intake.updateSampleColor();
+      robot.intake.setPower(intakePow);
+      if (Math.abs(intakePow) > 0.1) {
+        robot.intake.rotateDown();
+      } else {
+        robot.intake.rotateFlat();
+      }
       telemetry.addData("INTAKE COLOR RED", robot.intake.getColors().red);
       telemetry.addData("INTAKE COLOR GREEN", robot.intake.getColors().green);
       telemetry.addData("INTAKE COLOR BLUE", robot.intake.getColors().blue);
       telemetry.addData("INTAKE COLOR ALPHA", robot.intake.getColors().alpha);
       telemetry.addData("INTAKE COLOR SENSOR DIST", robot.intake.getDist());
+      telemetry.addData("DETECT", robot.intake.getSampleColor());
 
       telemetry.addLine();
       telemetry.addLine("=== LOCALIZER ===");

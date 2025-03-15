@@ -28,15 +28,14 @@ public class Intake {
   public static double SWEEP_OUT = 0.65;
   public static double SWEEP_IN = 0.35;
 
-  public static double INTAKE_DOWN = 0.36;
+  public static double INTAKE_DOWN = 0.28;
   public static double INTAKE_HALF = 0.19;
   public static double INTAKE_FLAT = 0.12;
 
   public static float COLOR_GAIN = 2;
-  public static double RED_THRESHOLD = 0.02;
-  public static double BLUE_THRESHOLD = 0.02;
-  public static double COLOR_THRESHOLD = 0.01;
-  public static double GREEN_THRESHOLD = 0.025;
+  public static double BLUE_THRESHOLD = 0.03;
+  public static double RED_THRESHOLD = 0.035;
+  public static double GREEN_THRESHOLD = 0.045;
 
   public static double DIST_THRESHOLD_CM = 2;
 
@@ -90,6 +89,10 @@ public class Intake {
     rgb.setPosition(0);
   }
 
+  public SampleColor getSampleColor() {
+    return this.sampleColor;
+  }
+
   public void sweepOut(boolean out) {
     this.sweep.setPosition(out ? SWEEP_OUT : SWEEP_IN);
   }
@@ -122,23 +125,30 @@ public class Intake {
     }
   }
 
-  public void update(double power, boolean flat, AllianceColor allianceColor) {
-    this.senseDistance();
-    this.senseColor();
-
+  public void updateSampleColor() {
     // Update sample color
     if (this.dist < DIST_THRESHOLD_CM) {
-
-      if (this.colors.green >= Intake.GREEN_THRESHOLD) {
-        this.sampleColor = SampleColor.YELLOW;
-      } else if (this.colors.blue >= Intake.BLUE_THRESHOLD && this.colors.red < Intake.COLOR_THRESHOLD) {
+      if (this.colors.red >= RED_THRESHOLD && this.colors.green < GREEN_THRESHOLD) {
+        this.sampleColor = SampleColor.RED;
+      } else if (this.colors.blue >= BLUE_THRESHOLD && this.colors.green < GREEN_THRESHOLD) {
         this.sampleColor = SampleColor.BLUE;
       } else {
-        this.sampleColor = SampleColor.RED;
+        this.sampleColor = SampleColor.YELLOW;
       }
-
     } else {
       this.sampleColor = SampleColor.NONE;
+    }
+  }
+
+  public void update(double power, boolean flat, AllianceColor allianceColor) {
+    this.update(power, flat, allianceColor, true);
+  }
+
+  public void update(double power, boolean flat, AllianceColor allianceColor, boolean useSensor) {
+    if (useSensor) {
+      this.senseDistance();
+      this.senseColor();
+      this.updateSampleColor();
     }
 
     // If spitting, finish spit (400ms)
@@ -181,22 +191,7 @@ public class Intake {
   public void halfUpdate(double power, AllianceColor allianceColor) {
     this.senseDistance();
     this.senseColor();
-
-    // Update sample color
-    if (this.dist < DIST_THRESHOLD_CM) {
-      if (this.colors.green >= Intake.GREEN_THRESHOLD) {
-        this.sampleColor = SampleColor.YELLOW;
-      } else {
-        if (this.colors.red >= Intake.RED_THRESHOLD && this.colors.blue < Intake.COLOR_THRESHOLD) {
-          this.sampleColor = SampleColor.RED;
-        } else if (this.colors.blue >= Intake.BLUE_THRESHOLD && this.colors.red < Intake.COLOR_THRESHOLD) {
-          this.sampleColor = SampleColor.BLUE;
-        }
-      }
-
-    } else {
-      this.sampleColor = SampleColor.NONE;
-    }
+    this.updateSampleColor();
 
     // If spitting, finish spit (400ms)
     if (this.spitTimer.milliseconds() > 400) {

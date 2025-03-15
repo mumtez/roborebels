@@ -28,7 +28,7 @@ public class BaseSpecAuton {
   public static double[] CONTROL_PUSH_ONE = {61, 25};
   public static double[] DRIVE_TWO = {50, 26, 180};
 
-  public static double[] PUSH_TWO = {25, 16, 180};
+  public static double[] PUSH_TWO = {25, 15, 180};
 
   public static double[] CONTROL_PUSH_TWO = {61, 8};
 
@@ -42,6 +42,9 @@ public class BaseSpecAuton {
   public static double[] PICKUP = {13.5, 32, 180};
 
   public static double[] CONTROL_PICKUP = {35, 30};
+
+  public static double[] CONTROL_PICKUP3 = {24, 32};
+  public static double[] CONTROL_PICKUP2 = {24, 60};
 
 
   private int pathState = 1000;
