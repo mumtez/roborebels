@@ -25,12 +25,12 @@ public class Intake {
     RED, BLUE, YELLOW, NONE
   }
 
-  public static double SWEEP_OUT = 0.65;
+  public static double SWEEP_OUT = 0.05;
   public static double SWEEP_IN = 0.35;
 
-  public static double INTAKE_DOWN = 0.28;
-  public static double INTAKE_HALF = 0.19;
-  public static double INTAKE_FLAT = 0.12;
+  public static double INTAKE_DOWN = 0.3;
+  public static double INTAKE_HALF = 0.2;
+  public static double INTAKE_FLAT = 0.06;
 
   public static float COLOR_GAIN = 2;
   public static double BLUE_THRESHOLD = 0.03;

@@ -165,11 +165,11 @@ public class BaseTeleop {
 
       // TRIANGLE --> CLIP | SQUARE --> WALL
       case SPEC_PRE_CLIP:
-        if (currentGamepad2.triangle) {
+        if (currentGamepad2.triangle || currentGamepad1.triangle) {
           robot.slides.setTarget(VerticalSlides.BAR_PLACE_TELEOP);
           state = ModeState.SPEC_CLIP;
         }
-        if (currentGamepad2.square) {
+        if (currentGamepad2.square || currentGamepad1.square) {
           robot.claw.setWall();
           state = ModeState.SPEC_CLIP;
         }
@@ -227,12 +227,12 @@ public class BaseTeleop {
         if (stateTimer.seconds() > 0.1 && stateTimer.seconds() < 0.3) {
           robot.intake.update(1, true, robot.getAllianceColor());
         }
-        if (stateTimer.seconds() > 0.3) {
+        if (stateTimer.seconds() > 0.35) {
           robot.intake.update(0, true, robot.getAllianceColor());
         }
 
         robot.horSlide.updatePIDControl();
-        if (robot.horSlide.atTarget() && robot.slides.atTarget() && stateTimer.seconds() > 0.32) {
+        if (robot.horSlide.atTarget() && robot.slides.atTarget() && stateTimer.seconds() > 0.37) {
           robot.claw.clawClose();
           stateTimer.reset();
           state = ModeState.BUCKET_POST_TRANSFER;
@@ -271,7 +271,7 @@ public class BaseTeleop {
       case BUCKET_PLACE:
         robot.horSlide.updatePIDControl();
         //TODO: timer needed here?
-        if (stateTimer.milliseconds() > 400 && currentGamepad2.square) {
+        if (stateTimer.milliseconds() > 400 && (currentGamepad2.square || currentGamepad1.square)) {
           robot.claw.clawOpen();
           state = ModeState.BUCKET_POST_PLACE;
           stateTimer.reset();
@@ -313,6 +313,7 @@ public class BaseTeleop {
       robot.horSlide.setTarget(robot.horSlide.position);
     } else {
       // User is NOT controlling the motor, enable PID to hold position
+      robot.horSlide.updatePosition();
       robot.horSlide.updatePIDControl();
     }
 
@@ -324,7 +325,7 @@ public class BaseTeleop {
           intakeFlat,
           robot.getAllianceColor()
       );
-    } else if (currentGamepad2.right_bumper) {
+    } else if (currentGamepad2.left_bumper) {
       robot.intake.halfUpdate(
           1,
           robot.getAllianceColor()

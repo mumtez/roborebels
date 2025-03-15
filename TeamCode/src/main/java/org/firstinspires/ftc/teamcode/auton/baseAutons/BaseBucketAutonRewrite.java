@@ -31,7 +31,7 @@ public class BaseBucketAutonRewrite {
   public static double OUT_IN_MS = 100;
 
   public static int[] INTAKE_TIMEOUTS = {500, 500, 500, 500, 500};
-  public static int[] PLACE_TIMEOUTS = {500, 500, 500, 500, 500};
+  public static int[] PLACE_TIMEOUTS = {500, 500, 500, 500, 500, 500};
 
   // MAIN POINTS
 
@@ -206,7 +206,7 @@ public class BaseBucketAutonRewrite {
         .setTangentHeadingInterpolation()
         .addParametricCallback(SUB_SLIDE_EXTEND_T, () -> robot.horSlide.setTarget(HSLIDE_SUB))
         .addParametricCallback(1.0, () -> robot.intake.sweepOut(true))
-        .setPathEndTimeoutConstraint(INTAKE_TIMEOUTS[4])
+        .setPathEndTimeoutConstraint(INTAKE_TIMEOUTS[3])
         .build();
 
     subToBucket = robot.follower.pathBuilder()
@@ -231,7 +231,7 @@ public class BaseBucketAutonRewrite {
         .setTangentHeadingInterpolation()
         .addParametricCallback(SUB_SLIDE_EXTEND_T, () -> robot.horSlide.setTarget(HSLIDE_SUB))
         .addParametricCallback(1.0, () -> robot.intake.sweepOut(true))
-        .setPathEndTimeoutConstraint(INTAKE_TIMEOUTS[5])
+        .setPathEndTimeoutConstraint(INTAKE_TIMEOUTS[4])
         .build();
 
     subToBucket2 = robot.follower.pathBuilder()
