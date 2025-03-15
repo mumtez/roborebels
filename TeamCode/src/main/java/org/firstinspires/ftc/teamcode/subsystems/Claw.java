@@ -22,6 +22,9 @@ public class Claw {
   public static double upArmPlaceAuto = 0.7;
 
   public static double upArmWallAuto = 0.17;
+
+  public static double upArmSpecInit = 0.07;
+
   public static double upArmBucket = .65;
 
   public static double upArmTransfer = 0.19;
@@ -96,7 +99,7 @@ public class Claw {
 
   public void setInitSpec() {
     clawDownArm.setPosition(downArmSpecInit);
-    clawUpArm.setPosition(upArmWallAuto);
+    clawUpArm.setPosition(upArmSpecInit);
     wrist.setPosition(wristPlaceAuto);
   }
 
