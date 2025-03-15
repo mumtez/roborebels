@@ -142,6 +142,9 @@ public class BaseTeleop {
   }
 
   public void specimenModeUpdate() {
+    robot.slides.updatePIDControl();
+    intakeControl();
+
     switch (state) {
       case SPEC_WALL:
         if (currentGamepad2.right_bumper) {
@@ -196,13 +199,11 @@ public class BaseTeleop {
         robot.slides.setTarget(VerticalSlides.TRANSFER);
         break;
     }
-    robot.slides.updatePIDControl();
-
-    // Independent Intake Control
-    intakeControl();
   }
 
   public void bucketModeUpdate() {
+    robot.slides.updatePIDControl();
+
     switch (state) {
       case BUCKET_INTAKING:
         intakeControl();
@@ -223,15 +224,13 @@ public class BaseTeleop {
         break;
 
       case BUCKET_TRANSFER:
+        robot.horSlide.updatePIDControl();
+
         if (stateTimer.seconds() > 0.1 && stateTimer.seconds() < 0.3) {
           robot.intake.update(1, true, robot.getAllianceColor());
-        }
-        if (stateTimer.seconds() > 0.3) {
+        } else if (stateTimer.seconds() < 0.32) {
           robot.intake.update(0, true, robot.getAllianceColor());
-        }
-
-        robot.horSlide.updatePIDControl();
-        if (robot.horSlide.atTarget() && robot.slides.atTarget() && stateTimer.seconds() > 0.32) {
+        } else if (robot.horSlide.atTarget() && robot.slides.atTarget() && stateTimer.seconds() > 0.32) {
           robot.claw.clawClose();
           stateTimer.reset();
           state = ModeState.BUCKET_POST_TRANSFER;
@@ -295,15 +294,14 @@ public class BaseTeleop {
         robot.slides.setTarget(VerticalSlides.TRANSFER);
         break;
     }
-    robot.slides.updatePIDControl();
   }
 
   public void intakeControl() {
 
     double hSlidePow = -currentGamepad2.right_stick_y;
 
-    if ((hSlidePow < -0.05 && robot.horSlide.position < 100)
-        || (hSlidePow > 0.05 && robot.horSlide.position > HorizontalSlides.OUT_POS - 100)) {
+    if ((hSlidePow < -0.05 && robot.horSlide.position < 75)
+        || (hSlidePow > 0.05 && robot.horSlide.position > HorizontalSlides.OUT_POS - 75)) {
       robot.horSlide.setPower(hSlidePow * HORIZONTAL_MODIFIER);
       robot.horSlide.setTarget(robot.horSlide.position);
     } else if (Math.abs(hSlidePow) > 0.05) {

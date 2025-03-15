@@ -217,6 +217,7 @@ public class BaseBucketAutonRewrite {
             pointFromArr(BUCKET)
         )
         .setTangentHeadingInterpolation()
+        .setReversed(true)
         .setPathEndTimeoutConstraint(PLACE_TIMEOUTS[4])
         .build();
 
@@ -241,6 +242,7 @@ public class BaseBucketAutonRewrite {
             pointFromArr(BUCKET)
         )
         .setTangentHeadingInterpolation()
+        .setReversed(true)
         .setPathEndTimeoutConstraint(PLACE_TIMEOUTS[5])
         .build();
 
