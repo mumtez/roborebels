@@ -28,9 +28,9 @@ public class Intake {
   public static double SWEEP_OUT = 0.5;
   public static double SWEEP_IN = 0.5;
 
-  public static double INTAKE_DOWN = 0.42;
-  public static double INTAKE_HALF = 0.36;
-  public static double INTAKE_FLAT = 0.18;
+  public static double INTAKE_DOWN = 0.36;
+  public static double INTAKE_HALF = 0.19;
+  public static double INTAKE_FLAT = 0.12;
 
   public static float COLOR_GAIN = 2;
   public static double RED_THRESHOLD = 0.02;
