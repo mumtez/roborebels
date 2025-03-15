@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.subsystems.VerticalSlides;
 public class BaseSpecAuton {
 
   public static double[] START = {10, 63, 180};
-  public static double[] PLACE_SPEC = {36, 67, 180};
+  public static double[] PLACE_SPEC = {34, 68, 180};
 
   public static double[] PLACE_SPEC_FIRST = {32, 69, 180};
 
@@ -39,9 +39,9 @@ public class BaseSpecAuton {
 
   public static double[] CONTROL_PUSH_THREE = {61, 5};
 
-  public static double[] PICKUP = {13.5, 30, 180};
+  public static double[] PICKUP = {13.5, 32, 180};
 
-  public static double[] CONTROL_PICKUP = {32, 30};
+  public static double[] CONTROL_PICKUP = {35, 30};
 
 
   private int pathState = 1000;

@@ -98,6 +98,8 @@ public class NewRobot {
     horSlide.setTarget(HorizontalSlides.TRANSFER_POS);
     slides.setTarget(VerticalSlides.TRANSFER);
 
+    intake.sweepOut(false);
+
     claw.clawClose();
     claw.setInit();
 
@@ -110,6 +112,8 @@ public class NewRobot {
 
     horSlide.setTarget(HorizontalSlides.TRANSFER_POS);
     slides.setTarget(VerticalSlides.TRANSFER);
+
+    intake.sweepOut(false);
 
     claw.clawClose();
     claw.setInitSpec();

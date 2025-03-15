@@ -224,13 +224,15 @@ public class BaseTeleop {
         break;
 
       case BUCKET_TRANSFER:
-        robot.horSlide.updatePIDControl();
-
         if (stateTimer.seconds() > 0.1 && stateTimer.seconds() < 0.3) {
           robot.intake.update(1, true, robot.getAllianceColor());
-        } else if (stateTimer.seconds() < 0.32) {
+        }
+        if (stateTimer.seconds() > 0.3) {
           robot.intake.update(0, true, robot.getAllianceColor());
-        } else if (robot.horSlide.atTarget() && robot.slides.atTarget() && stateTimer.seconds() > 0.32) {
+        }
+
+        robot.horSlide.updatePIDControl();
+        if (robot.horSlide.atTarget() && robot.slides.atTarget() && stateTimer.seconds() > 0.32) {
           robot.claw.clawClose();
           stateTimer.reset();
           state = ModeState.BUCKET_POST_TRANSFER;
@@ -297,6 +299,8 @@ public class BaseTeleop {
   }
 
   public void intakeControl() {
+
+    robot.intake.sweepOut(currentGamepad1.cross);
 
     double hSlidePow = -currentGamepad2.right_stick_y;
 
