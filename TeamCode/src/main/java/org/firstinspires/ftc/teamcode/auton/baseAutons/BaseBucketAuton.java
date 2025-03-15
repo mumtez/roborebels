@@ -25,12 +25,14 @@ public class BaseBucketAuton {
   public static double INTAKE_OVERRIDE = 4;
 
   public static double SUB_SLIDE_EXTEND_T = 0.78;
-  public static double OUT_IN_MS = 100;
+  public static double OUT_IN_MS = 125;
 
   // MAIN POINTS
 
   public static double[] START = {9, 105, 270};
   public static double[] PLACE_BUCKET = {16, 128, 315};
+  public static double[] PLACE_BUCKET_SAFE = {15, 127, 315};
+
 
   public static double[] INTAKE_ONE = {19, 124, 360};
   public static double[] INTAKE_TWO = {19, 129, 360};
@@ -89,18 +91,18 @@ public class BaseBucketAuton {
     placePreLoad = robot.follower.pathBuilder()
         .addBezierLine(
             pointFromArr(START),
-            pointFromArr(PLACE_BUCKET)
+            pointFromArr(PLACE_BUCKET_SAFE)
         )
-        .setLinearHeadingInterpolation(Math.toRadians(START[2]), Math.toRadians(PLACE_BUCKET[2]))
+        .setLinearHeadingInterpolation(Math.toRadians(START[2]), Math.toRadians(PLACE_BUCKET_SAFE[2]))
         .setPathEndTimeoutConstraint(500) // TODO: tune lower?
         .build();
 
     intakeOne = robot.follower.pathBuilder()
         .addBezierLine(
-            pointFromArr(PLACE_BUCKET),
+            pointFromArr(PLACE_BUCKET_SAFE),
             pointFromArr(INTAKE_ONE)
         )
-        .setLinearHeadingInterpolation(Math.toRadians(PLACE_BUCKET[2]), Math.toRadians(INTAKE_ONE[2]))
+        .setLinearHeadingInterpolation(Math.toRadians(PLACE_BUCKET_SAFE[2]), Math.toRadians(INTAKE_ONE[2]))
         .setPathEndTimeoutConstraint(350)
         .build();
 
@@ -222,7 +224,7 @@ public class BaseBucketAuton {
         .addBezierCurve(
             pointFromArr(PLACE_BUCKET),
             pointFromArr(BUCKET_INTAKE_SUB_CONTROL),
-            pointFromArr(INTAKE_SUB)
+            pointFromArr(INTAKE_SUB_PRIME)
         )
         .setTangentHeadingInterpolation()
         .addParametricCallback(SUB_SLIDE_EXTEND_T, () -> robot.horSlide.setTarget(HorizontalSlides.OUT_POS))
@@ -468,7 +470,7 @@ public class BaseBucketAuton {
       case 1100:
         if (!robot.follower.isBusy()) {
           cycleSub(subPickupForward, subPickupBackward);
-          place(bucketToSub2, 350, 500);
+          place(bucketToSub2, 400, 500);
           setPathState(1200);
         }
         break;
@@ -476,7 +478,7 @@ public class BaseBucketAuton {
       case 1200:
         if (!robot.follower.isBusy()) {
           cycleSub(subPickupForward2, subPickupBackward2);
-          place(park, 350, 500);
+          place(park, 500, 700);
           setPathState(1300);
         }
         break;
@@ -552,9 +554,9 @@ public class BaseBucketAuton {
             .addBezierCurve(
                 new Point(curPose),
                 pointFromArr(BUCKET_INTAKE_SUB_CONTROL),
-                pointFromArr(PLACE_BUCKET)
+                pointFromArr(PLACE_BUCKET_SAFE)
             )
-            .setLinearHeadingInterpolation(curPose.getHeading(), Math.toRadians(PLACE_BUCKET[2]))
+            .setLinearHeadingInterpolation(curPose.getHeading(), Math.toRadians(PLACE_BUCKET_SAFE[2]))
             .setPathEndTimeoutConstraint(800)
             .setZeroPowerAccelerationMultiplier(3.5)
             .build()
@@ -581,10 +583,10 @@ public class BaseBucketAuton {
     }
 
     // Raise Slides + Rotate Arm
-    robot.slides.setTarget(VerticalSlides.UP_AUTO);
+    robot.slides.setTarget(VerticalSlides.UP); // INTENTIONAL USE OF TELEOP POSITION
     do {
       robot.updateAutoControls();
-    } while (opMode.opModeIsActive() && !robot.slides.atTarget(MOVE_ARM_HEIGHT_OFFSET));
+    } while (opMode.opModeIsActive() && !robot.slides.atTarget(MOVE_ARM_HEIGHT_OFFSET - 50));
 
     robot.claw.setBucket();
 

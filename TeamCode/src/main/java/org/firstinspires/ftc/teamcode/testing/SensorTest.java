@@ -53,6 +53,11 @@ public class SensorTest extends LinearOpMode {
       telemetry.addData("DETECT", robot.intake.getSampleColor());
 
       telemetry.addLine();
+      telemetry.addLine("=== MAGLIM ===");
+      telemetry.addData("V SLIDE", robot.slides.magLim.isPressed());
+      telemetry.addData("H SLIDE", robot.horSlide.magLim.isPressed());
+
+      telemetry.addLine();
       telemetry.addLine("=== LOCALIZER ===");
       robot.follower.updatePose();
       Pose pose = robot.follower.getPose();

@@ -224,15 +224,15 @@ public class BaseTeleop {
         break;
 
       case BUCKET_TRANSFER:
-        if (stateTimer.seconds() > 0.1 && stateTimer.seconds() < 0.3) {
+        if (stateTimer.seconds() > 0.125 && stateTimer.seconds() < 0.325) {
           robot.intake.update(1, true, robot.getAllianceColor());
         }
-        if (stateTimer.seconds() > 0.35) {
+        if (stateTimer.seconds() > 0.4) {
           robot.intake.update(0, true, robot.getAllianceColor());
         }
 
         robot.horSlide.updatePIDControl();
-        if (robot.horSlide.atTarget() && robot.slides.atTarget() && stateTimer.seconds() > 0.37) {
+        if (robot.horSlide.atTarget() && robot.slides.atTarget() && stateTimer.seconds() > 0.41) {
           robot.claw.clawClose();
           stateTimer.reset();
           state = ModeState.BUCKET_POST_TRANSFER;

@@ -85,6 +85,7 @@ public class Claw {
     wrist.setPosition(wristPlace);
   }
 
+
   public void setPlaceAuto() {
     clawDownArm.setPosition(downArmPlaceAuto);
     clawUpArm.setPosition(upArmPlaceAuto);

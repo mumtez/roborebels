@@ -89,7 +89,7 @@ public class VerticalSlides {
 
   private void updatePosition() {
     int curPos = this.slideLeft.getCurrentPosition();
-    if (magLim.isPressed()) {
+    if (this.magLim.isPressed()) {
       this.offset = curPos - VerticalSlides.TRANSFER;
     }
     this.position = curPos - this.offset;

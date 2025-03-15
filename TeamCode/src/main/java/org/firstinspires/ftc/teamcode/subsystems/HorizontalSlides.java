@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotor.RunMode;
 import com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior;
 import com.qualcomm.robotcore.hardware.DcMotorSimple.Direction;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -28,8 +29,10 @@ public class HorizontalSlides {
   private double integralSum = 0;
   private int targetPos = TRANSFER_POS;
   public int position = 0;
+  private int offset = 0;
 
   public final DcMotor hSlide;
+  public final TouchSensor magLim;
 
 
   public HorizontalSlides(LinearOpMode opMode) {
@@ -40,6 +43,8 @@ public class HorizontalSlides {
     hSlide.setDirection(Direction.FORWARD);
     hSlide.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
     hSlide.setMode(RunMode.RUN_WITHOUT_ENCODER);
+
+    magLim = hardwareMap.touchSensor.get("magh");
   }
 
   public void setMode(RunMode mode) {
@@ -64,7 +69,11 @@ public class HorizontalSlides {
   }
 
   public void updatePosition() {
-    this.position = this.hSlide.getCurrentPosition();
+    int curPos = this.hSlide.getCurrentPosition();
+    if (this.magLim.isPressed()) {
+      this.offset = curPos - HorizontalSlides.TRANSFER_POS;
+    }
+    this.position = curPos - this.offset;
   }
 
   public boolean atTarget() {
@@ -72,7 +81,11 @@ public class HorizontalSlides {
   }
 
   public boolean atTarget(int threshold) {
-    return Math.abs(this.position - this.targetPos) < threshold;
+    boolean inRange = Math.abs(this.position - this.targetPos) < threshold;
+    if (this.targetPos == TRANSFER_POS) {
+      inRange = inRange || this.magLim.isPressed();
+    }
+    return inRange;
   }
 
   // ALWAYS CALL UPDATE POSITION FIRST
