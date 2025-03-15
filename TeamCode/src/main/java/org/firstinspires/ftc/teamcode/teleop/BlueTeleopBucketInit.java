@@ -5,12 +5,12 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.NewRobot;
 import org.firstinspires.ftc.teamcode.NewRobot.AllianceColor;
 
-@TeleOp(name = "RED TELEOP", group = "MAIN")
-public class RedTeleop extends LinearOpMode {
+@TeleOp(name = "BLUE TELEOP BUCKET INIT", group = "MAIN")
+public class BlueTeleopBucketInit extends LinearOpMode {
 
   @Override
   public void runOpMode() throws InterruptedException {
-    NewRobot robot = new NewRobot(this, AllianceColor.RED);
-    new BaseTeleop(this, robot).run();
+    NewRobot robot = new NewRobot(this, AllianceColor.BLUE);
+    new BaseTeleop(this, robot, 90).run();
   }
 }

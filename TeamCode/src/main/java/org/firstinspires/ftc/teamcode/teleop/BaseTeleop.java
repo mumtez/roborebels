@@ -32,16 +32,18 @@ public class BaseTeleop {
   final ElapsedTime stateTimer = new ElapsedTime();
 
   boolean intakeFlat = true;
+  double headingOffset;
 
   Gamepad currentGamepad1 = new Gamepad();
   Gamepad currentGamepad2 = new Gamepad();
   Gamepad previousGamepad1 = new Gamepad();
   Gamepad previousGamepad2 = new Gamepad();
 
-  public BaseTeleop(LinearOpMode opMode, NewRobot robot) {
+  public BaseTeleop(LinearOpMode opMode, NewRobot robot, double headingOffset) {
     this.opMode = opMode;
     this.telemetry = opMode.telemetry;
     this.robot = robot;
+    this.headingOffset = Math.toRadians(headingOffset);
   }
 
   private void updateGamepads() {
@@ -79,6 +81,7 @@ public class BaseTeleop {
 
       if (currentGamepad1.left_bumper && !previousGamepad1.left_bumper) {
         robot.imu.resetYaw();
+        this.headingOffset = 0;
       }
 
       // Hang Override
@@ -98,7 +101,7 @@ public class BaseTeleop {
       double x = currentGamepad1.left_stick_x;
       double rx = currentGamepad1.right_stick_x;
 
-      double botHeading = robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+      double botHeading = robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS) + this.headingOffset;
 
       double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
       double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
