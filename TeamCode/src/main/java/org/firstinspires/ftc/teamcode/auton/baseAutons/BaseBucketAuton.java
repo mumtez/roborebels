@@ -25,7 +25,7 @@ public class BaseBucketAuton {
   public static double INTAKE_OVERRIDE = 4;
 
   public static double SUB_SLIDE_EXTEND_T = 0.78;
-  public static double OUT_IN_MS = 125;
+  public static double OUT_IN_MS = 100;
 
   // MAIN POINTS
 
@@ -33,9 +33,11 @@ public class BaseBucketAuton {
   public static double[] PLACE_BUCKET = {16, 128, 315};
   public static double[] PLACE_BUCKET_SAFE = {15, 127, 315};
 
+  public static double[] PLACE_BUCKET_MORE_SAFE = {16, 126, 315};
+
 
   public static double[] INTAKE_ONE = {19, 124, 360};
-  public static double[] INTAKE_TWO = {19, 129, 360};
+  public static double[] INTAKE_TWO = {19, 130, 360};
   public static double[] INTAKE_THREE = {28, 125, 50};
   public static double[] INTAKE_SUB = {64, 105, 270};
   public static double[] INTAKE_SUB_PRIME = {64, 97, 270};
@@ -560,9 +562,9 @@ public class BaseBucketAuton {
             .addBezierCurve(
                 new Point(curPose),
                 pointFromArr(BUCKET_INTAKE_SUB_CONTROL),
-                pointFromArr(PLACE_BUCKET_SAFE)
+                pointFromArr(PLACE_BUCKET_MORE_SAFE)
             )
-            .setLinearHeadingInterpolation(curPose.getHeading(), Math.toRadians(PLACE_BUCKET_SAFE[2]))
+            .setLinearHeadingInterpolation(curPose.getHeading(), Math.toRadians(PLACE_BUCKET_MORE_SAFE[2]))
             .setPathEndTimeoutConstraint(800)
             .setZeroPowerAccelerationMultiplier(3.5)
             .build()

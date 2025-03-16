@@ -34,7 +34,7 @@ public class Intake {
 
   public static float COLOR_GAIN = 2;
   public static double BLUE_THRESHOLD = 0.03;
-  public static double RED_THRESHOLD = 0.035;
+  public static double RED_THRESHOLD = 0.029;
   public static double GREEN_THRESHOLD = 0.045;
 
   public static double DIST_THRESHOLD_CM = 2;
