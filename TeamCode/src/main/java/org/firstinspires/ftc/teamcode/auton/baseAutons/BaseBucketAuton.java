@@ -517,11 +517,17 @@ public class BaseBucketAuton {
     ElapsedTime validSampleTimer = new ElapsedTime();
     validSampleTimer.reset();
     subTimer.reset();
-    while (opMode.opModeIsActive() && validSampleTimer.milliseconds() < 400) {
+    while (opMode.opModeIsActive() && validSampleTimer.milliseconds() < 300) {
+      // move between the two positions
+      if (!robot.follower.isBusy()) {
+        robot.follower.followPath(driveForward ? forwardPath : backPath, true);
+        driveForward = !driveForward;
+      }
+
       robot.updateAutoControls();
 
       boolean validIn = robot.intake.validSampleIn(robot.getAllianceColor());
-      if (!validIn) {
+      if (!validIn || robot.intake.spitTimer.milliseconds() < 500) {
         validSampleTimer.reset();
       }
 
@@ -530,14 +536,10 @@ public class BaseBucketAuton {
       } else if (!validIn && subTimer.milliseconds() < 2100) {
         robot.intake.update(-.6, false, robot.getAllianceColor());
       } else {
+        robot.intake.update(1, false, robot.getAllianceColor());
         subTimer.reset();
       }
 
-      // move between the two positions
-      if (!robot.follower.isBusy()) {
-        robot.follower.followPath(driveForward ? forwardPath : backPath, true);
-        driveForward = !driveForward;
-      }
     }
 
     // OUTTAKE

@@ -227,7 +227,7 @@ public class BaseTeleop {
         break;
 
       case BUCKET_TRANSFER:
-        if (stateTimer.seconds() > 0.125 && stateTimer.seconds() < 0.325) {
+        if (stateTimer.seconds() > 0.1 && stateTimer.seconds() < 0.325) {
           robot.intake.update(1, true, robot.getAllianceColor());
         }
         if (stateTimer.seconds() > 0.4) {
