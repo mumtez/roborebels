@@ -512,12 +512,20 @@ public class BaseBucketAuton {
     robot.claw.clawOpen();
 
     boolean driveForward = true;
+    ElapsedTime validSampleTimer = new ElapsedTime();
+    validSampleTimer.reset();
     subTimer.reset();
-    while (opMode.opModeIsActive() && !robot.intake.validSampleIn(robot.getAllianceColor())) {
+    while (opMode.opModeIsActive() && validSampleTimer.milliseconds() < 400) {
       robot.updateAutoControls();
-      if (subTimer.milliseconds() < 2000) {
+
+      boolean validIn = robot.intake.validSampleIn(robot.getAllianceColor());
+      if (!validIn) {
+        validSampleTimer.reset();
+      }
+
+      if (!validIn && subTimer.milliseconds() < 2000) {
         robot.intake.update(1, false, robot.getAllianceColor());
-      } else if (subTimer.milliseconds() < 2100) {
+      } else if (!validIn && subTimer.milliseconds() < 2100) {
         robot.intake.update(-.6, false, robot.getAllianceColor());
       } else {
         subTimer.reset();
