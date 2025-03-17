@@ -30,10 +30,12 @@ public class BaseBucketAuton {
   // MAIN POINTS
 
   public static double[] START = {9, 105, 270};
-  public static double[] PLACE_BUCKET = {16, 128, 315};
-  public static double[] PLACE_BUCKET_SAFE = {15, 127, 315};
+  public static double[] PLACE_BUCKET = {15, 129, 315};
+  public static double[] PLACE_BUCKET_SAFE = {16, 126, 315};
 
   public static double[] PLACE_BUCKET_MORE_SAFE = {16, 126, 315};
+
+  public static double[] PLACE_BUCKET_EVEN_MORE_SAFE = {15, 126, 315};
 
 
   public static double[] INTAKE_ONE = {19, 124, 360};
@@ -389,7 +391,7 @@ public class BaseBucketAuton {
       // SCORE 2
       case 7:
         if (!robot.follower.isBusy() && robot.slides.atTarget()) {
-          place(intakeThree);
+          place(intakeThree, 400, 75);
           setPathState(8);
         }
         break;
@@ -469,7 +471,7 @@ public class BaseBucketAuton {
 
       case 1100:
         if (!robot.follower.isBusy()) {
-          cycleSub(subPickupForward, subPickupBackward);
+          cycleSub(subPickupForward, subPickupBackward, PLACE_BUCKET_MORE_SAFE);
           place(bucketToSub2, 400, 500);
           setPathState(1200);
         }
@@ -477,7 +479,7 @@ public class BaseBucketAuton {
 
       case 1200:
         if (!robot.follower.isBusy()) {
-          cycleSub(subPickupForward2, subPickupBackward2);
+          cycleSub(subPickupForward2, subPickupBackward2, PLACE_BUCKET_EVEN_MORE_SAFE);
           place(park, 500, 700);
           setPathState(1300);
         }
@@ -507,7 +509,7 @@ public class BaseBucketAuton {
     robot.follower.followPath(nextPath, true);
   }
 
-  private void cycleSub(PathChain forwardPath, PathChain backPath) {
+  private void cycleSub(PathChain forwardPath, PathChain backPath, double[] place) {
     robot.intake.update(1, false, robot.getAllianceColor());
     robot.slides.setTarget(VerticalSlides.TRANSFER);
     robot.claw.setTransfer();
@@ -564,9 +566,9 @@ public class BaseBucketAuton {
             .addBezierCurve(
                 new Point(curPose),
                 pointFromArr(BUCKET_INTAKE_SUB_CONTROL),
-                pointFromArr(PLACE_BUCKET_MORE_SAFE)
+                pointFromArr(place)
             )
-            .setLinearHeadingInterpolation(curPose.getHeading(), Math.toRadians(PLACE_BUCKET_MORE_SAFE[2]))
+            .setLinearHeadingInterpolation(curPose.getHeading(), Math.toRadians(place[2]))
             .setPathEndTimeoutConstraint(800)
             .setZeroPowerAccelerationMultiplier(3.5)
             .build()
