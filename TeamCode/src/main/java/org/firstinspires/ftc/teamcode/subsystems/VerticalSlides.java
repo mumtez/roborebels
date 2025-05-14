@@ -15,8 +15,6 @@ public class VerticalSlides {
 
   public static int TRANSFER = 0;
 
-  public static int BAR_PLACE_AUTO = 450; // this is for auto
-
   public static int BAR_PLACE_TELEOP = 800; // this is for teleop
 
 

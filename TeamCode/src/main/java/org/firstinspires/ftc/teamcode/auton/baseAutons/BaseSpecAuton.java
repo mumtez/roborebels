@@ -166,15 +166,15 @@ public class BaseSpecAuton {
   public void pickupPlace(PathChain place, PathChain postPlace) {
     robot.claw.clawClose();
     robot.waitTime(50);
-    robot.slides.setTarget(VerticalSlides.BAR_PLACE_AUTO);
-    robot.claw.setPlaceAuto();
+    robot.slides.setTarget(VerticalSlides.BAR_PLACE_UNDER);
+    robot.claw.setPlace();
 
     robot.follower.followPath(place);
     while (opMode.opModeIsActive() && (robot.follower.isBusy() || !robot.slides.atTarget())) {
       robot.updateAutoControls();
     }
 
-    robot.slides.setTarget(VerticalSlides.TRANSFER);
+    robot.slides.setTarget(VerticalSlides.BAR_PLACE_TELEOP);
 
     while (opMode.opModeIsActive() && !robot.slides.atTarget()) {
       robot.updateAutoControls();
@@ -184,6 +184,7 @@ public class BaseSpecAuton {
     robot.claw.clawOpenWall();
     // TODO: you only wait 50ms for the claw to close, does it need 100 to open?
     robot.waitTime(50);
+    robot.slides.setTarget(VerticalSlides.TRANSFER);
     robot.claw.setWall();
     // TODO: maybe remove this one? can alternatively use a parametric callback on the path to do this arm movement while moving
 
@@ -197,15 +198,15 @@ public class BaseSpecAuton {
         robot.slides.setTarget(VerticalSlides.TRANSFER);
         robot.intake.update(0, false, robot.getAllianceColor());
 
-        robot.slides.setTarget(VerticalSlides.BAR_PLACE_AUTO);
-        robot.claw.setPlaceAuto();
+        robot.slides.setTarget(VerticalSlides.BAR_PLACE_UNDER);
+        robot.claw.setPlace();
 
         robot.follower.followPath(placePreLoad);
         while (opMode.opModeIsActive() && (robot.follower.isBusy() || !robot.slides.atTarget())) {
           robot.updateAutoControls();
         }
 
-        robot.slides.setTarget(VerticalSlides.TRANSFER);
+        robot.slides.setTarget(VerticalSlides.BAR_PLACE_TELEOP);
 
         while (opMode.opModeIsActive() && !robot.slides.atTarget()) {
           robot.updateAutoControls();
@@ -213,6 +214,7 @@ public class BaseSpecAuton {
 
         robot.claw.clawOpenWall();
         robot.waitTime(100);
+        robot.slides.setTarget(VerticalSlides.TRANSFER);
         robot.claw.setWall();
 
         robot.follower.followPath(driveOne);

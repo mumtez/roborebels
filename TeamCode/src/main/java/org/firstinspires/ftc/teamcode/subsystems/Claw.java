@@ -19,7 +19,6 @@ public class Claw {
 
   public static double upArmPlaceTeleOP = .5;
 
-  public static double upArmPlaceAuto = 0.7;
 
   public static double upArmWallAuto = 0.17;
 
@@ -33,7 +32,6 @@ public class Claw {
 
   public static double downArmPlaceTeleOP = .98;
 
-  public static double downArmPlaceAuto = 0.98;
 
   public static double downArmWallAuto = 0.48;
 
@@ -44,9 +42,6 @@ public class Claw {
 
 
   public static double wristDefault = 0.89;
-  public static double wristPlace = 0.89;
-
-  public static double wristPlaceAuto = 0.33;
 
   public final ServoImplEx claw, clawUpArm, clawDownArm, wrist;
   // TODO: add color/touch/limit sensor (states?)
@@ -82,15 +77,9 @@ public class Claw {
   public void setPlace() { // needs to be tuned
     clawDownArm.setPosition(downArmPlaceTeleOP);
     clawUpArm.setPosition(upArmPlaceTeleOP);
-    wrist.setPosition(wristPlace);
+    wrist.setPosition(wristDefault);
   }
 
-
-  public void setPlaceAuto() {
-    clawDownArm.setPosition(downArmPlaceAuto);
-    clawUpArm.setPosition(upArmPlaceAuto);
-    wrist.setPosition(wristPlaceAuto);
-  }
 
   public void setWall() {
     clawDownArm.setPosition(downArmWallAuto);
@@ -101,7 +90,7 @@ public class Claw {
   public void setInitSpec() {
     clawDownArm.setPosition(downArmSpecInit);
     clawUpArm.setPosition(upArmSpecInit);
-    wrist.setPosition(wristPlaceAuto);
+    wrist.setPosition(wristDefault);
   }
 
 
