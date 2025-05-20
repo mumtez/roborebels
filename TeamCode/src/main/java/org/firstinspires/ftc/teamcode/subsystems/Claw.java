@@ -20,7 +20,7 @@ public class Claw {
   public static double upArmPlaceTeleOP = .5;
 
 
-  public static double upArmWallAuto = 0.17;
+  public static double upArmWallAuto = 0.20;
 
   public static double upArmSpecInit = 0.07;
 
@@ -33,7 +33,7 @@ public class Claw {
   public static double downArmPlaceTeleOP = .98;
 
 
-  public static double downArmWallAuto = 0.48;
+  public static double downArmWallAuto = 0.44;
 
   public static double downArmSpecInit = 0.7;
   public static double downArmBucket = 0.95;
@@ -43,7 +43,7 @@ public class Claw {
 
   public static double wristDefault = 0.89;
 
-  public final ServoImplEx claw, clawUpArm, clawDownArm, wrist;
+  public final ServoImplEx claw, clawUpArm, clawDownArm;
   // TODO: add color/touch/limit sensor (states?)
 
   private boolean clawClosed = false;
@@ -54,7 +54,6 @@ public class Claw {
     claw = (ServoImplEx) hardwareMap.servo.get("c");
     clawUpArm = (ServoImplEx) hardwareMap.servo.get("cu");
     clawDownArm = (ServoImplEx) hardwareMap.servo.get("cd");
-    wrist = (ServoImplEx) hardwareMap.servo.get("wrist");
 
   }
 
@@ -77,41 +76,35 @@ public class Claw {
   public void setPlace() { // needs to be tuned
     clawDownArm.setPosition(downArmPlaceTeleOP);
     clawUpArm.setPosition(upArmPlaceTeleOP);
-    wrist.setPosition(wristDefault);
   }
 
 
   public void setWall() {
     clawDownArm.setPosition(downArmWallAuto);
     clawUpArm.setPosition(upArmWallAuto);
-    wrist.setPosition(wristDefault);
   }
 
   public void setInitSpec() {
     clawDownArm.setPosition(downArmSpecInit);
     clawUpArm.setPosition(upArmSpecInit);
-    wrist.setPosition(wristDefault);
   }
 
 
   public void setTransfer() {
     clawDownArm.setPosition(downArmTransfer);
     clawUpArm.setPosition(upArmTransfer);
-    wrist.setPosition(wristDefault);
   }
 
 
   public void setBucket() {
     clawDownArm.setPosition(downArmBucket);
     clawUpArm.setPosition(upArmBucket);
-    wrist.setPosition(wristDefault);
   }
 
 
   public void setInit() {
     clawDownArm.setPosition(downArmInit);
     clawUpArm.setPosition(upArmInit);
-    wrist.setPosition(wristDefault);
   }
 
   public boolean isClawClosed() {

@@ -35,7 +35,6 @@ public class ClawTesting2 extends LinearOpMode {
       robot.slides.setTarget(SLIDE_POS);
       robot.slides.updatePIDControl();
 
-      robot.claw.wrist.setPosition(WRIST_POS);
       robot.claw.claw.setPosition(CLAW_POS);
       robot.claw.clawUpArm.setPosition(CLAW_UP_ARM_POS);
       robot.claw.clawDownArm.setPosition(CLAW_DOWN_ARM_POS);
