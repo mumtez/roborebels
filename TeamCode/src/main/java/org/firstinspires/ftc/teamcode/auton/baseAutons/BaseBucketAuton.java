@@ -29,7 +29,7 @@ public class BaseBucketAuton {
 
   // MAIN POINTS
 
-  public static double[] START = {9, 105, 270};
+  public static double[] START = {9.5, 105, 270};
   public static double[] PLACE_BUCKET = {15, 129, 315};
   public static double[] PLACE_BUCKET_SAFE = {16, 126, 315};
 
@@ -247,7 +247,7 @@ public class BaseBucketAuton {
       // SCORE PRELOAD
       case 101:
         if (!robot.follower.isBusy() && robot.slides.atTarget()) {
-          place(intakeOne, 400, 50);
+          place(intakeOne, 400, 75);
 
           robot.intake.update(1, false, robot.getAllianceColor());
           setPathState(2);
