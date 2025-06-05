@@ -17,7 +17,6 @@ public class ClawTesting2 extends LinearOpMode {
   public static double CLAW_POS = Claw.clawOpenPos;
   public static double CLAW_UP_ARM_POS = Claw.upArmInit;
   public static double CLAW_DOWN_ARM_POS = Claw.downArmInit;
-  public static double WRIST_POS = Claw.wristDefault;
   public static double SWEEP_POS = Intake.SWEEP_IN;
 
 
