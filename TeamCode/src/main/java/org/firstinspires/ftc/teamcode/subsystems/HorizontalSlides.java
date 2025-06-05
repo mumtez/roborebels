@@ -2,9 +2,8 @@ package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotor.RunMode;
-import com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior;
+import com.qualcomm.robotcore.hardware.AnalogInput;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorSimple.Direction;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.TouchSensor;
@@ -15,14 +14,14 @@ import com.qualcomm.robotcore.util.Range;
 public class HorizontalSlides {
 
   public static int TRANSFER_POS = 0;
-  public static int OUT_POS = 700;
+  public static int OUT_POS = 45;
 
   public static double MAX_POW = 1.0;
 
-  public static double kf = 0.05;
-  public static double kp = 0.005;
+  public static double kf = 0.0;
+  public static double kp = 0.00;
   public static double ki = 0;
-  public static double kd = 0.00006;
+  public static double kd = 0.0000;
 
   private final ElapsedTime timer = new ElapsedTime();
   private double lastError = 0;
@@ -31,28 +30,33 @@ public class HorizontalSlides {
   public int position = 0;
   private int offset = 0;
 
-  public final DcMotor hSlide;
   public final TouchSensor magLim;
+  public AnalogInput horServoAnalog;
+  public CRServo horServoTop;
+
+  public CRServo horServoBottom;
 
 
   public HorizontalSlides(LinearOpMode opMode) {
     HardwareMap hardwareMap = opMode.hardwareMap;
+    horServoAnalog = hardwareMap.get(AnalogInput.class, "horservoanalog");
 
-    hSlide = hardwareMap.dcMotor.get("hs");
+    horServoTop = hardwareMap.get(CRServo.class, "horservotop");
+    horServoBottom = hardwareMap.get(CRServo.class, "horservobottom");
 
-    hSlide.setDirection(Direction.FORWARD);
-    hSlide.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
-    hSlide.setMode(RunMode.RUN_WITHOUT_ENCODER);
+    horServoTop.setDirection(Direction.REVERSE);
+    horServoBottom.setDirection(Direction.FORWARD);
 
     magLim = hardwareMap.touchSensor.get("magh");
   }
 
-  public void setMode(RunMode mode) {
+  /*public void setMode(RunMode mode) {
     hSlide.setMode(mode);
-  }
+  }*/
 
   public void setPower(double pow) {
-    hSlide.setPower(pow);
+    horServoTop.setPower(pow);
+    horServoBottom.setPower(pow);
   }
 
   public void setTarget(int target) {
@@ -69,7 +73,7 @@ public class HorizontalSlides {
   }
 
   public void updatePosition() {
-    int curPos = this.hSlide.getCurrentPosition();
+    int curPos = (int) (horServoAnalog.getVoltage() / 3.3 * 360);
     if (this.magLim.isPressed()) {
       this.offset = curPos - HorizontalSlides.TRANSFER_POS;
     }
@@ -77,7 +81,7 @@ public class HorizontalSlides {
   }
 
   public boolean atTarget() {
-    return atTarget(20);
+    return atTarget(3);
   }
 
   public boolean atTarget(int threshold) {
