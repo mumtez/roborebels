@@ -14,14 +14,14 @@ import com.qualcomm.robotcore.util.Range;
 public class HorizontalSlides {
 
   public static int TRANSFER_POS = 0;
-  public static int OUT_POS = 45;
+  public static int OUT_POS = 80;
 
   public static double MAX_POW = 1.0;
 
-  public static double kf = 0.0;
-  public static double kp = 0.00;
+  public static double kf = 0.04;
+  public static double kp = 0.0065;
   public static double ki = 0;
-  public static double kd = 0.0000;
+  public static double kd = 0.00009;
 
   private final ElapsedTime timer = new ElapsedTime();
   private double lastError = 0;
@@ -70,6 +70,10 @@ public class HorizontalSlides {
 
   public int getTarget() {
     return this.targetPos;
+  }
+
+  public int getCurrentPosition (){
+    return position;
   }
 
   public void updatePosition() {

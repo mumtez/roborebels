@@ -23,14 +23,14 @@ public class VerticalSlides {
   // TODO: tune
   public static int UP_AUTO = 1450;
 
-  public static int UP = 1500;
+  public static int UP = 2200;
 
   public static int LOWER_BUCKET = 700;
 
-  public static double kp = 0.01;
+  public static double kp = 0.018;
   public static double ki = 0;
   public static double kd = 0.0001;
-  public static double KG = 0.07;
+  public static double KG = 0.0;
 
 
   private final ElapsedTime timer = new ElapsedTime();
@@ -52,8 +52,8 @@ public class VerticalSlides {
 
     slideLeft = hardwareMap.dcMotor.get("lu");
     slideRight = hardwareMap.dcMotor.get("ru");
-    slideLeft.setDirection(Direction.REVERSE);
-    slideRight.setDirection(Direction.FORWARD);
+    slideLeft.setDirection(Direction.FORWARD);
+    slideRight.setDirection(Direction.REVERSE);
     slideLeft.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
     slideRight.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
     slideLeft.setMode(RunMode.RUN_WITHOUT_ENCODER);
@@ -86,7 +86,7 @@ public class VerticalSlides {
   }
 
   private void updatePosition() {
-    int curPos = this.slideLeft.getCurrentPosition();
+    int curPos = this.slideRight.getCurrentPosition();
     if (this.magLim.isPressed()) {
       this.offset = curPos - VerticalSlides.TRANSFER;
     }

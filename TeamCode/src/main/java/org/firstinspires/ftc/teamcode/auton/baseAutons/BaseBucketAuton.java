@@ -622,7 +622,6 @@ public class BaseBucketAuton {
     // START
     robot.follower.setStartingPose(poseFromArr(START));
     robot.slides.setMode(RunMode.RUN_WITHOUT_ENCODER);
-    robot.horSlide.setMode(RunMode.RUN_WITHOUT_ENCODER);
 
     while (this.opMode.opModeIsActive()) {
       robot.updateAutoControls();

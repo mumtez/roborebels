@@ -30,7 +30,7 @@ public class Intake {
 
   public static double INTAKE_DOWN = 0.3;
   public static double INTAKE_HALF = 0.2;
-  public static double INTAKE_FLAT = 0.06;
+  public static double INTAKE_FLAT = 0.1;
 
   public static float COLOR_GAIN = 2;
   public static double RED_THRESHOLD = 0.02;

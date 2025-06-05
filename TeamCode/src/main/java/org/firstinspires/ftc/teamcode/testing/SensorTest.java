@@ -21,14 +21,13 @@ public class SensorTest extends LinearOpMode {
 
     waitForStart();
 
-    robot.horSlide.hSlide.setZeroPowerBehavior(ZeroPowerBehavior.FLOAT);
     robot.slides.slideLeft.setZeroPowerBehavior(ZeroPowerBehavior.FLOAT);
     robot.slides.slideRight.setZeroPowerBehavior(ZeroPowerBehavior.FLOAT);
 
     while (opModeIsActive()) {
 
       telemetry.addLine("=== ENCODERS ===");
-      telemetry.addData("H SLIDE", robot.horSlide.hSlide.getCurrentPosition());
+      telemetry.addData("H SLIDE", robot.horSlide.getCurrentPosition());
       telemetry.addData("V SLIDE LEFT", robot.slides.slideLeft.getCurrentPosition());
       telemetry.addData("V SLIDE RIGHT", robot.slides.slideRight.getCurrentPosition());
 

@@ -24,10 +24,10 @@ public class Claw {
 
   public static double upArmSpecInit = 0.07;
 
-  public static double upArmBucket = .65;
+  public static double upArmBucket = .6;
 
-  public static double upArmTransfer = 0.19;
-  public static double upArmInit = 0.19;
+  public static double upArmTransfer = 0.12;
+  public static double upArmInit = 0.12;
 
 
   public static double downArmPlaceTeleOP = .98;
@@ -36,9 +36,9 @@ public class Claw {
   public static double downArmWallAuto = 0.44;
 
   public static double downArmSpecInit = 0.7;
-  public static double downArmBucket = 0.95;
-  public static double downArmTransfer = 0.14;
-  public static double downArmInit = 0.12;
+  public static double downArmBucket = 0.9;
+  public static double downArmTransfer = 0;
+  public static double downArmInit = 0;
 
   
   public final ServoImplEx claw, clawUpArm, clawDownArm;

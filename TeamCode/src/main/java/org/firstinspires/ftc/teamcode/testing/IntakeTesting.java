@@ -21,9 +21,8 @@ public class IntakeTesting extends LinearOpMode {
   public void runOpMode() throws InterruptedException {
     robot = new NewRobot(this);
 
-    robot.horSlide.setMode(RunMode.STOP_AND_RESET_ENCODER);
     waitForStart();
-    robot.horSlide.setMode(RunMode.RUN_WITHOUT_ENCODER);
+
     // START
 
     // LOOP

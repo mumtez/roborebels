@@ -93,7 +93,6 @@ public class NewRobot {
 
   public void initAuton() {
     slides.setMode(RunMode.STOP_AND_RESET_ENCODER);
-    horSlide.setMode(RunMode.STOP_AND_RESET_ENCODER);
 
     horSlide.setTarget(HorizontalSlides.TRANSFER_POS);
     slides.setTarget(VerticalSlides.TRANSFER);
@@ -108,7 +107,6 @@ public class NewRobot {
 
   public void initAutonSpec() {
     slides.setMode(RunMode.STOP_AND_RESET_ENCODER);
-    horSlide.setMode(RunMode.STOP_AND_RESET_ENCODER);
 
     horSlide.setTarget(HorizontalSlides.TRANSFER_POS);
     slides.setTarget(VerticalSlides.TRANSFER);

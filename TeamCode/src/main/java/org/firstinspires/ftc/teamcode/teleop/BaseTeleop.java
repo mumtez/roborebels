@@ -307,8 +307,8 @@ public class BaseTeleop {
 
     double hSlidePow = -currentGamepad2.right_stick_y;
 
-    if ((hSlidePow < -0.05 && robot.horSlide.position < 75)
-        || (hSlidePow > 0.05 && robot.horSlide.position > HorizontalSlides.OUT_POS - 75)) {
+    if ((hSlidePow < -0.05 && robot.horSlide.position < 10)
+        || (hSlidePow > 0.05 && robot.horSlide.position > HorizontalSlides.OUT_POS - 10)) {
       robot.horSlide.setPower(hSlidePow * HORIZONTAL_MODIFIER);
       robot.horSlide.setTarget(robot.horSlide.position);
     } else if (Math.abs(hSlidePow) > 0.05) {
