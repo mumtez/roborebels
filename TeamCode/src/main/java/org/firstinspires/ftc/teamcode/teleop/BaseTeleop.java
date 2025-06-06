@@ -212,7 +212,7 @@ public class BaseTeleop {
         intakeControl();
 
         if (currentGamepad2.cross) {
-          robot.slides.setTarget(VerticalSlides.TRANSFER-5);
+          robot.slides.setTarget(VerticalSlides.TRANSFER);
           robot.intake.rotateFlat();
           robot.claw.clawOpen();
           robot.claw.setTransfer();
