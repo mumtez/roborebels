@@ -23,7 +23,7 @@ public class VerticalSlides {
   // TODO: tune
   public static int UP_AUTO = 1450;
 
-  public static int UP = 2200;
+  public static int UP = 2000;
 
   public static int LOWER_BUCKET = 700;
 

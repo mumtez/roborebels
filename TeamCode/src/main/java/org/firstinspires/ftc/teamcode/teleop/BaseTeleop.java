@@ -212,7 +212,7 @@ public class BaseTeleop {
         intakeControl();
 
         if (currentGamepad2.cross) {
-          robot.slides.setTarget(VerticalSlides.TRANSFER);
+          robot.slides.setTarget(VerticalSlides.TRANSFER-5);
           robot.intake.rotateFlat();
           robot.claw.clawOpen();
           robot.claw.setTransfer();
@@ -262,7 +262,7 @@ public class BaseTeleop {
           int slideTarget = robot.slides.getTarget();
           if (slideTarget == VerticalSlides.UP || slideTarget == VerticalSlides.LOWER_BUCKET) {
             // TODO TUNE THRESHOLD FOR OPTIMAL ARM TURN
-            if (robot.slides.atSetTarget(100, slideTarget - 600)) {
+            if (robot.slides.atSetTarget(100, slideTarget - 1000)) {
               robot.claw.setBucket();
               state = ModeState.BUCKET_PLACE;
               stateTimer.reset();
