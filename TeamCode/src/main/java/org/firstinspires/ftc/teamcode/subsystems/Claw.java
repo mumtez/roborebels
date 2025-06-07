@@ -26,7 +26,7 @@ public class Claw {
 
   public static double upArmBucket = 0.5;
 
-  public static double upArmTransfer = 0.12;
+  public static double upArmTransfer = 0.10;
   public static double upArmInit = 0.12;
 
 
@@ -40,7 +40,7 @@ public class Claw {
   public static double downArmTransfer = 0;
   public static double downArmInit = 0;
 
-  
+
   public final ServoImplEx claw, clawUpArm, clawDownArm;
   // TODO: add color/touch/limit sensor (states?)
 
