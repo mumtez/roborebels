@@ -50,9 +50,6 @@ public class HorizontalSlides {
     magLim = hardwareMap.touchSensor.get("magh");
   }
 
-  /*public void setMode(RunMode mode) {
-    hSlide.setMode(mode);
-  }*/
 
   public void setPower(double pow) {
     horServoTop.setPower(pow);
@@ -68,11 +65,7 @@ public class HorizontalSlides {
     }
   }
 
-  public int getTarget() {
-    return this.targetPos;
-  }
-
-  public int getCurrentPosition (){
+  public int getCurrentPosition() {
     return position;
   }
 
