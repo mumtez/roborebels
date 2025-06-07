@@ -18,8 +18,8 @@ import pedroPathing.constants.LConstants;
 
 
 /**
- * This is the Triangle autonomous OpMode. It runs the robot in a triangle, with the starting point being the
- * bottom-middle point.
+ * This is the Triangle autonomous OpMode.
+ * It runs the robot in a triangle, with the starting point being the bottom-middle point.
  *
  * @author Baron Henderson - 20077 The Indubitables
  * @author Samarth Mahapatra - 1002 CircuitRunners Robotics Surge
@@ -27,57 +27,56 @@ import pedroPathing.constants.LConstants;
  */
 @Autonomous(name = "Triangle", group = "Examples")
 public class Triangle extends OpMode {
+    private Follower follower;
 
-  private Follower follower;
+    private final Pose startPose = new Pose(0,0, Math.toRadians(0));
+    private final Pose interPose = new Pose(24, -24, Math.toRadians(90));
+    private final Pose endPose = new Pose(24, 24, Math.toRadians(45));
 
-  private final Pose startPose = new Pose(0, 0, Math.toRadians(0));
-  private final Pose interPose = new Pose(24, -24, Math.toRadians(90));
-  private final Pose endPose = new Pose(24, 24, Math.toRadians(45));
+    private PathChain triangle;
 
-  private PathChain triangle;
+    private Telemetry telemetryA;
 
-  private Telemetry telemetryA;
+    /**
+     * This runs the OpMode, updating the Follower as well as printing out the debug statements to
+     * the Telemetry, as well as the FTC Dashboard.
+     */
+    @Override
+    public void loop() {
+        follower.update();
 
-  /**
-   * This runs the OpMode, updating the Follower as well as printing out the debug statements to the Telemetry, as well
-   * as the FTC Dashboard.
-   */
-  @Override
-  public void loop() {
-    follower.update();
+        if (follower.atParametricEnd()) {
+            follower.followPath(triangle, true);
+        }
 
-    if (follower.atParametricEnd()) {
-      follower.followPath(triangle, true);
+        follower.telemetryDebug(telemetryA);
     }
 
-    follower.telemetryDebug(telemetryA);
-  }
+    /**
+     * This initializes the Follower and creates the PathChain for the "triangle". Additionally, this
+     * initializes the FTC Dashboard telemetry.
+     */
+    @Override
+    public void init() {
+        follower = new Follower(hardwareMap, FConstants.class, LConstants.class);
+        follower.setStartingPose(startPose);
 
-  /**
-   * This initializes the Follower and creates the PathChain for the "triangle". Additionally, this initializes the FTC
-   * Dashboard telemetry.
-   */
-  @Override
-  public void init() {
-    follower = new Follower(hardwareMap, FConstants.class, LConstants.class);
-    follower.setStartingPose(startPose);
+        triangle = follower.pathBuilder()
+                .addPath(new BezierLine(new Point(startPose), new Point(interPose)))
+                .setLinearHeadingInterpolation(startPose.getHeading(), interPose.getHeading())
+                .addPath(new BezierLine(new Point(interPose), new Point(endPose)))
+                .setLinearHeadingInterpolation(interPose.getHeading(), endPose.getHeading())
+                .addPath(new BezierLine(new Point(endPose), new Point(startPose)))
+                .setLinearHeadingInterpolation(endPose.getHeading(), startPose.getHeading())
+                .build();
 
-    triangle = follower.pathBuilder()
-        .addPath(new BezierLine(new Point(startPose), new Point(interPose)))
-        .setLinearHeadingInterpolation(startPose.getHeading(), interPose.getHeading())
-        .addPath(new BezierLine(new Point(interPose), new Point(endPose)))
-        .setLinearHeadingInterpolation(interPose.getHeading(), endPose.getHeading())
-        .addPath(new BezierLine(new Point(endPose), new Point(startPose)))
-        .setLinearHeadingInterpolation(endPose.getHeading(), startPose.getHeading())
-        .build();
+        follower.followPath(triangle);
 
-    follower.followPath(triangle);
-
-    telemetryA = new MultipleTelemetry(this.telemetry, FtcDashboard.getInstance().getTelemetry());
-    telemetryA.addLine("This will run in a roughly triangular shape,"
-        + "starting on the bottom-middle point. So, make sure you have enough "
-        + "space to the left, front, and right to run the OpMode.");
-    telemetryA.update();
-  }
+        telemetryA = new MultipleTelemetry(this.telemetry, FtcDashboard.getInstance().getTelemetry());
+        telemetryA.addLine("This will run in a roughly triangular shape,"
+                + "starting on the bottom-middle point. So, make sure you have enough "
+                + "space to the left, front, and right to run the OpMode.");
+        telemetryA.update();
+    }
 
 }
