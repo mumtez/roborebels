@@ -20,7 +20,7 @@ public class BaseBucketAuton {
 
   public static int HSLIDE_1 = (int) (HorizontalSlides.OUT_POS * .8);
   public static int HSLIDE_2 = (HorizontalSlides.OUT_POS);
-  public static int HSLIDE_3 = (int) (HorizontalSlides.OUT_POS * .8);
+  public static int HSLIDE_3 = (int) (HorizontalSlides.OUT_POS * .8); // TODO: Try fully out so bot just turns into block like alphatronic
 
   public static int HSLIDE_SUB = (int) (HorizontalSlides.OUT_POS * .2);
 
@@ -136,7 +136,7 @@ public class BaseBucketAuton {
             pointFromArr(INTAKE_THREE)
         )
         .addParametricCallback(.5, () -> robot.intake.update(1, false, robot.getAllianceColor()))
-        .addParametricCallback(.8, () -> robot.horSlide.setTarget(HorizontalSlides.OUT_POS + 10))
+
         .setLinearHeadingInterpolation(Math.toRadians(PLACE_BUCKET[2]), Math.toRadians(INTAKE_THREE[2]))
         .build();
 
@@ -467,7 +467,7 @@ public class BaseBucketAuton {
         }
         break;
       case 22:
-        subCycleTransfer(new double[]{INTAKE_SUB_PRIME[0], INTAKE_SUB_PRIME[1], INTAKE_SUB_PRIME[2]}, 23);
+        subCycleTransfer(new double[]{INTAKE_SUB_PRIME[0] + 6, INTAKE_SUB_PRIME[1], INTAKE_SUB_PRIME[2]}, 23);
         break;
     }
   }
