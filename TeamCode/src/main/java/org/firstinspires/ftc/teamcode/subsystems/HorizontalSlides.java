@@ -70,7 +70,7 @@ public class HorizontalSlides {
   }
 
   public void updatePosition() {
-    int curPos = (int) (horServoAnalog.getVoltage() / 3.3 * 360);
+    int curPos = (int) ((1 - (horServoAnalog.getVoltage() / 3.3)) * 360);
     if (this.magLim.isPressed()) {
       this.offset = curPos - HorizontalSlides.TRANSFER_POS;
     }
