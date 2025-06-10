@@ -13,12 +13,12 @@ import com.qualcomm.robotcore.util.Range;
 @Config
 public class HorizontalSlides {
 
-  public static int TRANSFER_POS = 0;
-  public static int OUT_POS = 80;
+  public static double TRANSFER_POS = 215;
+  public static double OUT_POS = 313;
 
   public static double MAX_POW = 1.0;
 
-  public static double kf = 0.04;
+  public static double kf = 0.05;
   public static double kp = 0.0065;
   public static double ki = 0;
   public static double kd = 0.00009;
@@ -26,10 +26,8 @@ public class HorizontalSlides {
   private final ElapsedTime timer = new ElapsedTime();
   private double lastError = 0;
   private double integralSum = 0;
-  private int targetPos = TRANSFER_POS;
-  public int position = 0;
-  private int offset = 0;
-
+  private double targetPos = TRANSFER_POS;
+  public double position = 0;
   public final TouchSensor magLim;
   public AnalogInput horServoAnalog;
   public CRServo horServoTop;
@@ -56,7 +54,7 @@ public class HorizontalSlides {
     horServoBottom.setPower(pow);
   }
 
-  public void setTarget(int target) {
+  public void setTarget(double target) {
     if (target != this.targetPos) {
       timer.reset();
       lastError = 0;
@@ -65,16 +63,13 @@ public class HorizontalSlides {
     }
   }
 
-  public int getCurrentPosition() {
+  public double getCurrentPosition() {
     return position;
   }
 
   public void updatePosition() {
-    int curPos = (int) ((1 - (horServoAnalog.getVoltage() / 3.3)) * 360);
-    if (this.magLim.isPressed()) {
-      this.offset = curPos - HorizontalSlides.TRANSFER_POS;
-    }
-    this.position = curPos - this.offset;
+    double curPos = ((1 - (horServoAnalog.getVoltage() / 3.3)) * 360);
+    this.position = curPos;
   }
 
   public boolean atTarget() {

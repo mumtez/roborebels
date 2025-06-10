@@ -15,7 +15,7 @@ public class IntakeTesting extends LinearOpMode {
   NewRobot robot;
 
   public static double rotatePos = Intake.INTAKE_FLAT;
-  public static int hSlidePos = HorizontalSlides.TRANSFER_POS;
+  public static double hSlidePos = HorizontalSlides.TRANSFER_POS;
 
   @Override
   public void runOpMode() throws InterruptedException {
