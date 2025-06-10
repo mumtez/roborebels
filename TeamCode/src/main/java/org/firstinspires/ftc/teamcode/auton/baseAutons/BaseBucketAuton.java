@@ -24,22 +24,22 @@ public class BaseBucketAuton {
 
   public static double HSLIDE_SUB = (HorizontalSlides.TRANSFER_POS + 15);
 
-  public static double INTAKE_OVERRIDE = 4;
+  public static double INTAKE_OVERRIDE = 2;
 
   // MAIN POINTS
 
   public static double[] START = {9.5, 114.5, 270};
-  public static double[] PLACE_BUCKET = {16, 131, 335};
+  public static double[] PLACE_BUCKET = {16, 132, 345};
 
-  public static double[] PLACE_BUCKET_ONE = {17.5, 135, 350};
+  public static double[] PLACE_BUCKET_ONE = {17, 135.5, 353};
 
-  public static double[] PLACE_BUCKET_TWO = {17.5, 136, 355};
+  public static double[] PLACE_BUCKET_TWO = {17, 135.5, 350};
 
   public static double[] PLACE_BUCKET_THREE = {18, 134, 345};
 
 
   public static double[] INTAKE_ONE = {20, 130, 345};
-  public static double[] INTAKE_TWO = {19, 135, 355};
+  public static double[] INTAKE_TWO = {19, 135.5, 353};
   public static double[] INTAKE_THREE = {24, 126, 40};
   public static double[] INTAKE_SUB_PRIME = {64, 97, 270};
 
@@ -155,6 +155,7 @@ public class BaseBucketAuton {
             pointFromArr(INTAKE_SUB_PRIME)
         )
         .setTangentHeadingInterpolation()
+            .addParametricCallback(.95, () -> robot.intake.sweepOut(true))
         .setZeroPowerAccelerationMultiplier(5)
         .build();
 
@@ -330,7 +331,7 @@ public class BaseBucketAuton {
 
         if ( validCollected3) {
           robot.intake.update(0.35, true, robot.getAllianceColor());
-          robot.horSlide.setTarget(HorizontalSlides.TRANSFER_POS -10);
+          robot.horSlide.setTarget(HorizontalSlides.TRANSFER_POS);
 
           robot.follower.followPath(robot.follower.pathBuilder()
                   .addBezierLine(
@@ -394,8 +395,7 @@ public class BaseBucketAuton {
         break;
       case 11:
         if (!robot.follower.isBusy()) {
-          robot.intake.sweepOut(true);
-          if (pathTimer.getElapsedTime() > 2700) {
+          if (pathTimer.getElapsedTime() > 1700) {
             robot.intake.sweepOut(false);
             setPathState(12);
           }
@@ -433,8 +433,7 @@ public class BaseBucketAuton {
         break;
       case 17:
         if (!robot.follower.isBusy()) {
-          robot.intake.sweepOut(true);
-          if (pathTimer.getElapsedTime() > 2700) {
+          if (pathTimer.getElapsedTime() > 1700) {
             robot.intake.sweepOut(false);
             setPathState(18);
           }
@@ -472,8 +471,7 @@ public class BaseBucketAuton {
         break;
       case 23:
         if (!robot.follower.isBusy()) {
-          robot.intake.sweepOut(true);
-          if (pathTimer.getElapsedTime() > 2700) {
+          if (pathTimer.getElapsedTime() > 1700) {
             robot.intake.sweepOut(false);
             setPathState(24);
           }
@@ -544,6 +542,7 @@ public class BaseBucketAuton {
                     pointFromArr(postPos)
                 )
                 .setTangentHeadingInterpolation()
+                    .addParametricCallback(.97, () -> robot.intake.sweepOut(true))
                 .setZeroPowerAccelerationMultiplier(5)
                 .build(), 30, 50);
             setPathState(next);
