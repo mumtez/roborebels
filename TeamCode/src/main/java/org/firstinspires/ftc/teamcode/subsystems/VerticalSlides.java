@@ -17,14 +17,14 @@ public class VerticalSlides {
   public static int TRANSFER = 0;
   public static int BAR_PLACE_TELEOP = 800;
   public static int BAR_PLACE_UNDER = 300;
-  public static int UP_AUTO = 1850;
+  public static int UP_AUTO = 1950;
   public static int UP = 2050;
   public static int LOWER_BUCKET = 700;
 
   public static double kp = 0.008;
   public static double ki = 0.00028;
   public static double kd = 0.0004;
-  public static double kV = 1.0 / 2650; // Replace 1833 with your measured max velocity if known
+  public static double kV = 1.0 / 2650;
   public static double kA = 0.0;
   public static double KG = 0.01;
 
