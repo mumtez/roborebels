@@ -33,7 +33,7 @@ public class BaseBucketAuton {
 
   public static double[] PLACE_BUCKET_ONE = {17, 135.5, 353};
 
-  public static double[] PLACE_BUCKET_TWO = {17, 135.5, 350};
+  public static double[] PLACE_BUCKET_TWO = {17, 135.5, 340};
 
   public static double[] PLACE_BUCKET_THREE = {18, 134, 345};
 
@@ -42,9 +42,11 @@ public class BaseBucketAuton {
   public static double[] INTAKE_ONE = {20, 130, 342};
   public static double[] INTAKE_TWO = {19, 135.5, 353};
   public static double[] INTAKE_THREE = {24, 126, 40};
-  public static double[] INTAKE_SUB_PRIME = {64, 97, 270};
+  public static double[] INTAKE_SUB_PRIME = {64, 94, 270};
 
-  public static double[] INTAKE_SUB_LEFT = {70, 95, 270};
+  public static double[] INTAKE_SUB_LEFT = {70, 94, 270};
+
+  public static double[] INTAKE_SUB_MIDDLE = {67, 94, 270};
 
   public static double[] BUCKET_INTAKE_SUB_CONTROL = {63.7, 118};
   public static double[] BUCKET_INTAKE_SUB_CONTROL_LEFT = {66.7, 118};
@@ -56,12 +58,15 @@ public class BaseBucketAuton {
       intakeOne, placeOne,
       intakeTwo, placeTwo,
       intakeThree, placeThree,
-      bucketToSub, subToSubLeft;
+      bucketToSub, subToSubLeft,
+          subLeftToSubMiddle, subMiddleToSubRight;
+
 
   private int pathState = 0;
 
   private final Timer pathTimer = new Timer();
   private final ElapsedTime subTimer = new ElapsedTime();
+  private final ElapsedTime intakeTimer = new ElapsedTime();
   private final ElapsedTime transferTimer = new ElapsedTime();
 
   final NewRobot robot;
@@ -171,8 +176,34 @@ public class BaseBucketAuton {
                     pointFromArr(INTAKE_SUB_LEFT)
             )
             .setLinearHeadingInterpolation(Math.toRadians(INTAKE_SUB_PRIME[2]), Math.toRadians(INTAKE_SUB_LEFT[2]))
-            .addParametricCallback(.99, () -> robot.intake.sweepOut(false))
+            .addParametricCallback(.98, () -> robot.intake.sweepOut(false))
+            .addParametricCallback(.99, () -> robot.intake.update(1, false, robot.getAllianceColor()))
+            .addParametricCallback(.99, () -> robot.horSlide.setTarget(HorizontalSlides.OUT_POS))
             .setZeroPowerAccelerationMultiplier(5)
+            .setPathEndTimeoutConstraint(100)
+            .build();
+    subLeftToSubMiddle = robot.follower.pathBuilder()
+            .addBezierLine(
+                    pointFromArr(INTAKE_SUB_LEFT),
+                    pointFromArr(INTAKE_SUB_MIDDLE)
+            )
+            .setConstantHeadingInterpolation(Math.toRadians(INTAKE_SUB_LEFT[2]))
+            .addParametricCallback(.99, () -> robot.intake.update(1, false, robot.getAllianceColor()))
+            .addParametricCallback(.99, () -> robot.horSlide.setTarget(HorizontalSlides.OUT_POS))
+            .setZeroPowerAccelerationMultiplier(5)
+            .setPathEndTimeoutConstraint(100)
+            .build();
+
+    subMiddleToSubRight = robot.follower.pathBuilder()
+            .addBezierLine(
+                    pointFromArr(INTAKE_SUB_MIDDLE),
+                    pointFromArr(INTAKE_SUB_PRIME)
+            )
+            .setConstantHeadingInterpolation(Math.toRadians(INTAKE_SUB_LEFT[2]))
+            .addParametricCallback(.99, () -> robot.intake.update(1, false, robot.getAllianceColor()))
+            .addParametricCallback(.99, () -> robot.horSlide.setTarget(HorizontalSlides.OUT_POS))
+            .setZeroPowerAccelerationMultiplier(5)
+            .setPathEndTimeoutConstraint(100)
             .build();
 
   }
@@ -412,16 +443,28 @@ public class BaseBucketAuton {
       case 11:
         if (!robot.follower.isBusy()) {
           robot.follower.followPath(subToSubLeft);
+          intakeTimer.reset();
           setPathState(12);
         }
         break;
       case 12:
-        if (!robot.follower.isBusy()){
-        robot.intake.update(1, false, robot.getAllianceColor());
-        robot.horSlide.setTarget(HorizontalSlides.OUT_POS);
-        if (robot.intake.validSampleIn(robot.getAllianceColor())) {
-          setPathState(13);
-        }}
+        if (!robot.follower.isBusy()) {
+          if (intakeTimer.milliseconds() < 1250){
+            robot.intake.update(1, false, robot.getAllianceColor());
+            robot.horSlide.setTarget(HorizontalSlides.OUT_POS);
+          }
+          if (robot.intake.validSampleIn(robot.getAllianceColor()) && intakeTimer.milliseconds() < 1250) {
+            setPathState(13);
+          } else if (!robot.intake.validSampleIn(robot.getAllianceColor()) && robot.horSlide.atTarget() && intakeTimer.milliseconds() > 1250) {
+            robot.intake.update(0, true, robot.getAllianceColor());
+            robot.horSlide.setTarget(HSLIDE_SUB +10);
+            if (robot.horSlide.atTarget()) {
+              robot.follower.followPath(subLeftToSubMiddle);
+              setPathState(17);
+            }
+          }
+
+        }
         break;
       case 13:
         setPathState(14);
@@ -437,18 +480,29 @@ public class BaseBucketAuton {
         }
         break;
       case 16:
-        subCycleTransfer(new double[]{INTAKE_SUB_LEFT[0] - 3, INTAKE_SUB_LEFT[1], INTAKE_SUB_LEFT[2]}, 17, BUCKET_INTAKE_SUB_CONTROL_LEFT);
+        subCycleTransfer(INTAKE_SUB_MIDDLE, 17, BUCKET_INTAKE_SUB_CONTROL_LEFT);
         break;
       case 17:
         if (!robot.follower.isBusy()) {
+          intakeTimer.reset();
             setPathState(18);
         }
         break;
       case 18:
-        robot.intake.update(1, false, robot.getAllianceColor());
-        robot.horSlide.setTarget(HorizontalSlides.OUT_POS);
-        if (robot.intake.validSampleIn(robot.getAllianceColor())) {
-          setPathState(19);
+        if (intakeTimer.milliseconds() < 1250){
+          robot.intake.update(1, false, robot.getAllianceColor());
+          robot.horSlide.setTarget(HorizontalSlides.OUT_POS);
+        }
+          if (robot.intake.validSampleIn(robot.getAllianceColor()) && intakeTimer.milliseconds() < 1250) {
+            setPathState(19);
+          } if (!robot.intake.validSampleIn(robot.getAllianceColor()) && robot.horSlide.atTarget() && intakeTimer.milliseconds() > 1250){
+            robot.intake.update(0, true, robot.getAllianceColor());
+            robot.horSlide.setTarget(HSLIDE_SUB + 10);
+            if (robot.horSlide.atTarget() ){
+              robot.follower.followPath(subMiddleToSubRight);
+              setPathState(23);
+            }
+
         }
         break;
       case 19:
@@ -456,7 +510,7 @@ public class BaseBucketAuton {
 
         break;
       case 20:
-        subCycleToBucket(new double[]{INTAKE_SUB_LEFT[0] - 3, INTAKE_SUB_LEFT[1], INTAKE_SUB_LEFT[2]}, 21, BUCKET_INTAKE_SUB_CONTROL_LEFT);
+        subCycleToBucket(INTAKE_SUB_MIDDLE, 21, BUCKET_INTAKE_SUB_CONTROL_LEFT);
         break;
       case 21:
         if (robot.horSlide.magLim.isPressed()) {
@@ -465,7 +519,7 @@ public class BaseBucketAuton {
         }
         break;
       case 22:
-        subCycleTransfer(new double[]{INTAKE_SUB_LEFT[0] - 6, INTAKE_SUB_LEFT[1], INTAKE_SUB_LEFT[2]}, 23, BUCKET_INTAKE_SUB_CONTROL);
+        subCycleTransfer(INTAKE_SUB_PRIME, 23, BUCKET_INTAKE_SUB_CONTROL);
         break;
       case 23:
         if (!robot.follower.isBusy()) {
@@ -473,8 +527,10 @@ public class BaseBucketAuton {
         }
         break;
       case 24:
-        robot.intake.update(1, false, robot.getAllianceColor());
-        robot.horSlide.setTarget(HorizontalSlides.OUT_POS);
+
+          robot.intake.update(1, false, robot.getAllianceColor());
+          robot.horSlide.setTarget(HorizontalSlides.OUT_POS);
+
         if (robot.intake.validSampleIn(robot.getAllianceColor())) {
           setPathState(25);
         }
@@ -484,7 +540,7 @@ public class BaseBucketAuton {
 
         break;
       case 26:
-        subCycleToBucket(new double[]{INTAKE_SUB_LEFT[0] - 6, INTAKE_SUB_LEFT[1], INTAKE_SUB_LEFT[2]}, 27, BUCKET_INTAKE_SUB_CONTROL);
+        subCycleToBucket(INTAKE_SUB_PRIME, 27, BUCKET_INTAKE_SUB_CONTROL);
         break;
       case 27:
         if (robot.horSlide.magLim.isPressed()) {
@@ -493,7 +549,7 @@ public class BaseBucketAuton {
         }
         break;
       case 28:
-        subCycleTransfer(new double[]{INTAKE_SUB_LEFT[0] - 6, INTAKE_SUB_LEFT[1], INTAKE_SUB_LEFT[2]}, 29, BUCKET_INTAKE_SUB_CONTROL);
+        subCycleTransfer(INTAKE_SUB_PRIME, 29, BUCKET_INTAKE_SUB_CONTROL);
         break;
     }
   }
@@ -517,6 +573,7 @@ public class BaseBucketAuton {
         .setLinearHeadingInterpolation(Math.toRadians(subPos[2]),
             Math.toRadians(PLACE_BUCKET_SUB[2]))
         .setZeroPowerAccelerationMultiplier(5)
+                    .setPathEndTimeoutConstraint(200)
         .build(), true);
 
   }
@@ -525,7 +582,7 @@ public class BaseBucketAuton {
     if (transferTimer.milliseconds() > 150) {
       robot.claw.clawClose();
       if (transferTimer.milliseconds() > 200) {
-        robot.slides.setTarget(VerticalSlides.UP_AUTO);
+        robot.slides.setTarget(VerticalSlides.UP_AUTO + 150);
         robot.horSlide.setTarget(HSLIDE_SUB);
         if (robot.slides.atTarget(MOVE_ARM_HEIGHT_OFFSET)) {
           robot.claw.setBucket();
