@@ -18,7 +18,7 @@ public class HorizontalSlides {
 
   public static double MAX_POW = 1.0;
 
-  public static double kf = 0.045;
+  public static double kf = 0.03;
   public static double kp = 0.0065;
   public static double ki = 0;
   public static double kd = 0.00009;

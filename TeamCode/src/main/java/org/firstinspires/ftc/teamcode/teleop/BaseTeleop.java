@@ -15,7 +15,7 @@ public class BaseTeleop {
 
   public enum ModeState {
     SPEC_WALL, SPEC_PRE_CLIP, SPEC_CLIP, SPEC_POST_CLIP,
-    BUCKET_INTAKING, BUCKET_TRANSFER, BUCKET_POST_TRANSFER, BUCKET_PLACE, BUCKET_POST_PLACE
+    BUCKET_INTAKING, BUCKET_TRANSFER, BUCKET_POST_TRANSFER, BUCKET_PLACE_HIGH, BUCKET_PLACE_LOW, BUCKET_POST_PLACE_HIGH, BUCKET_POST_PLACE_LOW
   }
 
   public static double OUTTAKE_SPEED_MODIFIER = 0.6; // TODO: make sure can't get stuck at low battery
@@ -231,7 +231,7 @@ public class BaseTeleop {
           robot.intake.update(1, true, robot.getAllianceColor());
         }
         if (stateTimer.seconds() > 0.4) {
-          robot.intake.update(0.05, true, robot.getAllianceColor());
+          robot.intake.update(0.1, true, robot.getAllianceColor());
         }
 
         robot.horSlide.updatePIDControl();
@@ -260,35 +260,66 @@ public class BaseTeleop {
 
           // If the vert slides are moving to either bucket height
           int slideTarget = robot.slides.getTarget();
-          if (slideTarget == VerticalSlides.UP || slideTarget == VerticalSlides.LOWER_BUCKET) {
+          if (slideTarget == VerticalSlides.UP && !(slideTarget == VerticalSlides.LOWER_BUCKET)) {
             // TODO TUNE THRESHOLD FOR OPTIMAL ARM TURN
             if (robot.slides.atSetTarget(100, slideTarget - 1000)) {
               robot.claw.setBucket();
-              state = ModeState.BUCKET_PLACE;
+              state = ModeState.BUCKET_PLACE_HIGH;
+              stateTimer.reset();
+            }
+          }
+          if (slideTarget == VerticalSlides.LOWER_BUCKET && !(slideTarget == VerticalSlides.UP)) {
+            if (robot.slides.atSetTarget(100, slideTarget -350)) {
+              robot.claw.setBucket();
+              state = ModeState.BUCKET_PLACE_LOW;
               stateTimer.reset();
             }
           }
         }
         break;
 
-      case BUCKET_PLACE:
+      case BUCKET_PLACE_HIGH:
         robot.horSlide.updatePIDControl();
         //TODO: timer needed here?
         if (stateTimer.milliseconds() > 400 && (currentGamepad2.square || currentGamepad1.square)) {
           robot.claw.clawOpen();
-          state = ModeState.BUCKET_POST_PLACE;
+          state = ModeState.BUCKET_POST_PLACE_HIGH;
           stateTimer.reset();
         }
         // TODO: cancel raise button
         break;
 
-      case BUCKET_POST_PLACE:
+      case BUCKET_PLACE_LOW:
+        robot.horSlide.updatePIDControl();
+        //TODO: timer needed here?
+        if (stateTimer.milliseconds() > 400 && (currentGamepad2.square || currentGamepad1.square)) {
+          robot.claw.clawOpen();
+          state = ModeState.BUCKET_POST_PLACE_LOW;
+          stateTimer.reset();
+        }
+        // TODO: cancel raise button
+        break;
+
+      case BUCKET_POST_PLACE_HIGH:
         robot.horSlide.updatePIDControl();
         if (stateTimer.milliseconds() > 500) {
           robot.claw.setTransfer();
           robot.slides.setTarget(VerticalSlides.TRANSFER);
           state = ModeState.BUCKET_INTAKING;
           stateTimer.reset();
+        }
+        break;
+
+      case BUCKET_POST_PLACE_LOW:
+        robot.horSlide.updatePIDControl();
+        if (stateTimer.milliseconds() > 500) {
+          robot.claw.setTransfer();
+          if (stateTimer.milliseconds() > 1000) {
+            robot.slides.setTarget(VerticalSlides.TRANSFER);
+            state = ModeState.BUCKET_INTAKING;
+            stateTimer.reset();
+          }
+
         }
         break;
 
@@ -355,6 +386,8 @@ public class BaseTeleop {
 
     telemetry.addData("STATE", state);
     telemetry.addData("STATE Timer", stateTimer.milliseconds());
+
+    telemetry.addData("Slide Target" , robot.slides.getTarget());
     telemetry.update();
   }
 }
