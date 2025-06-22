@@ -35,7 +35,6 @@ public class VerticalSlides {
   private double lastError = 0;
   private double integralSum = 0;
   private double currentVelocity = 0;
-  private double acceleration = 0;
 
   private int offset = 0;
   private int targetPos = TRANSFER;
@@ -121,6 +120,7 @@ public class VerticalSlides {
 
     // Motion profiling calculations
     double stoppingDist = (currentVelocity * currentVelocity) / (2.0 * MAX_ACCEL);
+    double acceleration;
     if (Math.abs(error) < stoppingDist) {
       acceleration = -Math.signum(currentVelocity) * MAX_ACCEL;
     } else {

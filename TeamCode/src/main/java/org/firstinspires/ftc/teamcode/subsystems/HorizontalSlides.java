@@ -34,7 +34,6 @@ public class HorizontalSlides {
 
   public CRServo horServoBottom;
 
-
   public HorizontalSlides(LinearOpMode opMode) {
     HardwareMap hardwareMap = opMode.hardwareMap;
     horServoAnalog = hardwareMap.get(AnalogInput.class, "horservoanalog");
@@ -47,7 +46,6 @@ public class HorizontalSlides {
 
     magLim = hardwareMap.touchSensor.get("magh");
   }
-
 
   public void setPower(double pow) {
     horServoTop.setPower(pow);
@@ -64,12 +62,11 @@ public class HorizontalSlides {
   }
 
   public double getCurrentPosition() {
-    return position;
+    return this.position;
   }
 
   public void updatePosition() {
-    double curPos = ((1 - (horServoAnalog.getVoltage() / 3.3)) * 360);
-    this.position = curPos;
+    this.position = ((1 - (horServoAnalog.getVoltage() / 3.3)) * 360);
   }
 
   public boolean atTarget() {

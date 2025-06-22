@@ -26,8 +26,6 @@ public class NewRobot {
     RED, BLUE
   }
 
-  private final LinearOpMode opMode;
-
   public Follower follower;
   public DcMotor fr, fl, br, bl;
   public IMU imu;
@@ -44,7 +42,6 @@ public class NewRobot {
   }
 
   public NewRobot(LinearOpMode opMode, AllianceColor allianceColor) {
-    this.opMode = opMode;
     this.allianceColor = allianceColor;
     HardwareMap hardwareMap = opMode.hardwareMap;
 
@@ -105,20 +102,6 @@ public class NewRobot {
     this.intake.rotateFlat();
   }
 
-  public void initAutonSpec() {
-    slides.setMode(RunMode.STOP_AND_RESET_ENCODER);
-
-    horSlide.setTarget(HorizontalSlides.TRANSFER_POS);
-    slides.setTarget(VerticalSlides.TRANSFER);
-
-    intake.sweepOut(false);
-
-    claw.clawClose();
-    claw.setInitSpec();
-
-    this.intake.rotateFlat();
-  }
-
   public AllianceColor getAllianceColor() {
     return this.allianceColor;
   }
@@ -130,11 +113,4 @@ public class NewRobot {
     horSlide.updatePIDControl();
   }
 
-  public void waitTime(long ms) {
-    long startTime = System.currentTimeMillis();
-
-    while (this.opMode.opModeIsActive() && (System.currentTimeMillis() - startTime) < ms) {
-      updateAutoControls();
-    }
-  }
 }
