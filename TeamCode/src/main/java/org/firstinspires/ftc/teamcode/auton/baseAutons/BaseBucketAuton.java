@@ -534,7 +534,7 @@ public class BaseBucketAuton {
         subCycleTransfer(INTAKE_SUB_PRIME, 23, BUCKET_INTAKE_SUB_CONTROL);
         break;
 
-      case 23: // come back here if all positions tried
+      case 23:
         if (!robot.follower.isBusy()) {
           setPathState(24);
         }
@@ -564,8 +564,8 @@ public class BaseBucketAuton {
         }
         break;
 
-      case 28:
-        subCycleTransfer(INTAKE_SUB_PRIME, 23, BUCKET_INTAKE_SUB_CONTROL);
+      case 28: // go back to start if all 3 done pray for luck
+        subCycleTransfer(INTAKE_SUB_LEFT, 12, BUCKET_INTAKE_SUB_CONTROL_DOUBLE_LEFT);
         break;
     }
   }
