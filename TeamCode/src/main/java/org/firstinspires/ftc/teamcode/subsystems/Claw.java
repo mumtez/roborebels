@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.hardware.ServoImplEx;
 public class Claw {
 
   // might be updated
-  public static double clawOpenPos = 0.8;
+  public static double clawOpenPos = 0.87;
 
   public static double clawOpenWallPos = 0.6;
 
