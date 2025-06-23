@@ -55,6 +55,18 @@ public class Claw {
 
   }
 
+  public void disableClaw () {
+    claw.setPwmDisable();
+    clawUpArm.setPwmDisable();
+    clawDownArm.setPwmDisable();
+  }
+
+  public void enableClaw () {
+    claw.setPwmEnable();
+    clawUpArm.setPwmEnable();
+    clawDownArm.setPwmEnable();
+  }
+
   public void clawClose() {
     this.clawClosed = true;
     claw.setPosition(clawClosePos);

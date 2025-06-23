@@ -87,6 +87,11 @@ public class BaseTeleop {
       // Hang Override
       if (currentGamepad1.back && !previousGamepad1.back) {
         hangOverride = !hangOverride;
+        if (hangOverride){
+          robot.claw.disableClaw();
+        } else {
+          robot.claw.enableClaw();
+        }
         robot.horSlide.setTarget(HorizontalSlides.TRANSFER_POS);
       }
 

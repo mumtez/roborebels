@@ -470,15 +470,18 @@ public class BaseBucketAuton {
         break;
 
       case 13:
-        if (intakeTimer.milliseconds() > 200 && robot.intake.validSampleIn(robot.getAllianceColor())){
+        robot.intake.update(0.15, true, robot.getAllianceColor());
+        if (intakeTimer.milliseconds() > 50 && !robot.intake.isSpitting()){
           setPathState(14);
-        } else {
-          robot.intake.update(0.15, true, robot.getAllianceColor());
+        } else { // it wrong color
           robot.horSlide.setTarget(HSLIDE_SUB + 10);
-          if (robot.horSlide.atTarget()) {
-            robot.follower.followPath(subLeftToSubMiddle);
-            setPathState(17);
-          }
+          setPathState(135);
+        }
+        break;
+      case 135:
+        if (robot.horSlide.atTarget()) {
+          robot.follower.followPath(subToSubLeft);
+          setPathState(17);
         }
         break;
 
@@ -527,15 +530,18 @@ public class BaseBucketAuton {
         break;
 
       case 19:
-        if (intakeTimer.milliseconds() > 200 && robot.intake.validSampleIn(robot.getAllianceColor())){
+        robot.intake.update(0.15, true, robot.getAllianceColor());
+        if (intakeTimer.milliseconds() > 50 && !robot.intake.isSpitting()){
           setPathState(20);
-        } else {
-          robot.intake.update(0.15, true, robot.getAllianceColor());
+        } else { // it wrong color
           robot.horSlide.setTarget(HSLIDE_SUB + 10);
-          if (robot.horSlide.atTarget()) {
-            robot.follower.followPath(subMiddleToSubRight);
-            setPathState(23);
-          }
+          setPathState(195);
+        }
+        break;
+      case 195:
+        if (robot.horSlide.atTarget()) {
+          robot.follower.followPath(subToSubLeft);
+          setPathState(23);
         }
         break;
 
