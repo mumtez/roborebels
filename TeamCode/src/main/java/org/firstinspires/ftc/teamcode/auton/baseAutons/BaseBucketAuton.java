@@ -37,11 +37,11 @@ public class BaseBucketAuton {
 
   public static double[] PLACE_BUCKET_THREE = {18, 134, 345};
 
-  public static double[] PLACE_BUCKET_SUB = {21, 131, 315};
+  public static double[] PLACE_BUCKET_SUB = {20, 132, 315};
 
   public static double[] INTAKE_ONE = {20, 130, 342};
   public static double[] INTAKE_TWO = {19, 135.5, 353};
-  public static double[] INTAKE_THREE = {22.5, 126, 40};
+  public static double[] INTAKE_THREE = {23, 127, 40};
   public static double[] INTAKE_SUB_PRIME = {62, 94, 270};
 
   public static double[] INTAKE_SUB_LEFT = {68, 94, 270};
@@ -163,7 +163,7 @@ public class BaseBucketAuton {
             pointFromArr(INTAKE_SUB_PRIME)
         )
         .setTangentHeadingInterpolation()
-        .addParametricCallback(.96, () -> robot.intake.sweepOut(true))
+        .addParametricCallback(.91, () -> robot.intake.sweepOut(true))
         .setPathEndTimeoutConstraint(100)
         .setZeroPowerAccelerationMultiplier(5)
         .build();
@@ -174,9 +174,9 @@ public class BaseBucketAuton {
             pointFromArr(INTAKE_SUB_LEFT)
         )
         .setLinearHeadingInterpolation(Math.toRadians(INTAKE_SUB_PRIME[2]), Math.toRadians(INTAKE_SUB_LEFT[2]))
-        .addParametricCallback(.98, () -> robot.intake.sweepOut(false))
-        .addParametricCallback(.99, () -> robot.intake.update(1, false, robot.getAllianceColor()))
-        .addParametricCallback(.99, () -> robot.horSlide.setTarget(HorizontalSlides.OUT_POS))
+        .addParametricCallback(.94, () -> robot.intake.sweepOut(false))
+        .addParametricCallback(.94, () -> robot.intake.update(1, false, robot.getAllianceColor()))
+        .addParametricCallback(.94, () -> robot.horSlide.setTarget(HorizontalSlides.OUT_POS))
         .setZeroPowerAccelerationMultiplier(5)
         .setPathEndTimeoutConstraint(100)
         .build();
@@ -186,8 +186,8 @@ public class BaseBucketAuton {
             pointFromArr(INTAKE_SUB_MIDDLE)
         )
         .setConstantHeadingInterpolation(Math.toRadians(INTAKE_SUB_LEFT[2]))
-        .addParametricCallback(.99, () -> robot.intake.update(1, false, robot.getAllianceColor()))
-        .addParametricCallback(.99, () -> robot.horSlide.setTarget(HorizontalSlides.OUT_POS))
+        .addParametricCallback(.94, () -> robot.intake.update(1, false, robot.getAllianceColor()))
+        .addParametricCallback(.94, () -> robot.horSlide.setTarget(HorizontalSlides.OUT_POS))
         .setZeroPowerAccelerationMultiplier(5)
         .setPathEndTimeoutConstraint(100)
         .build();
@@ -198,8 +198,8 @@ public class BaseBucketAuton {
             pointFromArr(INTAKE_SUB_PRIME)
         )
         .setConstantHeadingInterpolation(Math.toRadians(INTAKE_SUB_LEFT[2]))
-        .addParametricCallback(.99, () -> robot.intake.update(1, false, robot.getAllianceColor()))
-        .addParametricCallback(.99, () -> robot.horSlide.setTarget(HorizontalSlides.OUT_POS))
+        .addParametricCallback(.94, () -> robot.intake.update(1, false, robot.getAllianceColor()))
+        .addParametricCallback(.94, () -> robot.horSlide.setTarget(HorizontalSlides.OUT_POS))
         .setZeroPowerAccelerationMultiplier(5)
         .setPathEndTimeoutConstraint(100)
         .build();
@@ -454,9 +454,10 @@ public class BaseBucketAuton {
             robot.intake.update(1, false, robot.getAllianceColor());
             robot.horSlide.setTarget(HorizontalSlides.OUT_POS);
           }
-          if (robot.intake.validSampleIn(robot.getAllianceColor()) && intakeTimer.milliseconds() < 1850) {
+          if (robot.intake.validSampleIn(robot.getAllianceColor())) {
+            intakeTimer.reset();
             setPathState(13);
-          } else if (!robot.intake.validSampleIn(robot.getAllianceColor()) && robot.horSlide.atTarget()
+          } else if (!robot.intake.validSampleIn(robot.getAllianceColor())
               && intakeTimer.milliseconds() > 1850) {
             robot.intake.update(0.15, true, robot.getAllianceColor());
             robot.horSlide.setTarget(HSLIDE_SUB + 10);
@@ -469,7 +470,16 @@ public class BaseBucketAuton {
         break;
 
       case 13:
-        setPathState(14);
+        if (intakeTimer.milliseconds() > 200 && robot.intake.validSampleIn(robot.getAllianceColor())){
+          setPathState(14);
+        } else {
+          robot.intake.update(0.15, true, robot.getAllianceColor());
+          robot.horSlide.setTarget(HSLIDE_SUB + 10);
+          if (robot.horSlide.atTarget()) {
+            robot.follower.followPath(subLeftToSubMiddle);
+            setPathState(17);
+          }
+        }
         break;
 
       case 14:
@@ -500,10 +510,11 @@ public class BaseBucketAuton {
           robot.intake.update(1, false, robot.getAllianceColor());
           robot.horSlide.setTarget(HorizontalSlides.OUT_POS);
         }
-        if (robot.intake.validSampleIn(robot.getAllianceColor()) && intakeTimer.milliseconds() < 1850) {
+        if (robot.intake.validSampleIn(robot.getAllianceColor())) {
+          intakeTimer.reset();
           setPathState(19);
         }
-        if (!robot.intake.validSampleIn(robot.getAllianceColor()) && robot.horSlide.atTarget()
+        if (!robot.intake.validSampleIn(robot.getAllianceColor())
             && intakeTimer.milliseconds() > 1850) {
           robot.intake.update(0.15, true, robot.getAllianceColor());
           robot.horSlide.setTarget(HSLIDE_SUB + 10);
@@ -516,7 +527,16 @@ public class BaseBucketAuton {
         break;
 
       case 19:
-        setPathState(20);
+        if (intakeTimer.milliseconds() > 200 && robot.intake.validSampleIn(robot.getAllianceColor())){
+          setPathState(20);
+        } else {
+          robot.intake.update(0.15, true, robot.getAllianceColor());
+          robot.horSlide.setTarget(HSLIDE_SUB + 10);
+          if (robot.horSlide.atTarget()) {
+            robot.follower.followPath(subMiddleToSubRight);
+            setPathState(23);
+          }
+        }
         break;
 
       case 20:
@@ -536,21 +556,46 @@ public class BaseBucketAuton {
 
       case 23:
         if (!robot.follower.isBusy()) {
+          intakeTimer.reset();
           setPathState(24);
         }
         break;
 
       case 24:
-        robot.intake.update(1, false, robot.getAllianceColor());
-        robot.horSlide.setTarget(HorizontalSlides.OUT_POS);
-
-        if (robot.intake.validSampleIn(robot.getAllianceColor())) {
+        if (intakeTimer.milliseconds() < 1850) { // if we are less then sub timer and nothing in
+          robot.intake.update(1, false, robot.getAllianceColor());
+          robot.horSlide.setTarget(HorizontalSlides.OUT_POS);
+        }
+        if (robot.intake.validSampleIn(robot.getAllianceColor())) { // if we get sample within timeframe
+          intakeTimer.reset();
           setPathState(25);
+        }
+        if (!robot.intake.validSampleIn(robot.getAllianceColor()) // if we went over time and no sample so failed
+                && intakeTimer.milliseconds() > 1850) {
+          robot.intake.update(0.15, true, robot.getAllianceColor());
+          robot.horSlide.setTarget(HSLIDE_SUB + 10);
+          if (robot.horSlide.atTarget()) {
+            robot.follower.followPath(subToSubLeft);
+            setPathState(12);
+          }
         }
         break;
 
       case 25:
-        setPathState(26);
+        robot.intake.update(0.15, true, robot.getAllianceColor());
+        if (intakeTimer.milliseconds() > 50 && !robot.intake.isSpitting()){
+          setPathState(26);
+        } else { // it wrong color
+          robot.horSlide.setTarget(HSLIDE_SUB + 10);
+          setPathState(255);
+        }
+
+        break;
+      case 255:
+        if (robot.horSlide.atTarget()) {
+          robot.follower.followPath(subToSubLeft);
+          setPathState(12);
+        }
         break;
 
       case 26:

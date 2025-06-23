@@ -147,7 +147,9 @@ public class Intake {
       this.sampleColor = SampleColor.NONE;
     }
   }
-
+  public boolean isSpitting() {
+    return this.spitTimer.milliseconds() <= 400;
+  }
   public void update(double power, boolean flat, AllianceColor allianceColor) {
     this.senseDistance();
     this.senseColor();
