@@ -102,6 +102,20 @@ public class NewRobot {
     this.intake.rotateFlat();
   }
 
+  public void initAutonSpec() {
+    slides.setMode(RunMode.STOP_AND_RESET_ENCODER);
+
+    horSlide.setTarget(HorizontalSlides.TRANSFER_POS);
+    slides.setTarget(VerticalSlides.TRANSFER);
+
+    intake.sweepOut(false);
+
+    claw.clawClose();
+    claw.setInitSpec();
+
+    this.intake.rotateFlat();
+  }
+
   public AllianceColor getAllianceColor() {
     return this.allianceColor;
   }

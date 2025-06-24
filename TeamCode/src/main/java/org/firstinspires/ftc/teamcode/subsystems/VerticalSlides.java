@@ -18,7 +18,7 @@ public class VerticalSlides {
   public static int BAR_PLACE_TELEOP = 800;
   public static int BAR_PLACE_UNDER = 300;
   public static int UP_AUTO = 1950;
-  public static int UP = 2050;
+  public static int UP = 2150; // 2050
   public static int LOWER_BUCKET = 700;
 
   public static double kp = 0.008;
@@ -97,7 +97,7 @@ public class VerticalSlides {
     return atTarget(30);
   }
 
-  public boolean atTarget(int threshold) {
+  public boolean atTarget(double threshold) {
     return Math.abs(this.position - this.targetPos) < threshold;
   }
 

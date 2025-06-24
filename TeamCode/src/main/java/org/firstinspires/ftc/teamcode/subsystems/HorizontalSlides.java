@@ -13,8 +13,8 @@ import com.qualcomm.robotcore.util.Range;
 @Config
 public class HorizontalSlides {
 
-  public static double TRANSFER_POS = 215;
-  public static double OUT_POS = 313;
+  public static double TRANSFER_POS = 22;
+  public static double OUT_POS = 118;
 
   public static double MAX_POW = 1.0;
 

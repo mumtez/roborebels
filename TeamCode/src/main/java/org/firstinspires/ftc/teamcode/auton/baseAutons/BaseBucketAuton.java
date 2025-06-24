@@ -655,7 +655,7 @@ public class BaseBucketAuton {
         .setLinearHeadingInterpolation(Math.toRadians(subPos[2]),
             Math.toRadians(PLACE_BUCKET_SUB[2]))
         .setZeroPowerAccelerationMultiplier(5)
-        .setPathEndTimeoutConstraint(50)
+        .setPathEndTimeoutConstraint(150)
         .build(), true);
 
   }
