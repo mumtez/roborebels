@@ -144,8 +144,6 @@ public class BaseTeleop {
     robot.intake.setPower(0);
     robot.intake.rotateFlat();
 
-    robot.claw.setInit();
-
     robot.horSlide.updatePIDControl();
   }
 
