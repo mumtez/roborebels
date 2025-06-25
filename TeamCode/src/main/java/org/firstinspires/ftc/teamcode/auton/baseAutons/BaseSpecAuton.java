@@ -29,20 +29,15 @@ public class BaseSpecAuton {
   public static double[] DRIVE_TWO = {45, 28, 180};
 
   public static double[] PUSH_TWO = {25, 17, 180};
-
   public static double[] CONTROL_PUSH_TWO = {61, 8};
-
 
   public static double[] DRIVE_THREE = {50, 18, 180};
 
   public static double[] PUSH_THREE = {25, 13, 180};
-
   public static double[] CONTROL_PUSH_THREE = {61, 5};
 
   public static double[] PICKUP = {18, 32, 180};
-
   public static double[] CONTROL_PICKUP_ONE = {28, 36};
-
   public static double[] CONTROL_PICKUP = {35, 30};
 
   public static double[] INTAKE = {16, 50, 240};
@@ -62,7 +57,8 @@ public class BaseSpecAuton {
 
   PathChain placePreLoad,
       driveOne,
-      pickup, place, intake, scoreSample;
+      pickup, place;
+//      intake, scoreSample;
 
 
   public BaseSpecAuton(LinearOpMode opMode, NewRobot robot) {
@@ -87,8 +83,8 @@ public class BaseSpecAuton {
             pointFromArr(PLACE_SPEC_FIRST)
         )
         .setLinearHeadingInterpolation(Math.toRadians(START[2]), Math.toRadians(PLACE_SPEC_FIRST[2]))
-            .setPathEndTimeoutConstraint(50)
-            .setZeroPowerAccelerationMultiplier(5)
+        .setPathEndTimeoutConstraint(50)
+        .setZeroPowerAccelerationMultiplier(5)
         .build();
 
     driveOne = robot.follower.pathBuilder()
@@ -144,57 +140,52 @@ public class BaseSpecAuton {
             pointFromArr(PICKUP)
         )
         .setLinearHeadingInterpolation(Math.toRadians(PUSH_THREE[2]), Math.toRadians(PICKUP[2]))
-        .setZeroPowerAccelerationMultiplier(9) // TODO: test if this improves push speed?
-            .setPathEndTimeoutConstraint(50)
+        .setZeroPowerAccelerationMultiplier(5) // TODO: test if this improves push speed?
+        .setPathEndTimeoutConstraint(50)
         .build();
 
-    // TODO: possible using tangential would be faster for these (add 2 control points in line with the pickup/place pts
-    //  to maintain correct heading
     place = robot.follower.pathBuilder()
         .addBezierLine(
             pointFromArr(PICKUP),
             pointFromArr(PLACE_SPEC)
         )
         .setLinearHeadingInterpolation(Math.toRadians(PICKUP[2]), Math.toRadians(PLACE_SPEC[2]))
-            .setPathEndTimeoutConstraint(50)
+        .setPathEndTimeoutConstraint(50)
         .build();
 
     pickup = robot.follower.pathBuilder()
         .addBezierCurve(
             pointFromArr(PLACE_SPEC),
-                pointFromArr(CONTROL_PICKUP_ONE),
+            pointFromArr(CONTROL_PICKUP_ONE),
             pointFromArr(PICKUP)
-
         )
         .setLinearHeadingInterpolation(Math.toRadians(PLACE_SPEC[2]), Math.toRadians(PICKUP[2]))
-            .addParametricCallback(.1, () -> {robot.slides.setTarget(VerticalSlides.TRANSFER);
-              robot.claw.setWall();})
-            .setPathEndTimeoutConstraint(50)
+        .setPathEndTimeoutConstraint(50)
         .build();
 
-    intake = robot.follower.pathBuilder()
-            .addBezierLine(
-                    pointFromArr(PLACE_SPEC),
-                    pointFromArr(INTAKE)
+   /* intake = robot.follower.pathBuilder()
+        .addBezierLine(
+            pointFromArr(PLACE_SPEC),
+            pointFromArr(INTAKE)
+        )
+        .setLinearHeadingInterpolation(Math.toRadians(PLACE_SPEC[2]), Math.toRadians(INTAKE[2]))
+        .addParametricCallback(.5, () -> robot.horSlide.setTarget(HorizontalSlides.OUT_POS))
+        .addParametricCallback(.5, () -> robot.intake.update(1, false, robot.getAllianceColor()))
+        .addParametricCallback(.7, robot.claw::setTransfer)
+        .addParametricCallback(.7, robot.claw::clawOpen)
+        .addParametricCallback(.8, () -> robot.slides.setTarget(VerticalSlides.TRANSFER))
+        .setPathEndTimeoutConstraint(50)
+        .build();
 
-            )
-            .setLinearHeadingInterpolation(Math.toRadians(PLACE_SPEC[2]), Math.toRadians(INTAKE[2]))
-            .addParametricCallback(.5, () -> robot.horSlide.setTarget(HorizontalSlides.OUT_POS))
-            .addParametricCallback(.5, () -> robot.intake.update(1, false, robot.getAllianceColor()))
-            .addParametricCallback(.7, robot.claw::setTransfer)
-            .addParametricCallback(.7, robot.claw::clawOpen)
-            .addParametricCallback(.8, () -> robot.slides.setTarget(VerticalSlides.TRANSFER))
-            .setPathEndTimeoutConstraint(50)
-            .build();
     scoreSample = robot.follower.pathBuilder()
-            .addBezierLine(
-                    pointFromArr(INTAKE),
-                    pointFromArr(BUCKET)
+        .addBezierLine(
+            pointFromArr(INTAKE),
+            pointFromArr(BUCKET)
 
-            )
-            .setLinearHeadingInterpolation(Math.toRadians(INTAKE[2]), Math.toRadians(BUCKET[2]))
-            .setPathEndTimeoutConstraint(50)
-            .build();
+        )
+        .setLinearHeadingInterpolation(Math.toRadians(INTAKE[2]), Math.toRadians(BUCKET[2]))
+        .setPathEndTimeoutConstraint(50)
+        .build();*/
   }
 
   public void setPathState(int pState) {
@@ -204,9 +195,12 @@ public class BaseSpecAuton {
 
   public void pickupPlace(PathChain place, PathChain postPlace) {
     robot.claw.clawClose();
+
+    timer.resetTimer();
     while (opMode.opModeIsActive() && timer.getElapsedTime() < 50) {
       robot.updateAutoControls();
     }
+
     robot.slides.setTarget(VerticalSlides.BAR_PLACE_UNDER);
     robot.claw.setPlace();
 
@@ -219,20 +213,18 @@ public class BaseSpecAuton {
 
     while (opMode.opModeIsActive() && !robot.slides.atTarget()) {
       robot.updateAutoControls();
-      timer.resetTimer();
     }
 
-    // TODO: added waitTimes here are (100+100)*4 ms
     robot.claw.clawOpenWall();
+    timer.resetTimer();
     while (opMode.opModeIsActive() && timer.getElapsedTime() < 50) {
       robot.updateAutoControls();
     }
 
-    // TODO: maybe remove this one? can alternatively use a parametric callback on the path to do this arm movement while moving
-
+    robot.claw.setWall();
+    robot.slides.setTarget(VerticalSlides.TRANSFER);
     robot.follower.followPath(postPlace);
   }
-
 
   public void autonomousPathUpdate() {
     switch (pathState) {
@@ -253,36 +245,34 @@ public class BaseSpecAuton {
 
         while (opMode.opModeIsActive() && !robot.slides.atTarget()) {
           robot.updateAutoControls();
-          timer.resetTimer();
         }
 
         robot.claw.clawOpenWall();
-
-        while (opMode.opModeIsActive() && timer.getElapsedTime() < 100) {
+        timer.resetTimer();
+        while (opMode.opModeIsActive() && timer.getElapsedTime() < 50) {
           robot.updateAutoControls();
         }
-          robot.slides.setTarget(VerticalSlides.TRANSFER);
-          robot.claw.setWall();
 
-          robot.follower.followPath(driveOne);
-          setPathState(2000);
-
+        robot.claw.setWall();
+        robot.slides.setTarget(VerticalSlides.TRANSFER);
+        robot.follower.followPath(driveOne);
+        setPathState(2000);
         break;
 
       case 2000:
-        if (!robot.follower.isBusy()) {
-          timer.resetTimer();
+        if (!robot.follower.isBusy() && specCounter < 4) {
           pickupPlace(place, pickup);
+          specCounter++;
         }
         break;
 
-      case 2001:
+/*      case 2001:
         if (!robot.follower.isBusy()) {
-          timer.resetTimer();
           pickupPlace(place, intake);
           setPathState(3000);
         }
         break;
+
       case 3000:
         if(!robot.follower.isBusy()) {
           robot.intake.update(1, false, robot.getAllianceColor());
@@ -295,12 +285,14 @@ public class BaseSpecAuton {
           }
         }
         break;
+
       case 4000:
         if (robot.horSlide.magLim.isPressed()) {
           robot.claw.clawClose();
           setPathState(5000);
         }
         break;
+
       case 5000:
         if (pathTimer.getElapsedTime() > 40) {
           robot.slides.setTarget(VerticalSlides.UP_AUTO);
@@ -308,6 +300,7 @@ public class BaseSpecAuton {
           setPathState(6000);
         }
         break;
+
       case 6000:
         if(!robot.follower.isBusy() && robot.slides.atTarget() && pathTimer.getElapsedTime() > 200){
           robot.claw.clawOpen();
@@ -320,7 +313,7 @@ public class BaseSpecAuton {
           robot.claw.setTransfer();
           robot.slides.setTarget(VerticalSlides.TRANSFER);
         }
-        break;
+        break;*/
 
     }
   }
@@ -342,7 +335,6 @@ public class BaseSpecAuton {
 
     while (this.opMode.opModeIsActive()) {
       robot.updateAutoControls();
-
       autonomousPathUpdate();
 
       telemetry.addData("Path State", pathState);

@@ -79,7 +79,7 @@ public class Claw {
   }
 
 
-  public void setPlace() { // needs to be tuned
+  public void setPlace() { // TODO: needs to be tuned
     clawDownArm.setPosition(downArmPlace);
     clawUpArm.setPosition(upArmPlace);
   }
