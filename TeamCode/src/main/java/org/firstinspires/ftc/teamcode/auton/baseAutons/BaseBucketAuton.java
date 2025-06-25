@@ -187,10 +187,10 @@ public class BaseBucketAuton {
             pointFromArr(INTAKE_SUB_MIDDLE)
         )
         .setConstantHeadingInterpolation(Math.toRadians(INTAKE_SUB_LEFT[2]))
-        .addParametricCallback(.91, () -> robot.intake.update(1, false, robot.getAllianceColor()))
-        .addParametricCallback(.91, () -> robot.horSlide.setTarget(HorizontalSlides.OUT_POS))
+        .addParametricCallback(.9, () -> robot.intake.update(1, false, robot.getAllianceColor()))
+        .addParametricCallback(.9, () -> robot.horSlide.setTarget(HorizontalSlides.OUT_POS))
         .setZeroPowerAccelerationMultiplier(5)
-        .setPathEndTimeoutConstraint(50)
+        .setPathEndTimeoutConstraint(0)
         .build();
 
     subMiddleToSubRight = robot.follower.pathBuilder()
@@ -199,10 +199,10 @@ public class BaseBucketAuton {
             pointFromArr(INTAKE_SUB_PRIME)
         )
         .setConstantHeadingInterpolation(Math.toRadians(INTAKE_SUB_LEFT[2]))
-        .addParametricCallback(.91, () -> robot.intake.update(1, false, robot.getAllianceColor()))
-        .addParametricCallback(.91, () -> robot.horSlide.setTarget(HorizontalSlides.OUT_POS))
+        .addParametricCallback(.9, () -> robot.intake.update(1, false, robot.getAllianceColor()))
+        .addParametricCallback(.9, () -> robot.horSlide.setTarget(HorizontalSlides.OUT_POS))
         .setZeroPowerAccelerationMultiplier(5)
-        .setPathEndTimeoutConstraint(50)
+        .setPathEndTimeoutConstraint(0)
         .build();
   }
 
@@ -681,7 +681,7 @@ public class BaseBucketAuton {
                 .addParametricCallback(.91, () -> robot.horSlide.setTarget(HorizontalSlides.OUT_POS))
                 .setZeroPowerAccelerationMultiplier(5)
                 .setPathEndTimeoutConstraint(50)
-                .build(), 300, 40);
+                .build(), 500, 40);
             setPathState(next);
           }
         }
