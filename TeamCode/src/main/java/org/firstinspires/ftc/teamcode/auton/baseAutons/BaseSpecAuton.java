@@ -179,24 +179,11 @@ public class BaseSpecAuton {
 
             )
             .setLinearHeadingInterpolation(Math.toRadians(PLACE_SPEC[2]), Math.toRadians(INTAKE[2]))
-            .addParametricCallback(.4, () -> robot.horSlide.setTarget(HorizontalSlides.OUT_POS))
-            .addParametricCallback(.6, () -> robot.intake.update(1, false, robot.getAllianceColor()))
-            .addParametricCallback(.7, robot.claw::setTransfer)
-            .addParametricCallback(.8, () -> robot.slides.setTarget(VerticalSlides.TRANSFER))
-            .setPathEndTimeoutConstraint(50)
-            .build();
-
-    intake = robot.follower.pathBuilder()
-            .addBezierLine(
-                    pointFromArr(PLACE_SPEC),
-                    pointFromArr(INTAKE)
-
-            )
-            .setLinearHeadingInterpolation(Math.toRadians(PLACE_SPEC[2]), Math.toRadians(INTAKE[2]))
             .addParametricCallback(.5, () -> robot.horSlide.setTarget(HorizontalSlides.OUT_POS))
             .addParametricCallback(.5, () -> robot.intake.update(1, false, robot.getAllianceColor()))
             .addParametricCallback(.7, robot.claw::setTransfer)
             .addParametricCallback(.7, robot.claw::clawOpen)
+            .addParametricCallback(.8, () -> robot.slides.setTarget(VerticalSlides.TRANSFER))
             .setPathEndTimeoutConstraint(50)
             .build();
     scoreSample = robot.follower.pathBuilder()
