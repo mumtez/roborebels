@@ -179,7 +179,7 @@ public class BaseSpecAuton {
       robot.updateAutoControls();
     }
 
-    robot.slides.setTarget(VerticalSlides.BAR_PLACE_TELEOP - 200);
+    robot.slides.setTarget(VerticalSlides.BAR_PLACE_TELEOP);
 
     while (opMode.opModeIsActive() && !robot.slides.atTarget()) {
       robot.updateAutoControls();
@@ -188,7 +188,6 @@ public class BaseSpecAuton {
 
     // TODO: added waitTimes here are (100+100)*4 ms
     robot.claw.clawOpenWall();
-    // TODO: you only wait 50ms for the claw to close, does it need 100 to open?
     while (opMode.opModeIsActive() && timer.getElapsedTime() < 50) {
       robot.updateAutoControls();
     }

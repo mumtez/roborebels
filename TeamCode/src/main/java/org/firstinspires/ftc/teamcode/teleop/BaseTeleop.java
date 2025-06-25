@@ -153,7 +153,7 @@ public class BaseTeleop {
 
     switch (state) {
       case SPEC_WALL:
-        if (currentGamepad2.right_bumper) {
+        if (currentGamepad2.right_bumper || currentGamepad1.right_bumper) {
           robot.claw.clawClose();
         } else {
           robot.claw.setWall();
@@ -161,8 +161,8 @@ public class BaseTeleop {
           stateTimer.reset();
         }
 
-        // If claw closed for 500ms, move to placement pos
-        if (stateTimer.milliseconds() > 500) {
+        // If claw closed for 300ms, move to placement pos
+        if (stateTimer.milliseconds() > 300) {
           robot.claw.setPlace();
           robot.slides.setTarget(VerticalSlides.BAR_PLACE_UNDER);
           state = ModeState.SPEC_PRE_CLIP;
@@ -171,11 +171,11 @@ public class BaseTeleop {
 
       // TRIANGLE --> CLIP | SQUARE --> WALL
       case SPEC_PRE_CLIP:
-        if (currentGamepad2.triangle || currentGamepad1.triangle) {
+        if (currentGamepad2.triangle || currentGamepad1.square) {
           robot.slides.setTarget(VerticalSlides.BAR_PLACE_TELEOP);
           state = ModeState.SPEC_CLIP;
         }
-        if (currentGamepad2.square || currentGamepad1.square) {
+        if (currentGamepad2.square || currentGamepad1.triangle) {
           robot.claw.setWall();
           state = ModeState.SPEC_CLIP;
         }
@@ -191,7 +191,7 @@ public class BaseTeleop {
         break;
 
       case SPEC_POST_CLIP:
-        if (stateTimer.milliseconds() > 75) {
+        if (stateTimer.milliseconds() > 50) {
           robot.slides.setTarget(VerticalSlides.TRANSFER);
           robot.claw.setWall();
           state = ModeState.SPEC_WALL;

@@ -681,7 +681,7 @@ public class BaseBucketAuton {
                 .addParametricCallback(.91, () -> robot.horSlide.setTarget(HorizontalSlides.OUT_POS))
                 .setZeroPowerAccelerationMultiplier(5)
                 .setPathEndTimeoutConstraint(50)
-                .build(), 250, 40);
+                .build(), 300, 40);
             setPathState(next);
           }
         }

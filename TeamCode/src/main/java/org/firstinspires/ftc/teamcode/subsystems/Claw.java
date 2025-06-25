@@ -17,10 +17,12 @@ public class Claw {
 
   public static double clawClosePos = 1;
 
-  public static double upArmPlaceTeleOP = .5;
+  public static double downArmPlace = 0.84;
 
+  public static double upArmPlace = 0.33;
 
-  public static double upArmWallAuto = 0.20;
+  public static double downArmWall = 0.3;
+  public static double upArmWall = 0.1;
 
   public static double upArmSpecInit = 0.07;
 
@@ -29,13 +31,7 @@ public class Claw {
   public static double upArmTransfer = 0.02;
   public static double upArmInit = 0.02;
 
-
-  public static double downArmPlaceTeleOP = .98;
-
-
-  public static double downArmWallAuto = 0.44;
-
-  public static double downArmSpecInit = 0.7;
+  public static double downArmSpecInit = .5;
   public static double downArmBucket = 0.84;
   public static double downArmTransfer = 0.01;
   public static double downArmInit = 0.01;
@@ -84,14 +80,14 @@ public class Claw {
 
 
   public void setPlace() { // needs to be tuned
-    clawDownArm.setPosition(downArmPlaceTeleOP);
-    clawUpArm.setPosition(upArmPlaceTeleOP);
+    clawDownArm.setPosition(downArmPlace);
+    clawUpArm.setPosition(upArmPlace);
   }
 
 
   public void setWall() {
-    clawDownArm.setPosition(downArmWallAuto);
-    clawUpArm.setPosition(upArmWallAuto);
+    clawDownArm.setPosition(downArmWall);
+    clawUpArm.setPosition(upArmWall);
   }
 
   public void setInitSpec() {
