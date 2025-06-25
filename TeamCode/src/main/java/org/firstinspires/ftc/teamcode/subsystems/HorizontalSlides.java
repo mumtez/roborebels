@@ -20,7 +20,7 @@ public class HorizontalSlides {
 
   public static double kf = 0.03;
   public static double kp = 0.0065;
-  public static double ki = 0.0004;
+  public static double ki = 0.000;
   public static double kd = 0.00009;
 
   private final ElapsedTime timer = new ElapsedTime();

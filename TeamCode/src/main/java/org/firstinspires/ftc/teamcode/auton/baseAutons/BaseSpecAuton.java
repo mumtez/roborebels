@@ -39,7 +39,9 @@ public class BaseSpecAuton {
 
   public static double[] CONTROL_PUSH_THREE = {61, 5};
 
-  public static double[] PICKUP = {18, 32, 180};
+  public static double[] PICKUP = {17, 32, 180};
+
+  public static double[] CONTROL_PICKUP_ONE = {28, 36};
 
   public static double[] CONTROL_PICKUP = {35, 30};
 
@@ -152,9 +154,11 @@ public class BaseSpecAuton {
         .build();
 
     pickup = robot.follower.pathBuilder()
-        .addBezierLine(
+        .addBezierCurve(
             pointFromArr(PLACE_SPEC),
+                pointFromArr(CONTROL_PICKUP_ONE),
             pointFromArr(PICKUP)
+
         )
         .setLinearHeadingInterpolation(Math.toRadians(PLACE_SPEC[2]), Math.toRadians(PICKUP[2]))
             .addParametricCallback(.1, () -> {robot.slides.setTarget(VerticalSlides.TRANSFER);
@@ -169,6 +173,11 @@ public class BaseSpecAuton {
   }
 
   public void pickupPlace(PathChain place, PathChain postPlace) {
+    while (opMode.opModeIsActive() && timer.getElapsedTime() < 150) {
+      robot.updateAutoControls();
+    }
+    timer.resetTimer();
+
     robot.claw.clawClose();
     while (opMode.opModeIsActive() && timer.getElapsedTime() < 50) {
       robot.updateAutoControls();
@@ -222,6 +231,7 @@ public class BaseSpecAuton {
         }
 
         robot.claw.clawOpenWall();
+
         while (opMode.opModeIsActive() && timer.getElapsedTime() < 100) {
           robot.updateAutoControls();
         }
