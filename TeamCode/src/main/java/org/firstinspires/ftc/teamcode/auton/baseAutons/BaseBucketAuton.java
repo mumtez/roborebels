@@ -164,8 +164,8 @@ public class BaseBucketAuton {
             pointFromArr(INTAKE_SUB_PRIME)
         )
         .setTangentHeadingInterpolation()
-        .addParametricCallback(.91, () -> robot.intake.sweepOut(true))
-        .setPathEndTimeoutConstraint(50)
+        .addParametricCallback(.90, () -> robot.intake.sweepOut(true))
+        .setPathEndTimeoutConstraint(0) // todo test
         .setZeroPowerAccelerationMultiplier(5)
         .build();
 

@@ -15,31 +15,31 @@ import org.firstinspires.ftc.teamcode.subsystems.VerticalSlides;
 @Config
 public class BaseSpecAuton {
 
-  public static double[] START = {10, 63, 180};
+  public static double[] START = {10, 58, 180};
   public static double[] PLACE_SPEC = {40, 68, 180};
 
   public static double[] PLACE_SPEC_FIRST = {38, 69, 180};
 
-  public static double[] DRIVE_ONE = {53, 34, 180};
+  public static double[] DRIVE_ONE = {45, 36, 180};
 
   public static double[] CONTROL_DRIVE_ONE = {2, 35};
   public static double[] PUSH_ONE = {25, 22, 180};
 
   public static double[] CONTROL_PUSH_ONE = {61, 25};
-  public static double[] DRIVE_TWO = {50, 26, 180};
+  public static double[] DRIVE_TWO = {45, 28, 180};
 
-  public static double[] PUSH_TWO = {25, 15, 180};
+  public static double[] PUSH_TWO = {25, 17, 180};
 
   public static double[] CONTROL_PUSH_TWO = {61, 8};
 
 
-  public static double[] DRIVE_THREE = {50, 13, 180};
+  public static double[] DRIVE_THREE = {50, 18, 180};
 
-  public static double[] PUSH_THREE = {25, 10, 180};
+  public static double[] PUSH_THREE = {25, 13, 180};
 
   public static double[] CONTROL_PUSH_THREE = {61, 5};
 
-  public static double[] PICKUP = {13.5, 32, 180};
+  public static double[] PICKUP = {18, 32, 180};
 
   public static double[] CONTROL_PICKUP = {35, 30};
 
@@ -79,6 +79,8 @@ public class BaseSpecAuton {
             pointFromArr(PLACE_SPEC_FIRST)
         )
         .setLinearHeadingInterpolation(Math.toRadians(START[2]), Math.toRadians(PLACE_SPEC_FIRST[2]))
+            .setPathEndTimeoutConstraint(50)
+            .setZeroPowerAccelerationMultiplier(5)
         .build();
 
     driveOne = robot.follower.pathBuilder()
@@ -134,7 +136,7 @@ public class BaseSpecAuton {
             pointFromArr(PICKUP)
         )
         .setLinearHeadingInterpolation(Math.toRadians(PUSH_THREE[2]), Math.toRadians(PICKUP[2]))
-        .setZeroPowerAccelerationMultiplier(5) // TODO: test if this improves push speed?
+        .setZeroPowerAccelerationMultiplier(7) // TODO: test if this improves push speed?
             .setPathEndTimeoutConstraint(50)
         .build();
 
@@ -220,13 +222,15 @@ public class BaseSpecAuton {
         }
 
         robot.claw.clawOpenWall();
-        if (timer.getElapsedTime() > 100) {
+        while (opMode.opModeIsActive() && timer.getElapsedTime() < 100) {
+          robot.updateAutoControls();
+        }
           robot.slides.setTarget(VerticalSlides.TRANSFER);
           robot.claw.setWall();
 
           robot.follower.followPath(driveOne);
           setPathState(2000);
-        }
+
         break;
 
       case 2000:
