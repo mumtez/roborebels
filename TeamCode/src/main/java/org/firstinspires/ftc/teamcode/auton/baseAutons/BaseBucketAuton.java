@@ -637,6 +637,7 @@ public class BaseBucketAuton {
   }
 
   private void subCycleToBucket(double[] subPos, int next, double[] control) {
+    robot.horSlide.setTarget(HorizontalSlides.TRANSFER_POS -4);
     if (pathTimer.getElapsedTime() < 200) {
       robot.intake.update(-1, true, robot.getAllianceColor());
     } else if (pathTimer.getElapsedTime() > 200 && pathTimer.getElapsedTime() < 500) {
@@ -645,7 +646,6 @@ public class BaseBucketAuton {
       robot.intake.update(0.15, true, robot.getAllianceColor());
       setPathState(next);
     }
-    robot.horSlide.setTarget(HorizontalSlides.TRANSFER_POS -2);
     robot.follower.followPath(robot.follower.pathBuilder()
         .addBezierCurve(
             pointFromArr(subPos),
@@ -681,7 +681,7 @@ public class BaseBucketAuton {
                 .addParametricCallback(.91, () -> robot.horSlide.setTarget(HorizontalSlides.OUT_POS))
                 .setZeroPowerAccelerationMultiplier(5)
                 .setPathEndTimeoutConstraint(50)
-                .build(), 250, 40);
+                .build(), 175, 40);
             setPathState(next);
           }
         }
