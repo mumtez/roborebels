@@ -23,7 +23,7 @@ import pedroPathing.constants.LConstants;
 public class NewRobot {
 
   public enum AllianceColor {
-    RED, BLUE
+    RED, BLUE, SPECRED, SPECBLUE
   }
 
   public Follower follower;
@@ -35,7 +35,7 @@ public class NewRobot {
   public final VerticalSlides slides;
   public final HorizontalSlides horSlide;
 
-  private final AllianceColor allianceColor;  //0 red 1 blue
+  private AllianceColor allianceColor;  //0 red 1 blue
 
   public NewRobot(LinearOpMode opMode) {
     this(opMode, AllianceColor.RED);
@@ -43,6 +43,8 @@ public class NewRobot {
 
   public NewRobot(LinearOpMode opMode, AllianceColor allianceColor) {
     this.allianceColor = allianceColor;
+
+
     HardwareMap hardwareMap = opMode.hardwareMap;
 
     // From https://gm0.org/en/latest/docs/software/tutorials/bulk-reads.html
@@ -100,6 +102,20 @@ public class NewRobot {
     claw.setInit();
 
     this.intake.rotateFlat();
+  }
+
+  public void toggleMode() {
+    if (this.allianceColor == AllianceColor.RED){
+      this.allianceColor = AllianceColor.SPECRED;
+    } else if (this.allianceColor == AllianceColor.SPECRED){
+      this.allianceColor = AllianceColor.RED;
+    }
+
+    if (this.allianceColor == AllianceColor.BLUE){
+      this.allianceColor = AllianceColor.SPECBLUE;
+    } else if (this.allianceColor == AllianceColor.SPECBLUE){
+      this.allianceColor = AllianceColor.BLUE;
+    }
   }
 
   public void initAutonSpec() {

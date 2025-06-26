@@ -98,6 +98,7 @@ public class BaseTeleop {
       // Mode Switch
       if (currentGamepad2.back && !previousGamepad2.back) {
         specimenMode = !specimenMode;
+        robot.toggleMode();
       }
 
       // Field Centric Drive

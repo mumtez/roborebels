@@ -645,7 +645,7 @@ public class BaseBucketAuton {
       robot.intake.update(0.15, true, robot.getAllianceColor());
       setPathState(next);
     }
-    robot.horSlide.setTarget(HorizontalSlides.TRANSFER_POS);
+    robot.horSlide.setTarget(HorizontalSlides.TRANSFER_POS -2);
     robot.follower.followPath(robot.follower.pathBuilder()
         .addBezierCurve(
             pointFromArr(subPos),
@@ -655,7 +655,7 @@ public class BaseBucketAuton {
         .setLinearHeadingInterpolation(Math.toRadians(subPos[2]),
             Math.toRadians(PLACE_BUCKET_SUB[2]))
         .setZeroPowerAccelerationMultiplier(5)
-        .setPathEndTimeoutConstraint(150)
+        .setPathEndTimeoutConstraint(50)
         .build(), true);
 
   }
@@ -665,11 +665,10 @@ public class BaseBucketAuton {
       robot.claw.clawClose();
       if (transferTimer.milliseconds() > 175) {
         robot.slides.setTarget(VerticalSlides.UP);
-        robot.horSlide.setTarget(HSLIDE_SUB);
+        robot.horSlide.setTarget(HorizontalSlides.OUT_POS- 20);
         if (robot.slides.atTarget(MOVE_ARM_HEIGHT_OFFSET)) {
           robot.claw.setBucket();
           if (!robot.follower.isBusy()) {
-            robot.horSlide.setTarget(HSLIDE_SUB);
             place(robot.follower.pathBuilder()
                 .addBezierCurve(
                     pointFromArr(PLACE_BUCKET_SUB),
@@ -677,11 +676,12 @@ public class BaseBucketAuton {
                     pointFromArr(postPos)
                 )
                 .setTangentHeadingInterpolation()
+                    .addParametricCallback(.1, () -> robot.horSlide.setTarget(HSLIDE_SUB))
                 .addParametricCallback(.91, () -> robot.intake.update(1, false, robot.getAllianceColor()))
                 .addParametricCallback(.91, () -> robot.horSlide.setTarget(HorizontalSlides.OUT_POS))
                 .setZeroPowerAccelerationMultiplier(5)
                 .setPathEndTimeoutConstraint(50)
-                .build(), 500, 40);
+                .build(), 250, 40);
             setPathState(next);
           }
         }

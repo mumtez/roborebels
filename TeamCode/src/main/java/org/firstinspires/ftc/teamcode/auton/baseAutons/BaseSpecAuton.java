@@ -31,13 +31,14 @@ public class BaseSpecAuton {
   public static double[] PUSH_TWO = {25, 17, 180};
   public static double[] CONTROL_PUSH_TWO = {61, 8};
 
-  public static double[] DRIVE_THREE = {50, 18, 180};
+  public static double[] DRIVE_THREE = {45, 18, 180};
 
   public static double[] PUSH_THREE = {25, 13, 180};
   public static double[] CONTROL_PUSH_THREE = {61, 5};
 
-  public static double[] PICKUP = {18, 32, 180};
-  //public static double[] CONTROL_PICKUP_ONE = {28, 36};
+  public static double[] PICKUP_ONE = {21, 32, 180};
+  public static double[] PICKUP = {16, 32, 180};
+
   public static double[] CONTROL_PICKUP = {35, 30};
 
   public static double[] INTAKE = {16, 50, 240};
@@ -58,8 +59,8 @@ public class BaseSpecAuton {
   PathChain
       placePreLoad,
       driveOne,
-      pickup, place;
-//      intake, scoreSample;
+      pickup, place,
+      intake, scoreSample;
 
 
   public BaseSpecAuton(LinearOpMode opMode, NewRobot robot) {
@@ -138,9 +139,9 @@ public class BaseSpecAuton {
         .addBezierCurve(
             pointFromArr(PUSH_THREE),
             pointFromArr(CONTROL_PICKUP),
-            pointFromArr(PICKUP)
+            pointFromArr(PICKUP_ONE)
         )
-        .setLinearHeadingInterpolation(Math.toRadians(PUSH_THREE[2]), Math.toRadians(PICKUP[2]))
+        .setLinearHeadingInterpolation(Math.toRadians(PUSH_THREE[2]), Math.toRadians(PICKUP_ONE[2]))
         .setZeroPowerAccelerationMultiplier(8) // TODO: test if this improves push speed?
         .setPathEndTimeoutConstraint(50)
         .build();
@@ -151,18 +152,20 @@ public class BaseSpecAuton {
             pointFromArr(PLACE_SPEC)
         )
         .setLinearHeadingInterpolation(Math.toRadians(PICKUP[2]), Math.toRadians(PLACE_SPEC[2]))
+            .setPathEndTimeoutConstraint(50)
         .build();
 
     pickup = robot.follower.pathBuilder()
         .addBezierLine(
             pointFromArr(PLACE_SPEC),
-            //pointFromArr(CONTROL_PICKUP_ONE),
             pointFromArr(PICKUP)
         )
         .setLinearHeadingInterpolation(Math.toRadians(PLACE_SPEC[2]), Math.toRadians(PICKUP[2]))
+            .setPathEndTimeoutConstraint(50)
+            .setZeroPowerAccelerationMultiplier( 5)
         .build();
 
-   /* intake = robot.follower.pathBuilder()
+   intake = robot.follower.pathBuilder()
         .addBezierLine(
             pointFromArr(PLACE_SPEC),
             pointFromArr(INTAKE)
@@ -170,7 +173,7 @@ public class BaseSpecAuton {
         .setLinearHeadingInterpolation(Math.toRadians(PLACE_SPEC[2]), Math.toRadians(INTAKE[2]))
         .addParametricCallback(.5, () -> robot.horSlide.setTarget(HorizontalSlides.OUT_POS))
         .addParametricCallback(.5, () -> robot.intake.update(1, false, robot.getAllianceColor()))
-        .addParametricCallback(.7, robot.claw::setTransfer)
+        .addParametricCallback(.9, robot.claw::setTransfer)
         .addParametricCallback(.7, robot.claw::clawOpen)
         .addParametricCallback(.8, () -> robot.slides.setTarget(VerticalSlides.TRANSFER))
         .setPathEndTimeoutConstraint(50)
@@ -184,7 +187,7 @@ public class BaseSpecAuton {
         )
         .setLinearHeadingInterpolation(Math.toRadians(INTAKE[2]), Math.toRadians(BUCKET[2]))
         .setPathEndTimeoutConstraint(50)
-        .build();*/
+        .build();
   }
 
   public void setPathState(int pState) {
@@ -259,13 +262,15 @@ public class BaseSpecAuton {
         break;
 
       case 2000:
-        if (!robot.follower.isBusy() && specCounter < 4) {
+        if (!robot.follower.isBusy() && specCounter < 3) {
           pickupPlace(place, pickup);
           specCounter++;
-        }
+        } if ( specCounter >= 3){
+        setPathState(2001);
+      }
         break;
 
-/*      case 2001:
+      case 2001:
         if (!robot.follower.isBusy()) {
           pickupPlace(place, intake);
           setPathState(3000);
@@ -277,7 +282,7 @@ public class BaseSpecAuton {
           robot.intake.update(1, false, robot.getAllianceColor());
           boolean validCollected = robot.intake.validSampleIn(robot.getAllianceColor());
           if (validCollected) {
-            robot.horSlide.setTarget(HorizontalSlides.TRANSFER_POS);
+            robot.horSlide.setTarget(HorizontalSlides.TRANSFER_POS-2);
             robot.intake.update(0.15, true, robot.getAllianceColor());
             robot.follower.followPath(scoreSample, true);
             setPathState(4000);
@@ -301,6 +306,9 @@ public class BaseSpecAuton {
         break;
 
       case 6000:
+        if (robot.slides.atTarget(500)){
+robot.claw.setBucket();
+      }
         if(!robot.follower.isBusy() && robot.slides.atTarget() && pathTimer.getElapsedTime() > 200){
           robot.claw.clawOpen();
           setPathState(7000);
@@ -312,7 +320,7 @@ public class BaseSpecAuton {
           robot.claw.setTransfer();
           robot.slides.setTarget(VerticalSlides.TRANSFER);
         }
-        break;*/
+        break;
 
     }
   }

@@ -179,7 +179,11 @@ public class Intake {
 
         case YELLOW:
           this.rgb.setPosition(0.388);
-          manualControl(power, flat);
+          if (allianceColor == AllianceColor.SPECRED || allianceColor == AllianceColor.SPECBLUE) {
+            spit();
+          } else {
+            manualControl(power, flat);
+          }
           break;
 
         case NONE:
