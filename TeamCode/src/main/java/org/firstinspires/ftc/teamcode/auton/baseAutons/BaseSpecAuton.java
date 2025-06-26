@@ -46,16 +46,17 @@ public class BaseSpecAuton {
 
 
   private int pathState = 1000;
+  private int specCounter = 0;
+  private Timer timer;
   private Timer pathTimer;
 
   final NewRobot robot;
   final LinearOpMode opMode;
   final Telemetry telemetry;
 
-  private int specCounter = 0;
-  Timer timer = new Timer();
 
-  PathChain placePreLoad,
+  PathChain
+      placePreLoad,
       driveOne,
       pickup, place;
 //      intake, scoreSample;
@@ -140,7 +141,7 @@ public class BaseSpecAuton {
             pointFromArr(PICKUP)
         )
         .setLinearHeadingInterpolation(Math.toRadians(PUSH_THREE[2]), Math.toRadians(PICKUP[2]))
-        .setZeroPowerAccelerationMultiplier(5) // TODO: test if this improves push speed?
+        .setZeroPowerAccelerationMultiplier(8) // TODO: test if this improves push speed?
         .setPathEndTimeoutConstraint(50)
         .build();
 
@@ -150,7 +151,6 @@ public class BaseSpecAuton {
             pointFromArr(PLACE_SPEC)
         )
         .setLinearHeadingInterpolation(Math.toRadians(PICKUP[2]), Math.toRadians(PLACE_SPEC[2]))
-        .setPathEndTimeoutConstraint(50)
         .build();
 
     pickup = robot.follower.pathBuilder()
@@ -160,7 +160,6 @@ public class BaseSpecAuton {
             pointFromArr(PICKUP)
         )
         .setLinearHeadingInterpolation(Math.toRadians(PLACE_SPEC[2]), Math.toRadians(PICKUP[2]))
-        .setPathEndTimeoutConstraint(50)
         .build();
 
    /* intake = robot.follower.pathBuilder()
@@ -320,6 +319,7 @@ public class BaseSpecAuton {
 
   public void run() {
     pathTimer = new Timer();
+    timer = new Timer();
     buildPaths();
     robot.initAutonSpec();
 
