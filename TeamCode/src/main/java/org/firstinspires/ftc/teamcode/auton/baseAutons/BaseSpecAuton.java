@@ -37,7 +37,7 @@ public class BaseSpecAuton {
   public static double[] CONTROL_PUSH_THREE = {61, 5};
 
   public static double[] PICKUP = {18, 32, 180};
-  public static double[] CONTROL_PICKUP_ONE = {28, 36};
+  //public static double[] CONTROL_PICKUP_ONE = {28, 36};
   public static double[] CONTROL_PICKUP = {35, 30};
 
   public static double[] INTAKE = {16, 50, 240};
@@ -154,9 +154,9 @@ public class BaseSpecAuton {
         .build();
 
     pickup = robot.follower.pathBuilder()
-        .addBezierCurve(
+        .addBezierLine(
             pointFromArr(PLACE_SPEC),
-            pointFromArr(CONTROL_PICKUP_ONE),
+            //pointFromArr(CONTROL_PICKUP_ONE),
             pointFromArr(PICKUP)
         )
         .setLinearHeadingInterpolation(Math.toRadians(PLACE_SPEC[2]), Math.toRadians(PICKUP[2]))
