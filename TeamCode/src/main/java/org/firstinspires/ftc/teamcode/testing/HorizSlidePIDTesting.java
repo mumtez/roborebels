@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.NewRobot.AllianceColor;
 @TeleOp(name = "HORIZ SLIDE PID TESTING", group = "TESTING")
 public class HorizSlidePIDTesting extends LinearOpMode {
 
-  public static int TARGET = 0;
+  public static double TARGET = 0;
 
   @Override
   public void runOpMode() throws InterruptedException {

@@ -28,7 +28,7 @@ public class Claw {
 
   public static double upArmBucket = 0.53;
 
-  public static double upArmTransfer = 0.09;
+  public static double upArmTransfer = 0.093;
   public static double upArmInit = 0.09;
 
   public static double downArmSpecInit = .5;
