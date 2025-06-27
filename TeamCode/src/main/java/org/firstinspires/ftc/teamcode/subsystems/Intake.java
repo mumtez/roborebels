@@ -28,7 +28,7 @@ public class Intake {
   public static double SWEEP_OUT = 0.05;
   public static double SWEEP_IN = 0.35;
 
-  public static double INTAKE_DOWN = 0.27;
+  public static double INTAKE_DOWN = 0.25; //.27
   public static double INTAKE_HALF = 0.2;
   public static double INTAKE_FLAT = 0.07;
 
@@ -147,9 +147,11 @@ public class Intake {
       this.sampleColor = SampleColor.NONE;
     }
   }
+
   public boolean isSpitting() {
     return this.spitTimer.milliseconds() <= 400;
   }
+
   public void update(double power, boolean flat, AllianceColor allianceColor) {
     this.senseDistance();
     this.senseColor();

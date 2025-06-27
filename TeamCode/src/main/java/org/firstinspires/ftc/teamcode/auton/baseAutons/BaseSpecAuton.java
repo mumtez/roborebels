@@ -16,9 +16,9 @@ import org.firstinspires.ftc.teamcode.subsystems.VerticalSlides;
 public class BaseSpecAuton {
 
   public static double[] START = {10, 58, 180};
-  public static double[] PLACE_SPEC = {40, 68, 180};
+  public static double[] PLACE_SPEC = {36, 68, 180};
 
-  public static double[] PLACE_SPEC_FIRST = {38, 69, 180};
+  public static double[] PLACE_SPEC_FIRST = {35, 69, 180};
 
   public static double[] DRIVE_ONE = {45, 36, 180};
 
@@ -33,11 +33,11 @@ public class BaseSpecAuton {
 
   public static double[] DRIVE_THREE = {45, 18, 180};
 
-  public static double[] PUSH_THREE = {25, 13, 180};
+  public static double[] PUSH_THREE = {25, 12, 180};
   public static double[] CONTROL_PUSH_THREE = {61, 5};
 
-  public static double[] PICKUP_ONE = {21, 32, 180};
-  public static double[] PICKUP = {16, 32, 180};
+  public static double[] PICKUP_ONE = {18, 32, 180};
+  public static double[] PICKUP = {15, 32, 180};
 
   public static double[] CONTROL_PICKUP = {35, 30};
 
@@ -152,7 +152,7 @@ public class BaseSpecAuton {
             pointFromArr(PLACE_SPEC)
         )
         .setLinearHeadingInterpolation(Math.toRadians(PICKUP[2]), Math.toRadians(PLACE_SPEC[2]))
-            .setPathEndTimeoutConstraint(50)
+        .setPathEndTimeoutConstraint(50)
         .build();
 
     pickup = robot.follower.pathBuilder()
@@ -161,11 +161,11 @@ public class BaseSpecAuton {
             pointFromArr(PICKUP)
         )
         .setLinearHeadingInterpolation(Math.toRadians(PLACE_SPEC[2]), Math.toRadians(PICKUP[2]))
-            .setPathEndTimeoutConstraint(50)
-            .setZeroPowerAccelerationMultiplier( 5)
+        .setPathEndTimeoutConstraint(50)
+        .setZeroPowerAccelerationMultiplier(5)
         .build();
 
-   intake = robot.follower.pathBuilder()
+    intake = robot.follower.pathBuilder()
         .addBezierLine(
             pointFromArr(PLACE_SPEC),
             pointFromArr(INTAKE)
@@ -203,7 +203,7 @@ public class BaseSpecAuton {
       robot.updateAutoControls();
     }
 
-    robot.slides.setTarget(VerticalSlides.BAR_PLACE_UNDER);
+    robot.slides.setTarget(VerticalSlides.BAR_PLACE_UNDER - 20);
     robot.claw.setPlace();
 
     robot.follower.followPath(place);
@@ -235,7 +235,7 @@ public class BaseSpecAuton {
         robot.slides.setTarget(VerticalSlides.TRANSFER);
         robot.intake.update(0, true, robot.getAllianceColor());
 
-        robot.slides.setTarget(VerticalSlides.BAR_PLACE_UNDER);
+        robot.slides.setTarget(VerticalSlides.BAR_PLACE_UNDER - 50);
         robot.claw.setPlace();
 
         robot.follower.followPath(placePreLoad);
@@ -243,7 +243,7 @@ public class BaseSpecAuton {
           robot.updateAutoControls();
         }
 
-        robot.slides.setTarget(VerticalSlides.BAR_PLACE_TELEOP );
+        robot.slides.setTarget(VerticalSlides.BAR_PLACE_TELEOP);
 
         while (opMode.opModeIsActive() && !robot.slides.atTarget()) {
           robot.updateAutoControls();
@@ -265,9 +265,10 @@ public class BaseSpecAuton {
         if (!robot.follower.isBusy() && specCounter < 3) {
           pickupPlace(place, pickup);
           specCounter++;
-        } if ( specCounter >= 3){
-        setPathState(2001);
-      }
+        }
+        if (specCounter >= 3) {
+          setPathState(2001);
+        }
         break;
 
       case 2001:
@@ -278,11 +279,11 @@ public class BaseSpecAuton {
         break;
 
       case 3000:
-        if(!robot.follower.isBusy()) {
+        if (!robot.follower.isBusy()) {
           robot.intake.update(1, false, robot.getAllianceColor());
           boolean validCollected = robot.intake.validSampleIn(robot.getAllianceColor());
           if (validCollected) {
-            robot.horSlide.setTarget(HorizontalSlides.TRANSFER_POS-2);
+            robot.horSlide.setTarget(HorizontalSlides.TRANSFER_POS - 2);
             robot.intake.update(0.15, true, robot.getAllianceColor());
             robot.follower.followPath(scoreSample, true);
             setPathState(4000);
@@ -306,17 +307,17 @@ public class BaseSpecAuton {
         break;
 
       case 6000:
-        if (robot.slides.atTarget(500)){
-robot.claw.setBucket();
-      }
-        if(!robot.follower.isBusy() && robot.slides.atTarget() && pathTimer.getElapsedTime() > 200){
+        if (robot.slides.atTarget(500)) {
+          robot.claw.setBucket();
+        }
+        if (!robot.follower.isBusy() && robot.slides.atTarget() && pathTimer.getElapsedTime() > 200) {
           robot.claw.clawOpen();
           setPathState(7000);
         }
         break;
 
       case 7000:
-        if(pathTimer.getElapsedTime() > 100){
+        if (pathTimer.getElapsedTime() > 100) {
           robot.claw.setTransfer();
           robot.slides.setTarget(VerticalSlides.TRANSFER);
         }

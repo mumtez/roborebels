@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.hardware.ServoImplEx;
 public class Claw {
 
   // might be updated
-  public static double clawOpenPos = 0.87;
+  public static double clawOpenPos = 0.85; //.87
 
   public static double clawOpenWallPos = 0.6;
 
@@ -19,7 +19,7 @@ public class Claw {
 
   public static double downArmPlace = 0.84;
 
-  public static double upArmPlace = 0.44;
+  public static double upArmPlace = .5;
 
   public static double downArmWall = 0.35;
   public static double upArmWall = 0.12;
@@ -51,13 +51,13 @@ public class Claw {
 
   }
 
-  public void disableClaw () {
+  public void disableClaw() {
     claw.setPwmDisable();
     clawUpArm.setPwmDisable();
     clawDownArm.setPwmDisable();
   }
 
-  public void enableClaw () {
+  public void enableClaw() {
     claw.setPwmEnable();
     clawUpArm.setPwmEnable();
     clawDownArm.setPwmEnable();

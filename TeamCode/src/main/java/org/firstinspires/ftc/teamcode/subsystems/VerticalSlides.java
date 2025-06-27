@@ -15,8 +15,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class VerticalSlides {
 
   public static int TRANSFER = 0;
-  public static int BAR_PLACE_TELEOP = 700;
-  public static int BAR_PLACE_UNDER = 300;
+  public static int BAR_PLACE_TELEOP = 900;
+  public static int BAR_PLACE_UNDER = 400;
   public static int UP_AUTO = 1950;
   public static int UP = 2150; // 2050
   public static int LOWER_BUCKET = 700;

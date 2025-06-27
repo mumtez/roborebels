@@ -87,7 +87,7 @@ public class BaseTeleop {
       // Hang Override
       if (currentGamepad1.back && !previousGamepad1.back) {
         hangOverride = !hangOverride;
-        if (hangOverride){
+        if (hangOverride) {
           robot.claw.disableClaw();
         } else {
           robot.claw.enableClaw();
@@ -98,7 +98,6 @@ public class BaseTeleop {
       // Mode Switch
       if (currentGamepad2.back && !previousGamepad2.back) {
         specimenMode = !specimenMode;
-        robot.toggleMode();
       }
 
       // Field Centric Drive
@@ -273,7 +272,7 @@ public class BaseTeleop {
             }
           }
           if (slideTarget == VerticalSlides.LOWER_BUCKET && !(slideTarget == VerticalSlides.UP)) {
-            if (robot.slides.atSetTarget(100, slideTarget -350)) {
+            if (robot.slides.atSetTarget(100, slideTarget - 350)) {
               robot.claw.setBucket();
               state = ModeState.BUCKET_PLACE_LOW;
               stateTimer.reset();
@@ -391,7 +390,7 @@ public class BaseTeleop {
     telemetry.addData("STATE", state);
     telemetry.addData("STATE Timer", stateTimer.milliseconds());
 
-    telemetry.addData("Slide Target" , robot.slides.getTarget());
+    telemetry.addData("Slide Target", robot.slides.getTarget());
     telemetry.update();
   }
 }
