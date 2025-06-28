@@ -16,9 +16,10 @@ import org.firstinspires.ftc.teamcode.subsystems.VerticalSlides;
 public class BaseSpecAuton {
 
   public static double[] START = {10, 58, 180};
-  public static double[] PLACE_SPEC = {36, 68, 180};
+  public double[] PLACE_SPEC = {35, 69, 180};
 
-  public static double[] PLACE_SPEC_FIRST = {35, 69, 180};
+
+  public static double[] PLACE_SPEC_FIRST = {35, 67, 180};
 
   public static double[] DRIVE_ONE = {45, 36, 180};
 
@@ -85,7 +86,7 @@ public class BaseSpecAuton {
             pointFromArr(PLACE_SPEC_FIRST)
         )
         .setLinearHeadingInterpolation(Math.toRadians(START[2]), Math.toRadians(PLACE_SPEC_FIRST[2]))
-        .setPathEndTimeoutConstraint(50)
+        .setPathEndTimeoutConstraint(100)
         .setZeroPowerAccelerationMultiplier(5)
         .build();
 
@@ -146,22 +147,13 @@ public class BaseSpecAuton {
         .setPathEndTimeoutConstraint(50)
         .build();
 
-    place = robot.follower.pathBuilder()
-        .addBezierLine(
-            pointFromArr(PICKUP),
-            pointFromArr(PLACE_SPEC)
-        )
-        .setLinearHeadingInterpolation(Math.toRadians(PICKUP[2]), Math.toRadians(PLACE_SPEC[2]))
-        .setPathEndTimeoutConstraint(50)
-        .build();
-
     pickup = robot.follower.pathBuilder()
         .addBezierLine(
             pointFromArr(PLACE_SPEC),
             pointFromArr(PICKUP)
         )
         .setLinearHeadingInterpolation(Math.toRadians(PLACE_SPEC[2]), Math.toRadians(PICKUP[2]))
-        .setPathEndTimeoutConstraint(50)
+        .setPathEndTimeoutConstraint(100)
         .setZeroPowerAccelerationMultiplier(5)
         .build();
 
@@ -195,7 +187,8 @@ public class BaseSpecAuton {
     pathTimer.resetTimer();
   }
 
-  public void pickupPlace(PathChain place, PathChain postPlace) {
+  public void pickupPlace(double[] poostCoords) {
+    PLACE_SPEC = new double[]{35, PLACE_SPEC[1] + 2, 180};
     robot.claw.clawClose();
 
     timer.resetTimer();
@@ -203,10 +196,18 @@ public class BaseSpecAuton {
       robot.updateAutoControls();
     }
 
-    robot.slides.setTarget(VerticalSlides.BAR_PLACE_UNDER - 20);
+    robot.slides.setTarget(VerticalSlides.BAR_PLACE_UNDER_AUTO - 20);
     robot.claw.setPlace();
 
-    robot.follower.followPath(place);
+    robot.follower.followPath(robot.follower.pathBuilder()
+        .addBezierLine(
+            pointFromArr(PICKUP),
+            pointFromArr(PLACE_SPEC)
+        )
+        .setLinearHeadingInterpolation(Math.toRadians(PICKUP[2]), Math.toRadians(PLACE_SPEC[2]))
+        .setPathEndTimeoutConstraint(50)
+        .build());
+
     while (opMode.opModeIsActive() && (robot.follower.isBusy() || !robot.slides.atTarget())) {
       robot.updateAutoControls();
     }
@@ -225,7 +226,15 @@ public class BaseSpecAuton {
 
     robot.claw.setWall();
     robot.slides.setTarget(VerticalSlides.TRANSFER);
-    robot.follower.followPath(postPlace);
+    robot.follower.followPath(robot.follower.pathBuilder()
+        .addBezierLine(
+            pointFromArr(PLACE_SPEC),
+            pointFromArr(poostCoords)
+        )
+        .setLinearHeadingInterpolation(Math.toRadians(PLACE_SPEC[2]), Math.toRadians(poostCoords[2]))
+        .setPathEndTimeoutConstraint(50)
+        .setZeroPowerAccelerationMultiplier(5)
+        .build());
   }
 
   public void autonomousPathUpdate() {
@@ -263,7 +272,7 @@ public class BaseSpecAuton {
 
       case 2000:
         if (!robot.follower.isBusy() && specCounter < 3) {
-          pickupPlace(place, pickup);
+          pickupPlace(PICKUP);
           specCounter++;
         }
         if (specCounter >= 3) {
@@ -273,7 +282,7 @@ public class BaseSpecAuton {
 
       case 2001:
         if (!robot.follower.isBusy()) {
-          pickupPlace(place, intake);
+          pickupPlace(INTAKE);
           setPathState(3000);
         }
         break;

@@ -77,8 +77,6 @@ public class BaseTeleop {
     while (opMode.opModeIsActive()) {
       updateGamepads();
 
-      robot.horSlide.updatePosition();
-
       if (currentGamepad1.left_bumper && !previousGamepad1.left_bumper) {
         robot.imu.resetYaw();
         this.headingOffset = 0;
@@ -127,6 +125,7 @@ public class BaseTeleop {
       if (hangOverride) {
         hangControls();
       } else {
+        robot.horSlide.updatePosition();
         if (specimenMode) {
           specimenModeUpdate();
         } else {
@@ -140,11 +139,10 @@ public class BaseTeleop {
 
   public void hangControls() {
     robot.slides.setPower(currentGamepad1.right_trigger - currentGamepad1.left_trigger);
-
+    robot.horSlide.updatePosition();
+    robot.horSlide.updatePIDControl();
     robot.intake.setPower(0);
     robot.intake.rotateFlat();
-
-    robot.horSlide.updatePIDControl();
   }
 
   public void specimenModeUpdate() {
@@ -213,6 +211,7 @@ public class BaseTeleop {
     switch (state) {
       case BUCKET_INTAKING:
         intakeControl();
+        robot.slides.setTarget(VerticalSlides.TRANSFER);
 
         if (currentGamepad2.cross) {
           robot.slides.setTarget(VerticalSlides.TRANSFER);
@@ -358,7 +357,7 @@ public class BaseTeleop {
 
     if (currentGamepad2.right_trigger > 0 || currentGamepad2.left_trigger > 0) {
       robot.intake.update(
-          currentGamepad2.right_trigger - currentGamepad2.left_trigger * OUTTAKE_SPEED_MODIFIER,
+          (currentGamepad2.right_trigger - currentGamepad2.left_trigger * OUTTAKE_SPEED_MODIFIER),
           intakeFlat,
           robot.getAllianceColor()
       );
@@ -369,7 +368,7 @@ public class BaseTeleop {
       );
     } else {
       robot.intake.update(
-          0,
+          0, //0.05,
           intakeFlat,
           robot.getAllianceColor()
       );

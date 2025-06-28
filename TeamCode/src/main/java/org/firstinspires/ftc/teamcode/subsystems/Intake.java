@@ -28,7 +28,7 @@ public class Intake {
   public static double SWEEP_OUT = 0.05;
   public static double SWEEP_IN = 0.35;
 
-  public static double INTAKE_DOWN = 0.25; //.27
+  public static double INTAKE_DOWN = 0.26; //.27
   public static double INTAKE_HALF = 0.2;
   public static double INTAKE_FLAT = 0.07;
 

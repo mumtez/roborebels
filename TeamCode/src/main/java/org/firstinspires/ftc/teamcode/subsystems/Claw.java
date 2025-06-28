@@ -24,16 +24,16 @@ public class Claw {
   public static double downArmWall = 0.35;
   public static double upArmWall = 0.12;
 
-  public static double upArmSpecInit = 0.14;
+  public static double upArmSpecInit = 0.02;
 
   public static double upArmBucket = 0.53;
 
-  public static double upArmTransfer = 0.093;
+  public static double upArmTransfer = 0.097;
   public static double upArmInit = 0.09;
 
-  public static double downArmSpecInit = .5;
+  public static double downArmSpecInit = 0.6;
   public static double downArmBucket = 0.84;
-  public static double downArmTransfer = 0.01;
+  public static double downArmTransfer = 0.03;
   public static double downArmInit = 0.01;
 
 
