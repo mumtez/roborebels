@@ -641,8 +641,8 @@ public class BaseBucketAuton {
                     )
                     .setConstantHeadingInterpolation(PLACE_BUCKET[2])
                     .addParametricCallback(.1, () -> robot.horSlide.setTarget(HSLIDE_SUB))
-                    .addParametricCallback(.91, () -> robot.intake.update(1, false, robot.getAllianceColor()))
-                    .addParametricCallback(.91, () -> robot.horSlide.setTarget(HorizontalSlides.OUT_POS))
+                    .addParametricCallback(.9, () -> robot.intake.update(1, false, robot.getAllianceColor()))
+                    .addParametricCallback(.9, () -> robot.horSlide.setTarget(HorizontalSlides.OUT_POS))
                     .setZeroPowerAccelerationMultiplier(5)
                     .setPathEndTimeoutConstraint(50)
                     .build(), 65, 100);
