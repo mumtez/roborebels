@@ -196,7 +196,7 @@ public class BaseSpecAuton {
       robot.updateAutoControls();
     }
 
-    robot.slides.setTarget(VerticalSlides.BAR_PLACE_UNDER_AUTO - 20);
+    robot.slides.setTarget(VerticalSlides.BAR_PLACE_UNDER_AUTO - 40);
     robot.claw.setPlace();
 
     robot.follower.followPath(robot.follower.pathBuilder()

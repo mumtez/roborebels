@@ -16,6 +16,7 @@ import org.firstinspires.ftc.teamcode.subsystems.VerticalSlides;
 @Config
 public class BaseBucketAuton {
 
+  public double cycleCount = 0;
   public static int MOVE_ARM_HEIGHT_OFFSET = 800;
   public static int VALIDATE_SAMPLE_MS = 50;
 
@@ -23,7 +24,7 @@ public class BaseBucketAuton {
   public static double HSLIDE_2 = HorizontalSlides.OUT_POS;
   public static double HSLIDE_3 = HorizontalSlides.OUT_POS;
 
-  public static double HSLIDE_SUB = (HorizontalSlides.TRANSFER_POS + 7);
+  public static double HSLIDE_SUB = (HorizontalSlides.TRANSFER_POS + 16);
 
   public static double INTAKE_OVERRIDE = 2;
 
@@ -164,7 +165,7 @@ public class BaseBucketAuton {
             pointFromArr(INTAKE_SUB_PRIME)
         )
         .setTangentHeadingInterpolation()
-        .addParametricCallback(.90, () -> robot.intake.sweepOut(true))
+        .addParametricCallback(.93, () -> robot.intake.sweepOut(true))
         .setPathEndTimeoutConstraint(0) // todo test
         .setZeroPowerAccelerationMultiplier(5)
         .build();
@@ -626,39 +627,44 @@ public class BaseBucketAuton {
         break;
 
       case 28: // go back to start if all 3 done pray for luck
-        if (transferTimer.milliseconds() > 150) {
-          robot.claw.clawClose();
-          if (transferTimer.milliseconds() > 175) {
-            robot.slides.setTarget(VerticalSlides.UP_AUTO + 45);
-            robot.horSlide.setTarget(HorizontalSlides.OUT_POS - 20);
-            if (robot.slides.atTarget(MOVE_ARM_HEIGHT_OFFSET)) {
-              robot.claw.setBucket();
-              if (!robot.follower.isBusy()) { //test
-                place(robot.follower.pathBuilder()
-                    .addBezierLine(
-                        pointFromArr(PLACE_BUCKET_SUB),
-                        pointFromArr(PLACE_BUCKET_SUB)
-                    )
-                    .setConstantHeadingInterpolation(PLACE_BUCKET[2])
-                    .addParametricCallback(.1, () -> robot.horSlide.setTarget(HSLIDE_SUB))
-                    .addParametricCallback(.9, () -> robot.intake.update(1, false, robot.getAllianceColor()))
-                    .addParametricCallback(.9, () -> robot.horSlide.setTarget(HorizontalSlides.OUT_POS))
-                    .setZeroPowerAccelerationMultiplier(5)
-                    .setPathEndTimeoutConstraint(50)
-                    .build(), 65, 100);
-                setPathState(29);
+        if (cycleCount == 3) {
+          if (transferTimer.milliseconds() > 150) {
+            robot.claw.clawClose();
+            if (transferTimer.milliseconds() > 175) {
+              robot.slides.setTarget(VerticalSlides.UP_AUTO + 45);
+              robot.horSlide.setTarget(HorizontalSlides.OUT_POS - 20);
+              if (robot.slides.atTarget(MOVE_ARM_HEIGHT_OFFSET)) {
+                robot.claw.setBucket();
+                if (!robot.follower.isBusy()) { //test
+                  place(robot.follower.pathBuilder()
+                      .addBezierLine(
+                          pointFromArr(PLACE_BUCKET_SUB),
+                          pointFromArr(PLACE_BUCKET_SUB)
+                      )
+                      .setConstantHeadingInterpolation(PLACE_BUCKET[2])
+                      .addParametricCallback(.1, () -> robot.horSlide.setTarget(HSLIDE_SUB))
+                      .addParametricCallback(.9, () -> robot.intake.update(1, false, robot.getAllianceColor()))
+                      .addParametricCallback(.9, () -> robot.horSlide.setTarget(HorizontalSlides.OUT_POS))
+                      .setZeroPowerAccelerationMultiplier(5)
+                      .setPathEndTimeoutConstraint(50)
+                      .build(), 65, 100);
+                  setPathState(29);
+                }
               }
             }
           }
+        } else {
+          subCycleTransfer(INTAKE_SUB_MIDDLE, 17, BUCKET_INTAKE_SUB_CONTROL_LEFT);
         }
         break;
-      case 29:
 
+      case 29:
         break;
     }
   }
 
   private void subCycleToBucket(double[] subPos, int next, double[] control) {
+    cycleCount++;
     robot.horSlide.setTarget(HorizontalSlides.TRANSFER_POS);
     if (pathTimer.getElapsedTime() < 200) {
       robot.intake.update(-1, true, robot.getAllianceColor());
