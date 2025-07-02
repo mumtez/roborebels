@@ -24,7 +24,7 @@ public class BaseBucketAuton {
   public static double HSLIDE_2 = HorizontalSlides.OUT_POS;
   public static double HSLIDE_3 = HorizontalSlides.OUT_POS;
 
-  public static double HSLIDE_SUB = (HorizontalSlides.TRANSFER_POS + 16);
+  public static double HSLIDE_SUB = (HorizontalSlides.TRANSFER_POS + 10);
 
   public static double INTAKE_OVERRIDE = 2;
 
@@ -444,6 +444,7 @@ public class BaseBucketAuton {
 
       case 11:
         if (!robot.follower.isBusy()) {
+          robot.horSlide.setTarget(HSLIDE_SUB);
           robot.intake.sweepOut(true);
           robot.follower.followPath(subToSubLeft);
           intakeTimer.reset();
@@ -692,7 +693,7 @@ public class BaseBucketAuton {
     if (transferTimer.milliseconds() > 150) {
       robot.claw.clawClose();
       if (transferTimer.milliseconds() > 175) {
-        robot.slides.setTarget(VerticalSlides.UP_AUTO + 100);
+        robot.slides.setTarget(VerticalSlides.UP_AUTO + 70);
         robot.horSlide.setTarget(HorizontalSlides.OUT_POS - 20);
         if (robot.slides.atTarget(MOVE_ARM_HEIGHT_OFFSET)) {
           robot.claw.setBucket();
